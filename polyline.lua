@@ -26,7 +26,7 @@ function PolyLine:inside(xc,yc)
     end
     for i=1,itenum do
         if Shape.leftToLine(xc,yc,self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y) then
-            return false
+            return false,self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y
         end
     end
     return true

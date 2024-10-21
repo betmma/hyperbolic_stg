@@ -7,16 +7,16 @@ function Shape.distance(x1,y1,x2,y2)
     return 2*Shape.curvature*math.log((math.distance(x1,y1,x2,y2)+math.distance(x1,y1,x2,2*ay-y2))/(2*((y1-ay)*(y2-ay))^0.5))
 end
 
--- get X coordinate of center point of line x1,y1 to x2,y2
+-- get X coordinate and radius of center point of line x1,y1 to x2,y2
 function Shape.lineCenter(x1,y1,x2,y2)
     local x0=(x1+x2)/2
     local y0=(y1+y2)/2
     if x1==x2 then -- vertical 
-        return 0
+        return 0,tonumber('inf')
     end
     local k=(y2-y1)/(x2-x1)
     local centerX=x0+(y0-Shape.axisY)*k
-    return centerX
+    return centerX,math.distance(centerX,Shape.axisY,x1,y1)
 end
 
 -- get direction from x1,y1 to x2,y2
@@ -36,12 +36,28 @@ end
 -- calculate if a point xc,yc is left to line x1,y1 to x2,y2 (in/out the semicircle if angle p1 to p2 is negative/positive // left to a vertical line)
 function Shape.leftToLine(xc,yc,x1,y1,x2,y2)
     if x1==x2 then -- vertical
-        return (xc<x1)==(y2<y1)
+        if y2<y1 then
+            return xc<x1
+        end
+        return xc>x1
     end
-    local centerX=Shape.lineCenter(x1,y1,x2,y2)
+    local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
     local theta1=math.atan2(y1-Shape.axisY,x1-centerX)
     local theta2=math.atan2(y2-Shape.axisY,x2-centerX)
-    return (math.distance(centerX,Shape.axisY,xc,yc)<math.distance(centerX,Shape.axisY,x1,y1))==(theta1>theta2)
+    if theta1>theta2 then
+        return math.distance(centerX,Shape.axisY,xc,yc)<radius
+    end 
+    return math.distance(centerX,Shape.axisY,xc,yc)>radius
+end
+
+-- find the nearest point to xc,yc on line [x1,y1 to x2,y2] 
+function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
+    if x1==x2 then -- vertical
+        return {x1,yc}
+    end
+    local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
+    local direction=math.atan2(yc-Shape.axisY,xc-centerX)
+    return {centerX+radius*math.cos(direction),Shape.axisY+radius*math.sin(direction)}
 end
 
 

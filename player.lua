@@ -61,9 +61,18 @@ function Player:update(dt)
 
     -- self.x=math.clamp(self.x,self.border.minx,self.border.maxx)
     -- self.y=math.clamp(self.y,self.border.miny,self.border.maxy)
-    if not self.border:inside(self.x,self.y) then
-        self.x=xref
-        self.y=yref
+    local count=0
+    while count<10 and not self.border:inside(self.x,self.y) do
+        count=count+1
+        local line={self.border:inside(self.x,self.y)}
+        -- local centerX=Shape.lineCenter(line[2],line[3],line[4],line[5])
+        local p=Shape.nearestToLine(self.x,self.y,line[2],line[3],line[4],line[5])
+        -- local direction=Shape.to(self.x,self.y,line[4],line[5])
+        -- local dirx=math.cos(direction)
+        -- local diry=math.sin(direction)
+        -- local dot=(self.x-xref)*dirx+(self.y-yref)*diry
+        self.x=p[1]--xref+dot*dirx
+        self.y=p[2]--yref+dot*diry
     end
 
     self.invincibleTime=self.invincibleTime-dt
