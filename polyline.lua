@@ -7,17 +7,32 @@ function Point:new(x, y)
 end
 
 function Point:draw()
-    love.graphics.circle("line", self.x, self.y, 1) -- 1 point
+    love.graphics.circle("line", self.x, self.y, 1) -- 1 px
 end
 
-local Line=Object:extend()
-function Line:new(points)
+local PolyLine=Object:extend()
+function PolyLine:new(points)
     self.points={}
     for key, value in pairs(points) do
         self.points[#self.points+1] = Point(value[1],value[2])
     end
 end
-function Line:draw()
+
+-- assume that points are given by increasing polar angle (so points should be right to each line)
+function PolyLine:inside(xc,yc)
+    local itenum=#self.points
+    if itenum==2 then
+        itenum=1
+    end
+    for i=1,itenum do
+        if Shape.leftToLine(xc,yc,self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y) then
+            return false
+        end
+    end
+    return true
+end
+
+function PolyLine:draw()
     local itenum=#self.points
     if itenum==2 then
         itenum=1
@@ -26,19 +41,16 @@ function Line:draw()
         self:drawOne(self.points[i],self.points[i%#self.points+1])
     end
 end
-function Line:drawOne(p1,p2)
+function PolyLine:drawOne(p1,p2)
     local x1=p1.x
     local y1=p1.y
     local x2=p2.x
     local y2=p2.y
-    local x0=(x1+x2)/2
-    local y0=(y1+y2)/2
     if x1==x2 then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)
         return
     end
-    local k=(y2-y1)/(x2-x1)
-    local centerX=x0+(y0-Shape.axisY)*k
+    local centerX=Shape.lineCenter(x1,y1,x2,y2)
     -- local theta1=math.atan2(y1,x1-centerX)
     -- local theta2=math.atan2(y2,x2-centerX)
     love.graphics.setScissor(math.min(x1,x2),math.min(y1,y2),math.abs(x1-x2),9999)
@@ -46,15 +58,15 @@ function Line:drawOne(p1,p2)
     love.graphics.setScissor( )
     -- love.graphics.arc("line",centerX,0,((centerX-x1)^2+y1^2)^0.5,math.min(theta1,theta2),math.max(theta1,theta2)) -- this draws 2 radii and can't be cancelled :(
 end
-function Line:remove()
-    Line.super.remove(self)
+function PolyLine:remove()
+    PolyLine.super.remove(self)
     for key, value in pairs(self.points) do
         value:remove()
     end
 end
-function Line:drawAll()
+function PolyLine:drawAll()
     for key, obj in pairs(self.objects) do
         obj:draw()
     end
 end
-return Line
+return PolyLine

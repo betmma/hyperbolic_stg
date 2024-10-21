@@ -1,4 +1,5 @@
 --! file: rectangle.lua
+-- deprecated
 --We could name our variable anything we want here, but it's nice to keep a consistent name.
 local Shape = require "shape"
 

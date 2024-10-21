@@ -15,7 +15,7 @@ function love.load()
     Shape = require "shape"
     Rectangle = require "rectangle"
     Circle = require "circle"
-    Line = require "line"
+    PolyLine = require "polyline"
     Player = require "player"
     Event= require "event"
 
@@ -31,11 +31,6 @@ function love.load()
         end
         return ret
     end
-    local minx=200
-    local maxx=600
-    local miny=0
-    local maxy=560
-    Line({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
     
     player=Player(400,300)
     -- x = 100 
@@ -95,6 +90,6 @@ function love.draw()
     -- end
     Rectangle:drawAll()
     Circle:drawAll()
-    Line:drawAll()
+    PolyLine:drawAll()
     player:draw()
 end

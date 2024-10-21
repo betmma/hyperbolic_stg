@@ -1,6 +1,7 @@
 
 local Shape = require "shape"
 local Circle=require"circle"
+local PolyLine=require"polyline"
 local Player = Shape:extend()
 
 function Player:new(x, y, movespeed)
@@ -13,7 +14,13 @@ function Player:new(x, y, movespeed)
     self.centerX=400
     --drawn as a circle
     self.radius = 1
-    self.border={minx=0,maxx=love.graphics.getWidth(),miny=0,maxy=love.graphics.getHeight()}
+    -- self.border={minx=0,maxx=love.graphics.getWidth(),miny=0,maxy=love.graphics.getHeight()}
+    local minx=200
+    local maxx=600
+    local miny=0
+    local maxy=560
+    
+    self.border=PolyLine({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
 
     self.hp=3
     self.invincibleTime=0
@@ -23,6 +30,8 @@ local function isDownInt(keyname)
 end
 
 function Player:update(dt)
+    local xref=self.x
+    local yref=self.y
     self.direction=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
     local right=isDownInt("right")-isDownInt("left")
     if right==-1 then
@@ -50,8 +59,12 @@ function Player:update(dt)
 
     self.super.update(self,dt) -- actually move
 
-    self.x=math.clamp(self.x,self.border.minx,self.border.maxx)
-    self.y=math.clamp(self.y,self.border.miny,self.border.maxy)
+    -- self.x=math.clamp(self.x,self.border.minx,self.border.maxx)
+    -- self.y=math.clamp(self.y,self.border.miny,self.border.maxy)
+    if not self.border:inside(self.x,self.y) then
+        self.x=xref
+        self.y=yref
+    end
 
     self.invincibleTime=self.invincibleTime-dt
     if self.invincibleTime<=0 then
