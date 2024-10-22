@@ -3,7 +3,7 @@ local Shape = require "shape"
 local Point = Shape:extend()
 
 function Point:new(x, y)
-    Point.super.new(self, x, y,0,0)
+    Point.super.new(self, {x=x, y=y})
 end
 
 function Point:draw()

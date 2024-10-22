@@ -5,7 +5,7 @@ local PolyLine=require"polyline"
 local Player = Shape:extend()
 
 function Player:new(x, y, movespeed)
-    Player.super.new(self, x, y)
+    Player.super.new(self, {x=x, y=y})
     self.lifeTime=9999999
     self.speed=0
     self.movespeed=movespeed or 60

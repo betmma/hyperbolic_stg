@@ -61,13 +61,13 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
 end
 
 
-function Shape:new(x, y, speed, direction)
-    self.x = x
-    self.y = y
+function Shape:new(args)
+    self.x = args.x
+    self.y = args.y
     self.metric=self:getMetric()
-    self.speed = speed or 100
-    self.direction = direction or math.pi*2/9
-    self.lifeTime=10
+    self.speed = args.speed or 100
+    self.direction = args.direction or math.pi*2/9
+    self.lifeTime=args.lifeTime or 10
     self.time=0
     self.removeDistance=100
 end

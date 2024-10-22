@@ -73,6 +73,7 @@ end
 
 -- Method to remove an object
 function Object:remove()
+  self.removed=true
   for i, obj in ipairs(self.objects) do
     if obj == self then
       table.remove(self.objects, i)
