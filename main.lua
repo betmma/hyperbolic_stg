@@ -60,7 +60,7 @@ function love.load()
                 easeTime=10,
                 aimTable=cir,
                 aimKey='direction',
-                aimValue=cir.direction+(key%2==0 and math.pi or -math.pi)/2,
+                aimValue=cir.direction+(key%2==0 and math.pi or -math.pi)*2,
                 -- progressFunc=function(x)return math.sin(math.pi*20*x) end
             }
             Event.EaseEvent{
@@ -81,19 +81,19 @@ function love.load()
         executeFunc=function(self)
             a.angle=math.eval('3.14+3.14')
             a.spawnEvent.time=0
-            a.spawnEvent.period=0.01
-            Event.EaseEvent{
+            a.spawnEvent.period=0.2
+            e3=Event.EaseEvent{
                 obj=a,
-                easeTime=1,
+                easeTime=2,
                 aimTable=a,
                 aimKey='bulletSpeed',
-                aimValue=70,
+                aimValue=50,
             }
         end
     }
     e2=Event.LoopEvent{
         obj=a,
-        time=4,
+        time=3,
         period=5,
         conditionFunc=function()return true end,
         executeFunc=function(self)
@@ -154,6 +154,10 @@ function love.draw()
         
         love.graphics.print(tostring(e1.time),600,200)
         love.graphics.print(tostring(e2.time),600,300)
+        if e3 then
+            
+            love.graphics.print(tostring(e3.time),600,400)
+        end
         love.graphics.print(''..#Event.LoopEvent.objects,600,500)
     -- end
     Rectangle:drawAll()

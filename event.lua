@@ -67,6 +67,7 @@ local EaseEvent = Event:extend()
 function EaseEvent:new(args)
     LoopEvent.super.new(self, args)
     self.time=0
+    self.lastTime=0
     self.period=args.easeTime or 1
     self.aimTable=args.aimTable or {}
     self.key=args.aimKey
@@ -84,14 +85,16 @@ function EaseEvent:new(args)
         if not self.aimTable or self.aimTable.removed then
             return false
         end
-        self.aimTable[self.key]=self.progressFunc(self.time/self.period)*(self.aimValue-self.startValue)+self.startValue
+        self.aimTable[self.key]=self.aimTable[self.key]+(self.progressFunc(self.time/self.period)-self.progressFunc(self.lastTime/self.period))*(self.aimValue-self.startValue)
         if self.time==self.period then
             self.times=0
+            self:remove()
         end
+        self.lastTime=self.time
     end
 end
 function EaseEvent:update(dt)
-    self.time=self.time+dt
+    -- self.time=self.time+dt
     EaseEvent.super.update(self,dt)
 end
 
