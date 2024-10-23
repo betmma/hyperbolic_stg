@@ -52,16 +52,19 @@ function love.load()
     Event= require "event"
     BulletSpawner=require"bulletSpawner"
 
-    BulletSpawner{x=400,y=100,period=2,time=2,bulletNumber='40+10',bulletSpeed='40+10',bulletSize='2+1',bulletEvents={
+    a=BulletSpawner{x=400,y=200,period=5,time=0,lifeTime=100,bulletNumber=40,bulletSpeed='40',bulletSize=2,bulletEvents={
         function(cir,args)
             local key=args.index
             Event.EaseEvent{
+                obj=cir,
                 easeTime=10,
                 aimTable=cir,
                 aimKey='direction',
-                aimValue=cir.direction+(key%2==0 and math.pi or -math.pi)/2
+                aimValue=cir.direction+(key%2==0 and math.pi or -math.pi)/2,
+                -- progressFunc=function(x)return math.sin(math.pi*20*x) end
             }
             Event.EaseEvent{
+                obj=cir,
                 easeTime=5,
                 aimTable=cir,
                 aimKey='speed',
@@ -70,6 +73,58 @@ function love.load()
         end
 
     }}
+    e1=Event.LoopEvent{
+        obj=a,
+        time=5,
+        period=5,
+        conditionFunc=function()return true end,
+        executeFunc=function(self)
+            a.angle=math.eval('3.14+3.14')
+            a.spawnEvent.time=0
+            a.spawnEvent.period=0.01
+            Event.EaseEvent{
+                obj=a,
+                easeTime=1,
+                aimTable=a,
+                aimKey='bulletSpeed',
+                aimValue=70,
+            }
+        end
+    }
+    e2=Event.LoopEvent{
+        obj=a,
+        time=4,
+        period=5,
+        conditionFunc=function()return true end,
+        executeFunc=function(self)
+            a.spawnEvent.period=5
+            a.bulletSpeed=40
+        end
+    }
+    local b=BulletSpawner{x=400,y=100,period=4,time=2,lifeTime=100,bulletNumber=30,bulletSpeed=6,bulletSize=1,bulletEvents={
+        function(cir,args)
+            local key=args.index
+            Event.LoopEvent{
+                obj=cir,
+                times=1,
+                period=1,
+                conditionFunc=function()return true end,
+                executeFunc=function(self)
+                    cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
+                    cir.speed=cir.speed+10
+            end}
+        end
+    },
+    spawnBatchFunc=function(self)
+        local num=math.eval(self.bulletNumber)
+        local angle=math.eval(self.angle)
+        local speed=math.eval(self.bulletSpeed)
+        local size=math.eval(self.bulletSize)
+        for i = 1, num, 1 do
+            self:spawnBulletFunc{direction=i<=num/2 and 0 or math.pi,speed=math.abs(speed*(i-num/2)),radius=size,index=i}
+        end
+    end}
+    -- a:remove()
     -- r1 = Rectangle(100, 100, 200, 50)
     function CircleCast(num,x,y,speed,size,extraUpdate)
         local ret={}
@@ -87,36 +142,23 @@ function love.load()
 end
 function love.update(dt)
     -- dt=1/60
-    if math.random()<dt/4 then
-        local xy={math.random(300,500),math.random(100,300)}
-        for i = 1, 30, 1 do
-            local cir=Circle({x=xy[1],y=xy[2], radius=1})
-            cir.lifeTime=10
-            cir.direction=i<=15 and 0 or math.pi
-            cir.speed=math.abs(6*(i-15))
-            Event.LoopEvent{
-                times=1,
-                period=1,
-                conditionFunc=function()return true end,
-                executeFunc=function(self)
-                    cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
-                    cir.speed=cir.speed+10
-                end}
-        end
-    end
-    Rectangle:updateAll(dt)
+    -- Rectangle:updateAll(dt)
+    BulletSpawner:updateAll(dt)
     Circle:updateAll(dt)
-    Event:updateAll(dt)
     player:update(dt)
+    Event:updateAll(dt)
 end
 
 function love.draw()
     -- if Circle.objects[1] then
         
-    --     love.graphics.print(tostring(Circle.objects[1].time),100,100)
+        love.graphics.print(tostring(e1.time),600,200)
+        love.graphics.print(tostring(e2.time),600,300)
+        love.graphics.print(''..#Event.LoopEvent.objects,600,500)
     -- end
     Rectangle:drawAll()
     Circle:drawAll()
     PolyLine:drawAll()
+    PolyLine.drawAll(BulletSpawner)
     player:draw()
 end

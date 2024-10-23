@@ -5,7 +5,7 @@ Event.modes={
     oneFrameMultiple=1
 }
 -- conditionFunc, executeFunc, times, mode: Event.modes, obj
--- when update checks if [conditionFunc(self,dt)] returns true, then execute [executeFunc(self,dt,obj)]. after executed [times] times or executeFunc returns false it's removed. [mode] can be Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple
+-- when update checks if [conditionFunc(self,dt)] returns true, then execute [executeFunc(self,dt,obj)]. after executed [times] times or executeFunc returns false or obj.removed is true it's removed. [mode] can be Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple
 -- if [activated] is false the event won't update.
 -- you can set [time] and check it in [conditionFunc] to do same thing as LoopEvent
 function Event:new(args)
@@ -13,24 +13,25 @@ function Event:new(args)
     self.times=args.times or 999999999999
     self.mode=args.mode or Event.modes.oneFrameOnce
     self.executedTimes=0
-    self.obj=args.obj
-    self.conditionFunc=args.conditionFunc or function(self,dt)return true end
-    self.executeFunc=args.executeFunc or function(self,dt,obj)return true end
+    self.obj=args.obj or self
+    local conditionFunc=args.conditionFunc or function(self,dt)return true end
+    self.conditionFunc=function(self,dt)return self.obj.removed~=true and conditionFunc(self,dt)end
+    self.executeFunc=args.executeFunc or function(self,dt)return true end
     self.activated=args.activated or true
 end
 
 function Event:update(dt)
-    if self.activated==false then return end
+    if self.activated==false or self.removed then return end
     self.time=self.time+dt
     local first=true
     while first==true or self.mode==Event.modes.oneFrameMultiple do
         first=false
         local ret
         if self:conditionFunc(dt) and self.executedTimes<self.times then
-            ret=self:executeFunc(dt,self.obj)
+            self:executeFunc(dt)
             self.executedTimes=self.executedTimes+1
         end
-        if self.executedTimes>self.times or ret==false then
+        if self.executedTimes>self.times or self.obj.removed then
             self:remove()
             return
         end
@@ -68,7 +69,6 @@ function EaseEvent:new(args)
     self.time=0
     self.period=args.easeTime or 1
     self.aimTable=args.aimTable or {}
-    self.obj=self.aimTable
     self.key=args.aimKey
     self.aimValue=args.aimValue or 0
     self.startValue=self.aimTable[self.key]
@@ -77,11 +77,11 @@ function EaseEvent:new(args)
     self.conditionFunc=function(self,dt)
         return true
     end
-    self.executeFunc=function(self,dt,obj)
+    self.executeFunc=function(self,dt)
         if self.time>self.period then
             self.time=self.period
         end
-        if not obj or obj.removed then
+        if not self.aimTable or self.aimTable.removed then
             return false
         end
         self.aimTable[self.key]=self.progressFunc(self.time/self.period)*(self.aimValue-self.startValue)+self.startValue

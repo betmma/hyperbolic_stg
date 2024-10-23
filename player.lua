@@ -95,9 +95,10 @@ function Player:draw()
     if self.invincibleTime>0 then
         love.graphics.setColor(1,0,0)
     end
-    love.graphics.circle("line", self.x, (self.y-Shape.axisY)*math.cosh(self.radius/Shape.curvature)+Shape.axisY, (self.y-Shape.axisY)*math.sinh(self.radius/Shape.curvature))
+    math.drawCircle(self.x,self.y,self.radius)
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
+    love.graphics.print('HP: '..tostring(self.hp),100,100)
 end
 return Player

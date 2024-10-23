@@ -65,7 +65,7 @@ function Shape:new(args)
     self.x = args.x
     self.y = args.y
     self.metric=self:getMetric()
-    self.speed = args.speed or 100
+    self.speed = args.speed or 0
     self.direction = args.direction or math.pi*2/9
     self.lifeTime=args.lifeTime or 10
     self.time=0

@@ -39,9 +39,16 @@ function BulletSpawner:new(args)
             self:spawnBulletFunc{direction=direction,speed=speed,radius=size,index=i}
         end
     end
-    Event.LoopEvent{period=self.period,time=self.time,executeFunc=function(event,dt)
+    self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,time=self.time,executeFunc=function(event,dt)
         self:spawnBatchFunc()
     end}
+end
+
+function BulletSpawner:draw()
+    local color={love.graphics.getColor()}
+    love.graphics.setColor(1,0,1)
+    math.drawCircle(self.x,self.y,5)
+    love.graphics.setColor(color[1],color[2],color[3])
 end
 
 return BulletSpawner

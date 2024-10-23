@@ -11,8 +11,12 @@ end
 
 function Circle:draw()
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
-    love.graphics.circle("line", self.x, (self.y-Shape.axisY)*math.cosh(self.radius/Shape.curvature)+Shape.axisY, (self.y-Shape.axisY)*math.sinh(self.radius/Shape.curvature))
+    math.drawCircle(self.x,self.y,self.radius)
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
+end
+
+math.drawCircle=function(x,y,r)
+    love.graphics.circle("line", x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature))
 end
 
 function Circle:update(dt)
