@@ -20,8 +20,9 @@ function BulletSpawner:new(args)
     self.bulletSize=args.bulletSize or 1
     self.bulletLifeTime=args.bulletLifeTime or 20
     self.bulletEvents=args.bulletEvents or {}
+    self.bulletSprite=args.bulletSprite
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
-        local cir=Circle({x=self.x, y=self.y, radius=args.radius, lifeTime=self.bulletLifeTime})
+        local cir=Circle({x=self.x, y=self.y, radius=args.radius, lifeTime=self.bulletLifeTime, sprite=self.bulletSprite})
         -- table.insert(ret,cir)
         cir.direction=math.eval(args.direction)
         cir.speed=math.eval(args.speed)

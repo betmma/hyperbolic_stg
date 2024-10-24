@@ -13,7 +13,7 @@ function Player:new(x, y, movespeed)
     --when pressed left or right player moves in an arc with center (centerX,0)
     self.centerX=400
     --drawn as a circle
-    self.radius = 1
+    self.radius = 0.5
     -- self.border={minx=0,maxx=love.graphics.getWidth(),miny=0,maxy=love.graphics.getHeight()}
     local minx=200
     local maxx=600
@@ -98,7 +98,7 @@ function Player:draw()
     math.drawCircle(self.x,self.y,self.radius)
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
-    love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
+    -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
     love.graphics.print('HP: '..tostring(self.hp),100,100)
 end
 return Player

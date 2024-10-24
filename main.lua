@@ -51,10 +51,10 @@ function love.load()
     Player = require "player"
     Event= require "event"
     BulletSpawner=require"bulletSpawner"
-    local Asset=require"loadAsset"
-    BulletSprites,BulletBatch=Asset.bulletSprites,Asset.bulletBatch
+    Asset=require"loadAsset"
+    BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
 
-    a=BulletSpawner{x=400,y=200,period=5,time=0,lifeTime=100,bulletNumber=40,bulletSpeed='40',bulletSize=2,bulletEvents={
+    a=BulletSpawner{x=400,y=200,period=5,time=0,lifeTime=100,bulletNumber=20,bulletSpeed='40',bulletSize=0.75,bulletSprite=BulletSprites.crystal.blue,bulletEvents={
         function(cir,args)
             local key=args.index
             Event.EaseEvent{
@@ -103,7 +103,7 @@ function love.load()
             a.bulletSpeed=40
         end
     }
-    local b=BulletSpawner{x=400,y=100,period=4,time=2,lifeTime=100,bulletNumber=30,bulletSpeed=6,bulletSize=1,bulletEvents={
+    local b=BulletSpawner{x=400,y=100,period=4,time=2,lifeTime=100,bulletNumber=30,bulletSpeed=6,bulletSize=0.75,bulletSprite=BulletSprites.kunai.gray,bulletEvents={
         function(cir,args)
             local key=args.index
             Event.LoopEvent{
@@ -145,15 +145,11 @@ end
 function love.update(dt)
     -- dt=1/60
     -- Rectangle:updateAll(dt)
+    BulletBatch:clear()
     BulletSpawner:updateAll(dt)
     Circle:updateAll(dt)
     player:update(dt)
     Event:updateAll(dt)
-    BulletBatch:clear()
-    for key, cir in pairs(Circle.objects) do
-        local scale=(cir.y-Shape.axisY)*math.sinh(cir.radius/Shape.curvature)/4
-        BulletBatch:add(BulletSprites.scale.gray,cir.x,(cir.y-Shape.axisY)*math.cosh(cir.radius/Shape.curvature)+Shape.axisY,cir.direction+math.pi/2,scale,scale,8,8)
-    end
     BulletBatch:flush()
 end
 
@@ -161,14 +157,15 @@ function love.draw()
     love.graphics.draw(BulletBatch)
     -- if Circle.objects[1] then
         
-        love.graphics.print(tostring(e1.time),600,200)
-        love.graphics.print(tostring(e2.time),600,300)
-        if e3 then
+        -- love.graphics.print(tostring(e1.time),600,200)
+        -- love.graphics.print(tostring(e2.time),600,300)
+        -- if e3 then
             
-            love.graphics.print(tostring(e3.time),600,400)
-        end
-        love.graphics.print(''..#Event.LoopEvent.objects,600,500)
+        --     love.graphics.print(tostring(e3.time),600,400)
+        -- end
+        -- love.graphics.print(''..#Event.LoopEvent.objects,600,500)
         love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+        -- love.graphics.print(""..BulletSprites.scale.gray:getTextureDimensions(), 10, 120)
     -- end
     Rectangle:drawAll()
     Circle:drawAll()
