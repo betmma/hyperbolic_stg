@@ -17,7 +17,9 @@ function Circle:draw()
 end
 
 math.drawCircle=function(x,y,r)
-    love.graphics.circle("line", x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature))
+    x,y,r=math.getCircle(x,y,r)
+    love.graphics.circle("line", x,y,r)
+    return x,y,r
 end
 
 math.getCircle=function(x,y,r)

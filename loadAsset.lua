@@ -10,6 +10,7 @@ local template={
     size=16,
     gray=...,red=...,purple=...,blue=...,cyan=...,green=...,yellow=...,orange=...,
 }
+Asset.playerFocus=quad(34,2,8,8)
 Asset.bulletSprites={
     scale=template,
     rim=template,

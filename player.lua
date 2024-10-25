@@ -86,6 +86,8 @@ function Player:update(dt)
             end
         end
     end
+    local x,y,r=math.getCircle(self.x,self.y,self.radius)
+    BulletBatch:add(Asset.playerFocus,x,y,self.time/10,r*0.5,r*0.5,31,33)
 end
 
 function Player:draw()
