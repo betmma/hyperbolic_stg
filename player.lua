@@ -24,6 +24,8 @@ function Player:new(x, y, movespeed)
 
     self.hp=3
     self.invincibleTime=0
+
+    self.shootRows=4
 end
 local function isDownInt(keyname)
     return love.keyboard.isDown(keyname)and 1 or 0
@@ -59,8 +61,7 @@ function Player:update(dt)
 
     self.super.update(self,dt) -- actually move
 
-    -- self.x=math.clamp(self.x,self.border.minx,self.border.maxx)
-    -- self.y=math.clamp(self.y,self.border.miny,self.border.maxy)
+    -- limit player in border
     local count=0
     while count<10 and not self.border:inside(self.x,self.y) do
         count=count+1
@@ -75,11 +76,12 @@ function Player:update(dt)
         self.y=p[2]--yref+dot*diry
     end
 
+    -- handle invincible time from hit
     self.invincibleTime=self.invincibleTime-dt
     if self.invincibleTime<=0 then
         self.invincibleTime=0
         for key, circ in pairs(Circle.objects) do
-            if Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
+            if not circ.safe and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
                 self.hp=self.hp-1
                 self.invincibleTime=self.invincibleTime+1
                 break
@@ -87,7 +89,24 @@ function Player:update(dt)
         end
     end
     local x,y,r=math.getCircle(self.x,self.y,self.radius)
-    BulletBatch:add(Asset.playerFocus,x,y,self.time/10,r*0.5,r*0.5,31,33)
+    BulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)
+
+    -- shooting bullet
+    if love.keyboard.isDown('z') then
+        self:shoot()
+    end
+end
+
+function Player:shoot()
+    local x,y,r=math.getCircle(self.x,self.y,self.radius)
+    local rows=self.shootRows
+    for i=1,rows do 
+        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.5, lifeTime=3, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
+        -- table.insert(ret,cir)
+        cir.safe=true
+        cir.direction=-math.pi/2
+        cir.speed=200
+    end
 end
 
 function Player:draw()

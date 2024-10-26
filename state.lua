@@ -135,8 +135,8 @@ local G={
                 love.graphics.setColor(0,0,0,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999)
                 love.graphics.setColor(color[1],color[2],color[3])
-                SetFont(36)
-                love.graphics.print("Pause",100,50,0,1,1)
+                SetFont(48)
+                love.graphics.print("Paused",100,50,0,1,1)
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
                     local name=value.text
