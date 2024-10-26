@@ -7,6 +7,10 @@ function Circle:new(args)
     --A circle doesn't have a width or height. It has a radius.
     self.radius = args.radius or 1
     self.sprite=args.sprite
+    if self.sprite then
+        local data=SpriteData[self.sprite]
+        self.radius=self.radius*2.4/data.hitRadius
+    end
     self.extraUpdate={}
 end
 
@@ -27,13 +31,16 @@ math.getCircle=function(x,y,r)
 end
 
 function Circle:update(dt)
+    if self.reomved then
+        return
+    end
     for k, func in pairs(self.extraUpdate or {}) do
         func(self,dt)
     end
     self.super.update(self,dt)
     local x,y,r=math.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
-    local scale=r/8*data.hitRadius
+    local scale=r/3.3333
     if self.sprite then
         BulletBatch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
     end

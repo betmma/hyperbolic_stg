@@ -82,6 +82,15 @@ function Object:remove()
   end
 end
 
+function Object:removeAll()
+  for i =#self.objects,1,-1 do
+    table.remove(self.objects, i)
+  end
+  for key, cls in pairs(self.subclasses) do
+      cls:removeAll()
+  end
+end
+
 function Object:update(dt)
 end
 
