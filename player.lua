@@ -88,7 +88,7 @@ function Player:update(dt)
             end
         end
     end
-    local x,y,r=math.getCircle(self.x,self.y,self.radius)
+    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     BulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)
 
     -- shooting bullet
@@ -98,7 +98,7 @@ function Player:update(dt)
 end
 
 function Player:shoot()
-    local x,y,r=math.getCircle(self.x,self.y,self.radius)
+    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local rows=self.shootRows
     for i=1,rows do 
         local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.5, lifeTime=3, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
@@ -106,6 +106,7 @@ function Player:shoot()
         cir.safe=true
         cir.direction=-math.pi/2
         cir.speed=200
+        cir.damage=1
     end
 end
 
@@ -116,10 +117,11 @@ function Player:draw()
     if self.invincibleTime>0 then
         love.graphics.setColor(1,0,0)
     end
-    math.drawCircle(self.x,self.y,self.radius)
+    Shape.drawCircle(self.x,self.y,self.radius)
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
+    SetFont(24)
     love.graphics.print('HP: '..tostring(self.hp),100,100)
 end
 return Player

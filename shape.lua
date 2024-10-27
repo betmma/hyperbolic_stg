@@ -60,6 +60,54 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     return {centerX+radius*math.cos(direction),Shape.axisY+radius*math.sin(direction)}
 end
 
+function Shape.drawCircle(x,y,r)
+    x,y,r=Shape.getCircle(x,y,r)
+    love.graphics.circle("line", x,y,r)
+    return x,y,r
+end
+
+function Shape.getCircle(x,y,r)
+    return x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature)
+end
+
+-- find the point that is (r,theta) to x,y in polar coordinates
+function Shape.rThetaPos(x,y,r,theta)
+    local div=math.floor(theta/(math.pi*2))
+    theta=theta%(math.pi*2)
+    local x2,y2,r2=Shape.getCircle(x,y,r)
+    if theta%math.pi==math.pi/2 then --vertical
+        if theta>math.pi then
+            return x2,y2-r,theta+div*math.pi*2
+        end
+        return x2,y2+r,theta+div*math.pi*2
+    end
+    local xc=Shape.lineCenter(x,y,x+math.cos(theta),y+math.sin(theta))
+    local rr=math.distance(xc,Shape.axisY,x2,y2)
+    local ra=math.distance(xc,Shape.axisY,x,y)
+    -- 3 sides of the triangle are rr, ra and r2
+    local cosalpha=(rr*rr+r2*r2-ra*ra)/(2*rr*r2)
+    local alpha=math.acos(cosalpha)
+    local thetaCenter=math.atan2(Shape.axisY-y2,xc-x2)
+
+    local t1=thetaCenter+alpha
+    t1=t1%(math.pi*2)
+    local t2=thetaCenter-alpha
+    t2=t2%(math.pi*2)
+    -- two circles have two intersect points. we know that hyperbolic point and euclid point of (r,theta) in such case must be at the same left/right side, so find the point within same side.
+    if math.pi/2<t1 and t1<math.pi/2*3 then 
+        t1,t2=t2,t1
+    end
+    local finaltheta=t1
+    if math.pi/2<theta and theta<math.pi/2*3 then
+        finaltheta=t2
+    end
+    -- div is to restore the 2pi information lost when calculating trigonometric functions. however there is a case where new theta (final theta) and original theta not in same 2pi div. this is when original theta is barely over 0 and new theta is smaller than 0 (also, smaller than 2pi). so deduct 1 div in such case
+    if finaltheta>math.pi*3/2 and theta<math.pi/2 then 
+        div=div-1
+    end
+    return x2+r*math.cos(finaltheta),y2+r*math.sin(finaltheta),finaltheta+div*math.pi*2
+end
+
 
 function Shape:new(args)
     self.x = args.x

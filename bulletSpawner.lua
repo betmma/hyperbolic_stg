@@ -49,7 +49,7 @@ end
 function BulletSpawner:draw()
     local color={love.graphics.getColor()}
     love.graphics.setColor(1,0,1)
-    math.drawCircle(self.x,self.y,5)
+    Shape.drawCircle(self.x,self.y,5)
     love.graphics.setColor(color[1],color[2],color[3])
 end
 

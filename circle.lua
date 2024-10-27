@@ -12,23 +12,16 @@ function Circle:new(args)
         self.radius=self.radius*2.4/data.hitRadius
     end
     self.extraUpdate={}
+    -- safe means won't hit player and can hit enemy
+    self.safe=false
 end
 
 function Circle:draw()
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
-    -- math.drawCircle(self.x,self.y,self.radius)
+    -- Shape.drawCircle(self.x,self.y,self.radius)
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
 end
 
-math.drawCircle=function(x,y,r)
-    x,y,r=math.getCircle(x,y,r)
-    love.graphics.circle("line", x,y,r)
-    return x,y,r
-end
-
-math.getCircle=function(x,y,r)
-    return x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature)
-end
 
 function Circle:update(dt)
     if self.reomved then
@@ -38,7 +31,7 @@ function Circle:update(dt)
         func(self,dt)
     end
     self.super.update(self,dt)
-    local x,y,r=math.getCircle(self.x,self.y,self.radius)
+    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
     local scale=r/3.3333
     if self.sprite then

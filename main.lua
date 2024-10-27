@@ -12,6 +12,7 @@ function love.load()
     Player = require "player"
     Event= require "event"
     BulletSpawner=require"bulletSpawner"
+    Enemy=require"enemy"
     Asset=require"loadAsset"
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     G=require"state"

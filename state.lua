@@ -79,6 +79,7 @@ local G={
                 Circle:updateAll(dt)
                 Player:updateAll(dt)
                 Event:updateAll(dt)
+                Enemy:updateAll(dt)
                 BulletBatch:flush()
                 if isPressed('escape') then
                     -- self:removeAll()
@@ -87,12 +88,14 @@ local G={
             end,
             draw=function(self)
                 love.graphics.draw(BulletBatch)
-                --     love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                SetFont(18)
+                love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 Rectangle:drawAll()
                 Circle:drawAll()
                 PolyLine:drawAll()
                 PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
                 Player:drawAll()
+                Enemy:drawAll()
             end
         },
         PAUSE={
