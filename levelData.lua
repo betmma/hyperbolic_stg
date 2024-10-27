@@ -4,7 +4,7 @@ local levelData={
     {
         {
             make=function ()
-                local en=Enemy{x=400,y=200}
+                local en=Enemy{x=400,y=200,mainEnemy=true}
                 player=Player(400,600)
                 local a=BulletSpawner{x=200,y=0,period=0.2,time=0,lifeTime=100,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSize=0.75,bulletSprite=BulletSprites.round.blue,bulletEvents={
                 }}

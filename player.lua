@@ -84,6 +84,9 @@ function Player:update(dt)
             if not circ.safe and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
                 self.hp=self.hp-1
                 self.invincibleTime=self.invincibleTime+1
+                if self.hp<=0 then
+                    G:lose()
+                end
                 break
             end
         end

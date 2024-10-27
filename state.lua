@@ -4,7 +4,8 @@ local G={
         MAIN_MENU='MAIN_MENU',
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
-        PAUSE='PAUSE'
+        PAUSE='PAUSE',
+        GAME_END='GAME_END' --either win or lose
     },
     STATE=...,
     UIDEF={
@@ -57,6 +58,7 @@ local G={
                 elseif isPressed('z') then
                     self:removeAll()
                     self.STATE=self.STATES.IN_LEVEL
+                    self.currentLevel={self.currentUI.chosenLevel,self.currentUI.chosenScene}
                     levelData[self.currentUI.chosenLevel][self.currentUI.chosenScene].make()
                 elseif isPressed('x') or isPressed('escape')then
                     self.STATE=self.STATES.MAIN_MENU
@@ -125,7 +127,6 @@ local G={
             end,
             draw=function(self)
                 love.graphics.draw(BulletBatch)
-                --     love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 Rectangle:drawAll()
                 Circle:drawAll()
                 PolyLine:drawAll()
@@ -134,7 +135,7 @@ local G={
                 
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
-                love.graphics.rectangle("fill",0,0,9999,9999)
+                love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
                 love.graphics.setColor(0,0,0,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999)
                 love.graphics.setColor(color[1],color[2],color[3])
@@ -147,11 +148,68 @@ local G={
                 end
                 love.graphics.rectangle("line",100,200+self.currentUI.chosen*100,200,50)
             end
+        },
+        GAME_END={
+            options={
+                {text='RESTART',value='RESTART'},
+                {text='EXIT',value='EXIT'},
+            },
+            chosen=1,
+            update=function(self,dt)
+                local size=#self.currentUI.options
+                if isPressed('down') then
+                    self.currentUI.chosen=self.currentUI.chosen%size+1
+                elseif isPressed('up') then
+                    self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
+                elseif isPressed('z') then
+                    local value=self.currentUI.options[self.currentUI.chosen].value
+                    if value=='EXIT' then
+                        self:removeAll()
+                        self.STATE=self.STATES.CHOOSE_LEVELS
+                    elseif value=='RESTART' then
+                        self:removeAll()
+                        levelData[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene].make()
+                        self.STATE=self.STATES.IN_LEVEL
+                    end
+                end
+            end,
+            draw=function(self)
+                love.graphics.draw(BulletBatch)
+                Rectangle:drawAll()
+                Circle:drawAll()
+                PolyLine:drawAll()
+                PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
+                Player:drawAll()
+                
+                local color={love.graphics.getColor()}
+                love.graphics.setColor(1,1,1,0.5)
+                love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
+                love.graphics.setColor(0,0,0,0.5)
+                love.graphics.rectangle("fill",0,0,9999,9999)
+                love.graphics.setColor(color[1],color[2],color[3])
+                SetFont(48)
+                love.graphics.print(self.won_current_scene and "WIN" or "LOSE",100,50,0,1,1)
+                SetFont(36)
+                for index, value in ipairs(self.currentUI.options) do
+                    local name=value.text
+                    love.graphics.print(name,100,200+index*100,0,1,1)
+                end
+                love.graphics.rectangle("line",100,200+self.currentUI.chosen*100,200,50)
+            end
         }
     }
 }
 
 G.STATE=G.STATES.MAIN_MENU
+
+G.win=function(self)
+    self.won_current_scene=true
+    self.STATE=self.STATES.GAME_END
+end
+G.lose=function(self)
+    self.won_current_scene=false
+    self.STATE=self.STATES.GAME_END
+end
 G.update=function(self,dt)
     self.currentUI=self.UIDEF[self.STATE]
     self.currentUI.update(self,dt)

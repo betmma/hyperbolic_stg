@@ -4,11 +4,14 @@ local Event=require"event"
 
 local Enemy=Shape:extend()
 
+-- parameters: [maxhp], [hp] (defaulted as maxhp), [mainEnemy] if true, killing it wins the scene.
 function Enemy:new(args)
     Enemy.super.new(self, args)
-    self.hp=args.hp or 1000
-    self.maxhp=args.maxhp or 1000 
+    self.maxhp=args.maxhp or 1000
+    self.hp=args.hp or self.maxhp
     self.radius=10
+    -- if mainEnemy is defeated, win this scene
+    self.mainEnemy=args.mainEnemy or false
 end
 
 function Enemy:update(dt)
@@ -18,6 +21,9 @@ function Enemy:update(dt)
             circ:remove()
             if self.hp<0 then
                 self:remove()
+                if self.mainEnemy then
+                    G:win()
+                end
             end
         end
     end
@@ -42,8 +48,8 @@ function Enemy:drawHPBar()
     for i=31,32,0.5 do
         self.DrawArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
     end
-    SetFont(12)
-    love.graphics.print(""..ratio..', ', 10, 100)
+    -- SetFont(12)
+    -- love.graphics.print(""..ratio..', ', 10, 100)
     love.graphics.setColor(color[1],color[2],color[3])
 end
 
