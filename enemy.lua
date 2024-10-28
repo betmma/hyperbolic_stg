@@ -12,9 +12,16 @@ function Enemy:new(args)
     self.radius=10
     -- if mainEnemy is defeated, win this scene
     self.mainEnemy=args.mainEnemy or false
+    self.hpBarTransparency=1
 end
 
 function Enemy:update(dt)
+    local player=Player.objects[1]
+    if Shape.distance(player.x,player.y,self.x,self.y)<50 then
+        self.hpBarTransparency=0.85*(self.hpBarTransparency-0.5)+0.5
+    else
+        self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
+    end
     for key, circ in pairs(Circle.objects) do
         if circ.safe and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
             self.hp=self.hp-(circ.damage or 1)
@@ -39,12 +46,12 @@ end
 
 function Enemy:drawHPBar()
     local color={love.graphics.getColor()}
-    love.graphics.setColor(1,0.3,0.3)
+    love.graphics.setColor(1,0.3,0.3,self.hpBarTransparency)
     Shape.drawCircle(self.x,self.y,30.5)--inner circle
     Shape.drawCircle(self.x,self.y,32.5)--outer circle
     local ratio=self.hp/self.maxhp
     -- self.DrawArc(self.x,self.y,31,-math.pi/2,math.pi*(2*ratio-0.5),100)
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(1,1,1,self.hpBarTransparency)
     for i=31,32,0.5 do
         self.DrawArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
     end
