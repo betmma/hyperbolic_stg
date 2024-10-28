@@ -6,7 +6,7 @@ local Player = Shape:extend()
 
 function Player:new(x, y, movespeed)
     Player.super.new(self, {x=x, y=y})
-    self.lifeTime=9999999
+    self.lifeFrame=9999999
     self.speed=0
     self.movespeed=movespeed or 60
     self.focusFactor=0.4444
@@ -104,7 +104,7 @@ function Player:shoot()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local rows=self.shootRows
     for i=1,rows do 
-        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.5, lifeTime=3, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
+        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.5, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
         -- table.insert(ret,cir)
         cir.safe=true
         cir.direction=-math.pi/2

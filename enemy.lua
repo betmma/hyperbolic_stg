@@ -7,7 +7,7 @@ local Enemy=Shape:extend()
 -- parameters: [maxhp], [hp] (defaulted as maxhp), [mainEnemy] if true, killing it wins the scene.
 function Enemy:new(args)
     Enemy.super.new(self, args)
-    self.maxhp=args.maxhp or 1000
+    self.maxhp=args.maxhp or args.hp or 1000
     self.hp=args.hp or self.maxhp
     self.radius=10
     -- if mainEnemy is defeated, win this scene
@@ -63,11 +63,11 @@ function Enemy.DrawArc(x, y, r, s_ang, e_ang, numLines)
     _,_,e_ang=Shape.rThetaPos(x,y,r,e_ang)
     -- SetFont(12)
     -- love.graphics.print(""..s_ang..', '..e_ang, 10, 200)
-	local step = ((math.pi * 2) / numLines)
+	local step = ((e_ang-s_ang) / numLines)
 	local ang1 = s_ang
 	local ang2 = 0
 	
-	while (ang1 < e_ang) do
+	for i=1,numLines do
 		ang2 = ang1 + step
 		love.graphics.line(x2 + (math.cos(ang1) * r2), y2 + (math.sin(ang1) * r2),
 			x2 + (math.cos(ang2) * r2), y2 + (math.sin(ang2) * r2))

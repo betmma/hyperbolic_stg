@@ -10,6 +10,7 @@ Event.modes={
 -- you can set [time] and check it in [conditionFunc] to do same thing as LoopEvent
 function Event:new(args)
     self.time=args.time or 0
+    self.frame=args.frame or 0
     self.times=args.times or 999999999999
     self.mode=args.mode or Event.modes.oneFrameOnce
     self.executedTimes=0
@@ -23,6 +24,7 @@ end
 function Event:update(dt)
     if self.activated==false or self.removed then return end
     self.time=self.time+dt
+    self.frame=self.frame+1
     local first=true
     while first==true or self.mode==Event.modes.oneFrameMultiple do
         first=false
@@ -45,10 +47,10 @@ local LoopEvent = Event:extend()
 function LoopEvent:new(args)
     LoopEvent.super.new(self, args)
     self.conditionFuncRef=self.conditionFunc
-    self.period=args.period or 1
+    self.period=args.period or 60
     self.conditionFunc=function(self,dt)
-        if self.time>self.period then
-            self.time=self.time-self.period
+        if self.frame>self.period then
+            self.frame=self.frame-self.period
             return self.conditionFuncRef(self,dt)
         end
         return false
@@ -60,15 +62,16 @@ end
 -- end
 Event.LoopEvent=LoopEvent
 
--- Event that changes [aimTable].[key] to [aimValue] in [easeTime] secs.
+-- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] secs.
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
 -- maybe make more default progressFuncs. I remember such functions in Unity.
 local EaseEvent = Event:extend()
 function EaseEvent:new(args)
     LoopEvent.super.new(self, args)
     self.time=0
+    self.frame=0
     self.lastTime=0
-    self.period=args.easeTime or 1
+    self.period=args.easeFrame or 60
     self.aimTable=args.aimTable or {}
     self.key=args.aimKey
     self.aimValue=args.aimValue or 0
@@ -79,18 +82,18 @@ function EaseEvent:new(args)
         return true
     end
     self.executeFunc=function(self,dt)
-        if self.time>self.period then
-            self.time=self.period
+        if self.frame>self.period then
+            self.frame=self.period
         end
         if not self.aimTable or self.aimTable.removed then
             return false
         end
-        self.aimTable[self.key]=self.aimTable[self.key]+(self.progressFunc(self.time/self.period)-self.progressFunc(self.lastTime/self.period))*(self.aimValue-self.startValue)
-        if self.time==self.period then
+        self.aimTable[self.key]=self.aimTable[self.key]+(self.progressFunc(self.frame/self.period)-self.progressFunc(self.lastTime/self.period))*(self.aimValue-self.startValue)
+        if self.frame==self.period then
             self.times=0
             self:remove()
         end
-        self.lastTime=self.time
+        self.lastTime=self.frame
     end
 end
 function EaseEvent:update(dt)

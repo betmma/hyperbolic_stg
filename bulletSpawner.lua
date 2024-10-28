@@ -5,24 +5,24 @@ local Event=require"event"
 
 local BulletSpawner=Shape:extend()
 
--- a spawner spawns [bulletNumber] or bullets with size=[bulletSize], speed=[bulletSpeed] from angle=[angle] to [angle+range] every [period] secs.
+-- a spawner spawns [bulletNumber] or bullets with size=[bulletSize], speed=[bulletSpeed] from angle=[angle] to [angle+range] every [period] frames.
 -- all numbers except for [period] can be set to 'a+b' form to mean random.range(a-b,a+b)
 -- each function in [bulletEvents] should takes a bullet (circle) and adds event to it.
 -- [spawnBatchFunc] and [spawnBulletFunc] can be modified to spawn non-circle pattern bullets (like a line of bullets of different speed or spawn spawners)
 function BulletSpawner:new(args)
     BulletSpawner.super.new(self, args)
-    self.period=args.period or 1
+    self.period=args.period or 60
     self.time=args.time or 0
     self.bulletNumber=args.bulletNumber or 10
     self.angle=args.angle or 0
     self.range=args.range or math.pi*2
     self.bulletSpeed=args.bulletSpeed or 20
     self.bulletSize=args.bulletSize or 1
-    self.bulletLifeTime=args.bulletLifeTime or 20
+    self.bulletlifeFrame=args.bulletlifeFrame or 2000
     self.bulletEvents=args.bulletEvents or {}
     self.bulletSprite=args.bulletSprite
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
-        local cir=Circle({x=self.x, y=self.y, radius=args.radius, lifeTime=self.bulletLifeTime, sprite=self.bulletSprite})
+        local cir=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.bulletlifeFrame, sprite=self.bulletSprite})
         -- table.insert(ret,cir)
         cir.direction=math.eval(args.direction)
         cir.speed=math.eval(args.speed)

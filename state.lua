@@ -224,5 +224,6 @@ G.removeAll=function(self)
     Circle:removeAll()
     Player:removeAll()
     Event:removeAll()
+    Enemy:removeAll()
 end
 return G

@@ -27,7 +27,7 @@ function isPressed(key)
     return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
 end
 function love.update(dt)
-    -- dt=1/60
+    dt=1/60
     -- Rectangle:updateAll(dt)
     G:update(dt)
     for key, value in pairs(KeyboardPressed) do

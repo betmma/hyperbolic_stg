@@ -115,8 +115,9 @@ function Shape:new(args)
     self.metric=self:getMetric()
     self.speed = args.speed or 0
     self.direction = args.direction or math.pi*2/9
-    self.lifeTime=args.lifeTime or 10
+    self.lifeFrame=args.lifeFrame or 1000
     self.time=0
+    self.frame=0
     self.removeDistance=100
 end
 
@@ -130,7 +131,8 @@ end
 
 function Shape:update(dt)
     self.time=self.time+dt
-    if self.time>self.lifeTime then
+    self.frame=self.frame+1
+    if self.frame>self.lifeFrame then
         self:remove()
     end
     if self.x<-self.removeDistance or self.x>self.removeDistance+love.graphics.getWidth() or math.abs(self.y-Shape.axisY)<5 or self.y<-self.removeDistance or self.y>self.removeDistance+love.graphics.getHeight() then
