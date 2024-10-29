@@ -114,4 +114,18 @@ function Object:updateAll(dt)
   self.objects=self.nextObjects
 end
 
+function Object:draw()
+end
+
+function Object:drawAll()
+  for key, obj in pairs(self.objects) do
+    if not obj.removed then
+      obj:draw()
+    end
+  end
+  for key, cls in pairs(self.subclasses) do
+      cls:drawAll()
+  end
+end
+
 return Object

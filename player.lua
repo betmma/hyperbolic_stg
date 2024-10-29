@@ -66,12 +66,7 @@ function Player:update(dt)
     while count<10 and not self.border:inside(self.x,self.y) do
         count=count+1
         local line={self.border:inside(self.x,self.y)}
-        -- local centerX=Shape.lineCenter(line[2],line[3],line[4],line[5])
         local p=Shape.nearestToLine(self.x,self.y,line[2],line[3],line[4],line[5])
-        -- local direction=Shape.to(self.x,self.y,line[4],line[5])
-        -- local dirx=math.cos(direction)
-        -- local diry=math.sin(direction)
-        -- local dot=(self.x-xref)*dirx+(self.y-yref)*diry
         self.x=p[1]--xref+dot*dirx
         self.y=p[2]--yref+dot*diry
     end
@@ -80,6 +75,7 @@ function Player:update(dt)
     self.invincibleTime=self.invincibleTime-dt
     if self.invincibleTime<=0 then
         self.invincibleTime=0
+        -- it's not ideal to handle hit in player:update, cuz different bullets may have non-circle hitbox (like laser) so this part will grow long
         for key, circ in pairs(Circle.objects) do
             if not circ.safe and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
                 self.hp=self.hp-1
@@ -87,12 +83,13 @@ function Player:update(dt)
                 if self.hp<=0 then
                     G:lose()
                 end
+                Effect.Shockwave{x=self.x,y=self.y}
                 break
             end
         end
     end
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    BulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)
+    BulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)-- the image is 64*64 but the focus center seems slightly off
 
     -- shooting bullet
     if love.keyboard.isDown('z') then
@@ -104,7 +101,7 @@ function Player:shoot()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local rows=self.shootRows
     for i=1,rows do 
-        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.5, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
+        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.3, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
         -- table.insert(ret,cir)
         cir.safe=true
         cir.direction=-math.pi/2

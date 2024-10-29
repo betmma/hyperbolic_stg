@@ -76,29 +76,30 @@ local G={
         },
         IN_LEVEL={
             update=function(self,dt)
-                BulletBatch:clear()
+                Asset:clearBatches()
                 -- BulletSpawner:updateAll(dt)
                 -- Circle:updateAll(dt)
                 -- Player:updateAll(dt)
                 -- Event:updateAll(dt)
                 -- Enemy:updateAll(dt)
                 Object:updateAll(dt)
-                BulletBatch:flush()
+                Asset:flushBatches()
                 if isPressed('escape') then
                     -- self:removeAll()
                     self.STATE=self.STATES.PAUSE
                 end
             end,
             draw=function(self)
-                love.graphics.draw(BulletBatch)
+                Asset:drawBatches()
                 SetFont(18)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
-                Rectangle:drawAll()
-                Circle:drawAll()
-                PolyLine:drawAll()
-                PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
-                Player:drawAll()
-                Enemy:drawAll()
+                -- Rectangle:drawAll()
+                -- Circle:drawAll()
+                -- PolyLine:drawAll()
+                -- PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
+                -- Player:drawAll()
+                -- Enemy:drawAll()
+                Object:drawAll()
             end
         },
         PAUSE={
@@ -222,11 +223,12 @@ G.draw=function(self)
     self.currentUI.draw(self)
 end
 G.removeAll=function(self)
-    BulletBatch:clear()
-    BulletSpawner:removeAll()
-    Circle:removeAll()
-    Player:removeAll()
-    Event:removeAll()
-    Enemy:removeAll()
+    Asset:clearBatches()
+    -- BulletSpawner:removeAll()
+    -- Circle:removeAll()
+    -- Player:removeAll()
+    -- Event:removeAll()
+    -- Enemy:removeAll()
+    Object:removeAll()
 end
 return G

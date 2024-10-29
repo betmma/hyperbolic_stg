@@ -149,7 +149,12 @@ end
 function Shape:drawAll()
     love.graphics.line(0,Shape.axisY,love.graphics.getWidth(),Shape.axisY) -- draw the axis
     for key, obj in pairs(self.objects) do
+      if not obj.removed then
         obj:draw()
+      end
+    end
+    for key, cls in pairs(self.subclasses) do
+        cls:drawAll()
     end
 end
 -- function Shape:updateAll(dt)

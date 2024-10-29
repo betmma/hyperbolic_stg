@@ -16,6 +16,7 @@ function Circle:new(args)
     self.safe=false
 end
 
+-- draw nothing as the actual thing drawn is its sprite
 function Circle:draw()
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
     -- Shape.drawCircle(self.x,self.y,self.radius)
@@ -37,5 +38,17 @@ function Circle:update(dt)
     if self.sprite then
         BulletBatch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
     end
+    if not self.safe then 
+        for k,v in pairs(Effect.Shockwave.objects) do
+            if Shape.distance(v.x,v.y,self.x,self.y)<v.radius+self.radius then
+                self:remove()
+                self:removeEffect()
+            end
+        end
+    end
+end
+
+function Circle:removeEffect()
+    Effect.Larger{x=self.x,y=self.y,sprite=Asset.shards.round,radius=5,growSpeed=1.1,animationFrame=20}
 end
 return Circle
