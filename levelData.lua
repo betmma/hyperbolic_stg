@@ -24,17 +24,12 @@ local levelData={
                                     easeFrame=60,
                                     aimTable=cir,
                                     aimKey='speed',
-                                    aimValue=0
-                                }
-                                Event.LoopEvent{
-                                    obj=cir,
-                                    times=1,
-                                    period=60,
-                                    conditionFunc=function()return true end,
-                                    executeFunc=function(self)
+                                    aimValue=0,
+                                    endFunc=function(self)
                                         cir.direction=-math.pi/2
                                         cir.speed=20
-                                end}
+                                    end
+                                }
                         end}
                     end
                 },
@@ -53,7 +48,27 @@ local levelData={
         {
             make=function ()
                 player=Player(400,600)
-                b=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.star.red,bulletEvents={
+                a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.star.blue,bulletEvents={
+                    function(cir,args)
+                        local key=args.index
+                        Event{
+                            obj=cir,
+                            times=1,
+                            conditionFunc=function(self)return b.flag end,
+                            executeFunc=function(self)
+                                cir.direction=cir.direction+math.eval('0+999')
+                                Event.EaseEvent{
+                                    obj=cir,
+                                    easeFrame=60,
+                                    aimTable=cir,
+                                    aimKey='speed',
+                                    aimValue=5
+                                }
+                        end}
+                    end
+                },
+                }
+                local tb={x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.star.red,bulletEvents={
                     function(cir,args)
                         local key=args.index
                         Event{
@@ -71,75 +86,65 @@ local levelData={
                                 }
                         end}
                     end
-                },
-                -- spawnBatchFunc=function(self)
-                --     local x=Player.objects[1].x
-                --     local y=Player.objects[1].y
-                --     local num=math.eval(self.bulletNumber)
-                --     local angle=math.eval(self.angle)
-                --     local speed=math.eval(self.bulletSpeed)
-                --     local size=math.eval(self.bulletSize)
-                --     for i = 1, num, 1 do
-                --         angle=math.pi*2/num*i
-                --         self.x=x+100*math.cos(angle)
-                --         self.y=y+100*math.sin(angle)
-                --         self:spawnBulletFunc{
-                --             direction=angle,speed=speed,radius=size}
-                --     end
-                -- end
-                }
-                
-                Event.LoopEvent{
-                    obj=b,
-                    frame=240,
-                    period=300,
-                    conditionFunc=function()return true end,
-                    executeFunc=function(self)
-                        local r=150
-                        b.flag=false
-                        b.spawnEvent.period=0.005
-                        b.spawnEvent.frame=0
-                        b.angle=-math.pi/2
-                        b.x=Player.objects[1].x
-                        b.y=math.clamp(Player.objects[1].y,100,500)+r
-                        Event.EaseEvent{
-                            obj=b,
-                            easeFrame=60,
-                            aimTable=b,
-                            aimKey='x',
-                            aimValue=b.x+r,
-                            progressFunc=function(x)
-                                return math.sin(x*math.pi*2)
-                            end
-                        }
-                        Event.EaseEvent{
-                            obj=b,
-                            easeFrame=60,
-                            aimTable=b,
-                            aimKey='y',
-                            aimValue=b.y+r,
-                            progressFunc=function(x)
-                                return math.cos(x*math.pi*2)
-                            end
-                        }
-                        Event.EaseEvent{
-                            obj=b,
-                            easeFrame=60,
-                            aimTable=b,
-                            aimKey='angle',
-                            aimValue=b.angle-math.pi*2,
-                        }
-                        Event.LoopEvent{
-                            obj=b,
-                            times=1,
-                            period=60,
-                            executeFunc=function(x)
-                                b.spawnEvent.period=990.05
-                                b.flag=true
-                            end
-                        }
-                    end
-                }
+                },}
+                b=BulletSpawner(tb)
+                -- c=BulletSpawner(tb)
+                local function spin(b,r,angle)
+                    Event.LoopEvent{
+                        obj=b,
+                        frame=240,
+                        period=300,
+                        conditionFunc=function()return true end,
+                        executeFunc=function(self)
+                            local r=r
+                            b.flag=false
+                            b.spawnEvent.period=0.005
+                            b.spawnEvent.frame=0
+                            b.angle=angle-math.pi/2
+                            b.x=Player.objects[1].x
+                            b.y=math.clamp(Player.objects[1].y,100,560)+r
+                            Event.EaseEvent{
+                                obj=b,
+                                easeFrame=60,
+                                aimTable=b,
+                                aimKey='x',
+                                aimValue=b.x+r,
+                                progressFunc=function(x)
+                                    return math.sin(x*math.pi*2)
+                                end
+                            }
+                            Event.EaseEvent{
+                                obj=b,
+                                easeFrame=60,
+                                aimTable=b,
+                                aimKey='y',
+                                aimValue=b.y+r,
+                                progressFunc=function(x)
+                                    return math.cos(x*math.pi*2)
+                                end
+                            }
+                            Event.EaseEvent{
+                                obj=b,
+                                easeFrame=60,
+                                aimTable=b,
+                                aimKey='angle',
+                                aimValue=b.angle-math.pi*2,
+                            }
+                            Event.LoopEvent{
+                                obj=b,
+                                times=1,
+                                period=60,
+                                executeFunc=function(x)
+                                    b.spawnEvent.period=990.05
+                                    b.flag=true
+                                end
+                            }
+                        end
+                    }
+                end
+                spin(a,50,math.pi)
+                spin(b,100,0)
+                -- spin(c,150,0)
             end
         },
     }

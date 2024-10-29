@@ -24,7 +24,7 @@ end
 
 
 function Circle:update(dt)
-    if self.reomved then
+    if self.removed then
         return
     end
     for k, func in pairs(self.extraUpdate or {}) do

@@ -4,11 +4,14 @@ Event.modes={
     oneFrameOnce=0,
     oneFrameMultiple=1
 }
+Event.Event=Event -- for convenience as without it LoopEvent and EaseEvent need "Event." but base Event don't
+
 -- conditionFunc, executeFunc, times, mode: Event.modes, obj
 -- when update checks if [conditionFunc(self,dt)] returns true, then execute [executeFunc(self,dt,obj)]. after executed [times] times or executeFunc returns false or obj.removed is true it's removed. [mode] can be Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple
 -- if [activated] is false the event won't update.
 -- you can set [time] and check it in [conditionFunc] to do same thing as LoopEvent
 function Event:new(args)
+    Event.super.new(args)
     self.time=args.time or 0
     self.frame=args.frame or 0
     self.times=args.times or 999999999999
@@ -34,6 +37,7 @@ function Event:update(dt)
             self.executedTimes=self.executedTimes+1
         end
         if self.executedTimes>self.times or self.obj.removed then
+            -- print(self.frame,self.obj.frame)
             self:remove()
             return
         end
@@ -62,9 +66,10 @@ end
 -- end
 Event.LoopEvent=LoopEvent
 
--- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] secs.
+-- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames.
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
 -- maybe make more default progressFuncs. I remember such functions in Unity.
+-- when EaseEvent ends, call [endFunc].
 local EaseEvent = Event:extend()
 function EaseEvent:new(args)
     LoopEvent.super.new(self, args)
@@ -82,6 +87,7 @@ function EaseEvent:new(args)
         return true
     end
     self.executeFunc=function(self,dt)
+        -- print(self.frame,self.aimTable.frame,self.aimTable.x)
         if self.frame>self.period then
             self.frame=self.period
         end
@@ -91,10 +97,12 @@ function EaseEvent:new(args)
         self.aimTable[self.key]=self.aimTable[self.key]+(self.progressFunc(self.frame/self.period)-self.progressFunc(self.lastTime/self.period))*(self.aimValue-self.startValue)
         if self.frame==self.period then
             self.times=0
+            self:endFunc()
             self:remove()
         end
         self.lastTime=self.frame
     end
+    self.endFunc=args.endFunc or function(self)end
 end
 function EaseEvent:update(dt)
     -- self.time=self.time+dt

@@ -152,11 +152,11 @@ function Shape:drawAll()
         obj:draw()
     end
 end
-function Shape:updateAll(dt)
-    -- Shape.axisY=Shape.axisY+dt*10
-    for key, obj in pairs(self.objects) do
-        obj:update(dt)
-    end
-end
+-- function Shape:updateAll(dt)
+--     -- Shape.axisY=Shape.axisY+dt*10
+--     for key, obj in pairs(self.objects) do
+--         obj:update(dt)
+--     end
+-- end
 
 return Shape

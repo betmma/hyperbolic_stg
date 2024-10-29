@@ -74,12 +74,12 @@ end
 -- Method to remove an object
 function Object:remove()
   self.removed=true
-  for i, obj in ipairs(self.objects) do
-    if obj == self then
-      table.remove(self.objects, i)
-      return
-    end
-  end
+  -- for i, obj in ipairs(self.objects) do
+  --   if obj == self then
+  --     table.remove(self.objects, i)
+  --     return
+  --   end
+  -- end
 end
 
 function Object:removeAll()
@@ -94,13 +94,24 @@ end
 function Object:update(dt)
 end
 
-function Object:updateAll(dt) -- why Object:updateAll can't update all things
+function Object:updateAll(dt) 
+  -- why Object:updateAll can't update all things
+  -- it's because I overrode Shape:updateAll so cls call didn't get to Circle, Player, etc. fixed
   for key, obj in pairs(self.objects) do
+    if not obj.removed then
       obj:update(dt)
+    end
   end
   for key, cls in pairs(self.subclasses) do
       cls:updateAll(dt)
   end
+  self.nextObjects={}
+  for i, obj in ipairs(self.objects) do
+    if not obj.removed then
+      table.insert(self.nextObjects,obj)
+    end
+  end
+  self.objects=self.nextObjects
 end
 
 return Object

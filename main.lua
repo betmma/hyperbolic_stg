@@ -2,6 +2,7 @@
 if arg[2] == "debug" then
     require("lldebugger").start()
 end
+io.stdout:setvbuf("no")
 require'misc'
 function love.load()
     Object = require "classic"
@@ -27,6 +28,7 @@ function isPressed(key)
     return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
 end
 function love.update(dt)
+    love.timer.sleep(1/60-dt)
     dt=1/60
     -- Rectangle:updateAll(dt)
     G:update(dt)

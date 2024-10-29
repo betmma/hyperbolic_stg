@@ -77,11 +77,12 @@ local G={
         IN_LEVEL={
             update=function(self,dt)
                 BulletBatch:clear()
-                BulletSpawner:updateAll(dt)
-                Circle:updateAll(dt)
-                Player:updateAll(dt)
-                Event:updateAll(dt)
-                Enemy:updateAll(dt)
+                -- BulletSpawner:updateAll(dt)
+                -- Circle:updateAll(dt)
+                -- Player:updateAll(dt)
+                -- Event:updateAll(dt)
+                -- Enemy:updateAll(dt)
+                Object:updateAll(dt)
                 BulletBatch:flush()
                 if isPressed('escape') then
                     -- self:removeAll()
@@ -201,6 +202,7 @@ local G={
 }
 
 G.STATE=G.STATES.MAIN_MENU
+G.frame=0
 
 G.win=function(self)
     self.won_current_scene=true
@@ -211,6 +213,7 @@ G.lose=function(self)
     self.STATE=self.STATES.GAME_END
 end
 G.update=function(self,dt)
+    self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
     self.currentUI.update(self,dt)
 end
