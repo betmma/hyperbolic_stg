@@ -27,8 +27,12 @@ end
 function isPressed(key)
     return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
 end
+local sleepTime=1/60
 function love.update(dt)
-    love.timer.sleep(1/60-dt)
+    love.timer.sleep(sleepTime-dt)
+    local fps=love.timer.getFPS()
+    local newTime=sleepTime*fps/60
+    sleepTime=0.995*(sleepTime-newTime)+newTime
     dt=1/60
     -- Rectangle:updateAll(dt)
     G:update(dt)

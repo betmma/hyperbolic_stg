@@ -4,7 +4,7 @@ local levelData={
     {
         {
             make=function ()
-                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4000}
+                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 player=Player(400,600)
                 local a=BulletSpawner{x=200,y=0,period=12,frame=0,lifeFrame=10000,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSize=0.75,bulletSprite=BulletSprites.round.blue,bulletEvents={
                 }}
@@ -47,6 +47,7 @@ local levelData={
         },
         {
             make=function ()
+                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 player=Player(400,600)
                 a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.star.blue,bulletEvents={
                     function(cir,args)
