@@ -39,8 +39,8 @@ function Circle:update(dt)
         BulletBatch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
     end
     if not self.safe then 
-        for k,v in pairs(Effect.Shockwave.objects) do
-            if Shape.distance(v.x,v.y,self.x,self.y)<v.radius+self.radius then
+        for k,shockwave in pairs(Effect.Shockwave.objects) do
+            if shockwave.canRemove.bullet and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
                 self:remove()
                 self:removeEffect()
             end

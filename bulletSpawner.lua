@@ -11,6 +11,7 @@ local BulletSpawner=Shape:extend()
 -- [spawnBatchFunc] and [spawnBulletFunc] can be modified to spawn non-circle pattern bullets (like a line of bullets of different speed or spawn spawners)
 function BulletSpawner:new(args)
     BulletSpawner.super.new(self, args)
+    self.radius=args.radius or 5
     self.period=args.period or 60
     self.time=args.time or 0
     self.bulletNumber=args.bulletNumber or 10
@@ -46,10 +47,19 @@ function BulletSpawner:new(args)
     end}
 end
 
+function BulletSpawner:update(dt)
+    BulletSpawner.super.update(self,dt)
+    for k,shockwave in pairs(Effect.Shockwave.objects) do
+        if shockwave.canRemove.bulletSpawner and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+            self:remove()
+        end
+    end
+end
+
 function BulletSpawner:draw()
     local color={love.graphics.getColor()}
     love.graphics.setColor(1,0,1)
-    Shape.drawCircle(self.x,self.y,5)
+    Shape.drawCircle(self.x,self.y,self.radius)
     love.graphics.setColor(color[1],color[2],color[3])
 end
 

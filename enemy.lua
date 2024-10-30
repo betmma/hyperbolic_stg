@@ -29,7 +29,14 @@ function Enemy:update(dt)
             if self.hp<0 then
                 self:remove()
                 if self.mainEnemy then
-                    G:win()
+                    Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true}}
+                    Event.LoopEvent{
+                        times=1,
+                        period=60,
+                        executeFunc=function(x)
+                            G:win()
+                        end
+                    }
                 end
             end
         end
