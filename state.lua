@@ -69,7 +69,13 @@ local G={
                 love.graphics.print("Level "..self.currentUI.chosenLevel,100,50,0,1,1)
                 SetFont(36)
                 for index, value in ipairs(levelData[self.currentUI.chosenLevel]) do
+                    local color={love.graphics.getColor()}
+                    love.graphics.setColor(1,1,1)
+                    if self.save.levelPassed[self.currentUI.chosenLevel][index]==true then
+                        love.graphics.setColor(1,1,0.5)
+                    end
                     love.graphics.print("Scene "..index,100,100+index*50,0,1,1)
+                    love.graphics.setColor(color[1],color[2],color[3])
                 end
                 love.graphics.rectangle("line",100,100+self.currentUI.chosenScene*50,200,50)
             end
@@ -205,9 +211,40 @@ local G={
 G.STATE=G.STATES.MAIN_MENU
 G.frame=0
 
+local lume = require "lume"
+G.saveData=function(self)
+    local data = {}
+    data=self.save or {}
+	local serialized = lume.serialize(data)
+  	love.filesystem.write("savedata.txt", serialized)
+end
+G.loadData=function(self)
+	local file = love.filesystem.read("savedata.txt")
+    self.save={}
+    if file then
+        local data = lume.deserialize(file)
+        self.save=data or {}
+    end
+    if not self.save.levelPassed then
+        self.save.levelPassed={}
+    end
+    for k,value in pairs(levelData) do
+        if not self.save.levelPassed[k] then
+            self.save.levelPassed[k]={}
+        end
+        for i=1,#value do
+            if not self.save.levelPassed[k][i] then
+                self.save.levelPassed[k][i]=false
+            end
+        end
+    end
+end
+G:loadData()
 G.win=function(self)
     self.won_current_scene=true
     self.STATE=self.STATES.GAME_END
+    self.save.levelPassed[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene]=true
+    self:saveData()
 end
 G.lose=function(self)
     self.won_current_scene=false
