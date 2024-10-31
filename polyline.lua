@@ -38,10 +38,12 @@ function PolyLine:draw()
         itenum=1
     end
     for i=1,itenum do
-        self:drawOne(self.points[i],self.points[i%#self.points+1])
+        self.drawOne(self.points[i],self.points[i%#self.points+1])
     end
 end
-function PolyLine:drawOne(p1,p2)
+
+-- draw line segment from (p1.x,p1.y) to (p2.x,p2.y)
+function PolyLine.drawOne(p1,p2)
     local x1=p1.x
     local y1=p1.y
     local x2=p2.x
@@ -53,6 +55,8 @@ function PolyLine:drawOne(p1,p2)
     local centerX=Shape.lineCenter(x1,y1,x2,y2)
     -- local theta1=math.atan2(y1,x1-centerX)
     -- local theta2=math.atan2(y2,x2-centerX)
+
+    -- we know that in Poincare half plane a straight line is a semicircle and satisfies no 2 points on it have same x, so a line segment can be got by clipping x coordinate
     love.graphics.setScissor(math.min(x1,x2),math.min(y1,y2),math.abs(x1-x2),9999)
     love.graphics.circle("line", centerX,Shape.axisY,((centerX-x1)^2+(y1-Shape.axisY)^2)^0.5)
     love.graphics.setScissor( )

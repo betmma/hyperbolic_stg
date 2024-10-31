@@ -2,6 +2,7 @@
 local Shape = Object:extend()
 Shape.curvature=100
 Shape.axisY=-100
+-- hyperbolic distance
 function Shape.distance(x1,y1,x2,y2)
     local ay=Shape.axisY
     return 2*Shape.curvature*math.log((math.distance(x1,y1,x2,y2)+math.distance(x1,y1,x2,2*ay-y2))/(2*((y1-ay)*(y2-ay))^0.5))
@@ -19,7 +20,16 @@ function Shape.lineCenter(x1,y1,x2,y2)
     return centerX,math.distance(centerX,Shape.axisY,x1,y1)
 end
 
--- get direction from x1,y1 to x2,y2
+function Shape.line(x1,y1,x2,y2)
+    if x1==x2 then -- vertical -> line
+        love.graphics.line(x1,y1,x2,y2)
+        return
+    end
+    local centerX=Shape.lineCenter(x1,y1,x2,y2)
+    love.graphics.circle("line", centerX,Shape.axisY,((centerX-x1)^2+(y1-Shape.axisY)^2)^0.5)
+end
+
+-- get direction from x1,y1 to x2,y2 (at x1,y1)
 function Shape.to(x1,y1,x2,y2)
     if x1==x2 then -- vertical 
         return y1<y2 and math.pi/2 or -math.pi/2
@@ -36,7 +46,7 @@ end
 -- calculate if a point xc,yc is left to line x1,y1 to x2,y2 (in/out the semicircle if angle p1 to p2 is negative/positive // left to a vertical line)
 function Shape.leftToLine(xc,yc,x1,y1,x2,y2)
     if x1==x2 then -- vertical
-        if y2<y1 then
+        if y2<y1 then -- the line goes upward
             return xc<x1
         end
         return xc>x1
@@ -51,6 +61,7 @@ function Shape.leftToLine(xc,yc,x1,y1,x2,y2)
 end
 
 -- find the nearest point to xc,yc on line [x1,y1 to x2,y2] 
+---@return table "{x,y}"
 function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     if x1==x2 then -- vertical
         return {x1,yc}
@@ -66,11 +77,21 @@ function Shape.drawCircle(x,y,r)
     return x,y,r
 end
 
+-- find the Euclidean x', y' and r' of hyperbolic circle with center (x,y) and radius r.
 function Shape.getCircle(x,y,r)
     return x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature)
 end
 
+
 -- find the point that is (r,theta) to x,y in polar coordinates
+-- also means "from (x,y), aim at theta direction and go r unit forward, which point will you arrive"
+---@param x number
+---@param y number
+---@param r number
+---@param theta number
+---@return number "x of new point"
+---@return number "y of new point"
+---@return number "Euclidean polar angle"
 function Shape.rThetaPos(x,y,r,theta)
     local div=math.floor(theta/(math.pi*2))
     theta=theta%(math.pi*2)
@@ -105,7 +126,7 @@ function Shape.rThetaPos(x,y,r,theta)
     if finaltheta>math.pi*3/2 and theta<math.pi/2 then 
         div=div-1
     end
-    return x2+r*math.cos(finaltheta),y2+r*math.sin(finaltheta),finaltheta+div*math.pi*2
+    return x2+r2*math.cos(finaltheta),y2+r2*math.sin(finaltheta),finaltheta+div*math.pi*2
 end
 
 

@@ -39,6 +39,7 @@ local G={
                     love.graphics.print(name,300,300+index*100,0,1,1)
                 end
                 love.graphics.rectangle("line",300,300+self.currentUI.chosen*100,200,50)
+                self.updateDynamicPatternData(self.patternData)
             end
         },
         CHOOSE_LEVELS={
@@ -78,6 +79,7 @@ local G={
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
                 love.graphics.rectangle("line",100,100+self.currentUI.chosenScene*50,200,50)
+                self.updateDynamicPatternData(self.patternData)
             end
         },
         IN_LEVEL={
@@ -255,6 +257,66 @@ G.update=function(self,dt)
     self.currentUI=self.UIDEF[self.STATE]
     self.currentUI.update(self,dt)
 end
+-- sideNum=5 angleNum=4 -> r=107
+-- sideNum=3 angleNum=5 -> r=126
+local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints)
+    local iteCount=(iteCount or 0)+1
+    local points={}
+    local r=r or 107--math.acosh(math.cos(math.pi/sideNum)/math.sin(math.pi/angleNum))*Shape.curvature
+    drawedPoints=drawedPoints or {}
+    local cic={Shape.getCircle(point.x,point.y,r)}
+    -- love.graphics.print(''..cic[1]..', '..cic[2]..' '..cic[3],10,10)
+    local begin=iteCount>1 and 2 or 1
+    for i=begin,angleNum do
+        local alpha=angle+math.pi*2/angleNum*(i-1)
+        local ret={Shape.rThetaPos(point.x,point.y,r,alpha)}
+        local newpoint={x=ret[1],y=ret[2]}
+        points[#points+1]=newpoint
+        -- SetFont(18)
+        local flag=true
+        local ratio=4.5
+        for k,v in pairs(drawedPoints) do
+            if ((point.x-v[1].x)^2+(point.y-v[1].y)^2+(newpoint.x-v[2].x)^2+(newpoint.y-v[2].y)^2)<ratio*point.y or ((point.x-v[2].x)^2+(point.y-v[2].y)^2+(newpoint.x-v[1].x)^2+(newpoint.y-v[1].y)^2)<ratio*point.y then
+                flag=false
+                break
+            end
+        end
+        if flag then
+            table.insert(drawedPoints,{point,newpoint})
+            PolyLine.drawOne(point,newpoint)
+        end
+        -- Shape.line(point.x,point.y,newpoint.x,newpoint.y)
+        -- love.graphics.print(''..newpoint.x..', '..newpoint.y..' '..alpha..' '..ret[3],10,10+50*i)
+    end
+    if iteCount==4 then return {},{} end
+    local angles={}
+    for i=1,angleNum-begin+1 do
+        local newpoint=points[i]
+        local newangle=Shape.to(newpoint.x,newpoint.y,point.x,point.y)
+        table.insert(angles,newangle)
+        bgpattern(newpoint,newangle,sideNum,angleNum,iteCount,r,drawedPoints)
+    end
+    return points,angles
+end
+G.patternData={point={x=400,y=100},limit={xmin=300,xmax=500,ymin=80,ymax=500},angle=math.pi/3,speed=0.008}
+G.updateDynamicPatternData=function(data)
+    local ay=Shape.axisY
+    Shape.axisY=-30
+    local newpoint,newAngle=bgpattern(data.point,data.angle,5,5,0,126.2)
+    if not math.inRange(data.point.x,data.point.y,data.limit.xmin,data.limit.xmax,data.limit.ymin,data.limit.ymax)  then
+        for i=1,#newpoint do
+            if math.inRange(newpoint[i].x,newpoint[i].y,data.limit.xmin,data.limit.xmax,data.limit.ymin,data.limit.ymax) then
+                data.point=newpoint[i]
+                data.angle=newAngle[i]
+            end
+        end
+    end
+    data.point={x=data.point.x-(data.point.x-400)*data.speed,y=data.point.y-(data.point.y-Shape.axisY)*data.speed}
+    -- love.graphics.print(''..data.point.x..', '..data.point.y,10,10+50)
+    Shape.axisY=ay
+end
+G.patternPoint={x=400,y=100}
+G.patternAngle=math.pi/3
 G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
     self.currentUI.draw(self)
@@ -268,4 +330,6 @@ G.removeAll=function(self)
     -- Enemy:removeAll()
     Object:removeAll()
 end
+
+
 return G

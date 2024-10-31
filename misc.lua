@@ -1,3 +1,11 @@
+function math.acosh(x)
+    return math.log(x+(x*x-1)^0.5)
+end
+
+function math.inRange(x,y,xmin,xmax,ymin,ymax)
+    return x>xmin and x<xmax and y>ymin and y<ymax
+end
+
 function math.distance(x1,y1,x2,y2)
     return ((x1-x2)^2+(y1-y2)^2)^0.5
 end
@@ -6,7 +14,9 @@ function math.clamp(val, lower, upper)
     if lower > upper then lower, upper = upper, lower end -- swap if boundaries supplied the wrong way
     return math.max(lower, math.min(upper, val))
 end
--- input: a number or 'a+b', return that number or random number in [a-b,a+b]
+
+---@return number?
+-- input: a number or 'a+b', return that number or random number in [a-b,a+b]. Warning: it returns an integer, so for angle should write like 0+999.
 function math.eval(str)
     -- Check if the string is in the format 'a+b' where a can be negative
     local a, b = string.match(str, "([%-]?%d+)%+(%d+)")
