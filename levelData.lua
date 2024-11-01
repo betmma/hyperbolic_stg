@@ -3,6 +3,7 @@ BulletSpawner=require"bulletSpawner"
 local levelData={
     {
         {
+            quote="In this world things appear smaller when closer to top.",
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 player=Player(400,600)
@@ -46,6 +47,7 @@ local levelData={
             end
         },
         {
+            quote="Hyperbolic center of circle is above the Euclidean center.",
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 player=Player(400,600)
@@ -150,5 +152,5 @@ local levelData={
         },
     }
 }
-
+levelData.defaultQuote='What will happen here?'
 return levelData

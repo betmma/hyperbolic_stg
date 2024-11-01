@@ -20,7 +20,11 @@ function love.load()
     G=require"state"
     
 end
-KeyboardPressed={up=false,down=false,left=false,right=false,z=false,x=false,escape=false}
+local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
+KeyboardPressed={up=false,down=false,left=false,right=false,escape=false}
+for i=1,#keyConstants do
+    KeyboardPressed[keyConstants:sub(i,i)]=false
+end
 function love.keyreleased(key)
     KeyboardPressed[key]=false
 end

@@ -46,8 +46,10 @@ local G={
             chosenLevel=1,
             chosenScene=1,
             update=function(self,dt)
+                local level=self.currentUI.chosenLevel
+                local scene=self.currentUI.chosenScene
                 local levelNum=#levelData
-                local sceneNum=#levelData[self.currentUI.chosenLevel]
+                local sceneNum=#levelData[level]
                 if isPressed('down') then
                     self.currentUI.chosenScene=self.currentUI.chosenScene%sceneNum+1
                 elseif isPressed('up') then
@@ -59,27 +61,40 @@ local G={
                 elseif isPressed('z') then
                     self:removeAll()
                     self.STATE=self.STATES.IN_LEVEL
-                    self.currentLevel={self.currentUI.chosenLevel,self.currentUI.chosenScene}
-                    levelData[self.currentUI.chosenLevel][self.currentUI.chosenScene].make()
+                    self.currentLevel={level,scene}
+                    levelData[level][scene].make()
                 elseif isPressed('x') or isPressed('escape')then
                     self.STATE=self.STATES.MAIN_MENU
+                elseif isPressed('[') then
+                    self.save.levelPassed[level][scene]=false
+                elseif isPressed(']') then
+                    self.save.levelPassed[level][scene]=true
                 end
             end,
             draw=function(self)
+                local level=self.currentUI.chosenLevel
+                local scene=self.currentUI.chosenScene
                 self.updateDynamicPatternData(self.patternData)
                 SetFont(36)
-                love.graphics.print("Level "..self.currentUI.chosenLevel,100,50,0,1,1)
+                love.graphics.print("Level "..level,100,50,0,1,1)
                 SetFont(36)
-                for index, value in ipairs(levelData[self.currentUI.chosenLevel]) do
+                for index, value in ipairs(levelData[level]) do
                     local color={love.graphics.getColor()}
                     love.graphics.setColor(1,1,1)
-                    if self.save.levelPassed[self.currentUI.chosenLevel][index]==true then
+                    if self.save.levelPassed[level][index]==true then
                         love.graphics.setColor(1,1,0.5)
                     end
                     love.graphics.print("Scene "..index,100,100+index*50,0,1,1)
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
-                love.graphics.rectangle("line",100,100+self.currentUI.chosenScene*50,200,50)
+                love.graphics.rectangle("line",100,100+scene*50,200,50)
+                love.graphics.rectangle("line",320,500,400,80)
+                local text=levelData.defaultQuote
+                if self.save.levelPassed[level][scene]==true then
+                    text=levelData[level][scene].quote or ''
+                end
+                SetFont(18)
+                love.graphics.printf(text,330,510,380,"left",0,1,1)
             end
         },
         IN_LEVEL={
