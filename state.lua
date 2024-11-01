@@ -31,6 +31,7 @@ local G={
                 end
             end,
             draw=function(self)
+                self.updateDynamicPatternData(self.patternData)
                 SetFont(96)
                 love.graphics.print("Hyperbolic\n   STG",200,100,0,1,1)
                 SetFont(36)
@@ -39,7 +40,6 @@ local G={
                     love.graphics.print(name,300,300+index*100,0,1,1)
                 end
                 love.graphics.rectangle("line",300,300+self.currentUI.chosen*100,200,50)
-                self.updateDynamicPatternData(self.patternData)
             end
         },
         CHOOSE_LEVELS={
@@ -66,6 +66,7 @@ local G={
                 end
             end,
             draw=function(self)
+                self.updateDynamicPatternData(self.patternData)
                 SetFont(36)
                 love.graphics.print("Level "..self.currentUI.chosenLevel,100,50,0,1,1)
                 SetFont(36)
@@ -79,7 +80,6 @@ local G={
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
                 love.graphics.rectangle("line",100,100+self.currentUI.chosenScene*50,200,50)
-                self.updateDynamicPatternData(self.patternData)
             end
         },
         IN_LEVEL={
@@ -258,8 +258,9 @@ G.update=function(self,dt)
     self.currentUI.update(self,dt)
 end
 -- sideNum=5 angleNum=4 -> r=107
--- sideNum=3 angleNum=5 -> r=126
-local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints)
+-- sideNum=3 angleNum=5 -> r=126.2
+local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,color)
+    color=color or {0.7,0.2,0.5}
     local iteCount=(iteCount or 0)+1
     local points={}
     local r=r or 107--math.acosh(math.cos(math.pi/sideNum)/math.sin(math.pi/angleNum))*Shape.curvature
@@ -283,7 +284,10 @@ local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints)
         end
         if flag then
             table.insert(drawedPoints,{point,newpoint})
+            local colorref={love.graphics.getColor()}
+            love.graphics.setColor(color[1],color[2],color[3])
             PolyLine.drawOne(point,newpoint)
+            love.graphics.setColor(colorref[1],colorref[2],colorref[3])
         end
         -- Shape.line(point.x,point.y,newpoint.x,newpoint.y)
         -- love.graphics.print(''..newpoint.x..', '..newpoint.y..' '..alpha..' '..ret[3],10,10+50*i)
@@ -294,15 +298,16 @@ local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints)
         local newpoint=points[i]
         local newangle=Shape.to(newpoint.x,newpoint.y,point.x,point.y)
         table.insert(angles,newangle)
-        bgpattern(newpoint,newangle,sideNum,angleNum,iteCount,r,drawedPoints)
+        bgpattern(newpoint,newangle,sideNum,angleNum,iteCount,r,drawedPoints,color)
     end
     return points,angles
 end
-G.patternData={point={x=400,y=100},limit={xmin=300,xmax=500,ymin=80,ymax=500},angle=math.pi/3,speed=0.008}
+G.patternData={point={x=400,y=100},limit={xmin=300,xmax=500,ymin=80,ymax=500},angle=math.pi/3,speed=0.0045}
 G.updateDynamicPatternData=function(data)
     local ay=Shape.axisY
     Shape.axisY=-30
-    local newpoint,newAngle=bgpattern(data.point,data.angle,5,5,0,126.2)
+    bgpattern({x=data.point.x+1,y=data.point.y+1},data.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
+    local newpoint,newAngle=bgpattern(data.point,data.angle,5,5,0,126.2,{},{0.7,0.2,0.5})
     if not math.inRange(data.point.x,data.point.y,data.limit.xmin,data.limit.xmax,data.limit.ymin,data.limit.ymax)  then
         for i=1,#newpoint do
             if math.inRange(newpoint[i].x,newpoint[i].y,data.limit.xmin,data.limit.xmax,data.limit.ymin,data.limit.ymax) then
@@ -312,6 +317,7 @@ G.updateDynamicPatternData=function(data)
         end
     end
     data.point={x=data.point.x-(data.point.x-400)*data.speed,y=data.point.y-(data.point.y-Shape.axisY)*data.speed}
+    data.angle=data.angle+0.004
     -- love.graphics.print(''..data.point.x..', '..data.point.y,10,10+50)
     Shape.axisY=ay
 end

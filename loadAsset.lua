@@ -79,9 +79,10 @@ UI (niy)
 Dialogue (niy)
 Dialogue Characters (niy)
 ]]
+Asset.playerBulletBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.bulletBatch = love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
-Asset.Batches={Asset.bulletBatch,Asset.effectBatch}
+Asset.Batches={Asset.playerBulletBatch,Asset.bulletBatch,Asset.effectBatch}
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
         batch:clear()

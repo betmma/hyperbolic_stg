@@ -83,13 +83,13 @@ function Player:update(dt)
                 if self.hp<=0 then
                     G:lose()
                 end
-                Effect.Shockwave{x=self.x,y=self.y}
+                Effect.Shockwave{x=self.x,y=self.y,radius=3,growSpeed=1.1,animationFrame=30}
                 break
             end
         end
     end
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    BulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)-- the image is 64*64 but the focus center seems slightly off
+    Asset.playerBulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)-- the image is 64*64 but the focus center seems slightly off
 
     -- shooting bullet
     if love.keyboard.isDown('z') then
