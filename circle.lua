@@ -14,6 +14,8 @@ function Circle:new(args)
     self.extraUpdate={}
     -- safe means won't hit player and can hit enemy
     self.safe=false
+    self.batch=args.batch or BulletBatch
+    self.sprite_transparency=args.sprite_transparency or 1
 end
 
 -- draw nothing as the actual thing drawn is its sprite
@@ -36,7 +38,8 @@ function Circle:update(dt)
     local data=SpriteData[self.sprite]
     local scale=r/3.3333
     if self.sprite then
-        BulletBatch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
+        self.batch:setColor(1,1,1,self.sprite_transparency)
+        self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
     end
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do

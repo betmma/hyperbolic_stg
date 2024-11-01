@@ -13,7 +13,7 @@ function BulletSpawner:new(args)
     BulletSpawner.super.new(self, args)
     self.radius=args.radius or 5
     self.period=args.period or 60
-    self.time=args.time or 0
+    self.frame=args.frame or 0
     self.bulletNumber=args.bulletNumber or 10
     self.angle=args.angle or 0
     self.range=args.range or math.pi*2
@@ -42,7 +42,7 @@ function BulletSpawner:new(args)
             self:spawnBulletFunc{direction=direction,speed=speed,radius=size,index=i}
         end
     end
-    self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,time=self.time,executeFunc=function(event,dt)
+    self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,frame=self.frame,executeFunc=function(event,dt)
         self:spawnBatchFunc()
     end}
 end

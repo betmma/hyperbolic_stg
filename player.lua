@@ -22,7 +22,8 @@ function Player:new(x, y, movespeed)
     
     self.border=PolyLine({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
 
-    self.hp=3
+    self.maxhp=3
+    self.hp=self.maxhp
     self.invincibleTime=0
 
     self.shootRows=4
@@ -89,7 +90,7 @@ function Player:update(dt)
         end
     end
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    Asset.playerBulletBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)-- the image is 64*64 but the focus center seems slightly off
+    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)-- the image is 64*64 but the focus center seems slightly off
 
     -- shooting bullet
     if love.keyboard.isDown('z') then
@@ -101,7 +102,7 @@ function Player:shoot()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local rows=self.shootRows
     for i=1,rows do 
-        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.3, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan})
+        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.3, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan, batch=Asset.playerBulletBatch, sprite_transparency=0.5})
         -- table.insert(ret,cir)
         cir.safe=true
         cir.direction=-math.pi/2

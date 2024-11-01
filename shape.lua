@@ -2,6 +2,11 @@
 local Shape = Object:extend()
 Shape.curvature=100
 Shape.axisY=-100
+function Shape.restore()
+    Shape.curvature=100
+    Shape.axisY=-100
+end
+
 -- hyperbolic distance
 function Shape.distance(x1,y1,x2,y2)
     local ay=Shape.axisY

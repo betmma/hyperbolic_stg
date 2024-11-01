@@ -69,6 +69,7 @@ end
 
 -- love is really silly to not provide arc without lines toward center
 -- but anyway to draw hyperbolic arc it's better to have my own func
+-- (the one in polyline can only draw arc < pi. think about it, there is no way a 3/4 circle can be drawn with only 1 scissor)
 function Enemy.DrawArc(x, y, r, s_ang, e_ang, numLines)
     -- SetFont(12)
     -- love.graphics.print(""..s_ang..', '..e_ang, 10, 150)

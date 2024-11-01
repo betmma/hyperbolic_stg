@@ -62,6 +62,7 @@ local G={
                     self:removeAll()
                     self.STATE=self.STATES.IN_LEVEL
                     self.currentLevel={level,scene}
+                    Shape.restore()
                     levelData[level][scene].make()
                 elseif isPressed('x') or isPressed('escape')then
                     self.STATE=self.STATES.MAIN_MENU
@@ -80,8 +81,10 @@ local G={
                 SetFont(36)
                 for index, value in ipairs(levelData[level]) do
                     local color={love.graphics.getColor()}
-                    love.graphics.setColor(1,1,1)
-                    if self.save.levelPassed[level][index]==true then
+                    love.graphics.setColor(.7,.6,.6)
+                    if self.save.levelPassed[level][index]==1 then
+                        love.graphics.setColor(.7,1,.7)
+                    elseif self.save.levelPassed[level][index]==2 then
                         love.graphics.setColor(1,1,0.5)
                     end
                     love.graphics.print("Scene "..index,100,100+index*50,0,1,1)
@@ -90,7 +93,7 @@ local G={
                 love.graphics.rectangle("line",100,100+scene*50,200,50)
                 love.graphics.rectangle("line",320,500,400,80)
                 local text=levelData.defaultQuote
-                if self.save.levelPassed[level][scene]==true then
+                if self.save.levelPassed[level][scene]>=1 then
                     text=levelData[level][scene].quote or ''
                 end
                 SetFont(18)
@@ -245,13 +248,13 @@ G.loadData=function(self)
     if not self.save.levelPassed then
         self.save.levelPassed={}
     end
-    for k,value in pairs(levelData) do
+    for k,value in ipairs(levelData) do
         if not self.save.levelPassed[k] then
             self.save.levelPassed[k]={}
         end
         for i=1,#value do
             if not self.save.levelPassed[k][i] then
-                self.save.levelPassed[k][i]=false
+                self.save.levelPassed[k][i]=0
             end
         end
     end
@@ -260,7 +263,11 @@ G:loadData()
 G.win=function(self)
     self.won_current_scene=true
     self.STATE=self.STATES.GAME_END
-    self.save.levelPassed[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene]=true
+    local winLevel=1
+    if Player.objects[1].hp==Player.objects[1].maxhp then
+        winLevel=2
+    end
+    self.save.levelPassed[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene]=math.max(self.save.levelPassed[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene],winLevel)
     self:saveData()
 end
 G.lose=function(self)

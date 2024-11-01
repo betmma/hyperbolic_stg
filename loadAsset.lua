@@ -17,10 +17,10 @@ Asset.shockwave={
     green=quad(58,10,8,8),
 }
 Asset.shards={
-    leaf =quad(63.625,49.625,1,1),
-    drop =quad(64.625,49.625,1,1),
-    round=quad(65.625,49.625,1,1),
-    dot  =quad(66.625,49.625,1,1),
+    leaf =quad(63.625,49.25,1,1),
+    drop =quad(64.625,49.25,1,1),
+    round=quad(65.625,49.25,1,1),
+    dot  =quad(66.625,49.25,1,1),
 }
 Asset.bulletSprites={
     scale=template,
@@ -67,14 +67,14 @@ Batches are used to seperate different draw layers. Generally, order should be:
 
 Background (not implemented yet (niy))
 Enemy with HP bar (boss)
-Player bullets (currently in Enemy bullets batch)
-Player
+Player bullets
+Player (niy)
 Enemy without HP bar (probably won't appear)
 Items (niy)
 Enemy bullets
 Effects (now only shockwave)
 Player spell (niy)
-Player focus (currently in Enemy bullets batch)
+Player focus 
 UI (niy)
 Dialogue (niy)
 Dialogue Characters (niy)
@@ -82,7 +82,8 @@ Dialogue Characters (niy)
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.bulletBatch = love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
-Asset.Batches={Asset.playerBulletBatch,Asset.bulletBatch,Asset.effectBatch}
+Asset.playerFocusBatch=love.graphics.newSpriteBatch(tilesetImage, 5,'stream')
+Asset.Batches={Asset.playerBulletBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch}
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
         batch:clear()
