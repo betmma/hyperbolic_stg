@@ -104,6 +104,7 @@ function Player:shoot()
     for i=1,rows do 
         local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.3, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan, batch=Asset.playerBulletBatch, sprite_transparency=0.5})
         -- table.insert(ret,cir)
+        cir.fromPlayer=true
         cir.safe=true
         cir.direction=-math.pi/2
         cir.speed=200

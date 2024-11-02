@@ -19,5 +19,8 @@ Completed scenes display as green. Perfectly completed (without being harmed) sc
 1. ~~Win / Lose level logic (bind to death of an enemy / death of player)~~
 2. ~~Hit effect (like remove a range of bullets and fancy remove effect)~~
 3. ~~Save~~
-4. Background (hyperbolic patterns)
-5. Music and SFX 
+4. ~~Background (hyperbolic patterns)~~
+5. ~~Fog effect when generating bullet~~
+6. Graze effect
+7. Music
+8. SFX 

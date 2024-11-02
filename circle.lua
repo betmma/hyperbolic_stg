@@ -9,11 +9,13 @@ function Circle:new(args)
     self.sprite=args.sprite
     if self.sprite then
         local data=SpriteData[self.sprite]
-        self.radius=self.radius*2.4/data.hitRadius
+        self.radius=self.radius/4.5*data.hitRadius
     end
     self.extraUpdate={}
-    -- safe means won't hit player and can hit enemy
-    self.safe=false
+    -- safe means won't hit player 
+    self.safe=args.safe or false
+    -- fromPlayer means can hit enemy
+    self.fromPlayer=args.fromPlayer or false
     self.batch=args.batch or BulletBatch
     self.sprite_transparency=args.sprite_transparency or 1
 end
@@ -36,7 +38,7 @@ function Circle:update(dt)
     self.super.update(self,dt)
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
-    local scale=r/3.3333
+    local scale=r/data.hitRadius
     if self.sprite then
         self.batch:setColor(1,1,1,self.sprite_transparency)
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)

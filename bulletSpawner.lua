@@ -22,6 +22,9 @@ function BulletSpawner:new(args)
     self.bulletlifeFrame=args.bulletlifeFrame or 2000
     self.bulletEvents=args.bulletEvents or {}
     self.bulletSprite=args.bulletSprite
+    -- when spawning bullets, spawn a fog that turns into bullet 1s later
+    self.fogEffect=args.fogEffect or false
+    self.fogTime=args.fogTime or 60
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
         local cir=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.bulletlifeFrame, sprite=self.bulletSprite})
         -- table.insert(ret,cir)
@@ -29,6 +32,24 @@ function BulletSpawner:new(args)
         cir.speed=math.eval(args.speed)
         for key, func in pairs(self.bulletEvents) do
             func(cir,args)
+        end
+    end
+    if self.fogEffect then
+        self.spawnBulletFuncRef=self.spawnBulletFunc
+        self.spawnBulletFunc=function(self,args)
+            local color=Asset.SpriteData[self.bulletSprite].color
+            local fog=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.fogTime, sprite=Asset.bulletSprites.fog[color],safe=true})
+            Event.EaseEvent{
+                obj=fog,
+                easeFrame=self.fogTime,
+                aimTable=fog,
+                aimKey='sprite_transparency',
+                aimValue=0,
+                period=self.fogTime,
+                endFunc=function()
+                    self.spawnBulletFuncRef(self,args)
+                end
+            }
         end
     end
     self.spawnBatchFunc=args.spawnBatchFunc or function(self)

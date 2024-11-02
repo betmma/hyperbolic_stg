@@ -40,6 +40,7 @@ local G={
                     love.graphics.print(name,300,300+index*100,0,1,1)
                 end
                 love.graphics.rectangle("line",300,300+self.currentUI.chosen*100,200,50)
+                love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
             end
         },
         CHOOSE_LEVELS={
@@ -67,9 +68,9 @@ local G={
                 elseif isPressed('x') or isPressed('escape')then
                     self.STATE=self.STATES.MAIN_MENU
                 elseif isPressed('[') then
-                    self.save.levelPassed[level][scene]=false
+                    self.save.levelPassed[level][scene]=math.max(self.save.levelPassed[level][scene]-1,0)
                 elseif isPressed(']') then
-                    self.save.levelPassed[level][scene]=true
+                    self.save.levelPassed[level][scene]=math.min(self.save.levelPassed[level][scene]+1,2)
                 end
             end,
             draw=function(self)
@@ -280,7 +281,9 @@ G.update=function(self,dt)
     self.currentUI.update(self,dt)
 end
 -- sideNum=5 angleNum=4 -> r=107
--- sideNum=3 angleNum=5 -> r=126.2
+-- sideNum=4 angleNum=5 -> r=126.2
+-- sideNum=3 angleNum=7 -> r=110
+-- point: where pattern begins. angle: direction of first line. sideNum: useless now as I dunno how to calculate side length. angleNum: how many sides are connected to each point. iteCount: used for recursion. plz input 0. r: side length. drawedPoints: plz input {}. color: {r,g,b}
 local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,color)
     color=color or {0.7,0.2,0.5}
     local iteCount=(iteCount or 0)+1
@@ -316,7 +319,7 @@ local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,co
     end
     if iteCount==4 then return {},{} end
     local angles={}
-    for i=1,angleNum-begin+1 do
+    for i=1,#points do
         local newpoint=points[i]
         local newangle=Shape.to(newpoint.x,newpoint.y,point.x,point.y)
         table.insert(angles,newangle)
@@ -324,7 +327,7 @@ local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,co
     end
     return points,angles
 end
-G.patternData={point={x=400,y=100},limit={xmin=300,xmax=500,ymin=80,ymax=500},angle=math.pi/3,speed=0.0045}
+G.patternData={point={x=400,y=150},limit={xmin=300,xmax=500,ymin=150,ymax=600},angle=math.pi/3,speed=0.0045}
 G.updateDynamicPatternData=function(data)
     local ay=Shape.axisY
     Shape.axisY=-30

@@ -6,7 +6,7 @@ local levelData={
             quote="In this world things appear smaller when closer to top.",
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
-                player=Player(400,600)
+                local player=Player(400,600)
                 local a=BulletSpawner{x=200,y=0,period=12,frame=0,lifeFrame=10000,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSize=0.75,bulletSprite=BulletSprites.round.blue,bulletEvents={
                 }}
                 local a=BulletSpawner{x=600,y=0,period=12,frame=0,lifeFrame=10000,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSize=0.75,bulletSprite=BulletSprites.round.blue,bulletEvents={
@@ -50,8 +50,8 @@ local levelData={
             quote="Hyperbolic center of circle is above the Euclidean center.",
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
-                player=Player(400,600)
-                a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.star.blue,bulletEvents={
+                local player=Player(400,600)
+                a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.blackheart.blue,bulletEvents={
                     function(cir,args)
                         local key=args.index
                         Event{
@@ -71,7 +71,7 @@ local levelData={
                     end
                 },
                 }
-                local tb={x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.star.red,bulletEvents={
+                local tb={x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSize=0.75,bulletSprite=BulletSprites.rice.red,bulletEvents={
                     function(cir,args)
                         local key=args.index
                         Event{
@@ -161,7 +161,7 @@ local levelData={
                         en.x=en.x-(en.x-Player.objects[1].x)*0.01
                     end
                 }
-                player=Player(400,600)
+                local player=Player(400,600)
                 local b=BulletSpawner{x=400,y=200,period=600,frame=540,lifeFrame=10000,bulletNumber=120,bulletSpeed=30,bulletSize=0.75,angle='0+9999',bulletSprite=BulletSprites.bill.red,bulletEvents={
                     function(cir,args)
                         local key=args.index
@@ -229,7 +229,56 @@ local levelData={
                     end
                 }
             end
-        }
+        },
+        {
+            quote='lala.',
+            make=function()
+                -- local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800}
+                -- Event.LoopEvent{
+                --     obj=en,
+                --     period=1,
+                --     executeFunc=function()
+                --         en.x=en.x-(en.x-Player.objects[1].x)*0.01
+                --     end
+                -- }
+                local player=Player(400,600)
+                local b=BulletSpawner{x=500,y=400,period=600,frame=540,lifeFrame=10000,bulletNumber=120,bulletSpeed=10,bulletSize=0.75,angle='0+9999',bulletSprite=BulletSprites.bigStar.yellow,fogEffect=true,bulletEvents={
+                    function(cir,args)
+                        local spd=cir.speed
+                        cir.speed=0
+                        Event.EaseEvent{
+                            obj=cir,
+                            aimTable=cir,
+                            aimKey='speed',
+                            aimValue=spd,
+                            easeFrame=30
+                        }
+                    end
+                },
+                spawnBatchFunc=function(self)
+                    local num=math.eval(self.bulletNumber)
+                    local range=math.eval(self.range)
+                    local angle=math.eval(self.angle)
+                    self.angle2=(self.angle2 or math.eval(self.angle))+math.pi/12
+                    local angle2=self.angle2 or 0
+                    local speed=math.eval(self.bulletSpeed)
+                    local size=math.eval(self.bulletSize)
+                    local sideNum=3
+                    for i = 1, num, 1 do
+                        local direction=range*(i-0.5-num/2)/num+angle
+                        local sped=speed/math.cos((direction-angle2)%(math.pi/(sideNum/2))-math.pi/sideNum)^(1)
+                        self:spawnBulletFunc{x=self.x-i*2,direction=direction*4,speed=sped,radius=size,index=i}
+                    end
+                    -- angle2=angle2+math.pi
+                    -- for i = 1, num, 1 do
+                    --     local direction=range*(i-0.5-num/2)/num+angle
+                    --     local sped=speed/math.cos((direction-angle2)%(math.pi/(sideNum/2))-math.pi/sideNum)^(1)
+                    --     self:spawnBulletFunc{direction=direction,speed=sped,radius=size,index=i}
+                    -- end
+                end
+                }
+            end
+        },
     }
 }
 levelData.defaultQuote='What will happen here?'
