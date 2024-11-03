@@ -16,6 +16,9 @@ function Circle:new(args)
     self.safe=args.safe or false
     -- fromPlayer means can hit enemy
     self.fromPlayer=args.fromPlayer or false
+    -- invincible means won't be removed by normal shockwave (not win shockwave)
+    self.invincible=args.invincible or false
+
     self.batch=args.batch or BulletBatch
     self.sprite_transparency=args.sprite_transparency or 1
 end
@@ -45,7 +48,7 @@ function Circle:update(dt)
     end
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do
-            if shockwave.canRemove.bullet and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+            if shockwave.canRemove.bullet and(self.invincible==false or shockwave.canRemove.invincible) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
                 self:remove()
                 self:removeEffect()
             end

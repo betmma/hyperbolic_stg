@@ -6,7 +6,7 @@ local Event=require"event"
 local BulletSpawner=Shape:extend()
 
 -- a spawner spawns [bulletNumber] or bullets with size=[bulletSize], speed=[bulletSpeed] from angle=[angle] to [angle+range] every [period] frames.
--- all numbers except for [period] can be set to 'a+b' form to mean random.range(a-b,a+b)
+-- all numbers except for [period] can be set to 'a+b' form to mean random.range(a-b,a+b). angle can be 'player' to mean player. (can't use on other params)
 -- each function in [bulletEvents] should takes a bullet (circle) and adds event to it.
 -- [spawnBatchFunc] and [spawnBulletFunc] can be modified to spawn non-circle pattern bullets (like a line of bullets of different speed or spawn spawners)
 function BulletSpawner:new(args)
@@ -19,14 +19,14 @@ function BulletSpawner:new(args)
     self.range=args.range or math.pi*2
     self.bulletSpeed=args.bulletSpeed or 20
     self.bulletSize=args.bulletSize or 1
-    self.bulletlifeFrame=args.bulletlifeFrame or 2000
+    self.bulletLifeFrame=args.bulletLifeFrame or 2000
     self.bulletEvents=args.bulletEvents or {}
     self.bulletSprite=args.bulletSprite
     -- when spawning bullets, spawn a fog that turns into bullet 1s later
     self.fogEffect=args.fogEffect or false
     self.fogTime=args.fogTime or 60
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
-        local cir=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.bulletlifeFrame, sprite=self.bulletSprite})
+        local cir=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.bulletLifeFrame, sprite=self.bulletSprite, invincible=args.invincible})
         -- table.insert(ret,cir)
         cir.direction=math.eval(args.direction)
         cir.speed=math.eval(args.speed)
@@ -55,7 +55,7 @@ function BulletSpawner:new(args)
     self.spawnBatchFunc=args.spawnBatchFunc or function(self)
         local num=math.eval(self.bulletNumber)
         local range=math.eval(self.range)
-        local angle=math.eval(self.angle)
+        local angle=self.angle=='player' and Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y) or math.eval(self.angle)
         local speed=math.eval(self.bulletSpeed)
         local size=math.eval(self.bulletSize)
         for i = 1, num, 1 do

@@ -6,6 +6,7 @@ local Enemy=Shape:extend()
 
 -- parameters: [maxhp], [hp] (defaulted as maxhp), [mainEnemy] if true, killing it wins the scene.
 function Enemy:new(args)
+    args.lifeFrame=99999999
     Enemy.super.new(self, args)
     self.maxhp=args.maxhp or args.hp or 1000
     self.hp=args.hp or self.maxhp
@@ -16,6 +17,7 @@ function Enemy:new(args)
 end
 
 function Enemy:update(dt)
+    Enemy.super.update(self,dt)
     local player=Player.objects[1]
     if Shape.distance(player.x,player.y,self.x,self.y)<50 then
         self.hpBarTransparency=0.85*(self.hpBarTransparency-0.5)+0.5
@@ -29,7 +31,7 @@ function Enemy:update(dt)
             if self.hp<0 then
                 self:remove()
                 if self.mainEnemy then
-                    Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true}}
+                    Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
                     Event.LoopEvent{
                         times=1,
                         period=60,

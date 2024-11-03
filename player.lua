@@ -90,7 +90,7 @@ function Player:update(dt)
         end
     end
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.5,r*0.5,31,33)-- the image is 64*64 but the focus center seems slightly off
+    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 
     -- shooting bullet
     if love.keyboard.isDown('z') then

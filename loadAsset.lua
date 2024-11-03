@@ -72,7 +72,7 @@ types={'bigStar','bigRound','butterfly','knife','ellipse','fog',}
 for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
-        Asset.bulletSprites[value][color]=quad(4*j-4,29+4*i,4,4)
+        Asset.bulletSprites[value][color]=quad(4*j-4,29+4*i+0.5,4,4)
         Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color}
     end
 end

@@ -45,7 +45,7 @@ function Event:update(dt)
     -- self.time=self.time+dt
 end
 
--- Event that checks condition for every [period] secs. Initially the time is set to [time]. (so if time==period it triggers upon creation)
+-- Event that checks condition for every [period] frames. Initially the time is set to [time]. (so if time==period it triggers upon creation)
 -- conditionFunc, executeFunc, times, mode:Event.modes, time, period
 local LoopEvent = Event:extend()
 function LoopEvent:new(args)
@@ -65,6 +65,16 @@ end
 --     LoopEvent.super.update(self,dt)
 -- end
 Event.LoopEvent=LoopEvent
+
+-- Event that calls [executeFunc] after [delayFrame] (you can also use [period]) frames.
+local DelayEvent=LoopEvent:extend()
+function DelayEvent:new(args)
+    args.times=1
+    args.period=args.period or args.delayFrame or 60
+    DelayEvent.super.new(self,args)
+end
+
+Event.DelayEvent=DelayEvent
 
 -- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames.
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)

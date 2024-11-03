@@ -38,7 +38,7 @@ function Shockwave:new(args)
     Shockwave.super.new(self, args)
     self.color=args.color or 'red'
     self.sprite=Asset.shockwave[self.color]
-    self.canRemove=args.canRemove or {bullet=true}
+    self.canRemove=args.canRemove or {bullet=true,invincible=false}
 end
 
 function Shockwave:update(dt)
