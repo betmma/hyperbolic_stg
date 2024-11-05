@@ -1,4 +1,5 @@
 This is an attempt to learn LÖVE and implement STG in hyperbolic geometry.
+This game is a touhou fan-game.
 
 #### Control:
 ##### In Game:

@@ -2,7 +2,9 @@ local sfx
 sfx={
     select=...,
     graze=...,
-    damage=...
+    damage=...,
+    dead=...,
+    kill=...,
 }
 for k,v in pairs(sfx)do
     sfx[k]=love.audio.newSource('assets/audio/'..k..'.wav','static')

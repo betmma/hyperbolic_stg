@@ -122,4 +122,14 @@ function Player:grazeEffect()
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
 end
 
+function Player:dieEffect()
+    self.hp=self.hp-1
+    self.invincibleTime=self.invincibleTime+1
+    if self.hp<=0 then
+        G:lose()
+    end
+    Effect.Shockwave{x=self.x,y=self.y,radius=3,growSpeed=1.1,animationFrame=30}
+    SFX.dead:play()
+end
+
 return Player

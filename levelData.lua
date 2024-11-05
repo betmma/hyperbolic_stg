@@ -258,14 +258,15 @@ local levelData={
                     -- local nx,ny
                     for i = 1, num, 1 do
                         local direction=range*(i-0.5-num/2)/num+angle
-                        local radi=i/num*300
+                        local radi=i/num*100
                         local angle3=angle2
                         -- nx,ny=self.x+radi*math.cos(angle2),self.y+radi*math.sin(angle2)
                         Event.DelayEvent{
                             obj=self,
                             delayFrame=i/3,
                             executeFunc=function(self)
-                                self.obj:spawnBulletFunc{x=self.obj.x+radi*math.cos(angle3),y=self.obj.y+radi*math.sin(angle3),direction=direction*2,speed=speed,radius=size,index=i}
+                                local x,y=Shape.rThetaPos(self.obj.x,self.obj.y,radi,angle3)
+                                self.obj:spawnBulletFunc{x=x,y=y,direction=direction*2,speed=speed,radius=size,index=i}
                             end
                         }
                     end

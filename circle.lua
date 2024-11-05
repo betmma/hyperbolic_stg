@@ -61,12 +61,7 @@ function Circle:update(dt)
                 self.grazed=true
             end
             if player.invincibleTime<=0 and dis<radi then
-                player.hp=player.hp-1
-                player.invincibleTime=player.invincibleTime+1
-                if player.hp<=0 then
-                    G:lose()
-                end
-                Effect.Shockwave{x=player.x,y=player.y,radius=3,growSpeed=1.1,animationFrame=30}
+                player:dieEffect()
             end
         end
 
