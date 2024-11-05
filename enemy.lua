@@ -28,6 +28,7 @@ function Enemy:update(dt)
         if circ.fromPlayer and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
             self.hp=self.hp-(circ.damage or 1)
             circ:remove()
+            SFX.damage:play()
             if self.hp<0 then
                 self:remove()
                 if self.mainEnemy then

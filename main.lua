@@ -15,6 +15,7 @@ function love.load()
     BulletSpawner=require"bulletSpawner"
     Enemy=require"enemy"
     Asset=require"loadAsset"
+    SFX=require"sfx"
     Effect=require"effect"
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     G=require"state"

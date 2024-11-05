@@ -118,6 +118,7 @@ end
 
 
 function Player:grazeEffect()
+    SFX.graze:play()
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
 end
 
