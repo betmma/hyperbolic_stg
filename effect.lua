@@ -20,7 +20,7 @@ function Larger:new(args)
 end
 
 function Larger:update(dt)
-    self.frame=self.frame+1
+    Larger.super.update(self,dt)
     self.radius=self.radius*self.growSpeed
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local scale=r/30.3333

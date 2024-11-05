@@ -77,17 +77,6 @@ function Player:update(dt)
     if self.invincibleTime<=0 then
         self.invincibleTime=0
         -- it's not ideal to handle hit in player:update, cuz different bullets may have non-circle hitbox (like laser) so this part will grow long
-        for key, circ in pairs(Circle.objects) do
-            if not circ.safe and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
-                self.hp=self.hp-1
-                self.invincibleTime=self.invincibleTime+1
-                if self.hp<=0 then
-                    G:lose()
-                end
-                Effect.Shockwave{x=self.x,y=self.y,radius=3,growSpeed=1.1,animationFrame=30}
-                break
-            end
-        end
     end
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
@@ -126,4 +115,10 @@ function Player:draw()
     SetFont(24)
     love.graphics.print('HP: '..tostring(self.hp),100,100)
 end
+
+
+function Player:grazeEffect()
+    Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+end
+
 return Player
