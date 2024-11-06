@@ -104,11 +104,8 @@ local G={
         IN_LEVEL={
             update=function(self,dt)
                 Asset:clearBatches()
-                -- BulletSpawner:updateAll(dt)
-                -- Circle:updateAll(dt)
-                -- Player:updateAll(dt)
-                -- Event:updateAll(dt)
-                -- Enemy:updateAll(dt)
+                Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
+                Asset.backgroundBatch:add(Asset.backgroundRight,600,0,0,1,1,0,0)
                 Object:updateAll(dt)
                 Asset:flushBatches()
                 if isPressed('escape') then
@@ -120,12 +117,6 @@ local G={
                 Asset:drawBatches()
                 SetFont(18)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
-                -- Rectangle:drawAll()
-                -- Circle:drawAll()
-                -- PolyLine:drawAll()
-                -- PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
-                -- Player:drawAll()
-                -- Enemy:drawAll()
                 Object:drawAll()
             end
         },
@@ -155,12 +146,8 @@ local G={
                 end
             end,
             draw=function(self)
-                love.graphics.draw(BulletBatch)
-                Rectangle:drawAll()
-                Circle:drawAll()
-                PolyLine:drawAll()
-                PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
-                Player:drawAll()
+                Asset:drawBatches()
+                Object:drawAll()
                 
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
@@ -203,12 +190,8 @@ local G={
                 end
             end,
             draw=function(self)
-                love.graphics.draw(BulletBatch)
-                Rectangle:drawAll()
-                Circle:drawAll()
-                PolyLine:drawAll()
-                PolyLine.drawAll(BulletSpawner) -- a fancy way to call BulletSpawner:drawAll()
-                Player:drawAll()
+                Asset:drawBatches()
+                Object:drawAll()
                 
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)

@@ -15,11 +15,12 @@ function love.load()
     BulletSpawner=require"bulletSpawner"
     Enemy=require"enemy"
     Asset=require"loadAsset"
-    SFX=require"sfx"
+    Audio=require"audio"
+    SFX=Audio.sfx;BGM=Audio.bgm
     Effect=require"effect"
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     G=require"state"
-    
+    BGM:play('title')
 end
 local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
 KeyboardPressed={up=false,down=false,left=false,right=false,escape=false}

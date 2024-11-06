@@ -118,7 +118,7 @@ end
 
 
 function Player:grazeEffect()
-    SFX.graze:play()
+    SFX:play('graze')
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
 end
 
@@ -129,7 +129,7 @@ function Player:dieEffect()
         G:lose()
     end
     Effect.Shockwave{x=self.x,y=self.y,radius=3,growSpeed=1.1,animationFrame=30}
-    SFX.dead:play()
+    SFX:play('dead')
 end
 
 return Player

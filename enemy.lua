@@ -28,9 +28,9 @@ function Enemy:update(dt)
         if circ.fromPlayer and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
             self.hp=self.hp-(circ.damage or 1)
             circ:remove()
-            SFX.damage:play()
+            SFX:play('damage')
             if self.hp<0 then
-                SFX.kill:play()
+                SFX:play('kill')
                 self:remove()
                 if self.mainEnemy then
                     Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
