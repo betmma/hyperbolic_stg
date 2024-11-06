@@ -19,10 +19,13 @@ local G={
                 local size=#self.currentUI.options
                 if isPressed('down') then
                     self.currentUI.chosen=self.currentUI.chosen%size+1
+                    SFX:play('select')
                 elseif isPressed('up') then
                     self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
+                    SFX:play('select')
                 elseif isPressed('z') then
                     local value=self.currentUI.options[self.currentUI.chosen].value
+                    SFX:play('select')
                     if value=='EXIT' then
                         love.event.quit()
                     elseif value=='START' then
@@ -53,23 +56,31 @@ local G={
                 local sceneNum=#levelData[level]
                 if isPressed('down') then
                     self.currentUI.chosenScene=self.currentUI.chosenScene%sceneNum+1
+                    SFX:play('select')
                 elseif isPressed('up') then
                     self.currentUI.chosenScene=(self.currentUI.chosenScene-2)%sceneNum+1
+                    SFX:play('select')
                 elseif isPressed('right') then
                     self.currentUI.chosenLevel=self.currentUI.chosenLevel%levelNum+1
+                    SFX:play('select')
                 elseif isPressed('left') then
                     self.currentUI.chosenLevel=(self.currentUI.chosenLevel-2)%levelNum+1
+                    SFX:play('select')
                 elseif isPressed('z') then
+                    SFX:play('select')
                     self:removeAll()
                     self.STATE=self.STATES.IN_LEVEL
                     self.currentLevel={level,scene}
                     Shape.restore()
                     levelData[level][scene].make()
                 elseif isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
                     self.STATE=self.STATES.MAIN_MENU
                 elseif isPressed('[') then
+                    SFX:play('select')
                     self.save.levelPassed[level][scene]=math.max(self.save.levelPassed[level][scene]-1,0)
                 elseif isPressed(']') then
+                    SFX:play('select')
                     self.save.levelPassed[level][scene]=math.min(self.save.levelPassed[level][scene]+1,2)
                 end
             end,
@@ -109,6 +120,7 @@ local G={
                 Object:updateAll(dt)
                 Asset:flushBatches()
                 if isPressed('escape') then
+                    SFX:play('select')
                     -- self:removeAll()
                     self.STATE=self.STATES.PAUSE
                 end
@@ -129,10 +141,13 @@ local G={
             update=function(self,dt)
                 local size=#self.currentUI.options
                 if isPressed('down') then
+                    SFX:play('select')
                     self.currentUI.chosen=self.currentUI.chosen%size+1
                 elseif isPressed('up') then
+                    SFX:play('select')
                     self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
                 elseif isPressed('z') then
+                    SFX:play('select')
                     local value=self.currentUI.options[self.currentUI.chosen].value
                     if value=='EXIT' then
                         self:removeAll()
@@ -142,6 +157,7 @@ local G={
                     end
                 end
                 if isPressed('escape') then
+                    SFX:play('select')
                     self.STATE=self.STATES.IN_LEVEL
                 end
             end,
@@ -174,10 +190,13 @@ local G={
             update=function(self,dt)
                 local size=#self.currentUI.options
                 if isPressed('down') then
+                    SFX:play('select')
                     self.currentUI.chosen=self.currentUI.chosen%size+1
                 elseif isPressed('up') then
+                    SFX:play('select')
                     self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
                 elseif isPressed('z') then
+                    SFX:play('select')
                     local value=self.currentUI.options[self.currentUI.chosen].value
                     if value=='EXIT' then
                         self:removeAll()
