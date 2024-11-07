@@ -1,4 +1,20 @@
 local levelData=require"levelData"
+local function optionsCalc(self,execFuncs)
+    local size=#self.currentUI.options
+    if isPressed('down') then
+        self.currentUI.chosen=self.currentUI.chosen%size+1
+        SFX:play('select')
+    elseif isPressed('up') then
+        self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
+        SFX:play('select')
+    elseif isPressed('z') then
+        local value=self.currentUI.options[self.currentUI.chosen].value
+        SFX:play('select')
+        if execFuncs[value]then
+            execFuncs[value](self)
+        end
+    end
+end
 local G={
     STATES={
         MAIN_MENU='MAIN_MENU',
@@ -16,22 +32,7 @@ local G={
             },
             chosen=1,
             update=function(self,dt)
-                local size=#self.currentUI.options
-                if isPressed('down') then
-                    self.currentUI.chosen=self.currentUI.chosen%size+1
-                    SFX:play('select')
-                elseif isPressed('up') then
-                    self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
-                    SFX:play('select')
-                elseif isPressed('z') then
-                    local value=self.currentUI.options[self.currentUI.chosen].value
-                    SFX:play('select')
-                    if value=='EXIT' then
-                        love.event.quit()
-                    elseif value=='START' then
-                        self.STATE=self.STATES.CHOOSE_LEVELS
-                    end
-                end
+                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end})
             end,
             draw=function(self)
                 self.updateDynamicPatternData(self.patternData)
@@ -139,23 +140,13 @@ local G={
             },
             chosen=1,
             update=function(self,dt)
-                local size=#self.currentUI.options
-                if isPressed('down') then
-                    SFX:play('select')
-                    self.currentUI.chosen=self.currentUI.chosen%size+1
-                elseif isPressed('up') then
-                    SFX:play('select')
-                    self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
-                elseif isPressed('z') then
-                    SFX:play('select')
-                    local value=self.currentUI.options[self.currentUI.chosen].value
-                    if value=='EXIT' then
+                optionsCalc(self,{
+                    EXIT=function(self)
                         self:removeAll()
                         self.STATE=self.STATES.CHOOSE_LEVELS
-                    elseif value=='RESUME' then
-                        self.STATE=self.STATES.IN_LEVEL
-                    end
-                end
+                    end,
+                    RESUME=function(self)self.STATE=self.STATES.IN_LEVEL end
+                })
                 if isPressed('escape') then
                     SFX:play('select')
                     self.STATE=self.STATES.IN_LEVEL
@@ -188,25 +179,17 @@ local G={
             },
             chosen=1,
             update=function(self,dt)
-                local size=#self.currentUI.options
-                if isPressed('down') then
-                    SFX:play('select')
-                    self.currentUI.chosen=self.currentUI.chosen%size+1
-                elseif isPressed('up') then
-                    SFX:play('select')
-                    self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
-                elseif isPressed('z') then
-                    SFX:play('select')
-                    local value=self.currentUI.options[self.currentUI.chosen].value
-                    if value=='EXIT' then
+                optionsCalc(self,{
+                    EXIT=function(self)
                         self:removeAll()
                         self.STATE=self.STATES.CHOOSE_LEVELS
-                    elseif value=='RESTART' then
+                    end,
+                    RESTART=function(self)
                         self:removeAll()
                         levelData[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene].make()
                         self.STATE=self.STATES.IN_LEVEL
-                    end
-                end
+                        end
+                })
             end,
             draw=function(self)
                 Asset:drawBatches()
