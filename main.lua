@@ -21,6 +21,7 @@ function love.load()
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     G=require"state"
     BGM:play('title')
+    ScreenshotManager=require"screenshotManager"
 end
 local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
 KeyboardPressed={up=false,down=false,left=false,right=false,escape=false}

@@ -253,7 +253,9 @@ G.win=function(self)
     if Player.objects[1].hp==Player.objects[1].maxhp then
         winLevel=2
     end
-    self.save.levelPassed[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene]=math.max(self.save.levelPassed[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene],winLevel)
+    local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+    local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+    self.save.levelPassed[level][scene]=math.max(self.save.levelPassed[level][scene],winLevel)
     self:saveData()
 end
 G.lose=function(self)

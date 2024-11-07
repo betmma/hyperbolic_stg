@@ -29,15 +29,24 @@ function Enemy:update(dt)
             self.hp=self.hp-(circ.damage or 1)
             circ:remove()
             SFX:play('damage')
+            -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
+            --     self.presaved=true
+            -- end
             if self.hp<0 then
                 SFX:play('kill')
                 self:remove()
                 if self.mainEnemy then
+                    local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+                    local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+                    ScreenshotManager.preSave(level,scene)
                     Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
                     Event.LoopEvent{
                         times=1,
                         period=60,
                         executeFunc=function(x)
+                            local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+                            local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+                            ScreenshotManager.save(level,scene)
                             G:win()
                         end
                     }
