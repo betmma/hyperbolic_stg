@@ -92,10 +92,10 @@ local G={
                 if ScreenshotManager.data[level][scene].batch then
                     local data=ScreenshotManager.data[level][scene]
                     data.batch:clear()
-                    data.batch:add(data.quad,375,25,0,0.75,0.75,0,0)
+                    data.batch:add(data.quad,350,25,0,0.75,0.75,0,0)
                     data.batch:flush()
                     love.graphics.draw(data.batch)
-                    love.graphics.rectangle("line",375,25,300,450)
+                    love.graphics.rectangle("line",350,25,375,450)
                 end
                 SetFont(36)
                 love.graphics.print("Level "..level,100,50,0,1,1)
@@ -112,7 +112,7 @@ local G={
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
                 love.graphics.rectangle("line",100,100+scene*50,200,50)
-                love.graphics.rectangle("line",320,500,400,80)
+                love.graphics.rectangle("line",325,500,400,80)
                 local text=levelData.defaultQuote
                 if self.save.levelPassed[level][scene]>=1 then
                     text=levelData[level][scene].quote or ''
@@ -125,7 +125,7 @@ local G={
             update=function(self,dt)
                 Asset:clearBatches()
                 Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
-                Asset.backgroundBatch:add(Asset.backgroundRight,600,0,0,1,1,0,0)
+                Asset.backgroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
                 Object:updateAll(dt)
                 Asset:flushBatches()
                 if isPressed('escape') then

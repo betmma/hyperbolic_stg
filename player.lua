@@ -15,10 +15,10 @@ function Player:new(x, y, movespeed)
     --drawn as a circle
     self.radius = 0.5
     -- self.border={minx=0,maxx=love.graphics.getWidth(),miny=0,maxy=love.graphics.getHeight()}
-    local minx=200
-    local maxx=600
+    local minx=150
+    local maxx=650
     local miny=0
-    local maxy=560
+    local maxy=540
     
     self.border=PolyLine({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
 

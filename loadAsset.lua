@@ -77,8 +77,8 @@ for i, value in ipairs(types) do
         Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color}
     end
 end
-Asset.backgroundLeft=love.graphics.newQuad(0,0,200,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
-Asset.backgroundRight=love.graphics.newQuad(600,0,200,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
+Asset.backgroundLeft=love.graphics.newQuad(0,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
+Asset.backgroundRight=love.graphics.newQuad(650,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 --[[
 Batches are used to seperate different draw layers. Generally, order should be:
 

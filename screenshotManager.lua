@@ -16,7 +16,7 @@ for k,value in ipairs(levelData) do
         if love.filesystem.read(path)then
             -- local d=love.filesystem.read(path)
             data.image=love.graphics.newImage(path)
-            data.quad=love.graphics.newQuad(200,0,400,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
+            data.quad=love.graphics.newQuad(150,0,500,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
             data.batch=love.graphics.newSpriteBatch(data.image,5,'stream')
         end
     end
@@ -48,7 +48,7 @@ function screenshotManager.save(level,scene)
     love.filesystem.write(path, love.filesystem.read(pre_path))
     local data=screenshotManager.data[level][scene]
     data.image=love.graphics.newImage(path)
-    data.quad=love.graphics.newQuad(200,0,400,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
+    data.quad=love.graphics.newQuad(150,0,500,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
     data.batch=love.graphics.newSpriteBatch(data.image,5,'stream')
 end
 return screenshotManager
