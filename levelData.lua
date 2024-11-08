@@ -328,53 +328,79 @@ local levelData={
             end
         },
         {
-            quote='this pattern is cool.',
+            quote='This pattern is cool.',
             make=function()
-                -- local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800}
-                -- Event.LoopEvent{
-                --     obj=en,
-                --     period=1,
-                --     executeFunc=function()
-                --         en.x=en.x-(en.x-Player.objects[1].x)*0.01
-                --     end
-                -- }
+                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
                 local player=Player(400,600)
-                local b=BulletSpawner{x=400,y=300,period=600,frame=540,lifeFrame=10000,bulletNumber=960,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.darkdot.yellow,fogEffect=true,bulletEvents={
-                    function(cir,args)
-                        local spd=cir.speed
-                        cir.speed=0
-                        Event.EaseEvent{
-                            obj=cir,
-                            aimTable=cir,
-                            aimKey='speed',
-                            aimValue=spd,
-                            easeFrame=60
-                        }
-                    end
-                },
-                spawnBatchFunc=function(self)
-                    local num=math.eval(self.bulletNumber)
-                    local range=math.eval(self.range)
-                    local angle=math.eval(self.angle)
-                    local angle2=self.angle2 or math.pi/-6
-                    self.angle2=(self.angle2 or 0)+math.pi/6
-                    local speed=math.eval(self.bulletSpeed)
-                    local size=math.eval(self.bulletSize)
-                    local sideNum=3
-                    -- local nx,ny
-                    for i = 1, num, 1 do
-                        local direction=range*(i-0.5-num/2)/num+angle
-                        local radi=math.sin(i/num*math.pi)*100
-                        local angle3=angle2+i*math.pi/119*41
-                        -- nx,ny=self.x+radi*math.cos(angle2),self.y+radi*math.sin(angle2)
-                        Event.DelayEvent{
-                            obj=self,
-                            delayFrame=i/3,
-                            executeFunc=function(self)
-                                self.obj:spawnBulletFunc{x=self.obj.x+radi*math.cos(angle3),y=self.obj.y+radi*math.sin(angle3),direction=direction*2+angle3,speed=speed,radius=size,index=i}
-                            end
-                        }
-                    end
+                local b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rice.blue,fogEffect=false,
+                spawnBulletFunc=function(self,args)
+                    local en
+                    local d0=args.direction
+                    local nx,ny=args.x-63,args.y--Shape.rThetaPos(args.x,args.y,50,args.direction)
+                    en=BulletSpawner{x=nx,y=ny,period=199,lifeFrame=160,bulletNumber=1,bulletSpeed=25,angle=0,bulletSprite=self.bulletSprite,speed=math.eval(args.speed),direction=0,bulletEvents={
+                        function(cir,args)
+                            local spd=cir.speed
+                            local dir=d0-math.pi/2+(en.frame%20)/20*math.pi+cir.direction
+                            cir.speed=0
+                            Event.Event{
+                                times=1,
+                                conditionFunc=function()
+                                    return en.flag
+                                end,
+                                executeFunc=function()
+                                    cir.direction=d0+math.pi*3/5
+                                    cir.speed=70+25*(math.sin(cir.direction))
+                                    Event.EaseEvent{
+                                        obj=cir,
+                                        aimTable=cir,
+                                        aimKey='speed',
+                                        aimValue=0,
+                                        easeFrame=120,
+                                        endFunc=function()
+                                            cir.direction=dir
+                                            Event.EaseEvent{
+                                                obj=cir,
+                                                aimTable=cir,
+                                                aimKey='speed',
+                                                aimValue=spd,
+                                                easeFrame=260
+                                            }
+                                    end
+                                    }
+                                end
+                            }
+                        end
+                    }}
+                    Event.LoopEvent{
+                        obj=en,
+                        period=1,
+                        executeFunc=function()
+                            en.angle=en.direction
+                        end
+                    }
+                    Event.LoopEvent{
+                        obj=en,
+                        times=7,
+                        period=20,
+                        executeFunc=function(self)
+                            en.spawnEvent.period=1
+                            local delta=self.executedTimes==0 and math.pi*4/5 or math.pi*3/5
+                            en.direction=en.direction+delta
+                        end
+                    }
+                    Event.DelayEvent{
+                        period=180,
+                        executeFunc=function()
+                            en.flag=1
+                        end
+                    }
+                    -- local cir=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.bulletLifeFrame, sprite=self.bulletSprite, invincible=args.invincible})
+                    -- -- table.insert(ret,cir)
+                    -- cir.direction=math.eval(args.direction)
+                    -- cir.speed=math.eval(args.speed)
+                    -- for key, func in pairs(self.bulletEvents) do
+                    --     func(cir,args)
+                    -- end
                 end
                 }
             end
