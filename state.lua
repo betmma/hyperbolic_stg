@@ -88,6 +88,14 @@ local G={
             draw=function(self)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
+                if ScreenshotManager.data[level][scene].batch then
+                    local data=ScreenshotManager.data[level][scene]
+                    data.batch:clear()
+                    data.batch:add(data.quad,375,25,0,0.75,0.75,0,0)
+                    data.batch:flush()
+                    love.graphics.draw(data.batch)
+                    love.graphics.rectangle("line",375,25,300,450)
+                end
                 self.updateDynamicPatternData(self.patternData)
                 SetFont(36)
                 love.graphics.print("Level "..level,100,50,0,1,1)

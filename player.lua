@@ -97,7 +97,7 @@ function Player:shoot()
         cir.safe=true
         cir.direction=-math.pi/2
         cir.speed=200
-        cir.damage=10
+        cir.damage=1
     end
 end
 
