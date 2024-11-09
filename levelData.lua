@@ -4,6 +4,8 @@ local levelData={
     {
         {
             quote="In this world things appear smaller when closer to top.",
+            user='marisa',
+            spellName='Magic Sign "Otherworld Star Dust"',
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 local player=Player(400,600)
@@ -48,6 +50,8 @@ local levelData={
         },
         {
             quote="Hyperbolic center of circle is above the Euclidean center.",
+            user='doremy',
+            spellName='Moon Sign "Cerulean Lunatic Dream"',
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 local player=Player(400,600)
@@ -152,6 +156,8 @@ local levelData={
         },
         {
             quote='The two upper corners seem narrow, but actually good places to induce these bullets.',
+            user='reimu',
+            spellName='Spirit Sign "Fantasy Seal -Focus-"',
             make=function()
                 local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800}
                 Event.LoopEvent{
@@ -232,6 +238,8 @@ local levelData={
         },
         {
             quote='Moving through this "square" grid is so difficult.',
+            user='???',
+            spellName='??? (haven\'t decided)',
             make=function()
                 local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800,speed=10}
                 local a=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=100,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.crystal.red,fogEffect=true,bulletEvents={
@@ -328,11 +336,14 @@ local levelData={
             end
         },
         {
-            quote='This pattern is cool.',
+            quote='Heptagrams are more mysterious than pentagrams.',
+            user='sanae',
+            spellName='Preparation "Suwa Daimyōjin Invocation"',
             make=function()
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
                 local player=Player(400,600)
-                local b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rice.blue,fogEffect=false,
+                local b
+                b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rice.blue,fogEffect=false,
                 spawnBulletFunc=function(self,args)
                     local en
                     local d0=args.direction
@@ -340,7 +351,7 @@ local levelData={
                     en=BulletSpawner{x=nx,y=ny,period=199,lifeFrame=160,bulletNumber=1,bulletSpeed=25,angle=0,bulletSprite=self.bulletSprite,speed=math.eval(args.speed),direction=0,bulletEvents={
                         function(cir,args)
                             local spd=cir.speed
-                            local dir=d0-math.pi/2+(en.frame%20)/20*math.pi+cir.direction
+                            local dir=d0+(math.pi/2)*(b.spawnEvent.executedTimes%2)+(en.frame%20)/20*math.pi+cir.direction
                             cir.speed=0
                             Event.Event{
                                 times=1,
@@ -386,6 +397,7 @@ local levelData={
                             en.spawnEvent.period=1
                             local delta=self.executedTimes==0 and math.pi*4/5 or math.pi*3/5
                             en.direction=en.direction+delta
+                            en.angle=en.direction
                         end
                     }
                     Event.DelayEvent{
@@ -407,5 +419,37 @@ local levelData={
         },
     }
 }
+local Text=require"text"
+for index, value in ipairs(levelData) do
+    for index2, value2 in ipairs(value) do
+        if value2.make then
+            local ref=value2.make
+            value2.make=function()
+                if not value2.spellName then
+                    value2.spellName=''
+                end
+                local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=value2.spellName,fontSize=18,color={1,1,1,0},align='center'}
+                G.spellNameText=txt
+                Event.EaseEvent{
+                    obj=txt,
+                    easeFrame=120,
+                    aimTable=txt,
+                    aimKey='y',
+                    aimValue=10,
+                    progressFunc=function(x)return math.sin(x*math.pi/2) end
+                }
+                Event.EaseEvent{
+                    obj=txt,
+                    easeFrame=120,
+                    aimTable=txt.color,
+                    aimKey=4,
+                    aimValue=1,
+                    progressFunc=function(x)return math.sin(x*math.pi/2) end
+                }
+                ref()
+            end
+        end
+    end
+end
 levelData.defaultQuote='What will happen here?'
 return levelData

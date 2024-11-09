@@ -255,8 +255,8 @@ G.loadData=function(self)
 end
 G:loadData()
 G.win=function(self)
+    self:_end()
     self.won_current_scene=true
-    self.STATE=self.STATES.GAME_END
     local winLevel=1
     if Player.objects[1].hp==Player.objects[1].maxhp then
         winLevel=2
@@ -267,8 +267,14 @@ G.win=function(self)
     self:saveData()
 end
 G.lose=function(self)
+    self:_end()
     self.won_current_scene=false
+end
+G._end=function(self)
     self.STATE=self.STATES.GAME_END
+    if self.spellNameText and not self.spellNameText.removed then
+        self.spellNameText:remove()
+    end
 end
 G.update=function(self,dt)
     self.frame=self.frame+1
