@@ -26,10 +26,22 @@ function BulletSpawner:new(args)
     self.fogEffect=args.fogEffect or false
     self.fogTime=args.fogTime or 60
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
-        local cir=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.bulletLifeFrame, sprite=self.bulletSprite, invincible=args.invincible})
+        if not args.x then
+            args.x=self.x
+        end
+        if not args.y then
+            args.y=self.y
+        end
+        if not args.lifeFrame then
+            args.lifeFrame=self.bulletLifeFrame
+        end
+        if not args.sprite then
+            args.sprite=self.bulletSprite
+        end
+        args.direction=math.eval(args.direction)
+        args.speed=math.eval(args.speed)
+        local cir=Circle(args)
         -- table.insert(ret,cir)
-        cir.direction=math.eval(args.direction)
-        cir.speed=math.eval(args.speed)
         for key, func in pairs(self.bulletEvents) do
             func(cir,args)
         end

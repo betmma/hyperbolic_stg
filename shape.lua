@@ -1,6 +1,7 @@
 --! file: shape.lua
 local Shape = Object:extend()
 Shape.curvature=100
+Shape.timeSpeed=1
 Shape.axisY=-100
 function Shape.restore()
     Shape.curvature=100
@@ -166,7 +167,7 @@ function Shape:update(dt)
     end
     self.metric=self:getMetric()
     self.moveRadius=self:getMoveRadius()
-    local moveDistance=self.speed* dt * self.metric
+    local moveDistance=self.speed* dt * Shape.timeSpeed * self.metric
     self.x = self.x +  moveDistance * math.cos(self.direction) 
     self.y=self.y+moveDistance * math.sin(self.direction) 
     self.direction=self.direction-moveDistance/self.moveRadius
