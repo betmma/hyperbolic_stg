@@ -9,6 +9,7 @@ function love.load()
     Shape = require "shape"
     Rectangle = require "rectangle"
     Circle = require "circle"
+    Laser=require"laser"
     PolyLine = require "polyline"
     Player = require "player"
     Event= require "event"

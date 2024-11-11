@@ -162,7 +162,7 @@ function Shape:update(dt)
     if self.frame>self.lifeFrame then
         self:remove()
     end
-    if self.x<-self.removeDistance or self.x>self.removeDistance+love.graphics.getWidth() or math.abs(self.y-Shape.axisY)<5 or self.y<-self.removeDistance or self.y>self.removeDistance+love.graphics.getHeight() then
+    if self.x<-self.removeDistance+150 or self.x>self.removeDistance+love.graphics.getWidth()-150 or math.abs(self.y-Shape.axisY)<25 or self.y<-self.removeDistance or self.y>self.removeDistance+love.graphics.getHeight() then
         self:remove()
     end
     self.metric=self:getMetric()

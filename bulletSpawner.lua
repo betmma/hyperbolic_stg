@@ -40,6 +40,11 @@ function BulletSpawner:new(args)
         end
         args.direction=math.eval(args.direction)
         args.speed=math.eval(args.speed)
+        if Asset.SpriteData[args.sprite].laser then
+            args.bulletEvents=self.bulletEvents
+            local cir=Laser(args)
+            return
+        end
         local cir=Circle(args)
         -- table.insert(ret,cir)
         for key, func in pairs(self.bulletEvents) do

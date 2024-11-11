@@ -440,6 +440,26 @@ local levelData={
                 }
             end
         },
+        {
+            quote='laser test',
+            user='addaddda',
+            spellName='test',
+            make=function()
+                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
+                local player=Player(400,600)
+                local a=BulletSpawner{x=400,y=150,period=12,frame=0,lifeFrame=10000,bulletNumber=1,bulletSpeed='60',bulletLifeFrame=100,angle='1.17+0.3',bulletSprite=BulletSprites.laser.blue,bulletEvents={
+                    function(cir)
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            executeFunc=function()
+                                cir.direction=cir.direction+0.01
+                            end
+                        }
+                    end
+                }}
+            end
+        },
     }
 }
 local Text=require"text"
@@ -448,6 +468,7 @@ for index, value in ipairs(levelData) do
         if value2.make then
             local ref=value2.make
             value2.make=function()
+                Shape.timeSpeed=1
                 if not value2.spellName then
                     value2.spellName=''
                 end

@@ -16,17 +16,17 @@ function math.clamp(val, lower, upper)
 end
 
 ---@return number?
--- input: a number or 'a+b', return that number or random number in [a-b,a+b]. Warning: it returns an integer, so for angle should write like 0+999.
+-- input: a number or 'a+b', return that number or random number in [a-b,a+b]. Warning: it returns a float number for 'a+b'.
 function math.eval(str)
     -- Check if the string is in the format 'a+b' where a can be negative
-    local a, b = string.match(str, "([%-]?%d+)%+(%d+)")
+    local a, b = string.match(str, "([%-]?%d+%.?%d*)%+(%d+%.?%d*)")
     
     if a and b then
         -- Convert a and b to numbers
         a = tonumber(a)
         b = tonumber(b)
         -- Return a random number in the range [a-b, a+b]
-        return math.random(a - b, a + b)
+        return math.random()*b*2+a-b
     else
         -- Otherwise, assume the string is just a number
         return tonumber(str)

@@ -38,7 +38,12 @@ function Circle:update(dt)
     for k, func in pairs(self.extraUpdate or {}) do
         func(self,dt)
     end
-    self.super.update(self,dt)
+    Circle.super.update(self,dt)
+    self:drawSprite()
+    self:checkHitPlayer()
+end
+
+function Circle:drawSprite()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
     local scale=r/data.hitRadius
@@ -46,6 +51,9 @@ function Circle:update(dt)
         self.batch:setColor(1,1,1,self.sprite_transparency)
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
     end
+end
+
+function Circle:checkHitPlayer()
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do
             if shockwave.canRemove.bullet and(self.invincible==false or shockwave.canRemove.invincible) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
@@ -64,7 +72,6 @@ function Circle:update(dt)
                 player:dieEffect()
             end
         end
-
     end
 end
 

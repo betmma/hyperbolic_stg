@@ -138,6 +138,8 @@ local G={
                 Asset:drawBatches()
                 SetFont(18)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                love.graphics.print("Circle: "..#Circle.objects, 10, 50)
+                love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
                 Object:drawAll()
             end
         },
