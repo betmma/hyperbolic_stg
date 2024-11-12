@@ -22,6 +22,7 @@ function BulletSpawner:new(args)
     self.bulletLifeFrame=args.bulletLifeFrame or 2000
     self.bulletEvents=args.bulletEvents or {}
     self.bulletSprite=args.bulletSprite
+    self.bulletBatch=args.bulletBatch or (args.highlight and Asset.bulletHighlightBatch or BulletBatch)
     -- when spawning bullets, spawn a fog that turns into bullet 1s later
     self.fogEffect=args.fogEffect or false
     self.fogTime=args.fogTime or 60
@@ -77,7 +78,7 @@ function BulletSpawner:new(args)
         local size=math.eval(self.bulletSize)
         for i = 1, num, 1 do
             local direction=range*(i-0.5-num/2)/num+angle
-            self:spawnBulletFunc{x=self.x,y=self.y,direction=direction,speed=speed,radius=size,index=i}
+            self:spawnBulletFunc{x=self.x,y=self.y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch}
         end
     end
     self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,frame=self.frame,executeFunc=function(event,dt)

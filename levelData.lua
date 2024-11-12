@@ -447,13 +447,34 @@ local levelData={
             make=function()
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
                 local player=Player(400,600)
-                local a=BulletSpawner{x=400,y=150,period=12,frame=0,lifeFrame=10000,bulletNumber=1,bulletSpeed='60',bulletLifeFrame=100,angle='1.17+0.3',bulletSprite=BulletSprites.laser.blue,bulletEvents={
+                local a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed='60',bulletLifeFrame=100,angle='1.17+3.14',bulletSprite=BulletSprites.laser.blue,bulletEvents={
                     function(cir)
                         Event.LoopEvent{
                             obj=cir,
                             period=1,
                             executeFunc=function()
-                                cir.direction=cir.direction+0.01
+                                local t=cir.frame%120
+                                if t<30 then
+                                    cir.direction=cir.direction+0.12
+                                elseif t>=60 and t<90 then
+                                    cir.direction=cir.direction-0.12
+                                end
+                            end
+                        }
+                    end
+                }}
+                local a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed='60',bulletLifeFrame=1000,angle='1.17+3.14',bulletSprite=BulletSprites.giant.blue,highlight=true,bulletEvents={
+                    function(cir)
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            executeFunc=function()
+                                local t=cir.frame%120
+                                if t<30 then
+                                    cir.direction=cir.direction+0.05
+                                elseif t>=60 and t<90 then
+                                    cir.direction=cir.direction-0.05
+                                end
                             end
                         }
                     end

@@ -21,6 +21,7 @@ function Laser:new(args)
     Laser.super.new(self)
     self.lifeFrame=args.lifeFrame or 100
     args.lifeFrame=9999
+    args.batch=args.batch or Asset.bulletHighlightBatch
     self.frame=0
     self.bulletEvents=args.bulletEvents or {}
     self.units={}

@@ -43,6 +43,9 @@ Asset.bulletSprites={
     knife=template,
     ellipse=template,
     fog=template,
+    giant={
+        red=...,blue=...,green=...,yellow=...,
+    }
 }
 Asset.SpriteData={
 }
@@ -52,7 +55,7 @@ end
 for k,wave in pairs(Asset.shards) do
     Asset.SpriteData[wave]={size=8}
 end
-local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackheart=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5}
+local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackheart=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,giant=14}
 local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
 local types={'laser','scale','rim','round','rice','kunai','crystal','bill','bullet','blackheart','star'}
 for i, value in ipairs(types) do
@@ -78,6 +81,15 @@ for i, value in ipairs(types) do
         Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color}
     end
 end
+types={'giant'}
+local colors2={'red','blue','green','yellow'}
+for i, value in ipairs(types) do
+    Asset.bulletSprites[value]={}
+    for j,color in ipairs(colors2) do
+        Asset.bulletSprites[value][color]=quad(8*j-8,49+8*i+0.5,8,8)
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color}
+    end
+end
 Asset.backgroundLeft=love.graphics.newQuad(0,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 Asset.backgroundRight=love.graphics.newQuad(650,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 --[[
@@ -89,20 +101,24 @@ Player bullets
 Player (niy)
 Enemy without HP bar (probably won't appear)
 Items (niy)
+Enemy bullets highlighted (add blend mode)
 Enemy bullets
 Effects (now only shockwave)
 Player spell (niy)
 Player focus 
-UI (niy)
+UI (left half and right half foreground)
 Dialogue (niy)
 Dialogue Characters (niy)
 ]]
 Asset.backgroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
+Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.bulletBatch = love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(tilesetImage, 5,'stream')
-Asset.Batches={Asset.playerBulletBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch,Asset.backgroundBatch,}
+Asset.Batches={Asset.playerBulletBatch,Asset.bulletHighlightBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch,Asset.backgroundBatch,}
+local isHighlightBatch={}
+isHighlightBatch[Asset.bulletHighlightBatch]=true
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
         batch:clear()
@@ -115,7 +131,11 @@ Asset.flushBatches=function(self)
 end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
+        if isHighlightBatch[batch] then
+            love.graphics.setBlendMode("add")
+        end
         love.graphics.draw(batch)
+        love.graphics.setBlendMode('alpha') -- default mode
     end
 end
 return Asset
