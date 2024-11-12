@@ -121,6 +121,7 @@ Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
 Asset.Batches={Asset.playerBulletBatch,Asset.bulletHighlightBatch,Asset.laserBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch,Asset.backgroundBatch,}
 local isHighlightBatch={}
 isHighlightBatch[Asset.bulletHighlightBatch]=true
+isHighlightBatch[Asset.laserBatch]=true
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
         if type(batch)=='table' then

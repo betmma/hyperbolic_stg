@@ -5,17 +5,27 @@ Laser.LaserUnit=LaserUnit
 
 function LaserUnit:new(args)
     LaserUnit.super.new(self, args)
+    self.radiusRef=self.radius
     self.previous=nil
     self.next=nil
+end
+local function sigmoid(x)
+    return 1/(1+2.718^-x)
+end
+function LaserUnit:update(dt)
+    LaserUnit.super.update(self,dt)
+    if self.parent.enableWarningAndFading then
+        if self.parent.frame<self.parent.warningFrame or self.parent.frame>self.parent.lifeFrame-self.parent.fadingFrame then
+            self.safe=true
+        else
+            self.safe=false
+        end
+        self.radius=math.max(self.radiusRef*sigmoid(self.parent.frame-self.parent.warningFrame),0.1)*sigmoid(-self.parent.frame+self.parent.lifeFrame-self.parent.fadingFrame)
+    end
 end
 
 function LaserUnit:drawSprite()
     -- LaserUnit.super.drawSprite(self)
-    if self.previous and not self.previous.removed then
-        local x1,y1,r1=Shape.getCircle(self.x,self.y,self.radius)
-        local x2,y2,r2=Shape.getCircle(self.previous.x,self.previous.y,self.previous.radius)
-        local tangents=Laser.calculate_tangents_and_intersections(x1,y1,r1,x2,y2,r2)
-    end
     if not self.previous or self.previous.removed then
         self:drawMesh()
     end
@@ -25,7 +35,6 @@ function LaserUnit:draw()
 end
 
 function LaserUnit:drawMesh()
-    local laser=self.parent
     local vertices={}
     local x,y,w,h=self.sprite:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
     local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
@@ -34,6 +43,9 @@ function LaserUnit:drawMesh()
     while unit and not unit.removed do
         local x1,y1,r1=Shape.getCircle(unit.x,unit.y,unit.radius)
         r1=SpriteData[self.sprite].size/2*r1/SpriteData[self.sprite].hitRadius
+        -- if unit==self then
+        --     r1=r1/2
+        -- end
         local the=unit.direction+math.pi/2
         table.insert(vertices,{x1+r1*math.cos(the),y1+r1*math.sin(the), x, y, 1, 1, 1, 1})
         table.insert(vertices,{x1-r1*math.cos(the),y1-r1*math.sin(the), x+w, y+h, 1, 1, 1, 1})
@@ -50,6 +62,9 @@ end
 function Laser:new(args)
     Laser.super.new(self)
     self.lifeFrame=args.lifeFrame or 100
+    self.warningFrame=args.warningFrame or 0
+    self.fadingFrame=args.fadingFrame or 0
+    self.enableWarningAndFading=(args.warningFrame~=nil and args.warningFrame~=0 or args.fadingFrame~=nil and args.fadingFrame~=0)
     args.lifeFrame=9999
     args.batch=args.batch or Asset.bulletHighlightBatch
     self.frame=0
@@ -85,56 +100,5 @@ function Laser:update(dt)
         self:remove()
     end
 end
-
--- Function to calculate the tangent points and intersections
-function Laser.calculate_tangents_and_intersections(x1, y1, r1, x2, y2, r2)
-    local sqrt = math.sqrt
-    local atan2 = math.atan2
-    local cos = math.cos
-    local sin = math.sin
-    local asin = math.asin
-    local d = math.distance(x1, y1, x2, y2)
-    
-    -- Check if circles are too close or intersecting
-    if d <= math.abs(r1 - r2) then
-        error("Circles are too close or intersecting; no outer tangents possible.")
-    end
-
-    -- Calculate distance between centers
-    local dx = x2 - x1
-    local dy = y2 - y1
-
-    -- Calculate the angle offset for outer tangents
-    local alpha = asin((r2 - r1) / d)+math.pi/2
-    local theta = atan2(dy, dx)
-
-    -- Calculate tangent points on Circle 1
-    local x1_t1 = x1 + r1 * cos(theta + alpha)
-    local y1_t1 = y1 + r1 * sin(theta + alpha)
-    local x1_t2 = x1 + r1 * cos(theta - alpha)
-    local y1_t2 = y1 + r1 * sin(theta - alpha)
-
-    -- Calculate tangent points on Circle 2
-    local x2_t1 = x2 + r2 * cos(theta + alpha)
-    local y2_t1 = y2 + r2 * sin(theta + alpha)
-    local x2_t2 = x2 + r2 * cos(theta - alpha)
-    local y2_t2 = y2 + r2 * sin(theta - alpha)
-
-    return {
-        {x1_t1, y1_t1}, -- Tangent point 1 on Circle 1
-        {x1_t2, y1_t2}, -- Tangent point 2 on Circle 1
-        {x2_t1, y2_t1}, -- Tangent point 1 on Circle 2
-        {x2_t2, y2_t2}  -- Tangent point 2 on Circle 2
-    }
-end
-
--- -- Example usage
--- local x1, y1, r1 = 0, 0, 5        -- Circle 1: center (0, 0) and radius 5
--- local x2, y2, r2 = 10, 0, 3       -- Circle 2: center (10, 0) and radius 3
-
--- local tangent_points = calculate_tangents_and_intersections(x1, y1, r1, x2, y2, r2)
--- for i, points in ipairs(tangent_points) do
---     print(string.format("Tangent %d: C1 (%f, %f), C2 (%f, %f)", i, points[1], points[2], points[3], points[4]))
--- end
 
 return Laser

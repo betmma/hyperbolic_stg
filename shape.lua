@@ -137,6 +137,7 @@ end
 
 
 function Shape:new(args)
+    self.args=args
     self.x = args.x
     self.y = args.y
     self.metric=self:getMetric()

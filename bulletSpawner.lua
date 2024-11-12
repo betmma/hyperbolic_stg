@@ -43,6 +43,8 @@ function BulletSpawner:new(args)
         args.speed=math.eval(args.speed)
         if Asset.SpriteData[args.sprite].laser then
             args.bulletEvents=self.bulletEvents
+            args.warningFrame=self.args.warningFrame or 0
+            args.fadingFrame=self.args.fadingFrame or 0
             local cir=Laser(args)
             return
         end
