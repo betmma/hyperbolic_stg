@@ -6,16 +6,46 @@ Laser.LaserUnit=LaserUnit
 function LaserUnit:new(args)
     LaserUnit.super.new(self, args)
     self.previous=nil
+    self.next=nil
 end
 
 function LaserUnit:drawSprite()
-    LaserUnit.super.drawSprite(self)
+    -- LaserUnit.super.drawSprite(self)
     if self.previous and not self.previous.removed then
         local x1,y1,r1=Shape.getCircle(self.x,self.y,self.radius)
         local x2,y2,r2=Shape.getCircle(self.previous.x,self.previous.y,self.previous.radius)
         local tangents=Laser.calculate_tangents_and_intersections(x1,y1,r1,x2,y2,r2)
     end
+    if not self.previous or self.previous.removed then
+        self:drawMesh()
+    end
 end
+
+function LaserUnit:draw()
+end
+
+function LaserUnit:drawMesh()
+    local laser=self.parent
+    local vertices={}
+    local x,y,w,h=self.sprite:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
+    x,y,w,h=x/W,y/H,w/W,h/H
+    local unit=self
+    while unit and not unit.removed do
+        local x1,y1,r1=Shape.getCircle(unit.x,unit.y,unit.radius)
+        r1=SpriteData[self.sprite].size/2*r1/SpriteData[self.sprite].hitRadius
+        local the=unit.direction+math.pi/2
+        table.insert(vertices,{x1+r1*math.cos(the),y1+r1*math.sin(the), x, y, 1, 1, 1, 1})
+        table.insert(vertices,{x1-r1*math.cos(the),y1-r1*math.sin(the), x+w, y+h, 1, 1, 1, 1})
+        unit=unit.next
+    end
+    if #vertices<4 then return end
+    local mesh=love.graphics.newMesh(vertices,'strip')
+    mesh:setTexture(Asset.bulletImage)
+    table.insert(Asset.laserBatch,mesh)
+    -- love.graphics.draw(mesh)
+end
+
 
 function Laser:new(args)
     Laser.super.new(self)
@@ -25,7 +55,7 @@ function Laser:new(args)
     self.frame=0
     self.bulletEvents=args.bulletEvents or {}
     self.units={}
-    self.frequency=math.ceil(100/args.speed)
+    self.frequency=math.ceil(200/args.speed)
     Event.LoopEvent{
         obj=self,
         period=self.frequency,
@@ -33,8 +63,12 @@ function Laser:new(args)
             args.direction=math.eval(args.direction)
             args.speed=math.eval(args.speed)
             local cir=LaserUnit(args)
+            cir.last=true
+            cir.parent=self
             if #self.units>0 then
                 cir.previous=self.units[#self.units]
+                self.units[#self.units].next=cir
+                cir.previous.last=false
             end
             table.insert(self.units,cir)
             -- table.insert(ret,cir)

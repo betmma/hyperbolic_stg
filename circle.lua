@@ -43,6 +43,7 @@ function Circle:update(dt)
     self:checkHitPlayer()
 end
 
+-- this happens in update.
 function Circle:drawSprite()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]

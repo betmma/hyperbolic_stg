@@ -1,10 +1,11 @@
 local Asset={}
-local tilesetImage = love.graphics.newImage( "assets/bullets.png" )
+local bulletImage = love.graphics.newImage( "assets/bullets.png" )
+Asset.bulletImage=bulletImage
 local bgImage = love.graphics.newImage( "assets/bg.png" )
-tilesetImage:setFilter("nearest", "linear") -- this "linear filter" removes some artifacts if we were to scale the tiles
+bulletImage:setFilter("nearest", "linear") -- this "linear filter" removes some artifacts if we were to scale the tiles
 local tileSize = 8
 local function quad(x,y,width,height)
-    local ret= love.graphics.newQuad(x*tileSize+5,y*tileSize+6,width*tileSize,height*tileSize,tilesetImage:getWidth(),tilesetImage:getHeight())
+    local ret= love.graphics.newQuad(x*tileSize+5,y*tileSize+6,width*tileSize,height*tileSize,bulletImage:getWidth(),bulletImage:getHeight())
     return ret
 end
 local template={
@@ -111,22 +112,31 @@ Dialogue (niy)
 Dialogue Characters (niy)
 ]]
 Asset.backgroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
-Asset.playerBulletBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
-Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
-Asset.bulletBatch = love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
-Asset.effectBatch=love.graphics.newSpriteBatch(tilesetImage, 2000,'stream')
-Asset.playerFocusBatch=love.graphics.newSpriteBatch(tilesetImage, 5,'stream')
-Asset.Batches={Asset.playerBulletBatch,Asset.bulletHighlightBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch,Asset.backgroundBatch,}
+Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
+Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
+Asset.laserBatch={}
+Asset.bulletBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
+Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
+Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
+Asset.Batches={Asset.playerBulletBatch,Asset.bulletHighlightBatch,Asset.laserBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch,Asset.backgroundBatch,}
 local isHighlightBatch={}
 isHighlightBatch[Asset.bulletHighlightBatch]=true
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        batch:clear()
+        if type(batch)=='table' then
+            for key in pairs(batch) do
+                batch[key] = nil
+            end
+        else
+            batch:clear()
+        end
     end
 end
 Asset.flushBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        batch:flush()
+        if batch.flush then
+            batch:flush()
+        end
     end
 end
 Asset.drawBatches=function(self)
@@ -134,7 +144,13 @@ Asset.drawBatches=function(self)
         if isHighlightBatch[batch] then
             love.graphics.setBlendMode("add")
         end
-        love.graphics.draw(batch)
+        if type(batch)=='table' then
+            for i, mesh in pairs(batch) do
+                love.graphics.draw(mesh)
+            end
+        else
+            love.graphics.draw(batch)
+        end
         love.graphics.setBlendMode('alpha') -- default mode
     end
 end
