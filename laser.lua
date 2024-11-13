@@ -1,4 +1,4 @@
--- Laser is composed of many small units. For each 2 adjacent unit, use Mesh to draw Laser sprite quad between them. When a laser is generated, it has x, y, radius, lifeFrame, sprite, direction and speed parameters (same as circle). During lifeFrame time, it needs to generate units at a frequency of [freq] (could be determined based on speed). Each unit is a circle with speed=speed and direction=direction. Its lifeFrame should be enough to leave the screen.
+-- Laser is composed of many small units. For each 2 adjacent unit, use Mesh to draw Laser sprite quad between them. When a laser is generated, it has x, y, radius, lifeFrame, sprite, direction and speed parameters (same as circle). During lifeFrame time, it needs to generate units at a frequency of [freq] (be determined based on speed). Each unit is a circle with speed=speed and direction=direction. 
 local Laser=Object:extend()
 local LaserUnit=Circle:extend()
 Laser.LaserUnit=LaserUnit
@@ -58,9 +58,11 @@ function LaserUnit:drawMesh()
     -- love.graphics.draw(mesh)
 end
 
-
+-- Note that warningFrame and fadingFrame is binded to Laser object's existence and lifeFrame, so for fast lasers these two parameters could be used, while for slow (usually curly and not long enough to go through screen) lasers shouldn't be set to nonzero, otherwise before actual laser reaches player it's warningFrame ends, and soon the Laser object is removed and actual laser will fade out.
+-- Laser is actually a special bulletSpawner but it doesn't inherit bulletSpawner class yet (maybe I'll change). [LaserEvents] are Laser object's events, while [bulletEvents] are LaserUnit's events.
 function Laser:new(args)
     Laser.super.new(self)
+    self.args=copy_table(args)
     self.lifeFrame=args.lifeFrame or 100
     self.warningFrame=args.warningFrame or 0
     self.fadingFrame=args.fadingFrame or 0
@@ -68,15 +70,16 @@ function Laser:new(args)
     args.lifeFrame=9999
     args.batch=args.batch or Asset.bulletHighlightBatch
     self.frame=0
+    self.laserEvents=args.laserEvents or {}
     self.bulletEvents=args.bulletEvents or {}
     self.units={}
     self.frequency=math.ceil(200/args.speed)
-    Event.LoopEvent{
+    self.spawnEvent=Event.LoopEvent{
         obj=self,
         period=self.frequency,
         executeFunc=function()
-            args.direction=math.eval(args.direction)
-            args.speed=math.eval(args.speed)
+            args.direction=math.eval(self.args.direction)
+            args.speed=math.eval(self.args.speed)
             local cir=LaserUnit(args)
             cir.last=true
             cir.parent=self
@@ -92,6 +95,9 @@ function Laser:new(args)
             end
         end
     }
+    for key, func in pairs(self.laserEvents) do
+        func(self,args)
+    end
 end
 
 function Laser:update(dt)

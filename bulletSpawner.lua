@@ -42,6 +42,7 @@ function BulletSpawner:new(args)
         args.direction=math.eval(args.direction)
         args.speed=math.eval(args.speed)
         if Asset.SpriteData[args.sprite].laser then
+            args.laserEvents=self.args.laserEvents or {}
             args.bulletEvents=self.bulletEvents
             args.warningFrame=self.args.warningFrame or 0
             args.fadingFrame=self.args.fadingFrame or 0
