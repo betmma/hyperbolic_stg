@@ -326,7 +326,7 @@ local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,co
             PolyLine.drawOne(point,newpoint)
             love.graphics.setColor(colorref[1],colorref[2],colorref[3])
         end
-        -- Shape.line(point.x,point.y,newpoint.x,newpoint.y)
+        -- Shape.drawLine(point.x,point.y,newpoint.x,newpoint.y)
         -- love.graphics.print(''..newpoint.x..', '..newpoint.y..' '..alpha..' '..ret[3],10,10+50*i)
     end
     if iteCount==4 then return {},{} end

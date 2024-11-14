@@ -25,11 +25,15 @@ function PolyLine:inside(xc,yc)
         itenum=1
     end
     for i=1,itenum do
-        if Shape.leftToLine(xc,yc,self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y) then
+        if not self:insideOne(xc,yc,i) then
             return false,self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y
         end
     end
     return true
+end
+
+function PolyLine:insideOne(xc,yc,index)
+    return not Shape.leftToLine(xc,yc,self.points[index].x,self.points[index].y,self.points[index%#self.points+1].x,self.points[index%#self.points+1].y)
 end
 
 function PolyLine:draw()

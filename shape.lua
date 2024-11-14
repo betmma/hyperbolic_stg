@@ -26,7 +26,17 @@ function Shape.lineCenter(x1,y1,x2,y2)
     return centerX,math.distance(centerX,Shape.axisY,x1,y1)
 end
 
-function Shape.line(x1,y1,x2,y2)
+-- get Y coordinate of intersection point of line x=xc and line x1,y1 to x2,y2
+function Shape.lineX2Y(x1,y1,x2,y2,xc)
+    local centerX,dis=Shape.lineCenter(x1,y1,x2,y2)
+    if math.abs(xc-centerX)>dis then
+        return 0 -- intersection point doesn't exist
+    end
+    return Shape.axisY+dis*math.cos(math.asin((xc-centerX)/dis))
+end
+
+-- actually this function is never used (^^;
+function Shape.drawLine(x1,y1,x2,y2)
     if x1==x2 then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)
         return
