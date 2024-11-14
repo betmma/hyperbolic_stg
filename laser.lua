@@ -1,5 +1,5 @@
 -- Laser is composed of many small units. For each 2 adjacent unit, use Mesh to draw Laser sprite quad between them. When a laser is generated, it has x, y, radius, lifeFrame, sprite, direction and speed parameters (same as circle). During lifeFrame time, it needs to generate units at a frequency of [freq] (be determined based on speed). Each unit is a circle with speed=speed and direction=direction. 
-local Laser=Object:extend()
+local Laser=Shape:extend()
 local LaserUnit=Circle:extend()
 Laser.LaserUnit=LaserUnit
 
@@ -59,9 +59,11 @@ function LaserUnit:drawMesh()
 end
 
 -- Note that warningFrame and fadingFrame is binded to Laser object's existence and lifeFrame, so for fast lasers these two parameters could be used, while for slow (usually curly and not long enough to go through screen) lasers shouldn't be set to nonzero, otherwise before actual laser reaches player it's warningFrame ends, and soon the Laser object is removed and actual laser will fade out.
--- Laser is actually a special bulletSpawner but it doesn't inherit bulletSpawner class yet (maybe I'll change). [LaserEvents] are Laser object's events, while [bulletEvents] are LaserUnit's events.
+-- Laser is actually a special bulletSpawner but it doesn't inherit bulletSpawner class yet (maybe I'll change). When creating its args are like normal bullets so args.direction and speed are actually for LaserUnits, so directly inheriting bulletSpawner (or shape) will cause it to move. [LaserEvents] are Laser object's events, while [bulletEvents] are LaserUnit's events.
+-- To prevent unintended safe spot inside the laser, when speed is high please add some randomness like '240+20'.
 function Laser:new(args)
-    Laser.super.new(self)
+    Laser.super.new(self,args)
+    self.radius=args.radius or 5
     self.args=copy_table(args)
     self.lifeFrame=args.lifeFrame or 100
     self.warningFrame=args.warningFrame or 0
@@ -104,6 +106,11 @@ function Laser:update(dt)
     self.frame=self.frame+1
     if self.frame>self.lifeFrame then
         self:remove()
+    end
+    for k,shockwave in pairs(Effect.Shockwave.objects) do
+        if shockwave.canRemove.bulletSpawner and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+            self:remove()
+        end
     end
 end
 

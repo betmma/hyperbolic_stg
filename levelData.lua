@@ -363,7 +363,7 @@ local levelData={
             user='sanae',
             spellName='Preparation "Suwa Daimyōjin Invocation"',
             make=function()
-                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
+                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
                 local player=Player(400,600)
                 local b
                 b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rice.blue,fogEffect=false,
@@ -464,7 +464,7 @@ local levelData={
                     end
                 }}
                 local a
-                a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=35,bulletSpeed='240',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi,bulletSprite=BulletSprites.laser.red,highlight=true,laserEvents={
+                a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=35,bulletSpeed='240+30',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi,bulletSprite=BulletSprites.laser.red,highlight=true,laserEvents={
                     function(laser)
                         Event.LoopEvent{
                             obj=laser,
@@ -475,6 +475,116 @@ local levelData={
                         }
                     end
                 }}
+            end
+        },
+    },
+    {
+        {
+            quote='not come up yet',
+            user='reimu',
+            spellName='"Hakurei Transmit Barrier"',
+            make=function()
+                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
+                local player=Player(400,600)
+                local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.scale.red,spawnBatchFunc=function(self)
+                    local num=math.eval(self.bulletNumber)
+                    local range=math.eval(self.range)
+                    local angle=math.eval(self.angle)
+                    local size=math.eval(self.bulletSize)
+                    for i = 1, num, 1 do
+                        local direction=range*(i-0.5-num/2)/num+angle
+                        self:spawnBulletFunc{x=self.x,y=self.y,direction=direction,speed=math.eval(self.bulletSpeed),radius=size,index=i,batch=self.bulletBatch}
+                    end
+                end}
+                local greenLines=Shape{x=300,y=0,lifeFrame=99999}
+                table.insert(G.sceneTempObjs,greenLines)
+                greenLines.items={}
+                greenLines.draw=function(self)
+                    local colorref={love.graphics.getColor()}
+                    love.graphics.setColor(0,1,0,0.5)
+                    local new={}
+                    for i,value in pairs(self.items) do
+                        local y,rest=value[1],value[2]
+                        if rest>0 then
+                            table.insert(new,{y,rest-1})
+                        end
+                        love.graphics.line(150,y,650,y)
+                    end
+                    self.items=new
+                    love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
+                end
+                local a
+                a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=16,bulletSpeed='30',bulletLifeFrame=10000,angle=0,range=math.pi/2,bulletSprite=BulletSprites.dot.blue,bulletEvents={
+                    function(cir)
+                        Event.DelayEvent{
+                            obj=cir,
+                            delayFrame=60,
+                            executeFunc=function()
+                                cir.sprite=BulletSprites.bill.blue
+                                cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*0.4
+                            end
+                        }
+                        -- Event.DelayEvent{
+                        --     obj=cir,
+                        --     delayFrame=120,
+                        --     executeFunc=function()
+                        --         cir.sprite=BulletSprites.bill.blue
+                        --         cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*-1
+                        --     end
+                        -- }
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            executeFunc=function()
+                                if cir.x<150 and not cir.mark then
+                                    cir.x=650
+                                    cir.mark=true
+                                    cir.sprite=BulletSprites.bill.green
+                                    table.insert(greenLines.items,{cir.y,5})
+                                end
+                                if cir.x>650 and not cir.mark then
+                                    cir.x=150
+                                    cir.mark=true
+                                    cir.sprite=BulletSprites.bill.green
+                                    table.insert(greenLines.items,{cir.y,5})
+                                end
+                                -- local vx=cir.speed*math.cos(cir.direction)
+                                -- local vy=cir.speed*math.sin(cir.direction)
+                                -- vx=vx+math.cos(a.angle)*0.05
+                                -- vy=vy+math.sin(a.angle)*0.05
+                                -- cir.speed=(vx*vx+vy*vy)^0.5
+                                -- cir.direction=math.atan2(vy,vx)
+                                -- local t=cir.frame%120
+                                -- if t<30 then
+                                --     cir.direction=cir.direction+0.12
+                                -- elseif t>=60 and t<90 then
+                                --     cir.direction=cir.direction-0.12
+                                -- end
+                            end
+                        }
+                    end
+                }}
+                Event.LoopEvent{
+                    obj=a,
+                    period=1,
+                    executeFunc=function(self)
+                        local pe=1800
+                        local t=a.frame%(pe*2)
+                        if t>=150 and t<pe then
+                            a.angle=a.angle+0.0006*(a.angle<1.57 and 1 or -1)
+                        elseif t>=pe and t<2*pe-150 then
+                            a.angle=a.angle-0.0006*(a.angle<1.57 and 1 or -1)
+                        end
+                        if t%60==42 then
+                            a.spawnEvent.period=999
+                        elseif t%60==0 then
+                            a.spawnEvent.period=3
+                            a.spawnEvent.frame=0
+                            a.angle=math.pi-a.angle
+                        end
+
+                    end
+                }
             end
         },
     }

@@ -63,9 +63,11 @@ local G={
                     SFX:play('select')
                 elseif isPressed('right') then
                     self.currentUI.chosenLevel=self.currentUI.chosenLevel%levelNum+1
+                    self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#levelData[self.currentUI.chosenLevel])
                     SFX:play('select')
                 elseif isPressed('left') then
                     self.currentUI.chosenLevel=(self.currentUI.chosenLevel-2)%levelNum+1
+                    self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#levelData[self.currentUI.chosenLevel])
                     SFX:play('select')
                 elseif isPressed('z') then
                     SFX:play('select')
@@ -226,6 +228,7 @@ local G={
 
 G.STATE=G.STATES.MAIN_MENU
 G.frame=0
+G.sceneTempObjs={}
 
 local lume = require "lume"
 G.saveData=function(self)
@@ -277,6 +280,12 @@ G._end=function(self)
     if self.spellNameText and not self.spellNameText.removed then
         self.spellNameText:remove()
     end
+    for i,obj in pairs(self.sceneTempObjs) do
+        if not obj.removed then
+            obj:remove()
+        end
+    end
+    self.sceneTempObjs={}
 end
 G.update=function(self,dt)
     self.frame=self.frame+1
