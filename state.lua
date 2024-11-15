@@ -81,46 +81,64 @@ local G={
                     self.STATE=self.STATES.MAIN_MENU
                 elseif isPressed('[') then
                     SFX:play('select')
-                    self.save.levelPassed[level][scene]=math.max(self.save.levelPassed[level][scene]-1,0)
+                    self.save.levelData[level][scene].passed=math.max(self.save.levelData[level][scene].passed-1,0)
                 elseif isPressed(']') then
                     SFX:play('select')
-                    self.save.levelPassed[level][scene]=math.min(self.save.levelPassed[level][scene]+1,2)
+                    self.save.levelData[level][scene].passed=math.min(self.save.levelData[level][scene].passed+1,2)
                 end
             end,
             draw=function(self)
                 self.updateDynamicPatternData(self.patternData)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
-                if ScreenshotManager.data[level][scene].batch then
-                    local data=ScreenshotManager.data[level][scene]
-                    data.batch:clear()
-                    data.batch:add(data.quad,350,25,0,0.75,0.75,0,0)
-                    data.batch:flush()
-                    love.graphics.draw(data.batch)
-                    love.graphics.rectangle("line",350,25,375,450)
-                end
+
+                -- print Level x and Scene x
                 SetFont(36)
                 love.graphics.print("Level "..level,100,50,0,1,1)
                 SetFont(36)
                 for index, value in ipairs(levelData[level]) do
                     local color={love.graphics.getColor()}
                     love.graphics.setColor(.7,.6,.6)
-                    if self.save.levelPassed[level][index]==1 then
+                    if self.save.levelData[level][index].passed==1 then
                         love.graphics.setColor(.7,1,.7)
-                    elseif self.save.levelPassed[level][index]==2 then
+                    elseif self.save.levelData[level][index].passed==2 then
                         love.graphics.setColor(1,1,0.5)
                     end
                     love.graphics.print("Scene "..index,100,100+index*50,0,1,1)
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
+                -- draw rectangle to mark current selected scene 
                 love.graphics.rectangle("line",100,100+scene*50,200,50)
+
+
+                -- show screenshot
+                if ScreenshotManager.data[level][scene].batch then
+                    local x0,y0=325,25
+                    local ratio=0.75
+                    local width,height=500,600
+                    local data=ScreenshotManager.data[level][scene]
+                    data.batch:clear()
+                    data.batch:add(data.quad,x0,y0,0,ratio,ratio,0,0)
+                    data.batch:flush()
+                    love.graphics.draw(data.batch)
+                    love.graphics.rectangle("line",x0,y0,width*ratio,height*ratio)
+                end
+
+                -- show quote
                 love.graphics.rectangle("line",325,500,400,80)
                 local text=levelData.defaultQuote
-                if self.save.levelPassed[level][scene]>=1 then
+                local save=self.save.levelData[level][scene]
+                if save.passed>=1 then
                     text=levelData[level][scene].quote or ''
                 end
                 SetFont(18)
                 love.graphics.printf(text,330,510,380,"left",0,1,1)
+
+                -- show try count / first pass / first perfect data
+                SetFont(14)
+                love.graphics.printf(save.tryCount..' tries',710,25,90,'left')
+                love.graphics.printf('First pass:\n'..save.firstPass..' tries',710,50,90,'left')
+                love.graphics.printf('First perfect:\n'..save.firstPerfect..' tries',710,90,90,'left')
             end
         },
         IN_LEVEL={
@@ -156,6 +174,7 @@ local G={
                     EXIT=function(self)
                         self:removeAll()
                         self.STATE=self.STATES.CHOOSE_LEVELS
+                        self:incremenTryCount()
                     end,
                     RESUME=function(self)self.STATE=self.STATES.IN_LEVEL end
                 })
@@ -244,23 +263,26 @@ G.loadData=function(self)
         local data = lume.deserialize(file)
         self.save=data or {}
     end
-    if not self.save.levelPassed then
-        self.save.levelPassed={}
+    if not self.save.levelData then
+        self.save.levelData={}
     end
     for k,value in ipairs(levelData) do
-        if not self.save.levelPassed[k] then
-            self.save.levelPassed[k]={}
+        if not self.save.levelData[k] then
+            self.save.levelData[k]={}
         end
         for i=1,#value do
-            if not self.save.levelPassed[k][i] then
-                self.save.levelPassed[k][i]=0
+            if not self.save.levelData[k][i] then
+                self.save.levelData[k][i]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}
+            elseif type(self.save.levelData[k][i])=='number'then --compatible with old save
+                self.save.levelData[k][i]={passed=self.save.levelData[k][i],tryCount=0,firstPass=0,firstPerfect=0}
             end
         end
     end
 end
 G:loadData()
 G.win=function(self)
-    self:_end()
+    self:incremenTryCount()
+    self.STATE=self.STATES.GAME_END
     self.won_current_scene=true
     local winLevel=1
     if Player.objects[1].hp==Player.objects[1].maxhp then
@@ -268,24 +290,25 @@ G.win=function(self)
     end
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    self.save.levelPassed[level][scene]=math.max(self.save.levelPassed[level][scene],winLevel)
+    self.save.levelData[level][scene].passed=math.max(self.save.levelData[level][scene].passed,winLevel)
+    if self.save.levelData[level][scene].firstPass==0 then
+        self.save.levelData[level][scene].firstPass=self.save.levelData[level][scene].tryCount
+    end
+    if self.save.levelData[level][scene].firstPerfect==0 and winLevel==2 then
+        self.save.levelData[level][scene].firstPerfect=self.save.levelData[level][scene].tryCount
+    end
     self:saveData()
 end
 G.lose=function(self)
-    self:_end()
+    self:incremenTryCount()
+    self.STATE=self.STATES.GAME_END
     self.won_current_scene=false
 end
-G._end=function(self)
-    self.STATE=self.STATES.GAME_END
-    if self.spellNameText and not self.spellNameText.removed then
-        self.spellNameText:remove()
-    end
-    for i,obj in pairs(self.sceneTempObjs) do
-        if not obj.removed then
-            obj:remove()
-        end
-    end
-    self.sceneTempObjs={}
+G.incremenTryCount=function(self)
+    local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+    local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+    self.save.levelData[level][scene].tryCount=self.save.levelData[level][scene].tryCount+1
+    self:saveData()
 end
 G.update=function(self,dt)
     self.frame=self.frame+1
@@ -366,12 +389,16 @@ G.draw=function(self)
 end
 G.removeAll=function(self)
     Asset:clearBatches()
-    -- BulletSpawner:removeAll()
-    -- Circle:removeAll()
-    -- Player:removeAll()
-    -- Event:removeAll()
-    -- Enemy:removeAll()
     Object:removeAll()
+    if self.spellNameText and not self.spellNameText.removed then
+        self.spellNameText:remove()
+    end
+    for i,obj in pairs(self.sceneTempObjs) do
+        if not obj.removed then
+            obj:remove()
+        end
+    end
+    self.sceneTempObjs={}
 end
 
 

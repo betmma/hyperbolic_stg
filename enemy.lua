@@ -32,7 +32,7 @@ function Enemy:update(dt)
             -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
             --     self.presaved=true
             -- end
-            if self.hp<0 then
+            if self.hp<0 and not self.removed then
                 SFX:play('kill')
                 self:remove()
                 if self.mainEnemy then
