@@ -18,6 +18,7 @@ end
 local G={
     STATES={
         MAIN_MENU='MAIN_MENU',
+        OPTIONS='OPTIONS',
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
         PAUSE='PAUSE',
@@ -28,11 +29,12 @@ local G={
         MAIN_MENU={
             options={
                 {text='START',value='START'},
+                {text='OPTIONS',value='OPTIONS'},
                 {text='EXIT',value='EXIT'},
             },
             chosen=1,
             update=function(self,dt)
-                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end})
+                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end,OPTIONS=function(self)self.STATE=self.STATES.OPTIONS end})
             end,
             draw=function(self)
                 self.updateDynamicPatternData(self.patternData)
@@ -41,9 +43,51 @@ local G={
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
                     local name=value.text
-                    love.graphics.print(name,300,300+index*100,0,1,1)
+                    love.graphics.print(name,300,300+index*50,0,1,1)
                 end
-                love.graphics.rectangle("line",300,300+self.currentUI.chosen*100,200,50)
+                love.graphics.rectangle("line",300,300+self.currentUI.chosen*50,200,50)
+                love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+            end
+        },
+        OPTIONS={
+            options={
+                {text='Master Volume',value='master_volume'},
+                {text='Music Volume',value='music_volume'},
+                {text='SFX Volume',value='sfx_volume'},
+                {text='EXIT',value='EXIT'},
+            },
+            chosen=1,
+            update=function(self,dt)
+                optionsCalc(self,{EXIT=function(self)self.STATE=self.STATES.MAIN_MENU;self:saveData() end})
+                local optionKey=self.currentUI.options[self.currentUI.chosen].value
+                if love.keyboard.isDown('right') then
+                    self.save.options[optionKey]=math.clamp(self.save.options[optionKey]+1,0,100)
+                    SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
+                    BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
+                    SFX:play('select')
+                elseif love.keyboard.isDown('left') then
+                    self.save.options[optionKey]=math.clamp(self.save.options[optionKey]-1,0,100)
+                    SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
+                    BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
+                    SFX:play('select')
+                elseif isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self.STATE=self.STATES.MAIN_MENU
+                end
+            end,
+            draw=function(self)
+                self.updateDynamicPatternData(self.patternData)
+                SetFont(48)
+                love.graphics.print("Options", 100, 60)
+                SetFont(36)
+                for index, value in ipairs(self.currentUI.options) do
+                    local name=value.text
+                    love.graphics.print(name,100,index<#self.currentUI.options and 100+index*50 or 500,0,1,1)
+                    if value.value~='EXIT' then
+                        love.graphics.printf(self.save.options[value.value],600,100+index*50,100,'right')
+                    end
+                end
+                love.graphics.rectangle("line",100,self.currentUI.chosen<#self.currentUI.options and 100+self.currentUI.chosen*50 or 500,600,50)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
             end
         },
@@ -152,6 +196,10 @@ local G={
                     SFX:play('select')
                     -- self:removeAll()
                     self.STATE=self.STATES.PAUSE
+                elseif isPressed('r')then
+                    self:incrementTryCount()
+                    self:removeAll()
+                    levelData[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene].make()
                 end
             end,
             draw=function(self)
@@ -266,6 +314,7 @@ G.loadData=function(self)
     if not self.save.levelData then
         self.save.levelData={}
     end
+    -- add data for each level (passed, tryCount, firstPass, firstPerfect)
     for k,value in ipairs(levelData) do
         if not self.save.levelData[k] then
             self.save.levelData[k]={}
@@ -278,10 +327,18 @@ G.loadData=function(self)
             end
         end
     end
+    -- add options data
+    if not self.save.options then
+        self.save.options={
+            master_volume=100,
+            music_volume=100,
+            sfx_volume=100
+        }
+    end
 end
 G:loadData()
 G.win=function(self)
-    self:incremenTryCount()
+    self:incrementTryCount()
     self.STATE=self.STATES.GAME_END
     self.won_current_scene=true
     local winLevel=1
@@ -300,11 +357,11 @@ G.win=function(self)
     self:saveData()
 end
 G.lose=function(self)
-    self:incremenTryCount()
+    self:incrementTryCount()
     self.STATE=self.STATES.GAME_END
     self.won_current_scene=false
 end
-G.incremenTryCount=function(self)
+G.incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
     self.save.levelData[level][scene].tryCount=self.save.levelData[level][scene].tryCount+1
