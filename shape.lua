@@ -87,6 +87,29 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     return {centerX+radius*math.cos(direction),Shape.axisY+radius*math.sin(direction)}
 end
 
+-- love is really silly to not provide arc without lines toward center
+-- but anyway to draw hyperbolic arc it's better to have my own func
+-- (the one in polyline can only draw arc < pi. think about it, there is no way a 3/4 circle can be drawn with only 1 scissor)
+function Shape.drawNormalArc(x, y, r, s_ang, e_ang, numLines)
+	local step = ((e_ang-s_ang) / numLines)
+	local ang1 = s_ang
+	local ang2 = 0
+	
+	for i=1,numLines do
+		ang2 = ang1 + step
+		love.graphics.line(x + (math.cos(ang1) * r), y + (math.sin(ang1) * r),
+			x + (math.cos(ang2) * r), y + (math.sin(ang2) * r))
+		ang1 = ang2
+	end
+end
+
+function Shape.drawHyperbolicArc(x, y, r, s_ang, e_ang, numLines)
+    local x2,y2,r2=Shape.getCircle(x,y,r)
+    _,_,s_ang=Shape.rThetaPos(x,y,r,s_ang)
+    _,_,e_ang=Shape.rThetaPos(x,y,r,e_ang)
+	Shape.drawNormalArc(x2,y2,r2,s_ang,e_ang,numLines)
+end
+
 function Shape.drawCircle(x,y,r)
     x,y,r=Shape.getCircle(x,y,r)
     love.graphics.circle("line", x,y,r)
@@ -173,9 +196,13 @@ function Shape:update(dt)
     if self.frame>self.lifeFrame then
         self:remove()
     end
-    if self.x<-self.removeDistance+150 or self.x>self.removeDistance+love.graphics.getWidth()-150 or math.abs(self.y-Shape.axisY)<25 or self.y<-self.removeDistance or self.y>self.removeDistance+love.graphics.getHeight() then
+    if self.x<-self.removeDistance+150 or self.x>self.removeDistance+love.graphics.getWidth()-150 or math.abs(self.y-Shape.axisY)<50/math.log(self.removeDistance,10) or self.y<-self.removeDistance or self.y>self.removeDistance+love.graphics.getHeight() then
         self:remove()
     end
+    self:updateMove(dt)
+end
+
+function Shape:updateMove(dt)
     self.metric=self:getMetric()
     self.moveRadius=self:getMoveRadius()
     local moveDistance=self.speed* dt * Shape.timeSpeed * self.metric

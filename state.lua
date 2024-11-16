@@ -37,6 +37,8 @@ local G={
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end,OPTIONS=function(self)self.STATE=self.STATES.OPTIONS end})
             end,
             draw=function(self)
+            end,
+            drawText=function(self)
                 self.updateDynamicPatternData(self.patternData)
                 SetFont(96)
                 love.graphics.print("Hyperbolic\n   STG",200,100,0,1,1)
@@ -76,6 +78,8 @@ local G={
                 end
             end,
             draw=function(self)
+            end,
+            drawText=function(self)
                 self.updateDynamicPatternData(self.patternData)
                 SetFont(48)
                 love.graphics.print("Options", 100, 60)
@@ -132,6 +136,8 @@ local G={
                 end
             end,
             draw=function(self)
+            end,
+            drawText=function(self)
                 self.updateDynamicPatternData(self.patternData)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
@@ -204,11 +210,13 @@ local G={
             end,
             draw=function(self)
                 Asset:drawBatches()
+                Object:drawAll()
+            end,
+            drawText=function(self)
                 SetFont(18)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
                 love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
-                Object:drawAll()
             end
         },
         PAUSE={
@@ -222,7 +230,7 @@ local G={
                     EXIT=function(self)
                         self:removeAll()
                         self.STATE=self.STATES.CHOOSE_LEVELS
-                        self:incremenTryCount()
+                        self:incrementTryCount()
                     end,
                     RESUME=function(self)self.STATE=self.STATES.IN_LEVEL end
                 })
@@ -234,7 +242,8 @@ local G={
             draw=function(self)
                 Asset:drawBatches()
                 Object:drawAll()
-                
+            end,
+            drawText=function(self)
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -273,7 +282,8 @@ local G={
             draw=function(self)
                 Asset:drawBatches()
                 Object:drawAll()
-                
+            end,
+            drawText=function(self)
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -296,6 +306,11 @@ local G={
 G.STATE=G.STATES.MAIN_MENU
 G.frame=0
 G.sceneTempObjs={}
+G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
+G.viewMode={
+    mode=G.VIEW_MODES.NORMAL,
+    object=...,
+}
 
 local lume = require "lume"
 G.saveData=function(self)
@@ -442,7 +457,22 @@ G.patternPoint={x=400,y=100}
 G.patternAngle=math.pi/3
 G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
-    self.currentUI.draw(self)
+    if G.viewMode.mode==G.VIEW_MODES.NORMAL then
+        self.currentUI.draw(self)
+        self.currentUI.drawText(self)
+    elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.viewMode.object then
+        love.graphics.push()
+        local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
+        local screenWidth, screenHeight = love.graphics.getDimensions()
+        love.graphics.translate((screenWidth / 2-G.viewMode.object.x*scale),(screenHeight / 2-G.viewMode.object.y*scale))
+        love.graphics.scale(scale)
+        -- love.graphics.translate(-G.viewMode.object.x,100)
+        -- love.graphics.translate(screenWidth / 2, screenHeight / 2)
+        -- love.graphics.translate(G.viewMode.object.x,G.viewMode.object.y)
+        self.currentUI.draw(self)
+        love.graphics.pop()
+        self.currentUI.drawText(self)
+    end
 end
 G.removeAll=function(self)
     Asset:clearBatches()

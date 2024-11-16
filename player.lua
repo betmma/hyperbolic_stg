@@ -3,7 +3,18 @@ local Shape = require "shape"
 local Circle=require"circle"
 local PolyLine=require"polyline"
 local Player = Shape:extend()
-
+Player.moveModes={
+    -- North Pole (400, Shape.axisY). Move directions are same as Polar Coordinate System in Euclid space, that is Up / Down -> close to / away from pole. Left / Right -> along the arc centered at North Pole.
+    -- Up & Down: not in hyperbolic line.
+    -- Left & Right: in hyperbolic line.
+    -- Orthogonality: True.
+    Monopolar='Monopolar',
+    -- North Pole (400, Shape.axisY), East Pole (+∞, 400). Up / Down -> only change y coordinate. Left / Right -> same as Monopolar, along the arc.
+    -- Up & Down: in hyperbolic line.
+    -- Left & Right: in hyperbolic line.
+    -- Orthogonality: False.
+    Bipolar='Bipolar'
+}
 function Player:new(x, y, movespeed)
     Player.super.new(self, {x=x, y=y})
     self.lifeFrame=9999999
@@ -27,6 +38,8 @@ function Player:new(x, y, movespeed)
     self.invincibleTime=0
 
     self.shootRows=4
+
+    self.moveMode=Player.moveModes.Bipolar
 end
 local function isDownInt(keyname)
     return love.keyboard.isDown(keyname)and 1 or 0
@@ -35,7 +48,9 @@ end
 function Player:update(dt)
     local xref=self.x
     local yref=self.y
-    self.direction=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
+    local rightDir=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
+    local downDir=self.moveMode==Player.moveModes.Bipolar and 0 or rightDir
+    self.direction=rightDir
     local right=isDownInt("right")-isDownInt("left")
     if right==-1 then
         self.direction=math.pi+self.direction
@@ -49,12 +64,12 @@ function Player:update(dt)
     elseif right*down==0 then
         self.speed=self.movespeed
         if right==0 then
-            self.direction=math.pi/2*down
+            self.direction=math.pi/2*down+downDir
         end
     else
-        local downdir=math.pi/2*down
-        self.speed=self.movespeed*2*math.cos((self.direction-downdir)/2)
-        self.direction=(self.direction+downdir)/2
+        local upOrDownDir=math.pi/2*down+downDir
+        self.speed=self.movespeed*2*math.cos((self.direction-upOrDownDir)/2)
+        self.direction=(self.direction+upOrDownDir)/2
     end
     if love.keyboard.isDown('lshift') then
         self.speed=self.speed*self.focusFactor
