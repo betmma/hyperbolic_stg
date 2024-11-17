@@ -15,7 +15,7 @@ function math.clamp(val, lower, upper)
     return math.max(lower, math.min(upper, val))
 end
 
----@return number?
+---@return number
 -- input: a number or 'a+b', return that number or random number in [a-b,a+b]. Warning: it returns a float number for 'a+b'.
 function math.eval(str)
     -- Check if the string is in the format 'a+b' where a can be negative
@@ -29,7 +29,7 @@ function math.eval(str)
         return math.random()*b*2+a-b
     else
         -- Otherwise, assume the string is just a number
-        return tonumber(str)
+        return tonumber(str) or 0
     end
 end
 

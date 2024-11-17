@@ -52,7 +52,7 @@ function BulletSpawner:new(args)
         local cir=Circle(args)
         -- table.insert(ret,cir)
         for key, func in pairs(self.bulletEvents) do
-            func(cir,args)
+            func(cir,args,self)
         end
     end
     if self.fogEffect then
