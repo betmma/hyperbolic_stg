@@ -15,6 +15,7 @@ function AudioSystem:new(args)
     self.volume=args.volume or 1
 end
 function AudioSystem:play(name)
+    love.audio.stop(self.data[name])
     self.data[name]:play()
 end
 function AudioSystem:setVolume(volume)
@@ -24,7 +25,7 @@ function AudioSystem:setVolume(volume)
     end
     self.currentVolume=volume
 end
-local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill'},volumeCoeff=0.5}
+local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel'},volumeCoeff=0.5}
 local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title'},volumeCoeff=1,looping=true}
 local Audio={
     sfx=sfx,

@@ -19,6 +19,7 @@ local G={
     STATES={
         MAIN_MENU='MAIN_MENU',
         OPTIONS='OPTIONS',
+        UPGRADES='UPGRADES',
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
         PAUSE='PAUSE',
@@ -95,6 +96,170 @@ local G={
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
             end
         },
+        UPGRADES={
+            upgrades={
+                increaseHP={
+                    name='Increase HP',
+                    description='Increase HP by 1',
+                    cost=3
+                },
+                test={
+                    name='Test',
+                    description='blah',
+                    cost=12
+                }
+            },
+            -- note that: below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
+            options={
+                {
+                    {
+                        upgrade='increaseHP',
+                        connect={right=true},
+                        need={}
+                    },
+                    {
+                        upgrade='test',
+                        connect={left=true},
+                        need={{1,1}}
+                    },
+                    {}
+                },
+                {
+                    {},
+                    {},
+                    {}
+                }
+            },
+            chosen={1,1},
+            calculateRestXP=function(self)
+                local xp=0
+                for k,value in ipairs(self.save.levelData) do
+                    for i=1,#value do
+                        local pass=self.save.levelData[k][i].passed
+                        if pass==1 then
+                            xp=xp+1
+                        elseif pass==2 then
+                            xp=xp+1.2
+                        end
+                    end
+                end
+                local options=self.currentUI.options
+                for k,value in ipairs(options) do
+                    for i=1,#value do
+                        local option=value[i]
+                        if option.upgrade and self.save.upgrades[i][k].bought then
+                            xp=xp-self.currentUI.upgrades[option.upgrade].cost
+                        end
+                    end
+                end
+                return xp
+            end,
+            update=function(self,dt)
+                local options=self.currentUI.options
+                local chosen=self.currentUI.chosen
+                local option=options[chosen[2]][chosen[1]]
+                local dirValues={down={0,1},up={0,-1},left={-1,0},right={1,0}}
+                for key, dir in pairs(dirValues) do
+                    if isPressed(key) then
+                        local dx,dy=dir[1],dir[2]
+                        local newx,newy=chosen[1]+dx,chosen[2]+dy
+                        if option.connect[key] then
+                            self.currentUI.chosen={newx,newy} 
+                        end
+                        break
+                    end
+                end
+                if isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self.STATE=self.STATES.CHOOSE_LEVELS
+                    self:saveData()
+                elseif isPressed('z') then
+                    local restXP=self.currentUI.calculateRestXP(self)
+                    if option.upgrade then
+                        local upgrade=self.currentUI.upgrades[option.upgrade]
+                        local bought=self.save.upgrades[chosen[1]][chosen[2]].bought
+                        if bought then
+                            self.save.upgrades[chosen[1]][chosen[2]].bought=false
+                            SFX:play('select')
+                            -- need to cancel all upgrades related to this upgrade
+                        elseif restXP<upgrade.cost then
+                            SFX:play('cancel')
+                        else
+                            self.save.upgrades[chosen[1]][chosen[2]].bought=true
+                            SFX:play('select')
+                        end
+                    end
+                end
+            end,
+            draw=function(self)
+            end,
+            drawText=function(self)
+                local color={love.graphics.getColor()}
+                self.updateDynamicPatternData(self.patternData)
+
+                --draw upgrades
+                local options=self.currentUI.options
+                local xbegin,ybegin=50,100
+                local dx,size=50,30
+                local gap=(dx-size)/2
+                local sizeX,sizeY=#self.currentUI.options[1],#self.currentUI.options
+                for x=1,sizeX do
+                    for y=1,sizeY do
+                        local option=options[y][x]
+                        if not option.upgrade then
+                            goto continue
+                        end
+                        local need=option.need
+                        local display=true
+                        for key, value in pairs(need) do
+                            -- love.graphics.print(''..x..', '..y, xbegin+dx*x,ybegin+dx*y)
+                            if self.save.upgrades[value[1]][value[2]].bought==false then
+                                display=false;break
+                            end
+                        end
+                        if display then
+                            local bought=self.save.upgrades[x][y].bought
+                            if bought then
+                                love.graphics.setColor(1,1,1)
+                            else
+                                love.graphics.setColor(.8,.8,.8)
+                            end
+                            love.graphics.rectangle(bought and "fill" or "line",gap+xbegin+dx*x,gap+ybegin+dx*y,size,size)
+                        end
+                        ::continue::
+                    end
+                end
+                -- draw chosen
+                local chosen=self.currentUI.chosen
+                local chosenOption=options[chosen[2]][chosen[1]]
+                local x,y=chosen[1],chosen[2]
+                love.graphics.setColor(1,1,1)
+                love.graphics.rectangle("line",xbegin+dx*x,ybegin+dx*y,dx,dx)
+                -- print text
+                if chosenOption.upgrade then
+                    local upgrade=self.currentUI.upgrades[chosenOption.upgrade]
+                    SetFont(24)
+                    love.graphics.printf(upgrade.name,100,450,380,"left",0,1,1)
+                    SetFont(18)
+                    love.graphics.printf(upgrade.description,110,485,380,"left",0,1,1)
+                    love.graphics.printf('Cost: '..upgrade.cost..' XP',110,540,380,"left",0,1,1)
+                    love.graphics.rectangle("line",100,480,600,85)
+                end
+
+
+                SetFont(48)
+                love.graphics.print("Upgrades", 100, 60)
+                SetFont(36)
+                love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                
+                -- show "X: return"
+                SetFont(18)
+                love.graphics.printf("X: Return  Z: Buy / Refund",100,570,380,"left",0,1,1)
+                love.graphics.printf("Current XP: "..self.currentUI.calculateRestXP(self),400,570,380,"left",0,1,1)
+
+                love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
+            end
+        },
         CHOOSE_LEVELS={
             chosenLevel=1,
             chosenScene=1,
@@ -124,6 +289,9 @@ local G={
                     self.currentLevel={level,scene}
                     Shape.restore()
                     levelData[level][scene].make()
+                elseif isPressed('c') then
+                    SFX:play('select')
+                    self.STATE=self.STATES.UPGRADES
                 elseif isPressed('x') or isPressed('escape')then
                     SFX:play('select')
                     self.STATE=self.STATES.MAIN_MENU
@@ -189,6 +357,10 @@ local G={
                 love.graphics.printf(save.tryCount..' tries',710,25,90,'left')
                 love.graphics.printf('First pass:\n'..save.firstPass..' tries',710,50,90,'left')
                 love.graphics.printf('First perfect:\n'..save.firstPerfect..' tries',710,90,90,'left')
+
+                -- show "C: upgrades menu"
+                SetFont(18)
+                love.graphics.printf("C: Upgrades Menu",100,570,380,"left",0,1,1)
             end
         },
         IN_LEVEL={
@@ -350,6 +522,24 @@ G.loadData=function(self)
             sfx_volume=100
         }
     end
+    -- add upgrades data
+    if not self.save.upgrades then
+        self.save.upgrades={}
+    end
+    local options=self.UIDEF.UPGRADES.options
+    local sizeX,sizeY=#options[1],#options
+    for x=1,sizeX do
+        if not self.save.upgrades[x] then
+            self.save.upgrades[x]={}
+        end
+        for y=1,sizeY do
+            if not self.save.upgrades[x][y] then
+                self.save.upgrades[x][y]={bought=false}
+            end
+        end
+    end
+
+    self:saveData()
 end
 G:loadData()
 G.win=function(self)
