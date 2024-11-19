@@ -24,6 +24,7 @@ function Enemy:update(dt)
     else
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
     end
+    Circle.checkHitPlayer(self)
     for key, circ in pairs(Circle.objects) do
         if circ.fromPlayer and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
             self.hp=self.hp-(circ.damage or 1)

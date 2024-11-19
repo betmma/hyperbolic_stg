@@ -40,6 +40,7 @@ function Circle:update(dt)
     end
     Circle.super.update(self,dt)
     self:drawSprite()
+    self:checkShockwaveRemove()
     self:checkHitPlayer()
 end
 
@@ -53,8 +54,7 @@ function Circle:drawSprite()
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
     end
 end
-
-function Circle:checkHitPlayer()
+function Circle:checkShockwaveRemove()
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do
             if shockwave.canRemove.bullet and(self.invincible==false or shockwave.canRemove.invincible) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
@@ -62,6 +62,10 @@ function Circle:checkHitPlayer()
                 self:removeEffect()
             end
         end
+    end
+end
+function Circle:checkHitPlayer()
+    if not self.safe then 
         for key, player in pairs(Player.objects) do
             local dis=Shape.distance(player.x,player.y,self.x,self.y)
             local radi=player.radius+self.radius

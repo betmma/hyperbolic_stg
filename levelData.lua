@@ -615,7 +615,7 @@ local levelData={
             spellName='Black Magic "Gamma-ray Burst"',
             make=function()
                 -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
-                local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800}
+                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
                 local player=Player(400,600)
                 -- player.moveMode=Player.moveModes.Monopolar
                 -- G.viewMode.object=player

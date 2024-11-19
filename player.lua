@@ -35,6 +35,8 @@ function Player:new(x, y, movespeed)
 
     self.maxhp=3
     self.hp=self.maxhp
+    self.hpRegen=0
+    self.hurt=false --to check perfect completion
     self.invincibleTime=0
 
     self.shootRows={
@@ -122,6 +124,11 @@ function Player:update(dt)
         self.invincibleTime=0
         -- it's not ideal to handle hit in player:update, cuz different bullets may have non-circle hitbox (like laser) so this part will grow long
     end
+
+    -- hp regen
+    self.hp=math.clamp(self.hp+self.hpRegen*dt,0,self.maxhp)
+
+    --draw hit point
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 
@@ -222,7 +229,7 @@ function Player:draw()
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
     SetFont(24)
-    love.graphics.print('HP: '..tostring(self.hp),100,100)
+    love.graphics.print('HP: '..string.format("%.2f", self.hp),40,110)
 end
 
 
@@ -233,6 +240,7 @@ end
 
 function Player:dieEffect()
     self.hp=self.hp-1
+    self.hurt=true
     self.invincibleTime=self.invincibleTime+1
     if self.hp<=0 then
         G:lose()

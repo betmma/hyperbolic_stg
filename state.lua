@@ -108,6 +108,15 @@ local G={
                         player.maxhp=player.maxhp+1
                     end
                 },
+                regenerate={
+                    name='Regenerate',
+                    description='Increase HP by 0.024 per second',
+                    cost=4,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.hpRegen=player.hpRegen+0.024
+                    end
+                },
                 homingShot={
                     name='Homing Shot',
                     description='2 rows of your shot become homing',
@@ -120,7 +129,7 @@ local G={
                 },
                 sideShot={
                     name='Side Shot',
-                    description='add 4 rows of side shot (on each side)',
+                    description='Add 4 rows of side shot (on each side)',
                     cost=3,
                     executeFunc=function()
                         local player=Player.objects[1]
@@ -129,7 +138,7 @@ local G={
                 },
                 backShot={
                     name='Back Shot',
-                    description='add 8 rows of back shot',
+                    description='Add 8 rows of back shot',
                     cost=3,
                     executeFunc=function()
                         local player=Player.objects[1]
@@ -147,10 +156,13 @@ local G={
                 {
                     {
                         upgrade='increaseHP',
-                        connect={down=true},
+                        connect={down=true,right=true},
                         need={}
                     },
                     {
+                        upgrade='regenerate',
+                        connect={left=true},
+                        need={{1,1}}
                     },
                     {
                     },
@@ -647,7 +659,7 @@ G.win=function(self)
     self.STATE=self.STATES.GAME_END
     self.won_current_scene=true
     local winLevel=1
-    if Player.objects[1].hp==Player.objects[1].maxhp then
+    if Player.objects[1].hurt==false then
         winLevel=2
     end
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
