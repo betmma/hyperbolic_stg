@@ -37,7 +37,36 @@ function Player:new(x, y, movespeed)
     self.hp=self.maxhp
     self.invincibleTime=0
 
-    self.shootRows=4
+    self.shootRows={
+        front={
+            straight={
+                num=4,
+                dmg=1,
+                sprite=BulletSprites.darkdot.cyan
+            },
+            homing={
+                num=0,
+                dmg=1,
+                sprite=BulletSprites.darkdot.red
+            }
+        },
+        side={
+            straight={
+                num=0,
+                dmg=1,
+                sprite=BulletSprites.darkdot.blue
+            }
+        },
+        back={
+            straight={
+                num=0,
+                dmg=1,
+                sprite=BulletSprites.darkdot.purple
+            }
+        }
+    }
+    self.shootRadius=0.5
+    self.shootTransparency=0.5
 
     self.moveMode=Player.moveModes.Bipolar
 end
@@ -104,16 +133,81 @@ end
 
 function Player:shoot()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local rows=self.shootRows
-    for i=1,rows do 
-        local cir=Circle({x=self.x+2*r*(i-0.5-rows/2), y=self.y, radius=0.3, lifeFrame=60, sprite=self.bulletSprite or BulletSprites.darkdot.cyan, batch=Asset.playerBulletBatch, sprite_transparency=0.5})
-        -- table.insert(ret,cir)
-        cir.fromPlayer=true
-        cir.safe=true
-        cir.direction=-math.pi/2
-        cir.speed=200
-        cir.damage=1
+    local front=self.shootRows.front
+    local frontRows=0
+    for j=1,front.straight.num do
+        frontRows=frontRows+1
+        self:shootFrontStraight(math.ceil(frontRows/2)*(-1)^frontRows,front.straight.damage,front.straight.sprite)
     end
+    for j=1,front.homing.num do
+        frontRows=frontRows+1
+        self:shootFrontHoming(math.ceil(frontRows/2)*(-1)^frontRows,front.homing.damage,front.homing.sprite)
+    end
+    local side=self.shootRows.side
+    local sideRows=0
+    for j=1,side.straight.num do
+        sideRows=sideRows+1
+        self:shootSideStraight(math.ceil(sideRows/2)*(-1)^sideRows,side.straight.damage,side.straight.sprite)
+    end
+    local back=self.shootRows.back
+    local backRows=0
+    for j=1,back.straight.num do
+        backRows=backRows+1
+        self:shootBackStraight(math.ceil(backRows/2)*(-1)^backRows,back.straight.damage,back.straight.sprite)
+    end
+end
+
+-- pos is like: -3, -2, -1, 1, 2, 3
+function Player:shootDirStraight(pos,damage,sprite,theta)
+    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
+    local dx,dy=r*2,r*(math.abs(pos)*2-1)*(pos<0 and -1 or 1)
+    local cir=Circle({x=self.x+dx*math.cos(theta)-dy*math.sin(theta), y=self.y+dx*math.sin(theta)+dy*math.cos(theta), radius=self.shootRadius, lifeFrame=60, sprite=sprite or BulletSprites.darkdot.cyan, batch=Asset.playerBulletBatch, sprite_transparency=self.shootTransparency})
+    cir.fromPlayer=true
+    cir.safe=true
+    cir.direction=theta
+    cir.speed=200
+    cir.damage=damage
+    return cir
+end
+
+function Player:shootFrontStraight(pos,damage,sprite)
+    return self:shootDirStraight(pos,damage,sprite,-math.pi/2)
+end
+function Player:shootBackStraight(pos,damage,sprite)
+    return self:shootDirStraight(pos,damage,sprite,math.pi/2)
+end
+
+-- note that this shoots 2 bullets on each side
+function Player:shootSideStraight(pos,damage,sprite)
+    for side=0,1 do
+        self:shootDirStraight(pos,damage,sprite,math.pi*side)
+    end
+end
+
+local function addHoming(cir)
+    Event.LoopEvent{
+        obj=cir,
+        period=1,
+        executeFunc=function()
+            local closestEnemy
+            local closestDistance=9e9
+            for key, value in pairs(Enemy.objects) do
+                local dis=Shape.distance(cir.x,cir.y,value.x,value.y)
+                if dis<closestDistance then
+                    closestDistance=dis
+                    closestEnemy=value
+                end
+            end
+            if closestEnemy then
+                cir.direction=Shape.to(cir.x,cir.y,closestEnemy.x,closestEnemy.y)
+            end
+        end
+    }
+end
+
+function Player:shootFrontHoming(pos,damage,sprite)
+    local cir=self:shootFrontStraight(pos,damage,sprite)
+    addHoming(cir)
 end
 
 function Player:draw()

@@ -674,28 +674,40 @@ for index, value in ipairs(levelData) do
             local ref=value2.make
             value2.make=function()
                 Shape.timeSpeed=1
-                if not value2.spellName then
-                    value2.spellName=''
+                -- show spellcard name
+                do
+                    if not value2.spellName then
+                        value2.spellName=''
+                    end
+                    local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=value2.spellName,fontSize=18,color={1,1,1,0},align='center'}
+                    G.spellNameText=txt
+                    Event.EaseEvent{
+                        obj=txt,
+                        easeFrame=120,
+                        aimTable=txt,
+                        aimKey='y',
+                        aimValue=10,
+                        progressFunc=function(x)return math.sin(x*math.pi/2) end
+                    }
+                    Event.EaseEvent{
+                        obj=txt,
+                        easeFrame=120,
+                        aimTable=txt.color,
+                        aimKey=4,
+                        aimValue=1,
+                        progressFunc=function(x)return math.sin(x*math.pi/2) end
+                    }
                 end
-                local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=value2.spellName,fontSize=18,color={1,1,1,0},align='center'}
-                G.spellNameText=txt
-                Event.EaseEvent{
-                    obj=txt,
-                    easeFrame=120,
-                    aimTable=txt,
-                    aimKey='y',
-                    aimValue=10,
-                    progressFunc=function(x)return math.sin(x*math.pi/2) end
-                }
-                Event.EaseEvent{
-                    obj=txt,
-                    easeFrame=120,
-                    aimTable=txt.color,
-                    aimKey=4,
-                    aimValue=1,
-                    progressFunc=function(x)return math.sin(x*math.pi/2) end
-                }
                 ref()
+                -- apply upgrades
+                local options=G.UIDEF.UPGRADES.options
+                for k,value in ipairs(options) do
+                    for i,option in pairs(value) do
+                        if option.upgrade and G.save.upgrades[i][k].bought==true then
+                            G.UIDEF.UPGRADES.upgrades[option.upgrade].executeFunc()
+                        end
+                    end
+                end
             end
         end
     end

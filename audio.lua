@@ -14,8 +14,10 @@ function AudioSystem:new(args)
     -- volume is used for options, while volumeCoeff is unchangable to player
     self.volume=args.volume or 1
 end
-function AudioSystem:play(name)
-    love.audio.stop(self.data[name])
+function AudioSystem:play(name,restart)
+    if restart then
+        love.audio.stop(self.data[name])
+    end
     self.data[name]:play()
 end
 function AudioSystem:setVolume(volume)

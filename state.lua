@@ -101,36 +101,114 @@ local G={
                 increaseHP={
                     name='Increase HP',
                     description='Increase HP by 1',
-                    cost=3
+                    cost=5,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.hp=player.hp+1
+                        player.maxhp=player.maxhp+1
+                    end
+                },
+                homingShot={
+                    name='Homing Shot',
+                    description='2 rows of your shot become homing',
+                    cost=5,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.shootRows.front.straight.num=player.shootRows.front.straight.num-2
+                        player.shootRows.front.homing.num=player.shootRows.front.homing.num+2
+                    end
+                },
+                sideShot={
+                    name='Side Shot',
+                    description='add 4 rows of side shot (on each side)',
+                    cost=3,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.shootRows.side.straight.num=player.shootRows.side.straight.num+4
+                    end
+                },
+                backShot={
+                    name='Back Shot',
+                    description='add 8 rows of back shot',
+                    cost=3,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.shootRows.back.straight.num=player.shootRows.back.straight.num+8
+                    end
                 },
                 test={
                     name='Test',
                     description='blah',
-                    cost=12
+                    cost=1
                 }
             },
-            -- note that: below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
+            -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
             options={
                 {
                     {
                         upgrade='increaseHP',
-                        connect={right=true},
+                        connect={down=true},
                         need={}
                     },
                     {
-                        upgrade='test',
+                    },
+                    {
+                    },
+                    {
+                    }
+                },
+                {
+                    {
+                        connect={up=true,down=true},
+                        need={}
+                    },
+                    {},
+                    {},
+                    {}
+                },
+                {
+                    {
+                        upgrade='homingShot',
+                        connect={up=true,right=true},
+                        need={}
+                    },
+                    {
+                        connect={left=true,right=true,down=true},
+                        need={{1,3}}
+                    },
+                    {
+                        upgrade='sideShot',
                         connect={left=true},
-                        need={{1,1}}
+                        need={{1,3}}
                     },
                     {}
                 },
                 {
                     {},
-                    {},
+                    {
+                        connect={up=true,right=true},
+                        need={{1,3}}
+                    },
+                    {
+                        upgrade='backShot',
+                        connect={left=true},
+                        need={{1,3}}
+                    },
                     {}
-                }
+                },
             },
             chosen={1,1},
+            needSatisfied=function(self,option)
+                if not option.need then
+                    return true
+                end
+                for key, value in pairs(option.need) do
+                    if self.save.upgrades[value[1]][value[2]].bought==false then
+                        return false
+                    end
+                end
+                return true
+            end,
             calculateRestXP=function(self)
                 local xp=0
                 for k,value in ipairs(self.save.levelData) do
@@ -163,7 +241,7 @@ local G={
                     if isPressed(key) then
                         local dx,dy=dir[1],dir[2]
                         local newx,newy=chosen[1]+dx,chosen[2]+dy
-                        if option.connect[key] then
+                        if option.connect[key] and(self.currentUI.needSatisfied(self,options[newy][newx])~=false) then
                             self.currentUI.chosen={newx,newy} 
                         end
                         break
@@ -182,8 +260,29 @@ local G={
                             self.save.upgrades[chosen[1]][chosen[2]].bought=false
                             SFX:play('select')
                             -- need to cancel all upgrades related to this upgrade
+                            local function recursiveCancel(x,y)
+                                for k,value in ipairs(options) do
+                                    for i=1,#value do
+                                        local option=value[i]
+                                        local need=option.need
+                                        if not need then
+                                            goto continue
+                                        end
+                                        for key, value in pairs(need) do
+                                            if x==value[1] and y==value[2] and self.save.upgrades[i][k].bought==true then
+                                                self.save.upgrades[i][k].bought=false
+                                                recursiveCancel(i,k)
+                                                break
+                                            end
+                                        end
+                                        
+                                        ::continue::
+                                    end
+                                end
+                            end
+                            recursiveCancel(chosen[1],chosen[2])
                         elseif restXP<upgrade.cost then
-                            SFX:play('cancel')
+                            SFX:play('cancel',true)
                         else
                             self.save.upgrades[chosen[1]][chosen[2]].bought=true
                             SFX:play('select')
@@ -203,21 +302,22 @@ local G={
                 local dx,size=50,30
                 local gap=(dx-size)/2
                 local sizeX,sizeY=#self.currentUI.options[1],#self.currentUI.options
+                local dirValues={down={0,1},up={0,-1},left={-1,0},right={1,0}}
                 for x=1,sizeX do
                     for y=1,sizeY do
                         local option=options[y][x]
-                        if not option.upgrade then
-                            goto continue
-                        end
-                        local need=option.need
-                        local display=true
-                        for key, value in pairs(need) do
-                            -- love.graphics.print(''..x..', '..y, xbegin+dx*x,ybegin+dx*y)
-                            if self.save.upgrades[value[1]][value[2]].bought==false then
-                                display=false;break
+                        if self.currentUI.needSatisfied(self,option) then
+                            if option.connect then
+                                for key, value in pairs(option.connect) do
+                                    local dirValue=dirValues[key]
+                                    local nx,ny=x+dirValue[1]/2,y+dirValue[2]/2
+                                    love.graphics.setColor(1,1,1)
+                                    love.graphics.line(dx/2+xbegin+dx*x,dx/2+ybegin+dx*y,dx/2+xbegin+dx*nx,dx/2+ybegin+dx*ny)
+                                end
                             end
-                        end
-                        if display then
+                            if not option.upgrade then
+                                goto continue
+                            end
                             local bought=self.save.upgrades[x][y].bought
                             if bought then
                                 love.graphics.setColor(1,1,1)
