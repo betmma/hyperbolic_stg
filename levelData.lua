@@ -665,6 +665,102 @@ local levelData={
                 }
             end
         },
+        {
+            quote='???',
+            user='koishi',
+            spellName='Unconscious "Super-Ego\'s Trace"',
+            make=function()
+                Shape.removeDistance=300
+                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+                local player=Player(400,600)
+                local moveFunc=function(cir,args,self)
+                    local color2ratio={green=0.3,blue=0.5,purple=0.8,red=1}
+                    local color=SpriteData[cir.sprite].color
+                    local moveRatio=color2ratio[color]
+                    local ratio=(cir.args.index/self.bulletNumber)
+                    if color=='purple'or color=='red'then
+                        cir.speed=cir.speed*ratio
+                        cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
+                    end
+                    Event.EaseEvent{
+                        obj=cir,
+                        easeFrame=9500,--*ratio,
+                        aimTable=cir,
+                        aimKey='x',
+                        aimValue=cir.x+moveRatio,
+                        progressFunc=function(x)
+                            return player.x--math.sin(x*math.pi*2)
+                        end
+                    }
+                    Event.EaseEvent{
+                        obj=cir,
+                        easeFrame=9500,--*ratio,
+                        aimTable=cir,
+                        aimKey='y',
+                        aimValue=cir.y+moveRatio,
+                        progressFunc=function(x)
+                            return player.y--math.sin(x*math.pi*2)
+                        end
+                    }
+                end
+                local a,b,c,d
+                a=BulletSpawner{x=400,y=300,period=120,lifeFrame=10000,bulletNumber=10,bulletSpeed='20',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.green,bulletEvents={
+                    moveFunc
+                }}
+                a.removeDistance=500
+                Event.LoopEvent{
+                    period=1,
+                    obj=a,
+                    executeFunc=function()
+                        local frame=a.frame
+                        local theta=frame/120
+                        local x,y=Shape.rThetaPos(player.x,player.y,30,theta)
+                        a.x,a.y=x,y
+                        local per=en.hp/en.maxhp
+                        if per<0.8 and not b then
+                            b=BulletSpawner{x=400,y=300,period=120,lifeFrame=10000,bulletNumber=10,bulletSpeed='15',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.blue,bulletEvents={
+                                moveFunc,
+                                function(cir,args,self)
+                                    Event.DelayEvent{
+                                        delayFrame=20,
+                                        executeFunc=function()
+                                            cir.direction=Shape.to(b.x,b.y,player.x,player.y)
+                                        end
+                                    }
+                                end
+                            }}
+                            b.removeDistance=500
+                        end
+                        if b then
+                            local x,y=Shape.rThetaPos(player.x,player.y,math.min(40,30+b.frame/2),theta+b.frame/360)
+                            b.x,b.y=x,y
+                        end
+                        if per<0.6 and not c then
+                            c=BulletSpawner{x=400,y=300,period=180,lifeFrame=10000,bulletNumber=4,bulletSpeed='10',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.purple,bulletEvents={
+                                moveFunc,
+                            }}
+                            c.removeDistance=500
+                        end
+                        if c then
+                            local x,y=Shape.rThetaPos(player.x,player.y,math.min(50,40+c.frame/2),theta+b.frame/360+c.frame/240)
+                            c.x,c.y=x,y
+                        end
+                        if per<0.4 and not d then
+                            local the=theta+b.frame/360+c.frame/240
+                            local need=math.pi-the%math.pi
+                            d=BulletSpawner{x=400,y=300,period=376.8,frame=376.8-need*120,lifeFrame=10000,bulletNumber=1,bulletSpeed='8',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.red,bulletEvents={
+                                moveFunc,
+                            }}
+                            d.removeDistance=10000
+                        end
+                        if d then
+                            local x,y=Shape.rThetaPos(player.x,player.y,math.min(60,50+c.frame/2),theta+b.frame/360+c.frame/240+(d.frame-200)/120)
+                            d.x,d.y=x,y
+                        end
+                    end
+                }
+            end
+        },
     }
 }
 local Text=require"text"

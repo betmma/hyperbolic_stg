@@ -85,7 +85,6 @@ function EaseEvent:new(args)
     LoopEvent.super.new(self, args)
     self.time=0
     self.frame=0
-    self.lastTime=0
     self.period=args.easeFrame or 60
     self.aimTable=args.aimTable or {}
     self.key=args.aimKey
@@ -93,6 +92,7 @@ function EaseEvent:new(args)
     self.startValue=self.aimTable[self.key]
     -- can be used to make smooth start or stop. e.g. sin(x*pi/2)
     self.progressFunc=args.progressFunc or function(x)return x end
+    self.lastProgress=self.progressFunc(0)
     self.conditionFunc=function(self,dt)
         return true
     end
@@ -104,13 +104,14 @@ function EaseEvent:new(args)
         if not self.aimTable or self.aimTable.removed then
             return false
         end
-        self.aimTable[self.key]=self.aimTable[self.key]+(self.progressFunc(self.frame/self.period)-self.progressFunc(self.lastTime/self.period))*(self.aimValue-self.startValue)
+        local newProgress=self.progressFunc(self.frame/self.period)
+        self.aimTable[self.key]=self.aimTable[self.key]+(newProgress-self.lastProgress)*(self.aimValue-self.startValue)
         if self.frame==self.period then
             self.times=0
             self:endFunc()
             self:remove()
         end
-        self.lastTime=self.frame
+        self.lastProgress=newProgress
     end
     self.endFunc=args.endFunc or function(self)end
 end

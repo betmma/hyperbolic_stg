@@ -1,11 +1,13 @@
 --! file: shape.lua
 local Shape = Object:extend()
 Shape.curvature=100
+Shape.removeDistance=100
 Shape.timeSpeed=1
 Shape.axisY=-100
 function Shape.restore()
     Shape.curvature=100
     Shape.axisY=-100
+    Shape.removeDistance=100
 end
 
 -- hyperbolic distance
@@ -179,7 +181,7 @@ function Shape:new(args)
     self.lifeFrame=args.lifeFrame or 1000
     self.time=0
     self.frame=0
-    self.removeDistance=100
+    self.removeDistance=args.removeDistance or Shape.removeDistance
 end
 
 function Shape:getMetric()
