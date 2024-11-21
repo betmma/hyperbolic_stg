@@ -27,7 +27,7 @@ function AudioSystem:setVolume(volume)
     end
     self.currentVolume=volume
 end
-local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel'},volumeCoeff=0.5}
+local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout'},volumeCoeff=0.5}
 local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title'},volumeCoeff=1,looping=true}
 local Audio={
     sfx=sfx,

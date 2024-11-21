@@ -14,6 +14,7 @@ function BulletSpawner:new(args)
     self.radius=args.radius or 5
     self.period=args.period or 60
     self.frame=args.frame or 0
+    self.realFrame=0
     self.bulletNumber=args.bulletNumber or 10
     self.angle=args.angle or 0
     self.range=args.range or math.pi*2
@@ -90,6 +91,7 @@ function BulletSpawner:new(args)
 end
 
 function BulletSpawner:update(dt)
+    self.realFrame=self.realFrame+1
     BulletSpawner.super.update(self,dt)
     for k,shockwave in pairs(Effect.Shockwave.objects) do
         if shockwave.canRemove.bulletSpawner and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then

@@ -117,6 +117,15 @@ local G={
                         player.hpRegen=player.hpRegen+0.024
                     end
                 },
+                unyielding={
+                    name='Unyielding',
+                    description='Shockwave when you are hit is bigger',
+                    cost=3,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.dieShockwaveRadius=player.dieShockwaveRadius+1
+                    end
+                },
                 homingShot={
                     name='Homing Shot',
                     description='2 rows of your shot become homing',
@@ -145,13 +154,9 @@ local G={
                         player.shootRows.back.straight.num=player.shootRows.back.straight.num+8
                     end
                 },
-                test={
-                    name='Test',
-                    description='blah',
-                    cost=1
-                }
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
+            -- need is also (x, y)
             options={
                 {
                     {
@@ -161,7 +166,7 @@ local G={
                     },
                     {
                         upgrade='regenerate',
-                        connect={left=true},
+                        connect={down=true,left=true},
                         need={{1,1}}
                     },
                     {
@@ -174,7 +179,11 @@ local G={
                         connect={up=true,down=true},
                         need={}
                     },
-                    {},
+                    {
+                        upgrade='unyielding',
+                        connect={up=true,},
+                        need={{2,1}}
+                    },
                     {},
                     {}
                 },
@@ -263,6 +272,14 @@ local G={
                     SFX:play('select')
                     self.STATE=self.STATES.CHOOSE_LEVELS
                     self:saveData()
+                elseif isPressed('c') then
+                    SFX:play('cancel',true)
+                    for k,value in ipairs(options) do
+                        for i=1,#value do
+                            self.save.upgrades[i][k].bought=false
+                        end
+                    end
+                    self.currentUI.chosen={1,1}
                 elseif isPressed('z') then
                     local restXP=self.currentUI.calculateRestXP(self)
                     if option.upgrade then
@@ -366,8 +383,8 @@ local G={
                 
                 -- show "X: return"
                 SetFont(18)
-                love.graphics.printf("X: Return  Z: Buy / Refund",100,570,380,"left",0,1,1)
-                love.graphics.printf("Current XP: "..self.currentUI.calculateRestXP(self),400,570,380,"left",0,1,1)
+                love.graphics.printf("X: Return  Z: Buy / Refund  C: Refund All",100,570,380,"left",0,1,1)
+                love.graphics.printf("Current XP: "..self.currentUI.calculateRestXP(self),500,570,380,"left",0,1,1)
 
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end
@@ -396,11 +413,7 @@ local G={
                     SFX:play('select')
                 elseif isPressed('z') then
                     SFX:play('select')
-                    self:removeAll()
-                    self.STATE=self.STATES.IN_LEVEL
-                    self.currentLevel={level,scene}
-                    Shape.restore()
-                    levelData[level][scene].make()
+                    self:enterLevel(level,scene)
                 elseif isPressed('c') then
                     SFX:play('select')
                     self.STATE=self.STATES.UPGRADES
@@ -488,8 +501,15 @@ local G={
                     self.STATE=self.STATES.PAUSE
                 elseif isPressed('r')then
                     self:incrementTryCount()
-                    self:removeAll()
-                    levelData[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene].make()
+                    self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+                end
+                -- rest time calculation
+                self.levelRemainingFrame=self.levelRemainingFrame-1
+                if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
+                    SFX:play('timeout')
+                end
+                if self.levelRemainingFrame==0 then
+                    self:lose()
                 end
             end,
             draw=function(self)
@@ -501,6 +521,10 @@ local G={
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
                 love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
+                SetFont(48)
+                love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 180, 10)
+                SetFont(18)
+                love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 252, 36)
             end
         },
         PAUSE={
@@ -557,10 +581,8 @@ local G={
                         self.STATE=self.STATES.CHOOSE_LEVELS
                     end,
                     RESTART=function(self)
-                        self:removeAll()
-                        levelData[self.UIDEF.CHOOSE_LEVELS.chosenLevel][self.UIDEF.CHOOSE_LEVELS.chosenScene].make()
-                        self.STATE=self.STATES.IN_LEVEL
-                        end
+                        self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+                    end
                 })
             end,
             draw=function(self)
@@ -677,6 +699,17 @@ G.lose=function(self)
     self:incrementTryCount()
     self.STATE=self.STATES.GAME_END
     self.won_current_scene=false
+end
+G.enterLevel=function(self,level,scene)
+    self:removeAll()
+    self.STATE=self.STATES.IN_LEVEL
+    self.currentLevel={level,scene}
+    Shape.restore()
+    self.levelRemainingFrame=nil
+    self.levelRemainingFrameMax=nil
+    levelData[level][scene].make()
+    self.levelRemainingFrame=self.levelRemainingFrame or 3600
+    self.levelRemainingFrameMax=self.levelRemainingFrame
 end
 G.incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel

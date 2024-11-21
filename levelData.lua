@@ -716,7 +716,7 @@ local levelData={
                         local theta=frame/120
                         local x,y=Shape.rThetaPos(player.x,player.y,30,theta)
                         a.x,a.y=x,y
-                        local per=en.hp/en.maxhp
+                        local per=math.min(en.hp/en.maxhp,G.levelRemainingFrame/G.levelRemainingFrameMax)
                         if per<0.8 and not b then
                             b=BulletSpawner{x=400,y=300,period=120,lifeFrame=10000,bulletNumber=10,bulletSpeed='15',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.blue,bulletEvents={
                                 moveFunc,
@@ -746,15 +746,16 @@ local levelData={
                             c.x,c.y=x,y
                         end
                         if per<0.4 and not d then
+                            --1/(1/180+1/120+1/240+1/360)=48
                             local the=theta+b.frame/360+c.frame/240
                             local need=math.pi-the%math.pi
-                            d=BulletSpawner{x=400,y=300,period=376.8,frame=376.8-need*120,lifeFrame=10000,bulletNumber=1,bulletSpeed='8',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.red,bulletEvents={
+                            d=BulletSpawner{x=400,y=300,period=452,frame=452-need*48,lifeFrame=10000,bulletNumber=1,bulletSpeed='8',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.red,bulletEvents={
                                 moveFunc,
                             }}
                             d.removeDistance=10000
                         end
                         if d then
-                            local x,y=Shape.rThetaPos(player.x,player.y,math.min(60,50+c.frame/2),theta+b.frame/360+c.frame/240+(d.frame-200)/120)
+                            local x,y=Shape.rThetaPos(player.x,player.y,math.min(60,50+c.frame/2),theta+b.frame/360+c.frame/240+(d.realFrame)/180)
                             d.x,d.y=x,y
                         end
                     end

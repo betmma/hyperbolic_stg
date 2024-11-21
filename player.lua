@@ -71,6 +71,7 @@ function Player:new(x, y, movespeed)
     self.shootTransparency=0.5
 
     self.moveMode=Player.moveModes.Bipolar
+    self.dieShockwaveRadius=2
 end
 local function isDownInt(keyname)
     return love.keyboard.isDown(keyname)and 1 or 0
@@ -245,7 +246,7 @@ function Player:dieEffect()
     if self.hp<=0 then
         G:lose()
     end
-    Effect.Shockwave{x=self.x,y=self.y,radius=3,growSpeed=1.1,animationFrame=30}
+    Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
     SFX:play('dead')
 end
 
