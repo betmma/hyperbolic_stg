@@ -272,7 +272,7 @@ local G={
                     SFX:play('select')
                     self.STATE=self.STATES.CHOOSE_LEVELS
                     self:saveData()
-                elseif isPressed('c') then
+                elseif isPressed('d') then
                     SFX:play('cancel',true)
                     for k,value in ipairs(options) do
                         for i=1,#value do
@@ -383,7 +383,7 @@ local G={
                 
                 -- show "X: return"
                 SetFont(18)
-                love.graphics.printf("X: Return  Z: Buy / Refund  C: Refund All",100,570,380,"left",0,1,1)
+                love.graphics.printf("X: Return  Z: Buy / Refund  D: Refund All",100,570,380,"left",0,1,1)
                 love.graphics.printf("Current XP: "..self.currentUI.calculateRestXP(self),500,570,380,"left",0,1,1)
 
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
@@ -397,6 +397,13 @@ local G={
                 local scene=self.currentUI.chosenScene
                 local levelNum=#levelData
                 local sceneNum=#levelData[level]
+                local passedSceneCount=self:countPassedSceneNum()
+                for i=1,levelNum do
+                    if passedSceneCount<levelData.needPass[i] then
+                        levelNum=i
+                        break
+                    end
+                end
                 if isPressed('down') then
                     self.currentUI.chosenScene=self.currentUI.chosenScene%sceneNum+1
                     SFX:play('select')
@@ -479,9 +486,16 @@ local G={
 
                 -- show try count / first pass / first perfect data
                 SetFont(14)
-                love.graphics.printf(save.tryCount..' tries',710,25,90,'left')
-                love.graphics.printf('First pass:\n'..save.firstPass..' tries',710,50,90,'left')
-                love.graphics.printf('First perfect:\n'..save.firstPerfect..' tries',710,90,90,'left')
+                love.graphics.printf(save.tryCount..' tries',710,325,90,'left')
+                love.graphics.printf('First pass:\n'..save.firstPass..' tries',710,350,90,'left')
+                love.graphics.printf('First perfect:\n'..save.firstPerfect..' tries',710,390,90,'left')
+
+                -- show number of passed levels needed for next level
+                local passedSceneCount,allSceneCount=self:countPassedSceneNum()
+                local needSceneCount=levelData.needPass[level]
+                SetFont(14)
+                love.graphics.printf('Passed Scenes: '..passedSceneCount..'/'..allSceneCount,710,5,90,'left')
+                love.graphics.printf(''..needSceneCount..' scenes to unlock next level',710,50,90,'left')
 
                 -- show "C: upgrades menu"
                 SetFont(18)
@@ -500,7 +514,7 @@ local G={
                     -- self:removeAll()
                     self.STATE=self.STATES.PAUSE
                 elseif isPressed('r')then
-                    self:incrementTryCount()
+                    self:leaveLevel()
                     self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
                 end
                 -- rest time calculation
@@ -538,7 +552,7 @@ local G={
                     EXIT=function(self)
                         self:removeAll()
                         self.STATE=self.STATES.CHOOSE_LEVELS
-                        self:incrementTryCount()
+                        self:leaveLevel()
                     end,
                     RESUME=function(self)self.STATE=self.STATES.IN_LEVEL end
                 })
@@ -676,8 +690,24 @@ G.loadData=function(self)
     self:saveData()
 end
 G:loadData()
+
+---@param self table
+---@return integer "number of passed scenes"
+---@return integer "number of all scenes"
+G.countPassedSceneNum=function(self)
+    local allSceneCount,passedSceneCount=0,0
+    for i,value in ipairs(levelData)do
+        for j,level in ipairs(value)do
+            allSceneCount=allSceneCount+1
+            if self.save.levelData[i][j].passed>0 then
+                passedSceneCount=passedSceneCount+1
+            end
+        end
+    end
+    return passedSceneCount,allSceneCount
+end
 G.win=function(self)
-    self:incrementTryCount()
+    self:leaveLevel()
     self.STATE=self.STATES.GAME_END
     self.won_current_scene=true
     local winLevel=1
@@ -696,7 +726,7 @@ G.win=function(self)
     self:saveData()
 end
 G.lose=function(self)
-    self:incrementTryCount()
+    self:leaveLevel()
     self.STATE=self.STATES.GAME_END
     self.won_current_scene=false
 end
@@ -711,7 +741,15 @@ G.enterLevel=function(self,level,scene)
     self.levelRemainingFrame=self.levelRemainingFrame or 3600
     self.levelRemainingFrameMax=self.levelRemainingFrame
 end
-G.incrementTryCount=function(self)
+G.leaveLevel=function(self)
+    self:_incrementTryCount()
+    local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+    local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+    if levelData[level][scene].leave then
+        levelData[level][scene].leave()
+    end
+end
+G._incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
     self.save.levelData[level][scene].tryCount=self.save.levelData[level][scene].tryCount+1

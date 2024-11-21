@@ -666,7 +666,7 @@ local levelData={
             end
         },
         {
-            quote='???',
+            quote='I can barely escape from these red hearts.',-- I have a feeling that something will happen if I linger till...',
             user='koishi',
             spellName='Unconscious "Super-Ego\'s Trace"',
             make=function()
@@ -764,6 +764,7 @@ local levelData={
         },
     }
 }
+levelData.needPass={3,6,9,12,15,18}
 local Text=require"text"
 for index, value in ipairs(levelData) do
     for index2, value2 in ipairs(value) do
