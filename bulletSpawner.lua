@@ -55,6 +55,7 @@ function BulletSpawner:new(args)
         for key, func in pairs(self.bulletEvents) do
             func(cir,args,self)
         end
+        return cir
     end
     if self.fogEffect then
         self.spawnBulletFuncRef=self.spawnBulletFunc
