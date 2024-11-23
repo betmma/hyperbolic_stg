@@ -1,13 +1,17 @@
 local levelData=require"levelData"
+local function keyBindValueCalc(self,addKey,subKey,valueName,valueMax)
+    if isPressed(addKey)then
+        self.currentUI[valueName]=self.currentUI[valueName]%valueMax+1
+        SFX:play('select')
+    elseif isPressed(subKey)then
+        self.currentUI[valueName]=(self.currentUI[valueName]-2)%valueMax+1
+        SFX:play('select')
+    end
+end
 local function optionsCalc(self,execFuncs)
     local size=#self.currentUI.options
-    if isPressed('down') then
-        self.currentUI.chosen=self.currentUI.chosen%size+1
-        SFX:play('select')
-    elseif isPressed('up') then
-        self.currentUI.chosen=(self.currentUI.chosen-2)%size+1
-        SFX:play('select')
-    elseif isPressed('z') then
+    keyBindValueCalc(self,'down','up','chosen',size)
+    if isPressed('z') then
         local value=self.currentUI.options[self.currentUI.chosen].value
         SFX:play('select')
         if execFuncs[value]then
@@ -16,6 +20,15 @@ local function optionsCalc(self,execFuncs)
     end
 end
 local G={
+    switchState=function(self,state)
+        self.STATE=state
+        self.currentUI=self.UIDEF[self.STATE]
+        if self.UIDEF[state].enter then
+            self.UIDEF[state].enter(self)
+        end
+    end,
+    CONSTANTS={
+    },
     STATES={
         MAIN_MENU='MAIN_MENU',
         OPTIONS='OPTIONS',
@@ -23,19 +36,25 @@ local G={
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
         PAUSE='PAUSE',
-        GAME_END='GAME_END' --either win or lose
+        GAME_END='GAME_END',--either win or lose
+        SAVE_REPLAY='SAVE_REPLAY',
+        SAVE_REPLAY_ENTER_NAME='SAVE_REPLAY_ENTER_NAME',
+        LOAD_REPLAY='LOAD_REPLAY'
     },
     STATE=...,
     UIDEF={
         MAIN_MENU={
             options={
-                {text='START',value='START'},
-                {text='OPTIONS',value='OPTIONS'},
-                {text='EXIT',value='EXIT'},
+                {text='Start',value='START'},
+                {text='Replay',value='REPLAY'},
+                {text='Options',value='OPTIONS'},
+                {text='Exit',value='EXIT'},
             },
             chosen=1,
             update=function(self,dt)
-                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end,OPTIONS=function(self)self.STATE=self.STATES.OPTIONS end})
+                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end,
+                REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
+                OPTIONS=function(self)self.STATE=self.STATES.OPTIONS end})
             end,
             draw=function(self)
             end,
@@ -57,7 +76,7 @@ local G={
                 {text='Master Volume',value='master_volume'},
                 {text='Music Volume',value='music_volume'},
                 {text='SFX Volume',value='sfx_volume'},
-                {text='EXIT',value='EXIT'},
+                {text='Exit',value='EXIT'},
             },
             chosen=1,
             update=function(self,dt)
@@ -514,8 +533,13 @@ local G={
                     -- self:removeAll()
                     self.STATE=self.STATES.PAUSE
                 elseif isPressed('r')then
-                    self:leaveLevel()
-                    self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+                    if self.replay then -- if in "replay" replay "replay" (why so strange)
+                        self:leaveLevel()
+                        ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
+                    else
+                        self:leaveLevel()
+                        self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+                    end
                 end
                 -- rest time calculation
                 self.levelRemainingFrame=self.levelRemainingFrame-1
@@ -543,15 +567,15 @@ local G={
         },
         PAUSE={
             options={
-                {text='RESUME',value='RESUME'},
-                {text='EXIT',value='EXIT'},
+                {text='Resume',value='RESUME'},
+                {text='Exit',value='EXIT'},
             },
             chosen=1,
             update=function(self,dt)
                 optionsCalc(self,{
                     EXIT=function(self)
                         self:removeAll()
-                        self.STATE=self.STATES.CHOOSE_LEVELS
+                        self.STATE=self.replay and self.STATES.LOAD_REPLAY or self.STATES.CHOOSE_LEVELS
                         self:leaveLevel()
                     end,
                     RESUME=function(self)self.STATE=self.STATES.IN_LEVEL end
@@ -584,8 +608,9 @@ local G={
         },
         GAME_END={
             options={
-                {text='RESTART',value='RESTART'},
-                {text='EXIT',value='EXIT'},
+                {text='Restart',value='RESTART'},
+                {text='Save Replay',value='SAVE_REPLAY'},
+                {text='Exit',value='EXIT'},
             },
             chosen=1,
             update=function(self,dt)
@@ -593,6 +618,9 @@ local G={
                     EXIT=function(self)
                         self:removeAll()
                         self.STATE=self.STATES.CHOOSE_LEVELS
+                    end,
+                    SAVE_REPLAY=function(self)
+                        self:switchState(self.STATES.SAVE_REPLAY)
                     end,
                     RESTART=function(self)
                         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
@@ -615,11 +643,183 @@ local G={
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
                     local name=value.text
-                    love.graphics.print(name,100,200+index*100,0,1,1)
+                    love.graphics.print(name,100,200+index*50,0,1,1)
                 end
-                love.graphics.rectangle("line",100,200+self.currentUI.chosen*100,200,50)
+                love.graphics.rectangle("line",100,200+self.currentUI.chosen*50,200,50)
             end
-        }
+        },
+        SAVE_REPLAY={
+            chosen=1,
+            page=1,
+            chosenMax=25,
+            pageMax=4,
+            slot=0,
+            enter=function(self)
+                self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
+                self.currentUI.pageMax=ReplayManager.PAGES
+            end,
+            update=function(self,dt)
+                keyBindValueCalc(self,'down','up','chosen',self.currentUI.chosenMax)
+                keyBindValueCalc(self,'right','left','page',self.currentUI.pageMax)
+                if isPressed('z') then
+                    local slot=self.currentUI.chosen+self.currentUI.page*25-25
+                    self.currentUI.slot=slot
+                    -- ReplayManager.saveReplay(slot,'test')
+                    self:switchState(self.STATES.SAVE_REPLAY_ENTER_NAME)
+                    SFX:play('select')
+                elseif isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self.STATE=self.STATES.GAME_END
+                end
+            end,
+            draw=function(self)
+                Asset:drawBatches()
+                Object:drawAll()
+            end,
+            drawText=function(self)
+                local color={love.graphics.getColor()}
+                love.graphics.setColor(1,1,1,0.5)
+                love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
+                love.graphics.setColor(0,0,0,0.5)
+                love.graphics.rectangle("fill",0,0,9999,9999)
+                love.graphics.setColor(color[1],color[2],color[3])
+
+                local chosen,page=self.currentUI.chosen,self.currentUI.page
+                SetFont(16)
+                for i=page*25+1-25,page*25 do
+                    local replayDesc=ReplayManager.getDescriptionString(i)
+                    ReplayManager.monospacePrint(replayDesc,10,145,50+(i-1)%25*20)
+                end
+                love.graphics.rectangle("line",140,30+self.currentUI.chosen*20,520,20)
+            end
+        },
+        SAVE_REPLAY_ENTER_NAME={
+            column=1,
+            row=1,
+            keyboard={
+                {'A',"B","C","D","E","F","G","H","I","J","K","L","M"},
+                {"N","O","P","Q","R","S","T","U",'V',"W","X","Y","Z"},
+                {'a',"b","c","d","e","f","g","h","i","j","k","l","m"},
+                {"n","o","p","q","r","s","t","u",'v',"w","x","y","z"},
+                {"0","1","2","3","4","5","6","7",'8',"9","+","-","="},
+                {".",",","!","?","@",":",";","[",']',"(",")","_","/"},
+                {"{","}","|","~","^","#","$","%",'&',"*"," ","BS","END"},
+            },
+            name='',
+            slot=0,
+            enter=function(self)
+                self.currentUI.slot=self.UIDEF.SAVE_REPLAY.slot
+                self.currentUI.name=self.save.defaultName
+            end,
+            update=function(self,dt)
+                keyBindValueCalc(self,'down','up','row',#self.currentUI.keyboard)
+                keyBindValueCalc(self,'right','left','column',#self.currentUI.keyboard[1])
+                if isPressed('z') then
+                    local char=self.currentUI.keyboard[self.currentUI.row][self.currentUI.column]
+                    if char=='BS'then
+                        if #self.currentUI.name>0 then 
+                            self.currentUI.name=self.currentUI.name:sub(1,#self.currentUI.name-1)
+                            SFX:play('select',true)
+                        else
+                            SFX:play('cancel',true)
+                        end
+                    elseif char=='END'then
+                        if #self.currentUI.name>0 then
+                            self.save.defaultName=self.currentUI.name
+                            self:saveData()
+                            ReplayManager.saveReplay(self.currentUI.slot,self.currentUI.name)
+                            SFX:play('select',true)
+                            self:switchState(self.STATES.SAVE_REPLAY)
+                        else
+                            SFX:play('cancel',true)
+                        end
+                    else --normal char
+                        if #self.currentUI.name>=ReplayManager.MAX_NAME_LENGTH then
+                            SFX:play('cancel',true)
+                        else
+                            self.currentUI.name=self.currentUI.name..char
+                            SFX:play('select',true)
+                        end
+                    end
+                elseif isPressed('x') or isPressed('escape')then
+                    SFX:play('select',true)
+                    self:switchState(self.STATES.SAVE_REPLAY)
+                end
+            end,
+            draw=function(self)
+                Asset:drawBatches()
+                Object:drawAll()
+            end,
+            drawText=function(self)
+                local color={love.graphics.getColor()}
+                love.graphics.setColor(1,1,1,0.5)
+                love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
+                love.graphics.setColor(0,0,0,0.5)
+                love.graphics.rectangle("fill",0,0,9999,9999)
+                love.graphics.setColor(color[1],color[2],color[3])
+
+                SetFont(16)
+                local replayDesc=ReplayManager.getDescriptionString(self.currentUI.slot,ReplayManager.getReplayData(self.currentUI.slot,self.currentUI.name))
+                ReplayManager.monospacePrint(replayDesc,10,145,50)
+
+                SetFont(24)
+                for row, value in pairs(self.currentUI.keyboard) do
+                    for column, char in pairs(value) do
+                        if char~=' 'then
+                            love.graphics.printf(char,100+column*40,100+row*40,40,'center')
+                        else
+                            love.graphics.rectangle('line',100+column*40+10,100+row*40,20,30)
+                        end
+                    end
+                end
+
+                love.graphics.rectangle("line",100+self.currentUI.column*40,95+self.currentUI.row*40,40,40)
+            end
+        },
+        LOAD_REPLAY={
+            chosen=1,
+            page=1,
+            chosenMax=25,
+            pageMax=4,
+            enter=function(self)
+                self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
+                self.currentUI.pageMax=ReplayManager.PAGES
+            end,
+            update=function(self,dt)
+                keyBindValueCalc(self,'down','up','chosen',self.currentUI.chosenMax)
+                keyBindValueCalc(self,'right','left','page',self.currentUI.pageMax)
+                if isPressed('z') then
+                    local index=self.currentUI.chosen+self.currentUI.page*25-25
+                    self.currentUI.slot=index
+                    local replay=ReplayManager.replays[index]
+                    if replay then
+                        self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene=replay.level,replay.scene
+                    end
+                    ReplayManager.runReplay(index)
+                    SFX:play('select')
+                elseif isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self.STATE=self.STATES.MAIN_MENU
+                end
+            end,
+            draw=function(self)
+            end,
+            drawText=function(self)
+                self.updateDynamicPatternData(self.patternData)
+                local color={love.graphics.getColor()}
+                love.graphics.setColor(1,1,1)
+
+                local chosen,page=self.currentUI.chosen,self.currentUI.page
+                SetFont(17)
+                for i=page*25+1-25,page*25 do
+                    local replayDesc=ReplayManager.getDescriptionString(i)
+                    ReplayManager.monospacePrint(replayDesc,10,145,50+(i-1)%25*20)
+                end
+                love.graphics.rectangle("line",140,30+self.currentUI.chosen*20,520,20)
+
+                love.graphics.setColor(color[1],color[2],color[3])
+            end
+        },
     }
 }
 
@@ -639,6 +839,13 @@ G.saveData=function(self)
 	local serialized = lume.serialize(data)
   	love.filesystem.write("savedata.txt", serialized)
 end
+-- an example of its structure
+G.save={
+    levelData={{{passed=0,tryCount=0,firstPass=0,firstPerfect=0}}},
+    options={},
+    upgrades={{{bought=true}}},
+    defaultName='',
+}
 G.loadData=function(self)
 	local file = love.filesystem.read("savedata.txt")
     self.save={}
@@ -670,6 +877,9 @@ G.loadData=function(self)
             sfx_volume=100
         }
     end
+    SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
+    BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
+
     -- add upgrades data
     if not self.save.upgrades then
         self.save.upgrades={}
@@ -685,6 +895,11 @@ G.loadData=function(self)
                 self.save.upgrades[x][y]={bought=false}
             end
         end
+    end
+
+    -- add default name for saving replay
+    if not self.save.defaultName then
+        self.save.defaultName=''
     end
 
     self:saveData()
@@ -707,8 +922,8 @@ G.countPassedSceneNum=function(self)
     return passedSceneCount,allSceneCount
 end
 G.win=function(self)
-    self:leaveLevel()
     self.STATE=self.STATES.GAME_END
+    self:leaveLevel()
     self.won_current_scene=true
     local winLevel=1
     if Player.objects[1].hurt==false then
@@ -726,8 +941,8 @@ G.win=function(self)
     self:saveData()
 end
 G.lose=function(self)
-    self:leaveLevel()
     self.STATE=self.STATES.GAME_END
+    self:leaveLevel()
     self.won_current_scene=false
 end
 G.enterLevel=function(self,level,scene)
@@ -742,6 +957,12 @@ G.enterLevel=function(self,level,scene)
     self.levelRemainingFrameMax=self.levelRemainingFrame
 end
 G.leaveLevel=function(self)
+    if self.replay then
+        self.replay=nil
+        self.STATE=self.STATES.LOAD_REPLAY
+        self.save.upgrades=self.upgradesRef
+        return
+    end
     self:_incrementTryCount()
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene

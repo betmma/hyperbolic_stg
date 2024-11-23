@@ -8,7 +8,7 @@ local levelData={
             spellName='Magic Sign "Otherworld Star Dust"',
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local a=BulletSpawner{x=150,y=0,period=12,frame=0,lifeFrame=10000,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSprite=BulletSprites.round.blue,bulletEvents={
                 }}
                 local a=BulletSpawner{x=650,y=0,period=12,frame=0,lifeFrame=10000,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSprite=BulletSprites.round.blue,bulletEvents={
@@ -54,7 +54,7 @@ local levelData={
             spellName='Moon Sign "Cerulean Lunatic Dream"',
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSprite=BulletSprites.blackheart.blue,bulletEvents={
                     function(cir,args)
                         local key=args.index
@@ -167,7 +167,7 @@ local levelData={
                         en.x=en.x-(en.x-Player.objects[1].x)*0.01
                     end
                 }
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local b=BulletSpawner{x=400,y=200,period=600,frame=540,lifeFrame=10000,bulletNumber=120,bulletSpeed=30,angle='0+9999',bulletSprite=BulletSprites.bill.red,bulletEvents={
                     function(cir,args)
                         local key=args.index
@@ -325,7 +325,7 @@ local levelData={
                         end
                     end
                 }
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local b=BulletSpawner{x=400,y=300,period=6000,frame=5940,lifeFrame=6001,bulletNumber=10,bulletSpeed=10,angle='0+9999',bulletLifeFrame=990000 ,bulletSprite=BulletSprites.bigRound.red,fogEffect=true,bulletEvents={
                     function(cir,args)
                         local spd=cir.speed
@@ -364,7 +364,7 @@ local levelData={
             spellName='Preparation "Suwa Daimyōjin Invocation"',
             make=function()
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local b
                 b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rice.blue,fogEffect=false,
                 spawnBulletFunc=function(self,args)
@@ -446,7 +446,7 @@ local levelData={
             spellName='Manacles Sign "Manacles a Criminal Can\'t Take Off"',
             make=function()
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed='60',bulletLifeFrame=100,angle='1.17+3.14',bulletSprite=BulletSprites.laser.blue,bulletEvents={
                     function(cir)
                         Event.LoopEvent{
@@ -485,7 +485,7 @@ local levelData={
             spellName='"Hakurei Transmit Barrier"',
             make=function()
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.scale.red,spawnBatchFunc=function(self)
                     local num=math.eval(self.bulletNumber)
                     local range=math.eval(self.range)
@@ -616,7 +616,7 @@ local levelData={
             make=function()
                 -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 -- player.moveMode=Player.moveModes.Monopolar
                 -- G.viewMode.object=player
                 local a
@@ -672,7 +672,7 @@ local levelData={
             make=function()
                 Shape.removeDistance=300
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local moveFunc=function(cir,args,self)
                     local color2ratio={green=0.3,blue=0.5,purple=0.8,red=1}
                     local color=SpriteData[cir.sprite].color
@@ -768,7 +768,7 @@ local levelData={
             spellName='??',
             make=function()
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
-                local player=Player(400,600)
+                local player=Player{x=400,y=600}
                 local circPeriod=5
                 local circRad=60
                 local a
@@ -837,6 +837,10 @@ for index, value in ipairs(levelData) do
         if value2.make then
             local ref=value2.make
             value2.make=function()
+                local replay=G.replay or {}
+                local seed = replay.seed or os.time()
+                math.randomseed(seed)
+                G.randomseed=seed
                 Shape.timeSpeed=1
                 -- show spellcard name
                 do

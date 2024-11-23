@@ -7,7 +7,6 @@ require'misc'
 function love.load()
     Object = require "classic"
     Shape = require "shape"
-    Rectangle = require "rectangle"
     Circle = require "circle"
     Laser=require"laser"
     PolyLine = require "polyline"
@@ -23,6 +22,7 @@ function love.load()
     G=require"state"
     BGM:play('title')
     ScreenshotManager=require"screenshotManager"
+    ReplayManager=require"replayManager"
 end
 local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
 KeyboardPressed={up=false,down=false,left=false,right=false,escape=false}

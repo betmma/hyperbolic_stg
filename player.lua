@@ -15,11 +15,11 @@ Player.moveModes={
     -- Orthogonality: False.
     Bipolar='Bipolar'
 }
-function Player:new(x, y, movespeed)
-    Player.super.new(self, {x=x, y=y})
+function Player:new(args)
+    Player.super.new(self, {x=args.x, y=args.y})
     self.lifeFrame=9999999
     self.speed=0
-    self.movespeed=movespeed or 60
+    self.movespeed=args.movespeed or 60
     self.focusFactor=0.4444
     --when pressed left or right player moves in an arc with center (centerX,0)
     self.centerX=400
@@ -72,22 +72,52 @@ function Player:new(x, y, movespeed)
 
     self.moveMode=Player.moveModes.Bipolar
     self.dieShockwaveRadius=2
+
+    self.keyRecord={}
+    self.replaying=args.replaying or false
+    if self.replaying then
+        self:setReplaying()
+    end
+    self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32}
+    self.keyIsDown=love.keyboard.isDown
+    self.realCreatedTime=os.date('%Y-%m-%d %H:%M:%S')
 end
-local function isDownInt(keyname)
-    return love.keyboard.isDown(keyname)and 1 or 0
+function Player:setReplaying()
+    self.replaying=true
+    self.keyIsDown=function(key)
+        local record=self.keyRecord[self.frame]
+        local val=self.key2Value[key]
+        if record and val then
+            return record%(val*2)>=val
+        end
+        return false
+    end
+end
+
+function Player:isDownInt(keyname)
+    return self.keyIsDown(keyname)and 1 or 0
 end
 
 function Player:update(dt)
+    if not self.replaying then
+        local keyVal=0
+        for key, value in pairs(self.key2Value) do
+            if self.keyIsDown(key)then
+                keyVal=keyVal+value
+            end
+        end
+        table.insert(self.keyRecord,keyVal)
+    end
     local xref=self.x
     local yref=self.y
     local rightDir=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
     local downDir=self.moveMode==Player.moveModes.Bipolar and 0 or rightDir
     self.direction=rightDir
-    local right=isDownInt("right")-isDownInt("left")
+    local right=self:isDownInt("right")-self:isDownInt("left")
     if right==-1 then
         self.direction=math.pi+self.direction
     end
-    local down=isDownInt("down")-isDownInt("up")
+    local down=self:isDownInt("down")-self:isDownInt("up")
     if self.y<Shape.axisY then
         down=down*-1
     end
@@ -103,7 +133,7 @@ function Player:update(dt)
         self.speed=self.movespeed*2*math.cos((self.direction-upOrDownDir)/2)
         self.direction=(self.direction+upOrDownDir)/2
     end
-    if love.keyboard.isDown('lshift') then
+    if self.keyIsDown('lshift') then
         self.speed=self.speed*self.focusFactor
     end
 
@@ -134,7 +164,7 @@ function Player:update(dt)
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 
     -- shooting bullet
-    if love.keyboard.isDown('z') then
+    if self.keyIsDown('z') then
         self:shoot()
     end
 end
@@ -247,7 +277,7 @@ function Player:dieEffect()
         G:lose()
     end
     Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
-    SFX:play('dead')
+    SFX:play('dead',true)
 end
 
 return Player
