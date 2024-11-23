@@ -39,7 +39,9 @@ function Enemy:update(dt)
                 if self.mainEnemy then
                     local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
                     local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
-                    ScreenshotManager.preSave(level,scene)
+                    if not G.replay then
+                        ScreenshotManager.preSave(level,scene)
+                    end
                     Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
                     Event.LoopEvent{
                         times=1,
@@ -47,7 +49,9 @@ function Enemy:update(dt)
                         executeFunc=function(x)
                             local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
                             local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
-                            ScreenshotManager.save(level,scene)
+                            if not G.replay then
+                                ScreenshotManager.save(level,scene)
+                            end
                             G:win()
                         end
                     }

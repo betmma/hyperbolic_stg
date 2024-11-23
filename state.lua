@@ -559,10 +559,14 @@ local G={
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
                 love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
+                if self.replay then
+                    love.graphics.print("REPLAYING...", 150, 580)
+                end
                 SetFont(48)
                 love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 180, 10)
                 SetFont(18)
                 love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 252, 36)
+                
             end
         },
         PAUSE={
@@ -782,6 +786,7 @@ local G={
             chosenMax=25,
             pageMax=4,
             enter=function(self)
+                ReplayManager.loadAll()
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
                 self.currentUI.pageMax=ReplayManager.PAGES
             end,

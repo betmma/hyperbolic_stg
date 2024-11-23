@@ -838,7 +838,7 @@ for index, value in ipairs(levelData) do
             local ref=value2.make
             value2.make=function()
                 local replay=G.replay or {}
-                local seed = replay.seed or os.time()
+                local seed = replay.seed or math.floor(os.time()+os.clock()*1337)
                 math.randomseed(seed)
                 G.randomseed=seed
                 Shape.timeSpeed=1

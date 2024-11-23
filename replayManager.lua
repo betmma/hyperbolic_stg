@@ -75,14 +75,14 @@ replayManager.loadReplay=function(slot)
     local path=savePath(slot)
     local file=love.filesystem.read(path)
     if not file then
-        return nil
+        return false
     end
     local data = lume.deserialize(file)
     local hash=hash64(data.time..data.name..data.seed..data.level..data.scene)
     local len=#data.keyRecord
     for i=0,#hash-1 do
         if data.keyRecord[len-i]~=hash[#hash-i]then
-            return nil
+            return false
         end
         table.remove(data.keyRecord,len-i)
     end
@@ -142,8 +142,13 @@ replayManager.monospacePrint=function(str,width,x,y)
 end
 
 replayManager.replays={}
-for i=1,replayManager.REPLAY_NUM_PER_PAGE*replayManager.PAGES do
-    table.insert(replayManager.replays,replayManager.loadReplay(i))
+
+replayManager.loadAll=function()
+    for i=1,replayManager.REPLAY_NUM_PER_PAGE*replayManager.PAGES do
+        replayManager.replays[i]=replayManager.loadReplay(i)
+    end
 end
+
+replayManager.loadAll()
 
 return replayManager
