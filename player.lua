@@ -215,7 +215,7 @@ function Player:shootBackStraight(pos,damage,sprite)
     return self:shootDirStraight(pos,damage,sprite,math.pi/2)
 end
 
--- note that this shoots 2 bullets on each side
+-- note that this shoots 2 bullets, 1 on each side
 function Player:shootSideStraight(pos,damage,sprite)
     for side=0,1 do
         self:shootDirStraight(pos,damage,sprite,math.pi*side)

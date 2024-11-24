@@ -25,7 +25,7 @@ function love.load()
     ReplayManager=require"replayManager"
 end
 local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
-KeyboardPressed={up=false,down=false,left=false,right=false,escape=false}
+KeyboardPressed={up=false,down=false,left=false,right=false,escape=false,lctrl=false}
 for i=1,#keyConstants do
     KeyboardPressed[keyConstants:sub(i,i)]=false
 end

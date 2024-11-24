@@ -560,7 +560,18 @@ local G={
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
                 love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
                 if self.replay then
-                    love.graphics.print("REPLAYING...", 150, 580)
+                    local speed=1
+                    if love.keyboard.isDown('lalt') then
+                        speed=speed+2
+                    end
+                    if love.keyboard.isDown('lctrl') then
+                        speed=speed+1
+                    end
+                    if love.keyboard.isDown('lshift') then
+                        speed=speed-0.5
+                    end
+                    local speedText=speed==1 and '' or '['..speed..'x]'
+                    love.graphics.print("REPLAYING... "..speedText, 150, 580)
                 end
                 SetFont(48)
                 love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 180, 10)
@@ -984,7 +995,20 @@ end
 G.update=function(self,dt)
     self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
-    self.currentUI.update(self,dt)
+    if G.replay then
+        if love.keyboard.isDown('lalt') then
+            self.currentUI.update(self,dt)
+            self.currentUI.update(self,dt)
+        end
+        if love.keyboard.isDown('lctrl') then
+            self.currentUI.update(self,dt)
+        end
+        if not love.keyboard.isDown('lshift') or self.frame%2==0 then
+            self.currentUI.update(self,dt)
+        end
+    else
+        self.currentUI.update(self,dt)
+    end
 end
 -- sideNum=5 angleNum=4 -> r=107
 -- sideNum=4 angleNum=5 -> r=126.2

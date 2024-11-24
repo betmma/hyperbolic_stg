@@ -11,6 +11,10 @@ Escape to pause.
 Arrow keys to move between options.
 Z to choose an option.
 Escape/X to go back.
+##### In Replay:
+LShift to slow down by 0.5x.
+LCtrl to speed up by 1x.
+LAlt to speed up by 2x.
 
 #### Misc:
 Player gains 1 second of invincible time when hit by bullet.
