@@ -85,7 +85,7 @@ end
 function Player:setReplaying()
     self.replaying=true
     self.keyIsDown=function(key)
-        local record=self.keyRecord[self.frame]
+        local record=self.keyRecord[self.frame+1] --this is because when recording keys first frame is stored at index 1 (by table.insert), while when playing at first frame key value is loaded from keyRecord before update, so self.frame=0
         local val=self.key2Value[key]
         if record and val then
             return record%(val*2)>=val
@@ -107,6 +107,10 @@ function Player:update(dt)
             end
         end
         table.insert(self.keyRecord,keyVal)
+    end
+    -- shooting bullet
+    if self.keyIsDown('z') then
+        self:shoot()
     end
     local xref=self.x
     local yref=self.y
@@ -163,10 +167,6 @@ function Player:update(dt)
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 
-    -- shooting bullet
-    if self.keyIsDown('z') then
-        self:shoot()
-    end
 end
 
 function Player:shoot()
