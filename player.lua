@@ -222,7 +222,13 @@ function Player:shootSideStraight(pos,damage,sprite)
     end
 end
 
-local function addHoming(cir)
+-- let [cir] trace the closest enemy.
+-- [mode] determines how direction changes.
+-- 'abrupt': directly set to the aim direction.
+-- 'portion': 0.9*cir.direction+0.1*aimDirection.
+-- 'clamp': math.clamp(aimDirection,cir.direction-0.01,cir.direction+0.01)
+local function addHoming(cir,mode)
+    mode=mode or 'abrupt'
     Event.LoopEvent{
         obj=cir,
         period=1,
@@ -237,7 +243,21 @@ local function addHoming(cir)
                 end
             end
             if closestEnemy then
-                cir.direction=Shape.to(cir.x,cir.y,closestEnemy.x,closestEnemy.y)
+                local aim=Shape.to(cir.x,cir.y,closestEnemy.x,closestEnemy.y)
+                if aim>cir.direction+math.pi then
+                    aim=aim-math.pi*2
+                end
+                if aim<cir.direction-math.pi then
+                    aim=aim+math.pi*2
+                end
+                if mode=='abrupt'then
+                    cir.direction=aim
+                elseif mode=='portion'then
+                    cir.direction=.9*cir.direction+.1*aim
+                elseif mode=='clamp'then
+                    local da=0.1
+                    cir.direction=math.clamp(aim,cir.direction-da,cir.direction+da)
+                end
             end
         end
     }
@@ -269,6 +289,7 @@ function Player:grazeEffect()
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
 end
 
+-- actually it's hit effect, not hp = 0 effect
 function Player:dieEffect()
     self.hp=self.hp-1
     self.hurt=true

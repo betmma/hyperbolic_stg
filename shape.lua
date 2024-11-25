@@ -17,11 +17,13 @@ function Shape.distance(x1,y1,x2,y2)
 end
 
 -- get X coordinate and radius of center point of line x1,y1 to x2,y2
+---@return number 'X coordinate of center point'
+---@return number '(Euclidean) radius of line'
 function Shape.lineCenter(x1,y1,x2,y2)
     local x0=(x1+x2)/2
     local y0=(y1+y2)/2
     if x1==x2 then -- vertical 
-        return 0,tonumber('inf')
+        return 0,1e308
     end
     local k=(y2-y1)/(x2-x1)
     local centerX=x0+(y0-Shape.axisY)*k
@@ -29,6 +31,7 @@ function Shape.lineCenter(x1,y1,x2,y2)
 end
 
 -- get Y coordinate of intersection point of line x=xc and line x1,y1 to x2,y2
+-- that is, treat line as a function and get f(xc)
 function Shape.lineX2Y(x1,y1,x2,y2,xc)
     local centerX,dis=Shape.lineCenter(x1,y1,x2,y2)
     if math.abs(xc-centerX)>dis then
@@ -48,6 +51,7 @@ function Shape.drawLine(x1,y1,x2,y2)
 end
 
 -- get direction from x1,y1 to x2,y2 (at x1,y1)
+---@return number 'direction in [-pi/2,3pi/2]'
 function Shape.to(x1,y1,x2,y2)
     if x1==x2 then -- vertical 
         return y1<y2 and math.pi/2 or -math.pi/2
@@ -91,7 +95,7 @@ end
 
 -- love is really silly to not provide arc without lines toward center
 -- but anyway to draw hyperbolic arc it's better to have my own func
--- (the one in polyline can only draw arc < pi. think about it, there is no way a 3/4 circle can be drawn with only 1 scissor)
+-- (the one in polyline can only draw arc < pi. think about it, there is no way a 3/4 circle can be drawn with only 1 scissor. also scissor doesn't apply transform)
 function Shape.drawNormalArc(x, y, r, s_ang, e_ang, numLines)
 	local step = ((e_ang-s_ang) / numLines)
 	local ang1 = s_ang
@@ -105,6 +109,13 @@ function Shape.drawNormalArc(x, y, r, s_ang, e_ang, numLines)
 	end
 end
 
+-- draw hyperbolic arc.
+---@param x number 'x of arc center'
+---@param y number 'y of arc center'
+---@param r any 'arc radius'
+---@param s_ang any 'arc start angle'
+---@param e_ang any 'arc end angle'
+---@param numLines any 'how many lines are used'
 function Shape.drawHyperbolicArc(x, y, r, s_ang, e_ang, numLines)
     local x2,y2,r2=Shape.getCircle(x,y,r)
     _,_,s_ang=Shape.rThetaPos(x,y,r,s_ang)
@@ -112,6 +123,7 @@ function Shape.drawHyperbolicArc(x, y, r, s_ang, e_ang, numLines)
 	Shape.drawNormalArc(x2,y2,r2,s_ang,e_ang,numLines)
 end
 
+-- draw hyperbolic circle with center (x,y) and radius r. using Shape.getCircle
 function Shape.drawCircle(x,y,r)
     x,y,r=Shape.getCircle(x,y,r)
     love.graphics.circle("line", x,y,r)

@@ -18,7 +18,8 @@ LAlt to speed up by 2x.
 
 #### Misc:
 Player gains 1 second of invincible time when hit by bullet.
-Completed scenes display as green. Perfectly completed (without being harmed) scenes display as golden.
+Completed scenes display as green and give 10 XP each.
+Perfectly completed (without being harmed) scenes display as golden and give 12 XP each.
 
 ##### Todo:
 1. ~~Win / Lose level logic (bind to death of an enemy / death of player)~~

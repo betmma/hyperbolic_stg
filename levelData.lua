@@ -772,7 +772,7 @@ local levelData={
                 local circPeriod=5
                 local circRad=60
                 local a
-                a=BulletSpawner{x=400,y=50,period=20,frame=0,lifeFrame=23000,bulletNumber=20,bulletSpeed=30,bulletLifeFrame=10000,angle='1.57+0.3',range=math.pi/2,bulletSprite=BulletSprites.crystal.purple,bulletEvents={
+                a=BulletSpawner{x=400,y=50,period=20,frame=0,lifeFrame=23000,bulletNumber=20,bulletSpeed=30,bulletLifeFrame=10000,angle='1.57+0.3',range=math.pi/2,bulletSprite=BulletSprites.crystal.purple,fogEffect=true,fogTime=20,bulletEvents={
                     function(cir,args,self)
                         local speed=cir.speed
                         -- cir.speed=0
