@@ -145,6 +145,15 @@ local G={
                         player.dieShockwaveRadius=player.dieShockwaveRadius+1
                     end
                 },
+                acrobat={
+                    name='Acrobat',
+                    description='Each graze gives 0.005 HP',
+                    cost=40,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.grazeHpRegen=player.grazeHpRegen+0.005
+                    end
+                },
                 homingShot={
                     name='Homing Shot',
                     description='2 rows of your shot become homing',
@@ -185,10 +194,13 @@ local G={
                     },
                     {
                         upgrade='regenerate',
-                        connect={down=true,left=true},
+                        connect={down=true,left=true,right=true},
                         need={{1,1}}
                     },
                     {
+                        upgrade='acrobat',
+                        connect={left=true},
+                        need={{2,1}}
                     },
                     {
                     }

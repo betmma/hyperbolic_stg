@@ -36,6 +36,7 @@ function Player:new(args)
     self.maxhp=3
     self.hp=self.maxhp
     self.hpRegen=0
+    self.grazeHpRegen=0
     self.hurt=false --to check perfect completion
     self.invincibleTime=0
 
@@ -287,6 +288,8 @@ end
 function Player:grazeEffect()
     SFX:play('graze')
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+    -- grazeHpRegen
+    self.hp=math.clamp(self.hp+self.grazeHpRegen,0,self.maxhp)
 end
 
 -- actually it's hit effect, not hp = 0 effect
