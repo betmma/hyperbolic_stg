@@ -145,7 +145,7 @@ local G={
                         player.dieShockwaveRadius=player.dieShockwaveRadius+1
                     end
                 },
-                acrobat={
+                acrobat={ -- add a scene that costs HP when grazing, and unlock this upgrade for it
                     name='Acrobat',
                     description='Each graze gives 0.005 HP',
                     cost=40,

@@ -829,7 +829,7 @@ local levelData={
             end
         },
         {
-            quote='not come up yet',
+            quote='This kind of ice looks quite sharp. I\'d never want to touch it.',
             user='cirno',
             spellName='Crystalization "Supernatural Lattice"',
             make=function()
@@ -930,6 +930,81 @@ local levelData={
                             bullets={}
                         end
                     end
+                }
+            end
+        },
+        {
+            quote='??',
+            user='??',
+            spellName='??',
+            make=function()
+                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+                local player=Player{x=400,y=600}
+                local phi0=math.eval('0+999')
+                local a
+                a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.red,fogEffect=true,fogTime=20,bulletEvents={
+                    function(cir,args,self)
+                        local dirRef=cir.direction+3.14
+                        local sx,sy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
+                        sy=sy/2+75
+                        cir.speed=(sx^2+sy^2)^0.5
+                        cir.direction=math.atan2(sy,sx)
+                        cir.sprite=cir.args.index%3==0 and BulletSprites.round.red or BulletSprites.round.blue
+                        Event.DelayEvent{
+                            obj=cir,
+                            delayFrame=60,
+                            executeFunc=function()
+                                local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=1,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.red or BulletSprites.laser.blue,
+                                bulletEvents={
+                                    function(cir)
+                                        Event.LoopEvent{
+                                            obj=cir,
+                                            times=1,
+                                            period=1,
+                                            conditionFunc=function()
+                                                if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then--Player.objects[1].border:inside(cir.x,cir.y) then
+                                                    cir:remove()
+                                                    return cir.sprite==BulletSprites.laser.red and cir.index%10==0 
+                                                end 
+                                            end,
+                                            executeFunc=function(self)
+                                                if not cir.safe then
+                                                    Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval('0+0.3'),speed=20,sprite=BulletSprites.round.red}
+                                                end
+                                        end}
+                                    end
+                                }}
+                                cir.speed=0
+                                local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5--math.eval('0+0.5')
+                                Event.EaseEvent{
+                                    obj=laser,
+                                    aimTable=laser.args,
+                                    aimKey='direction',
+                                    aimValue=laser.args.direction+rotate,
+                                    easeFrame=60,
+                                    progressFunc=function(x)
+                                        return -math.sin(math.pi/2*(1-x))+1
+                                    end
+                                }
+                            end
+                        }
+                        -- Event.LoopEvent{
+                        --     obj=cir,period=1,
+                        --     executeFunc=function ()
+                        --         -- cir.direction=cir.direction+(cir.y-300)/10000
+                        --         for key, player in pairs(Player.objects) do
+                        --             local dis=Shape.distance(player.x,player.y,cir.x,cir.y)
+                        --             local radi=player.radius+cir.radius
+                        --             if dis<radi+player.radius*1.5 and not cir.damaged then
+                        --                 player.hurt=true
+                        --                 player.hp=player.hp-0.02
+                        --                 cir.damaged=true
+                        --             end
+                        --         end
+                        --     end
+                        -- }
+                    end
+                    }
                 }
             end
         },

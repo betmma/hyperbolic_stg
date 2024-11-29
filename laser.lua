@@ -14,13 +14,17 @@ local function sigmoid(x)
 end
 function LaserUnit:update(dt)
     LaserUnit.super.update(self,dt)
-    if self.parent.enableWarningAndFading then
-        if self.parent.frame<self.parent.warningFrame or self.parent.frame>self.parent.lifeFrame-self.parent.fadingFrame then
+    self:updateWarningAndFading(self.parent)
+end
+
+function LaserUnit:updateWarningAndFading(parent)
+    if parent.enableWarningAndFading then
+        if parent.frame<parent.warningFrame or parent.frame>parent.lifeFrame-parent.fadingFrame then
             self.safe=true
         else
             self.safe=false
         end
-        self.radius=math.max(self.radiusRef*sigmoid(self.parent.frame-self.parent.warningFrame),0.1)*sigmoid(-self.parent.frame+self.parent.lifeFrame-self.parent.fadingFrame)
+        self.radius=math.max(self.radiusRef*sigmoid(parent.frame-parent.warningFrame),0.1)*sigmoid(-parent.frame+parent.lifeFrame-parent.fadingFrame)
     end
 end
 
@@ -60,7 +64,7 @@ end
 
 -- Note that warningFrame and fadingFrame is binded to Laser object's existence and lifeFrame, so for fast lasers these two parameters could be used, while for slow (usually curly and not long enough to go through screen) lasers shouldn't be set to nonzero, otherwise before actual laser reaches player it's warningFrame ends, and soon the Laser object is removed and actual laser will fade out.
 -- Laser is actually a special bulletSpawner but it doesn't inherit bulletSpawner class yet (maybe I'll change). When creating its args are like normal bullets so args.direction and speed are actually for LaserUnits, so directly inheriting bulletSpawner (or shape) will cause it to move. [LaserEvents] are Laser object's events, while [bulletEvents] are LaserUnit's events.
--- To prevent unintended safe spot inside the laser, when speed is high please add some randomness like '240+20'.
+-- To prevent unintended safe spot inside the laser, when enableWarningAndFading is true the speed of LaserUnits is added 1% of randomness.
 function Laser:new(args)
     Laser.super.new(self,args)
     self.radius=args.radius or 5
@@ -82,7 +86,12 @@ function Laser:new(args)
         executeFunc=function()
             args.direction=math.eval(self.args.direction)
             args.speed=math.eval(self.args.speed)
+            if self.enableWarningAndFading then
+                args.speed=args.speed*math.eval('1+0.01')
+            end
             local cir=LaserUnit(args)
+            cir.index=self.spawnEvent.executedTimes
+            cir:updateWarningAndFading(self)
             cir.last=true
             cir.parent=self
             if #self.units>0 then
