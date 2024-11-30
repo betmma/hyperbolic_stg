@@ -19,7 +19,7 @@ end
 function Enemy:update(dt)
     Enemy.super.update(self,dt)
     local player=Player.objects[1]
-    if Shape.distance(player.x,player.y,self.x,self.y)<50 then
+    if player and Shape.distance(player.x,player.y,self.x,self.y)<50 then
         self.hpBarTransparency=0.85*(self.hpBarTransparency-0.5)+0.5
     else
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1

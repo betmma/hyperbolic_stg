@@ -567,6 +567,7 @@ local G={
                 Object:drawAll()
             end,
             drawText=function(self)
+                Object:drawTextAll()
                 SetFont(18)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
@@ -617,6 +618,7 @@ local G={
                 Object:drawAll()
             end,
             drawText=function(self)
+                Object:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -659,6 +661,7 @@ local G={
                 Object:drawAll()
             end,
             drawText=function(self)
+                Object:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -704,6 +707,7 @@ local G={
                 Object:drawAll()
             end,
             drawText=function(self)
+                Object:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -778,6 +782,7 @@ local G={
                 Object:drawAll()
             end,
             drawText=function(self)
+                Object:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -1097,17 +1102,23 @@ G.draw=function(self)
         self.currentUI.drawText(self)
     elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.viewMode.object then
         love.graphics.push()
-        local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
-        local screenWidth, screenHeight = love.graphics.getDimensions()
-        love.graphics.translate((screenWidth / 2-G.viewMode.object.x*scale),(screenHeight / 2-G.viewMode.object.y*scale))
-        love.graphics.scale(scale)
-        -- love.graphics.translate(-G.viewMode.object.x,100)
-        -- love.graphics.translate(screenWidth / 2, screenHeight / 2)
-        -- love.graphics.translate(G.viewMode.object.x,G.viewMode.object.y)
+        self:followModeTransform()
         self.currentUI.draw(self)
         love.graphics.pop()
         self.currentUI.drawText(self)
     end
+end
+G.followModeTransform=function(self)
+    local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    love.graphics.translate((screenWidth / 2-G.viewMode.object.x*scale),(screenHeight / 2-G.viewMode.object.y*scale))
+    love.graphics.scale(scale)
+end
+G.antiFollowModeTransform=function(self)
+    local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    love.graphics.scale(1/scale)
+    love.graphics.translate(-(screenWidth / 2-G.viewMode.object.x*scale),-(screenHeight / 2-G.viewMode.object.y*scale))
 end
 G.removeAll=function(self)
     Asset:clearBatches()

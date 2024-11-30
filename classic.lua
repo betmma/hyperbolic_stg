@@ -128,4 +128,19 @@ function Object:drawAll()
   end
 end
 
+
+function Object:drawText()
+end
+
+function Object:drawTextAll()
+  for key, obj in pairs(self.objects) do
+    if not obj.removed then
+      obj:drawText()
+    end
+  end
+  for key, cls in pairs(self.subclasses) do
+      cls:drawTextAll()
+  end
+end
+
 return Object

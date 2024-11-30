@@ -614,10 +614,10 @@ local levelData={
             user='marisa',
             spellName='Black Magic "Gamma-ray Burst"',
             make=function()
-                -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=600}
                 -- player.moveMode=Player.moveModes.Monopolar
+                -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 -- G.viewMode.object=player
                 local a
                 a={x=150,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=512,bulletSpeed='20',bulletLifeFrame=10000,angle=math.pi/2,range=math.pi*256*0,bulletSprite=BulletSprites.star.orange,bulletEvents={
@@ -942,19 +942,19 @@ local levelData={
                 local player=Player{x=400,y=600}
                 local phi0=math.eval('0+999')
                 local a
-                a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.red,fogEffect=true,fogTime=20,bulletEvents={
+                a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.yellow,fogEffect=true,fogTime=20,bulletEvents={
                     function(cir,args,self)
                         local dirRef=cir.direction+3.14
                         local sx,sy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
                         sy=sy/2+75
                         cir.speed=(sx^2+sy^2)^0.5
                         cir.direction=math.atan2(sy,sx)
-                        cir.sprite=cir.args.index%3==0 and BulletSprites.round.red or BulletSprites.round.blue
+                        cir.sprite=cir.args.index%3==0 and BulletSprites.round.yellow or BulletSprites.round.green
                         Event.DelayEvent{
                             obj=cir,
                             delayFrame=60,
                             executeFunc=function()
-                                local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=1,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.red or BulletSprites.laser.blue,
+                                local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=1,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.yellow or BulletSprites.laser.green,
                                 bulletEvents={
                                     function(cir)
                                         Event.LoopEvent{
@@ -964,7 +964,7 @@ local levelData={
                                             conditionFunc=function()
                                                 if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then--Player.objects[1].border:inside(cir.x,cir.y) then
                                                     cir:remove()
-                                                    return cir.sprite==BulletSprites.laser.red and cir.index%10==0 
+                                                    return cir.sprite==BulletSprites.laser.yellow and cir.index%10==0 
                                                 end 
                                             end,
                                             executeFunc=function(self)
@@ -1005,6 +1005,84 @@ local levelData={
                         -- }
                     end
                     }
+                }
+            end
+        },
+    },
+    {
+        {
+            quote='Such surreal scene of a broader hyperbolic range...',
+            user='remilia',
+            spellName='Scarlet Sign "Vampirish Plaza"',
+            make=function()
+                G.levelRemainingFrame=5400
+                Shape.removeDistance=10000
+                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+                local player=Player{x=400,y=600}
+                player.moveMode=player.moveModes.Euclid
+                player.border:remove()
+                local poses={}
+                for i = 1, 12, 1 do
+                    local nx,ny=Shape.rThetaPos(400,300,200,math.pi/6*(i-.5))
+                    table.insert(poses,{nx,ny})
+                end
+                player.border=PolyLine(poses)
+                G.viewMode.mode=G.VIEW_MODES.FOLLOW
+                G.viewMode.object=player
+                local a
+                a=BulletSpawner{x=400,y=150,period=80,frame=40,lifeFrame=10000,bulletNumber=35,bulletSpeed='60',bulletLifeFrame=2000,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.giant.red,highlight=true,bulletEvents={
+                    function(cir)
+                        if(cir.args.index%2==0)then 
+                            cir.direction=Shape.to(a.x,a.y,player.x,player.y)
+                            cir.speed=cir.args.index*3
+                        end
+                        Event.EaseEvent{
+                            obj=cir,
+                            aimTable=cir,
+                            aimKey='speed',
+                            aimValue=0,
+                            easeFrame=300
+                        }
+                        Event.DelayEvent{
+                            delayFrame=1800,
+                            executeFunc=function()
+                                cir.safe=true
+                                cir.sprite_transparency=0.6
+                                Event.EaseEvent{
+                                    obj=cir,
+                                    aimTable=cir,
+                                    aimKey='sprite_transparency',
+                                    aimValue=0,
+                                    easeFrame=200,
+                                }
+                            end
+                        }
+                    end
+                }
+                }
+                Event.LoopEvent{
+                    period=1,
+                    obj=en,
+                    executeFunc=function()
+                        a.x,a.y=en.x,en.y--
+                        if en.frame%300==0 then
+                            local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval('0+3.14'))
+                            Event.EaseEvent{
+                                obj=en,
+                                aimTable=en,
+                                aimKey='x',
+                                aimValue=nx,
+                                easeFrame=200,
+                            }
+                            Event.EaseEvent{
+                                obj=en,
+                                aimTable=en,
+                                aimKey='y',
+                                aimValue=ny,
+                                easeFrame=200,
+                            }
+                        end
+                    end
                 }
             end
         },

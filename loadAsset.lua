@@ -151,10 +151,13 @@ Asset.flushBatches=function(self)
 end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
+        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.backgroundBatch then
+            G:antiFollowModeTransform()
+        end
         if isHighlightBatch[batch] then
             love.graphics.setBlendMode("add")
         end
-        if type(batch)=='table' then
+        if type(batch)=='table' then -- laser batch that is actually a table of laser meshes
             for i, mesh in pairs(batch) do
                 love.graphics.draw(mesh)
             end
@@ -162,6 +165,9 @@ Asset.drawBatches=function(self)
             love.graphics.draw(batch)
         end
         love.graphics.setBlendMode('alpha') -- default mode
+        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.backgroundBatch then
+            G:followModeTransform()
+        end
     end
 end
 return Asset

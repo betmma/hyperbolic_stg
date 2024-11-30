@@ -13,7 +13,9 @@ Player.moveModes={
     -- Up & Down: in hyperbolic line.
     -- Left & Right: in hyperbolic line.
     -- Orthogonality: False.
-    Bipolar='Bipolar'
+    Bipolar='Bipolar',
+
+    Euclid='Euclid'
 }
 function Player:new(args)
     Player.super.new(self, {x=args.x, y=args.y})
@@ -115,7 +117,7 @@ function Player:update(dt)
     end
     local xref=self.x
     local yref=self.y
-    local rightDir=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
+    local rightDir=self.moveMode==Player.moveModes.Euclid and 0 or math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
     local downDir=self.moveMode==Player.moveModes.Bipolar and 0 or rightDir
     self.direction=rightDir
     local right=self:isDownInt("right")-self:isDownInt("left")
@@ -146,7 +148,7 @@ function Player:update(dt)
 
     -- limit player in border
     local count=0
-    while count<10 and not self.border:inside(self.x,self.y) do
+    while self.border and count<10 and not self.border:inside(self.x,self.y) do
         count=count+1
         local line={self.border:inside(self.x,self.y)}
         local p=Shape.nearestToLine(self.x,self.y,line[2],line[3],line[4],line[5])
@@ -280,8 +282,12 @@ function Player:draw()
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
+end
+
+function Player:drawText()
     SetFont(24)
     love.graphics.print('HP: '..string.format("%.2f", self.hp),40,110)
+    love.graphics.print('X='..string.format("%.2f", self.x)..'\nY='..string.format("%.2f", self.y),30,140)
 end
 
 

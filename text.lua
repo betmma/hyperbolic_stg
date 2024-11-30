@@ -14,7 +14,7 @@ function Text:new(args)
     self.color=args.color or {1,1,1,1}
 end
 
-function Text:draw()
+function Text:drawText()
     if self.bordered then
         love.graphics.rectangle("line",self.x,self.y,self.width,self.height)
     end

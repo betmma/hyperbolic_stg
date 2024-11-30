@@ -151,9 +151,9 @@ function Shape.rThetaPos(x,y,r,theta)
     local x2,y2,r2=Shape.getCircle(x,y,r)
     if theta%math.pi==math.pi/2 then --vertical
         if theta>math.pi then
-            return x2,y2-r,theta+div*math.pi*2
+            return x2,y2-r2,theta+div*math.pi*2
         end
-        return x2,y2+r,theta+div*math.pi*2
+        return x2,y2+r2,theta+div*math.pi*2
     end
     local xc=Shape.lineCenter(x,y,x+math.cos(theta),y+math.sin(theta))
     local rr=math.distance(xc,Shape.axisY,x2,y2)
