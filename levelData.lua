@@ -1072,6 +1072,7 @@ local levelData={
                         local hpp=en.hp/en.maxhp
                         if hpp<0.7 then
                             a.bulletNumber=70
+                            a.range=math.pi*4
                         end
                         if hpp<0.3 then
                             a.period=40

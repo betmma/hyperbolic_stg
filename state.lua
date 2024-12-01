@@ -552,7 +552,15 @@ local G={
                         self:leaveLevel()
                         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
                     end
+                elseif isPressed('q')then
+                    if self.viewMode.mode==self.VIEW_MODES.NORMAL then
+                        self.viewMode.mode=self.VIEW_MODES.FOLLOW
+                        self.viewMode.object=Player.objects[1]
+                    elseif self.viewMode.mode==self.VIEW_MODES.FOLLOW then
+                        self.viewMode.mode=self.VIEW_MODES.NORMAL
+                    end
                 end
+
                 -- rest time calculation
                 self.levelRemainingFrame=self.levelRemainingFrame-1
                 if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
@@ -1100,7 +1108,10 @@ G.draw=function(self)
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         self.currentUI.draw(self)
         self.currentUI.drawText(self)
-    elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.viewMode.object then
+    elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW then
+        if not G.viewMode.object then
+            G.viewMode.object=Player.objects[1]
+        end
         love.graphics.push()
         self:followModeTransform()
         self.currentUI.draw(self)
