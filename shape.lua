@@ -103,6 +103,7 @@ function Shape.drawNormalArc(x, y, r, s_ang, e_ang, numLines)
 	
 	for i=1,numLines do
 		ang2 = ang1 + step
+        love.graphics.setLineWidth((y + (math.sin(ang1) * r))/400)
 		love.graphics.line(x + (math.cos(ang1) * r), y + (math.sin(ang1) * r),
 			x + (math.cos(ang2) * r), y + (math.sin(ang2) * r))
 		ang1 = ang2

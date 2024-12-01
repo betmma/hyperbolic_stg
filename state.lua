@@ -563,8 +563,8 @@ local G={
                 end
             end,
             draw=function(self)
-                Asset:drawBatches()
                 Object:drawAll()
+                Asset:drawBatches()
             end,
             drawText=function(self)
                 Object:drawTextAll()
@@ -614,8 +614,8 @@ local G={
                 end
             end,
             draw=function(self)
-                Asset:drawBatches()
                 Object:drawAll()
+                Asset:drawBatches()
             end,
             drawText=function(self)
                 Object:drawTextAll()
@@ -657,8 +657,8 @@ local G={
                 })
             end,
             draw=function(self)
-                Asset:drawBatches()
                 Object:drawAll()
+                Asset:drawBatches()
             end,
             drawText=function(self)
                 Object:drawTextAll()
@@ -703,8 +703,8 @@ local G={
                 end
             end,
             draw=function(self)
-                Asset:drawBatches()
                 Object:drawAll()
+                Asset:drawBatches()
             end,
             drawText=function(self)
                 Object:drawTextAll()
@@ -778,8 +778,8 @@ local G={
                 end
             end,
             draw=function(self)
-                Asset:drawBatches()
                 Object:drawAll()
+                Asset:drawBatches()
             end,
             drawText=function(self)
                 Object:drawTextAll()

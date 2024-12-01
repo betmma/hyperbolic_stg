@@ -1032,7 +1032,11 @@ local levelData={
                 local a
                 a=BulletSpawner{x=400,y=150,period=80,frame=40,lifeFrame=10000,bulletNumber=35,bulletSpeed='60',bulletLifeFrame=2000,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.giant.red,highlight=true,bulletEvents={
                     function(cir)
-                        if(cir.args.index%2==0)then 
+                        if cir.args.index>35 then
+                            cir.direction=Shape.to(a.x,a.y,player.x,player.y)+0.4*(cir.args.index%2==0 and 1 or -1)
+                            cir.speed=(cir.args.index-35)*3
+                            cir.sprite=BulletSprites.bigRound.red
+                        elseif(cir.args.index%2==0)then
                             cir.direction=Shape.to(a.x,a.y,player.x,player.y)
                             cir.speed=cir.args.index*3
                         end
@@ -1065,6 +1069,13 @@ local levelData={
                     obj=en,
                     executeFunc=function()
                         a.x,a.y=en.x,en.y--
+                        local hpp=en.hp/en.maxhp
+                        if hpp<0.7 then
+                            a.bulletNumber=70
+                        end
+                        if hpp<0.3 then
+                            a.period=40
+                        end
                         if en.frame%300==0 then
                             local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval('0+3.14'))
                             Event.EaseEvent{
@@ -1100,6 +1111,7 @@ for index, value in ipairs(levelData) do
                 math.randomseed(seed)
                 G.randomseed=seed
                 Shape.timeSpeed=1
+                G.viewMode.mode=G.VIEW_MODES.NORMAL
                 -- show spellcard name
                 do
                     if not value2.spellName then
