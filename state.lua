@@ -154,6 +154,15 @@ local G={
                         player.grazeHpRegen=player.grazeHpRegen+0.005
                     end
                 },
+                amulet={
+                    name='Amulet',
+                    description='Player hitbox is 25% smaller',
+                    cost=50,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.radius = player.radius*0.75
+                    end
+                },
                 homingShot={
                     name='Homing Shot',
                     description='2 rows of your shot become homing',
@@ -221,7 +230,7 @@ local G={
                 {
                     {
                         upgrade='homingShot',
-                        connect={up=true,right=true},
+                        connect={up=true,right=true,down=true},
                         need={}
                     },
                     {
@@ -236,7 +245,10 @@ local G={
                     {}
                 },
                 {
-                    {},
+                    {
+                        connect={up=true,down=true},
+                        need={}
+                    },
                     {
                         connect={up=true,right=true},
                         need={{1,3}}
@@ -248,6 +260,16 @@ local G={
                     },
                     {}
                 },
+                {
+                    {
+                        upgrade='amulet',
+                        connect={up=true},
+                        need={}
+                    },
+                    {},
+                    {},
+                    {}
+                }
             },
             chosen={1,1},
             needSatisfied=function(self,option)
@@ -985,6 +1007,7 @@ G.lose=function(self)
     self.STATE=self.STATES.GAME_END
     self:leaveLevel()
     self.won_current_scene=false
+    self:saveData()
 end
 G.enterLevel=function(self,level,scene)
     self:removeAll()
@@ -1021,14 +1044,14 @@ G.update=function(self,dt)
     self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
     if G.replay then
-        if love.keyboard.isDown('lalt') then
+        if love.keyboard.isDown('lalt') then -- +2x
             self.currentUI.update(self,dt)
             self.currentUI.update(self,dt)
         end
-        if love.keyboard.isDown('lctrl') then
+        if love.keyboard.isDown('lctrl') then -- +1x
             self.currentUI.update(self,dt)
         end
-        if not love.keyboard.isDown('lshift') or self.frame%2==0 then
+        if not love.keyboard.isDown('lshift') or self.frame%2==0 then -- -0.5x
             self.currentUI.update(self,dt)
         end
     else

@@ -760,6 +760,11 @@ local levelData={
                         end
                     end
                 }
+            end,
+            leave=function()
+                if G.levelRemainingFrame<=0 then
+                    G.save.levelData[2].extraUnlock=true
+                end
             end
         },
         {
@@ -935,26 +940,32 @@ local levelData={
         },
         {
             quote='??',
-            user='??',
-            spellName='??',
+            user='satori',
+            spellName='"Eye of Horus"',
             make=function()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=600}
                 local phi0=math.eval('0+999')
                 local a
+                local tmpBullets={}
                 a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.yellow,fogEffect=true,fogTime=20,bulletEvents={
                     function(cir,args,self)
-                        local dirRef=cir.direction+3.14
+                        if cir.args.index==1 then
+                            tmpBullets={}
+                        end
+                        table.insert(tmpBullets,cir)
                         local sx,sy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
                         sy=sy/2+75
                         cir.speed=(sx^2+sy^2)^0.5
                         cir.direction=math.atan2(sy,sx)
-                        cir.sprite=cir.args.index%3==0 and BulletSprites.round.yellow or BulletSprites.round.green
+                        cir.sprite=cir.args.index%3==0 and BulletSprites.round.yellow or BulletSprites.round.purple
                         Event.DelayEvent{
                             obj=cir,
                             delayFrame=60,
                             executeFunc=function()
-                                local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=1,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.yellow or BulletSprites.laser.green,
+                                local dirRef=cir.args.index%2==0 and Shape.to(cir.x,cir.y,tmpBullets[cir.args.index%a.bulletNumber+1].x,tmpBullets[cir.args.index%a.bulletNumber+1].y) or Shape.to(cir.x,cir.y,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].x,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].y)
+                                --(cir.direction+3.14*0.6*(cir.args.index%2==0 and -1 or 1))%(math.pi*2)
+                                local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=0.7,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.yellow or BulletSprites.laser.purple,
                                 bulletEvents={
                                     function(cir)
                                         Event.LoopEvent{
@@ -969,13 +980,13 @@ local levelData={
                                             end,
                                             executeFunc=function(self)
                                                 if not cir.safe then
-                                                    Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval('0+0.3'),speed=20,sprite=BulletSprites.round.red}
+                                                    Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval('0+0.3'),speed=20,sprite=BulletSprites.dot.red}
                                                 end
                                         end}
                                     end
                                 }}
                                 cir.speed=0
-                                local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5--math.eval('0+0.5')
+                                local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5*(cir.args.index%2==0 and -1 or 1)--math.eval('0+0.5')
                                 Event.EaseEvent{
                                     obj=laser,
                                     aimTable=laser.args,
@@ -984,7 +995,7 @@ local levelData={
                                     easeFrame=60,
                                     progressFunc=function(x)
                                         return -math.sin(math.pi/2*(1-x))+1
-                                    end
+                                    end,
                                 }
                             end
                         }
@@ -1011,7 +1022,7 @@ local levelData={
     },
     {
         {
-            quote='Such surreal scene of a broader hyperbolic range...',
+            quote='Such surreal scene of a broader hyperbolic area...',
             user='remilia',
             spellName='Scarlet Sign "Vampirish Plaza"',
             make=function()
