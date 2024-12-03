@@ -197,6 +197,7 @@ local levelData={
                     end
                 },
                 spawnBatchFunc=function(self)
+                    SFX:play('enemyShot',true,1)
                     local num=math.eval(self.bulletNumber)
                     local range=math.eval(self.range)
                     local angle=math.eval(self.angle)
@@ -256,6 +257,7 @@ local levelData={
                     end
                 },
                 spawnBatchFunc=function(self)
+                    SFX:play('enemyShot',true,1)
                     local num=math.eval(self.bulletNumber)
                     local range=math.eval(self.range)
                     local angle=math.eval(self.angle)
@@ -487,6 +489,7 @@ local levelData={
                 local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=600}
                 local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.scale.red,spawnBatchFunc=function(self)
+                    SFX:play('enemyShot',true)
                     local num=math.eval(self.bulletNumber)
                     local range=math.eval(self.range)
                     local angle=math.eval(self.angle)
@@ -614,7 +617,7 @@ local levelData={
             user='marisa',
             spellName='Black Magic "Gamma-ray Burst"',
             make=function()
-                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
+                local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7500}
                 local player=Player{x=400,y=600}
                 -- player.moveMode=Player.moveModes.Monopolar
                 -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
@@ -1041,7 +1044,7 @@ local levelData={
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 G.viewMode.object=player
                 local a
-                a=BulletSpawner{x=400,y=150,period=80,frame=40,lifeFrame=10000,bulletNumber=35,bulletSpeed='60',bulletLifeFrame=2000,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.giant.red,highlight=true,bulletEvents={
+                a=BulletSpawner{x=400,y=150,period=80,frame=40,lifeFrame=10000,bulletNumber=35,bulletSpeed='60',bulletLifeFrame=2000,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.giant.red,highlight=true,spawnSFXVolume=1,bulletEvents={
                     function(cir)
                         if cir.args.index>35 then
                             cir.direction=Shape.to(a.x,a.y,player.x,player.y)+0.4*(cir.args.index%2==0 and 1 or -1)
@@ -1109,6 +1112,127 @@ local levelData={
                 }
             end
         },
+        {
+            quote='Yuugi\'s classic three steps become unpredictable here. She is truly drunken.',
+            user='yuugi',
+            spellName='Big Four Arcanum "Knock Out In Three Sides"',
+            make=function()
+                G.levelRemainingFrame=5400
+                local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+                local player=Player{x=400,y=600}
+                local center,radius,thetas,vertices,outvertices,polyline,outpolyline
+                Event.LoopEvent{
+                    period=1,
+                    obj=en,
+                    executeFunc=function()
+                        -- a.x,a.y=en.x,en.y--
+                        local hpp=en.hp/en.maxhp
+                        local t=(en.frame-100)%480
+                        if t==0 then
+                            center={x=math.eval('400+50'),y=math.eval('300+50')}
+                            
+                            Event.EaseEvent{
+                                obj=en,
+                                aimTable=en,
+                                aimKey='x',
+                                aimValue=center.x,
+                                easeFrame=60,
+                                progressFunc=Event.sineProgressFunc
+                            }
+                            Event.EaseEvent{
+                                obj=en,
+                                aimTable=en,
+                                aimKey='y',
+                                aimValue=center.y,
+                                easeFrame=60,
+                                progressFunc=Event.sineProgressFunc
+                            }
+                            radius=math.eval('50+10')
+                            thetas={math.eval('0+3')}
+                            table.insert(thetas,thetas[1]+math.pi*2/3+math.eval('0+0.5'))
+                            table.insert(thetas,thetas[2]+math.pi*2/3+math.eval('0+0.5'))
+                            vertices={}
+                            outvertices={}
+                            for i = 1, 3 do
+                                local x,y=Shape.rThetaPos(center.x,center.y,radius-7,thetas[i])
+                                local xo,yo=Shape.rThetaPos(center.x,center.y,radius+7,thetas[i])
+                                table.insert(vertices,{x,y})
+                                table.insert(outvertices,{xo,yo})
+                                local fog=Circle({x=x, y=y, radius=1, lifeFrame=60, sprite=Asset.bulletSprites.fog.gray,safe=true})
+                                Event.EaseEvent{
+                                    obj=fog,
+                                    easeFrame=60,
+                                    aimTable=fog,
+                                    aimKey='sprite_transparency',
+                                    aimValue=0,
+                                    -- period=60,
+                                    endFunc=function()
+                                        SFX:play('enemyShot',true,1)
+                                        local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round.red,lifeFrame=400,invincible=true}
+                                        for j=1,30 do
+                                            Circle{x=x,y=y,direction=j*math.pi/15+thetas[i],speed=15,sprite=BulletSprites.dot.red,lifeFrame=800}
+                                        end
+                                    end
+                                }
+                            end
+                            if polyline then
+                                polyline:remove()
+                            end
+                            polyline=PolyLine(vertices,false)
+                            if outpolyline then
+                                outpolyline:remove()
+                            end
+                            outpolyline=PolyLine(outvertices,false)
+                        elseif t==130 then
+                            local xoff=math.eval('0+0.1')
+                            local count=0
+                            local sfxplayed,sfxplayed2=false,false
+                            for y0 = 0, 100, 2 do
+                                local y=y0*y0/13
+                                for x = 100, 700, (y+100)/20 do
+                                    count=count+1
+                                    local nx,ny=x+xoff*y,y
+                                    local inarea=polyline:inside(nx,ny)
+                                    local outarea=not outpolyline:inside(nx,ny)
+                                    if not inarea and not outarea then
+                                        goto continue
+                                    end
+                                    local delay0=Shape.distance(center.x,center.y,nx,ny)*(inarea and 1.5 or 0.1)
+                                    Event.DelayEvent{
+                                        delayFrame=delay0+(inarea and 0 or 80),
+                                        executeFunc=function()
+                                            if not sfxplayed then
+                                                SFX:play('enemyShot',true,1)
+                                                sfxplayed=true
+                                            end
+                                            local cir=Circle{x=nx,y=ny,direction=Shape.to(center.x,center.y,nx,ny)+(inarea and math.pi or 0),speed=0,sprite=inarea and BulletSprites.bigRound.red or BulletSprites.giant.red,lifeFrame=800,batch=Asset.bulletHighlightBatch}
+                                            Event.DelayEvent{
+                                                delayFrame=-delay0+80+(inarea and 0 or 50),
+                                                executeFunc=function()
+                                                    
+                                            if not sfxplayed2 then
+                                                SFX:play('enemyShot',true,1)
+                                                sfxplayed2=true
+                                            end
+                                                    if inarea then
+                                                        cir.speed=15
+                                                    end
+                                                    Event.EaseEvent{
+                                                        obj=cir,easeFrame=100,aimTable=cir,aimKey='speed',aimValue=inarea and 30 or 60,
+                                                    }
+                                                end
+                                            }
+                                            
+                                        end
+                                    }
+                                    ::continue::
+                                end
+                            end
+                        end
+                    end
+                }
+            end
+        },
     }
 }
 levelData.needPass={3,6,9,12,15,18}
@@ -1153,7 +1277,7 @@ for index, value in ipairs(levelData) do
                 local options=G.UIDEF.UPGRADES.options
                 for k,value in ipairs(options) do
                     for i,option in pairs(value) do
-                        if option.upgrade and G.save.upgrades[i][k].bought==true then
+                        if option.upgrade and G.save.upgrades[i][k] and G.save.upgrades[i][k].bought==true then
                             G.UIDEF.UPGRADES.upgrades[option.upgrade].executeFunc()
                         end
                     end

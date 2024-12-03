@@ -2,19 +2,24 @@
 local Shape = require "shape"
 local Point = Shape:extend()
 
-function Point:new(x, y)
+function Point:new(x, y,draw)
+    self.doDraw=draw==nil and true or draw
     Point.super.new(self, {x=x, y=y})
 end
 
 function Point:draw()
+    if not self.doDraw then
+        return
+    end
     love.graphics.circle("line", self.x, self.y, 1) -- 1 px
 end
 
 local PolyLine=Object:extend()
-function PolyLine:new(points)
+function PolyLine:new(points,draw)
+    self.doDraw=draw==nil and true or draw
     self.points={}
     for key, value in pairs(points) do
-        self.points[#self.points+1] = Point(value[1],value[2])
+        self.points[#self.points+1] = Point(value[1],value[2],self.doDraw)
     end
 end
 
@@ -37,6 +42,9 @@ function PolyLine:insideOne(xc,yc,index)
 end
 
 function PolyLine:draw()
+    if not self.doDraw then
+        return
+    end
     local itenum=#self.points
     if itenum==2 then
         itenum=1

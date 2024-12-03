@@ -27,6 +27,7 @@ function BulletSpawner:new(args)
     -- when spawning bullets, spawn a fog that turns into bullet 1s later
     self.fogEffect=args.fogEffect or false
     self.fogTime=args.fogTime or 60
+    self.spawnSFXVolume=args.spawnSFXVolume
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
         if not args.x then
             args.x=self.x
@@ -76,6 +77,7 @@ function BulletSpawner:new(args)
         end
     end
     self.spawnBatchFunc=args.spawnBatchFunc or function(self)
+        SFX:play('enemyShot',true,self.spawnSFXVolume)
         local num=math.eval(self.bulletNumber)
         local range=math.eval(self.range)
         local angle=self.angle=='player' and Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y) or math.eval(self.angle)

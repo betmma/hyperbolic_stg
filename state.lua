@@ -616,10 +616,17 @@ local G={
                     local speedText=speed==1 and '' or '['..speed..'x]'
                     love.graphics.print("REPLAYING... "..speedText, 150, 580)
                 end
+                local player=Player.objects[1]
                 SetFont(48)
-                love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 180, 10)
-                SetFont(18)
-                love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 252, 36)
+                if not player or Shape.distance(170,10,player.x,player.y)>30 or G.viewMode.mode~=G.VIEW_MODES.NORMAL then
+                    love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 160, 5)
+                    SetFont(18)
+                    love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 232, 31)
+                else
+                    love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 560, 5)
+                    SetFont(18)
+                    love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 632, 31)
+                end
                 
             end
         },
