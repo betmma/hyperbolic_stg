@@ -36,20 +36,41 @@ end
 function isPressed(key)
     return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
 end
+local controlFPSmode=0
 local sleepTime=1/60
+local frameTime=1/60
+local accum=0
 function love.update(dt)
-    love.timer.sleep(sleepTime-dt)
-    local fps=love.timer.getFPS()
-    local newTime=sleepTime*fps/60
-    sleepTime=0.995*(sleepTime-newTime)+newTime
-    dt=1/60
-    -- Rectangle:updateAll(dt)
-    G:update(dt)
-    for key, value in pairs(KeyboardPressed) do
-        if love.keyboard.isDown(key) then
-            KeyboardPressed[key]=true
+    if controlFPSmode==0 then
+        accum=accum+dt
+        if accum>=frameTime then
+            accum=accum-frameTime
+            dt=1/60
+            G:update(dt)
+            for key, value in pairs(KeyboardPressed) do
+                if love.keyboard.isDown(key) then
+                    KeyboardPressed[key]=true
+                end
+            end
         end
+    elseif controlFPSmode==1 then
+        love.timer.sleep(sleepTime-dt)
+        local fps=love.timer.getFPS()
+        local newTime=sleepTime*fps/60
+        sleepTime=0.995*(sleepTime-newTime)+newTime
+        dt=1/60
+        G:update(dt)
+        for key, value in pairs(KeyboardPressed) do
+            if love.keyboard.isDown(key) then
+                KeyboardPressed[key]=true
+            end
+        end
+    
     end
+    -- love.timer.sleep(sleepTime-dt)
+    -- local fps=love.timer.getFPS()
+    -- local newTime=sleepTime*fps/60
+    -- sleepTime=0.995*(sleepTime-newTime)+newTime
 end
 
 function love.draw()
