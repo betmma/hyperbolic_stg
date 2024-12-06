@@ -156,7 +156,7 @@ function Shape.rThetaPos(x,y,r,theta)
         end
         return x2,y2+r2,theta+div*math.pi*2
     end
-    local xc=Shape.lineCenter(x,y,x+math.cos(theta),y+math.sin(theta))
+    local xc=x+math.tan(theta)*(y-Shape.axisY)
     local rr=math.distance(xc,Shape.axisY,x2,y2)
     local ra=math.distance(xc,Shape.axisY,x,y)
     -- 3 sides of the triangle are rr, ra and r2

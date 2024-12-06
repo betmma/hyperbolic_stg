@@ -1233,6 +1233,17 @@ local levelData={
                 }
             end
         },
+        {
+            quote='Test',
+            user='Test',
+            spellName='Test',
+            make=function()
+                G.levelRemainingFrame=5400
+                -- local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+                local player=Player{x=400,y=600}
+                player.moveMode=Player.moveModes.Test
+            end
+        },
     }
 }
 levelData.needPass={3,6,9,12,15,18}

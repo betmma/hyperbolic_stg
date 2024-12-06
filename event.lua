@@ -36,7 +36,7 @@ function Event:update(dt)
             self:executeFunc(dt)
             self.executedTimes=self.executedTimes+1
         end
-        if self.executedTimes>self.times or self.obj.removed then
+        if self.executedTimes>=self.times or self.obj.removed then
             -- print(self.frame,self.obj.frame)
             self:remove()
             return

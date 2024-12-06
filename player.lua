@@ -4,21 +4,25 @@ local Circle=require"circle"
 local PolyLine=require"polyline"
 local Player = Shape:extend()
 Player.moveModes={
-    -- North Pole (400, Shape.axisY). Move directions are same as Polar Coordinate System in Euclid space, that is Up / Down -> close to / away from pole. Left / Right -> along the arc centered at North Pole.
+    -- North Pole (player.x, Shape.axisY). Move directions are same as Polar Coordinate System in Euclid space, that is Up / Down -> close to / away from pole. Left / Right -> along the arc centered at North Pole.
     -- Up & Down: not in hyperbolic line.
     -- Left & Right: in hyperbolic line.
     -- Orthogonality: True.
     Monopolar='Monopolar',
-    -- North Pole (400, Shape.axisY), East Pole (+∞, 400). Up / Down -> only change y coordinate. Left / Right -> same as Monopolar, along the arc.
+    -- North Pole (player.x, Shape.axisY), East Pole (+∞, player.y). Up / Down -> only change y coordinate. Left / Right -> same as Monopolar, along the arc.
     -- Up & Down: in hyperbolic line.
     -- Left & Right: in hyperbolic line.
     -- Orthogonality: False.
     Bipolar='Bipolar',
 
-    Euclid='Euclid'
+    Euclid='Euclid',
+
+    Test='Test'
 }
 function Player:new(args)
     Player.super.new(self, {x=args.x, y=args.y})
+    self.direction=0
+    self.naturalDirection=0
     self.lifeFrame=9999999
     self.speed=0
     self.movespeed=args.movespeed or 60
@@ -117,8 +121,19 @@ function Player:update(dt)
     end
     local xref=self.x
     local yref=self.y
-    local rightDir=self.moveMode==Player.moveModes.Euclid and 0 or math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
-    local downDir=self.moveMode==Player.moveModes.Bipolar and 0 or rightDir
+    local rightDir,downDir
+    local the=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
+    if self.moveMode==Player.moveModes.Monopolar then
+        rightDir=the
+        downDir=rightDir
+    elseif self.moveMode==Player.moveModes.Bipolar then
+        rightDir,downDir=the,0
+    elseif self.moveMode==Player.moveModes.Euclid then
+        rightDir,downDir=0,0
+    elseif self.moveMode==Player.moveModes.Test then
+        rightDir=self.naturalDirection
+        downDir=self.naturalDirection
+    end
     self.direction=rightDir
     local right=self:isDownInt("right")-self:isDownInt("left")
     if right==-1 then
@@ -170,6 +185,36 @@ function Player:update(dt)
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 
+    if self.moveMode==Player.moveModes.Test then
+        -- problems: 1. when player is blocked by border, the moveDistance is still the assumed distance before calculating border. (solved by calculating math.distance of current pos and ref pos)
+        -- 2. while not calling self:testRotate, the rightward direction is changing correctly. So, the ideal operation is posing a hyperbolic rotate transform before drawing all things (and restore after it), but obviously love2d doesn't support that. Hyperbolic rotate transform is simple as the testRotate, and the difference between normal rotate is that, the y=-100 line doesn't change (rotating player's view shouldn't change the line). Applying testRotate to all objects, changing their real position and cancelling out naturalDirection's update is not ideal and actually wrong.
+        if 1 then
+            local moveDistance=math.distance(self.x,self.y,xref,yref)
+            local dtheta=-moveDistance/self:getMoveRadius()
+            -- rightDir=rightDir-moveDistance/self.moveRadius
+            self.naturalDirection=self.naturalDirection+dtheta
+            -- self:testRotate(self.naturalDirection)
+        end
+    end
+end
+
+function Player:testRotate(angle)
+    -- rotate all points by angle around player
+    local function rotate(v)
+        local r,theta=Shape.distance(self.x,self.y,v.x,v.y),Shape.to(self.x,self.y,v.x,v.y)
+        v.x,v.y=Shape.rThetaPos(self.x,self.y,r,theta+angle)
+    end
+    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit}
+    for k,cls in pairs(list)do
+        for k2,obj in pairs(cls.objects)do
+            rotate(obj)
+        end
+    end
+    for k2,obj in pairs(PolyLine.objects)do
+        for k,point in pairs(obj.points) do
+            rotate(point)
+        end
+    end
 end
 
 function Player:shoot()

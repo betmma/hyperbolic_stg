@@ -602,6 +602,9 @@ local G={
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
                 love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
+                love.graphics.print("Loop Event: "..#Event.LoopEvent.objects, 10, 310)
+                love.graphics.print("Ease Event: "..#Event.EaseEvent.objects, 10, 340)
+                love.graphics.print("Delay Event: "..#Event.DelayEvent.objects, 10, 370)
                 if self.replay then
                     local speed=1
                     if love.keyboard.isDown('lalt') then
@@ -618,15 +621,16 @@ local G={
                 end
                 local player=Player.objects[1]
                 SetFont(48)
+                local xt,yt=160,5
+                local dx,dy=72,26
                 if not player or Shape.distance(170,10,player.x,player.y)>30 or G.viewMode.mode~=G.VIEW_MODES.NORMAL then
-                    love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 160, 5)
-                    SetFont(18)
-                    love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 232, 31)
+                    xt,yt=160,5
                 else
-                    love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', 560, 5)
-                    SetFont(18)
-                    love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), 632, 31)
+                    xt,yt=560,5
                 end
+                love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', xt, yt)
+                SetFont(18)
+                love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), xt+dx, yt+dy)
                 
             end
         },
