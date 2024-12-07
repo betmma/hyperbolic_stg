@@ -60,7 +60,7 @@ function PolyLine.drawOne(p1,p2)
     local y1=p1.y
     local x2=p2.x
     local y2=p2.y
-    if x1==x2 then -- vertical -> line
+    if  math.abs(x1-x2)<Shape.EPS then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)
         return
     end

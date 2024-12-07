@@ -1241,7 +1241,27 @@ local levelData={
                 G.levelRemainingFrame=5400
                 -- local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=600}
-                player.moveMode=Player.moveModes.Test
+                player.moveMode=Player.moveModes.Natural
+                local b=BulletSpawner{x=400,y=300,period=6000,frame=5940,lifeFrame=6001,bulletNumber=10,bulletSpeed=10,angle='0+9999',bulletLifeFrame=990000 ,bulletSprite=BulletSprites.bigRound.red,fogEffect=true,bulletEvents={
+                    function(cir,args)
+                        local spd=cir.speed
+                        cir.speed=0
+                        Event.EaseEvent{
+                            obj=cir,
+                            aimTable=cir,
+                            aimKey='speed',
+                            aimValue=spd,
+                            easeFrame=60
+                        }
+                        CIM=cir
+                    end
+                },
+                spawnBatchFunc=function(self)
+                        for y0=150,150,50 do
+                            self:spawnBulletFunc{x=400,y=y0,direction=0,speed=0,radius=1/(y0-Shape.axisY)*500,invincible=true}
+                        end
+                end
+                }
             end
         },
     }

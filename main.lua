@@ -75,4 +75,13 @@ end
 
 function love.draw()
     G:draw()
+    -- for i = 50, 600, 50 do
+    -- if CIM then
+    --     local x0,y0,x1,y1=Player.objects[1].x,Player.objects[1].y,CIM.x,CIM.y
+    --     local ang=0.0
+    --     local r,theta=Shape.distance(x0,y0,x1,y1),Shape.to(x0,y0,x1,y1)
+    --     local nx,ny=Shape.rThetaPos(x0,y0,r,theta+ang)
+    --     love.graphics.print(r..', '..theta,300,100)
+    --     love.graphics.print(nx..', '..ny,300,130)
+    -- end
 end

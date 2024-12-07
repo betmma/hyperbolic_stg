@@ -4,6 +4,8 @@ Shape.curvature=100
 Shape.removeDistance=100
 Shape.timeSpeed=1
 Shape.axisY=-100
+local EPS=1e-8
+Shape.EPS=EPS
 function Shape.restore()
     Shape.curvature=100
     Shape.axisY=-100
@@ -42,7 +44,7 @@ end
 
 -- actually this function is never used (^^;
 function Shape.drawLine(x1,y1,x2,y2)
-    if x1==x2 then -- vertical -> line
+    if math.abs(x1-x2)<EPS then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)
         return
     end
@@ -53,7 +55,7 @@ end
 -- get direction from x1,y1 to x2,y2 (at x1,y1)
 ---@return number 'direction in [-pi/2,3pi/2]'
 function Shape.to(x1,y1,x2,y2)
-    if x1==x2 then -- vertical 
+    if math.abs(x1-x2)<EPS then -- vertical 
         return y1<y2 and math.pi/2 or -math.pi/2
     end
     local centerX=Shape.lineCenter(x1,y1,x2,y2)
@@ -67,7 +69,7 @@ end
 
 -- calculate if a point xc,yc is left to line x1,y1 to x2,y2 (in/out the semicircle if angle p1 to p2 is negative/positive // left to a vertical line)
 function Shape.leftToLine(xc,yc,x1,y1,x2,y2)
-    if x1==x2 then -- vertical
+    if math.abs(x1-x2)<EPS then -- vertical
         if y2<y1 then -- the line goes upward
             return xc<x1
         end
@@ -85,7 +87,7 @@ end
 -- find the nearest point to xc,yc on line [x1,y1 to x2,y2] 
 ---@return table "{x,y}"
 function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
-    if x1==x2 then -- vertical
+    if math.abs(x1-x2)<EPS then -- vertical
         return {x1,yc}
     end
     local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
@@ -108,6 +110,7 @@ function Shape.drawNormalArc(x, y, r, s_ang, e_ang, numLines)
 			x + (math.cos(ang2) * r), y + (math.sin(ang2) * r))
 		ang1 = ang2
 	end
+    love.graphics.setLineWidth(1)
 end
 
 -- draw hyperbolic arc.

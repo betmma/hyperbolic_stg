@@ -23,8 +23,8 @@ function Circle:new(args)
     self.sprite_transparency=args.sprite_transparency or 1
 end
 
--- draw nothing as the actual thing drawn is its sprite
 function Circle:draw()
+    self:drawSprite()
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
     -- Shape.drawCircle(self.x,self.y,self.radius)
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
@@ -39,12 +39,11 @@ function Circle:update(dt)
         func(self,dt)
     end
     Circle.super.update(self,dt)
-    self:drawSprite()
     self:checkShockwaveRemove()
     self:checkHitPlayer()
 end
 
--- this happens in update.
+-- this happens in draw.
 function Circle:drawSprite()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]

@@ -22,15 +22,19 @@ end
 function Larger:update(dt)
     Larger.super.update(self,dt)
     self.radius=self.radius*self.growSpeed
+    if self.frame==self.animationFrame then
+        self:remove()
+    end
+end
+
+function Larger:draw()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local scale=r/30.3333
     local size=Asset.SpriteData[self.sprite].size
     Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
     Asset.effectBatch:add(self.sprite,x,y,0,scale,scale,size/2,size/2)
-    if self.frame==self.animationFrame then
-        self:remove()
-    end
 end
+
 -- A growing shockwave, that removes touched bullets and activate their :removeEffect
 local Shockwave=Larger:extend()
 Effect.Shockwave=Shockwave
@@ -64,7 +68,6 @@ end
 
 function Charge:update(dt)
     self.frame=self.frame+1
-    local size=Asset.SpriteData[self.sprite].size
     table.insert(self.particles,{frame=0,x=self.obj.x,y=self.obj.y,direction=math.eval('0+999'),speed=self.particleSpeed})
     for k,particle in pairs(self.particles) do
         particle.frame=particle.frame+1
@@ -73,10 +76,6 @@ function Charge:update(dt)
         end
         particle.x=particle.x+particle.speed*math.cos(particle.direction)
         particle.y=particle.y+particle.speed*math.sin(particle.direction)
-        local scale=self.particleSize*0.95^particle.frame
-        local x,y=particle.x,particle.y
-        Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-particle.frame/self.particleFrame)
-        Asset.effectBatch:add(self.sprite,x,y,0,scale,scale,size/2,size/2)
         ::continue::
     end
     if self.frame==self.animationFrame then
@@ -84,5 +83,18 @@ function Charge:update(dt)
     end
 end
 
+function Charge:draw(dt)
+    local size=Asset.SpriteData[self.sprite].size
+    for k,particle in pairs(self.particles) do
+        if particle.frame>=self.particleFrame then
+            goto continue
+        end
+        local scale=self.particleSize*0.95^particle.frame
+        local x,y=particle.x,particle.y
+        Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-particle.frame/self.particleFrame)
+        Asset.effectBatch:add(self.sprite,x,y,0,scale,scale,size/2,size/2)
+        ::continue::
+    end
+end
 
 return Effect

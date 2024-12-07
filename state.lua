@@ -20,6 +20,18 @@ local function optionsCalc(self,execFuncs)
     end
 end
 local G={
+    CONSTANTS={
+        DRAW=function(self)
+            Asset:clearBatches()
+            Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
+            Asset.backgroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
+            Object:drawAll()
+            Asset:flushBatches()
+            Asset:drawBatches()
+        end,
+    },
+}
+G={
     switchState=function(self,state)
         self.STATE=state
         self.currentUI=self.UIDEF[self.STATE]
@@ -27,8 +39,7 @@ local G={
             self.UIDEF[state].enter(self)
         end
     end,
-    CONSTANTS={
-    },
+    CONSTANTS=G.CONSTANTS,
     STATES={
         MAIN_MENU='MAIN_MENU',
         OPTIONS='OPTIONS',
@@ -557,11 +568,7 @@ local G={
         },
         IN_LEVEL={
             update=function(self,dt)
-                Asset:clearBatches()
-                Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
-                Asset.backgroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
                 Object:updateAll(dt)
-                Asset:flushBatches()
                 if isPressed('escape') then
                     SFX:play('select')
                     -- self:removeAll()
@@ -575,12 +582,16 @@ local G={
                         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
                     end
                 elseif isPressed('q')then
-                    if self.viewMode.mode==self.VIEW_MODES.NORMAL then
+                    if self.viewMode.mode==self.VIEW_MODES.NORMAL and Player.objects[1] then
                         self.viewMode.mode=self.VIEW_MODES.FOLLOW
                         self.viewMode.object=Player.objects[1]
                     elseif self.viewMode.mode==self.VIEW_MODES.FOLLOW then
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
+                elseif isPressed('w')then
+                    Player.objects[1].hp=999
+                    Player.objects[1].maxhp=999
+                    Player.objects[1].moveMode=Player.moveModes.Natural
                 end
 
                 -- rest time calculation
@@ -592,10 +603,7 @@ local G={
                     self:lose()
                 end
             end,
-            draw=function(self)
-                Object:drawAll()
-                Asset:drawBatches()
-            end,
+            draw=G.CONSTANTS.DRAW,
             drawText=function(self)
                 Object:drawTextAll()
                 SetFont(18)
@@ -654,10 +662,7 @@ local G={
                     self.STATE=self.STATES.IN_LEVEL
                 end
             end,
-            draw=function(self)
-                Object:drawAll()
-                Asset:drawBatches()
-            end,
+            draw=G.CONSTANTS.DRAW,
             drawText=function(self)
                 Object:drawTextAll()
                 local color={love.graphics.getColor()}
@@ -697,10 +702,7 @@ local G={
                     end
                 })
             end,
-            draw=function(self)
-                Object:drawAll()
-                Asset:drawBatches()
-            end,
+            draw=G.CONSTANTS.DRAW,
             drawText=function(self)
                 Object:drawTextAll()
                 local color={love.graphics.getColor()}
@@ -743,10 +745,7 @@ local G={
                     self.STATE=self.STATES.GAME_END
                 end
             end,
-            draw=function(self)
-                Object:drawAll()
-                Asset:drawBatches()
-            end,
+            draw=G.CONSTANTS.DRAW,
             drawText=function(self)
                 Object:drawTextAll()
                 local color={love.graphics.getColor()}
@@ -818,10 +817,7 @@ local G={
                     self:switchState(self.STATES.SAVE_REPLAY)
                 end
             end,
-            draw=function(self)
-                Object:drawAll()
-                Asset:drawBatches()
-            end,
+            draw=G.CONSTANTS.DRAW,
             drawText=function(self)
                 Object:drawTextAll()
                 local color={love.graphics.getColor()}
@@ -1148,7 +1144,13 @@ G.draw=function(self)
         end
         love.graphics.push()
         self:followModeTransform()
+        if G.viewMode.object.moveMode==Player.moveModes.Natural then
+            G.viewMode.object:testRotate(-G.viewMode.object.naturalDirection)
+        end
         self.currentUI.draw(self)
+        if G.viewMode.object.moveMode==Player.moveModes.Natural then
+            G.viewMode.object:testRotate(0,true)
+        end
         love.graphics.pop()
         self.currentUI.drawText(self)
     end

@@ -30,12 +30,12 @@ end
 
 function LaserUnit:drawSprite()
     -- LaserUnit.super.drawSprite(self)
-    if not self.previous or self.previous.removed then
-        self:drawMesh()
-    end
 end
 
 function LaserUnit:draw()
+    if not self.previous or self.previous.removed then
+        self:drawMesh()
+    end
 end
 
 function LaserUnit:drawMesh()

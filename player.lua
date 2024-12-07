@@ -17,7 +17,7 @@ Player.moveModes={
 
     Euclid='Euclid',
 
-    Test='Test'
+    Natural='Natural'
 }
 function Player:new(args)
     Player.super.new(self, {x=args.x, y=args.y})
@@ -130,7 +130,7 @@ function Player:update(dt)
         rightDir,downDir=the,0
     elseif self.moveMode==Player.moveModes.Euclid then
         rightDir,downDir=0,0
-    elseif self.moveMode==Player.moveModes.Test then
+    elseif self.moveMode==Player.moveModes.Natural then
         rightDir=self.naturalDirection
         downDir=self.naturalDirection
     end
@@ -175,21 +175,18 @@ function Player:update(dt)
     self.invincibleTime=self.invincibleTime-dt
     if self.invincibleTime<=0 then
         self.invincibleTime=0
-        -- it's not ideal to handle hit in player:update, cuz different bullets may have non-circle hitbox (like laser) so this part will grow long
     end
 
     -- hp regen
     self.hp=math.clamp(self.hp+self.hpRegen*dt,0,self.maxhp)
 
-    --draw hit point
-    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 
-    if self.moveMode==Player.moveModes.Test then
+    if self.moveMode==Player.moveModes.Natural then
         -- problems: 1. when player is blocked by border, the moveDistance is still the assumed distance before calculating border. (solved by calculating math.distance of current pos and ref pos)
         -- 2. while not calling self:testRotate, the rightward direction is changing correctly. So, the ideal operation is posing a hyperbolic rotate transform before drawing all things (and restore after it), but obviously love2d doesn't support that. Hyperbolic rotate transform is simple as the testRotate, and the difference between normal rotate is that, the y=-100 line doesn't change (rotating player's view shouldn't change the line). Applying testRotate to all objects, changing their real position and cancelling out naturalDirection's update is not ideal and actually wrong.
         if 1 then
             local moveDistance=math.distance(self.x,self.y,xref,yref)
+            self.direction=Shape.to(xref,yref,self.x,self.y)
             local dtheta=-moveDistance/self:getMoveRadius()
             -- rightDir=rightDir-moveDistance/self.moveRadius
             self.naturalDirection=self.naturalDirection+dtheta
@@ -198,11 +195,20 @@ function Player:update(dt)
     end
 end
 
-function Player:testRotate(angle)
+function Player:testRotate(angle,restore)
     -- rotate all points by angle around player
     local function rotate(v)
         local r,theta=Shape.distance(self.x,self.y,v.x,v.y),Shape.to(self.x,self.y,v.x,v.y)
+        v.testRotateRef={v.x,v.y,v.direction}
         v.x,v.y=Shape.rThetaPos(self.x,self.y,r,theta+angle)
+        if v.direction then
+            v.direction=v.direction+angle
+        end
+    end
+    if restore then
+        rotate=function(v)
+            v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
+        end
     end
     local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit}
     for k,cls in pairs(list)do
@@ -327,12 +333,16 @@ function Player:draw()
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
+    --draw hit point
+    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
+    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 end
 
 function Player:drawText()
     SetFont(24)
     love.graphics.print('HP: '..string.format("%.2f", self.hp),40,110)
     love.graphics.print('X='..string.format("%.2f", self.x)..'\nY='..string.format("%.2f", self.y),30,140)
+    -- love.graphics.print(''..self.naturalDirection,100,120)
 end
 
 
