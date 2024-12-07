@@ -58,24 +58,26 @@ function Charge:new(args)
     self.obj=args.obj or self
     self.sprite=args.sprite or Asset.shards.round
     self.radius = args.radius or 1
-    self.particleSpeed=args.particleSpeed or 5
+    self.particleSpeed=args.particleSpeed or 1
     self.particleFrame=args.particleFrame or 40
     self.particleSize=args.particleSize or 5
     self.particles={}
     self.animationFrame=args.animationFrame or 120
-    self.color=args.color or {0.3,0.3,0.3}
+    self.color=args.color or {1,1,1}
+    SFX:play("enemyCharge",true)
 end
 
 function Charge:update(dt)
     self.frame=self.frame+1
-    table.insert(self.particles,{frame=0,x=self.obj.x,y=self.obj.y,direction=math.eval('0+999'),speed=self.particleSpeed})
+    local direction=math.eval('0+999')
+    if self.frame+self.particleFrame<self.animationFrame then
+        table.insert(self.particles,{frame=0,x=self.obj.x,y=self.obj.y,direction=direction,speed=self.particleSpeed})
+    end
     for k,particle in pairs(self.particles) do
         particle.frame=particle.frame+1
         if particle.frame>=self.particleFrame then
             goto continue
         end
-        particle.x=particle.x+particle.speed*math.cos(particle.direction)
-        particle.y=particle.y+particle.speed*math.sin(particle.direction)
         ::continue::
     end
     if self.frame==self.animationFrame then
@@ -89,9 +91,10 @@ function Charge:draw(dt)
         if particle.frame>=self.particleFrame then
             goto continue
         end
-        local scale=self.particleSize*0.95^particle.frame
+        local scale=self.particleSize*0.95^(self.particleFrame-particle.frame)
+        particle.x,particle.y=Shape.rThetaPos(self.obj.x,self.obj.y,particle.speed*(-particle.frame+self.particleFrame),particle.direction)
         local x,y=particle.x,particle.y
-        Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-particle.frame/self.particleFrame)
+        Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-0.3*particle.frame/self.particleFrame)
         Asset.effectBatch:add(self.sprite,x,y,0,scale,scale,size/2,size/2)
         ::continue::
     end

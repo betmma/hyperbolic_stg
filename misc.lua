@@ -6,13 +6,20 @@ function math.inRange(x,y,xmin,xmax,ymin,ymax)
     return x>xmin and x<xmax and y>ymin and y<ymax
 end
 
+-- Euclidean distance between two points
 function math.distance(x1,y1,x2,y2)
     return ((x1-x2)^2+(y1-y2)^2)^0.5
 end
+
 function math.clamp(val, lower, upper)
     assert(val and lower and upper, "nil sent to math.Clamp")
     if lower > upper then lower, upper = upper, lower end -- swap if boundaries supplied the wrong way
     return math.max(lower, math.min(upper, val))
+end
+
+-- return a value that is congruent with [val] modulo 2*[radius] in the range of [center-radius,center+radius]. Useful to wrap around a circle.
+function math.modClamp(val,center,radius)
+    return center+(val-center+radius)%(radius*2)-radius
 end
 
 ---@return number

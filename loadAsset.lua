@@ -34,7 +34,7 @@ Asset.bulletSprites={
     crystal=template,
     bill=template,
     bullet=template,
-    blackheart=template,
+    blackrice=template,
     star=template,
     darkdot=template,
     dot=template,
@@ -57,9 +57,9 @@ end
 for k,wave in pairs(Asset.shards) do
     Asset.SpriteData[wave]={size=8}
 end
-local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackheart=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14}
+local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14}
 local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
-local types={'laser','scale','rim','round','rice','kunai','crystal','bill','bullet','blackheart','star'}
+local types={'laser','scale','rim','round','rice','kunai','crystal','bill','bullet','blackrice','star'}
 for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do

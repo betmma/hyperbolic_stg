@@ -79,7 +79,7 @@ Event.DelayEvent=DelayEvent
 Event.sineProgressFunc=function(x)return math.sin((x-0.5)*math.pi)*0.5+0.5 end
 -- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames.
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
--- maybe make more default progressFuncs. I remember such functions in Unity.
+-- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be changed by other sources simultaneously, while 'hard' means the value is fixed by progressFunc.
 -- when EaseEvent ends, call [endFunc].
 local EaseEvent = Event:extend()
 function EaseEvent:new(args)
@@ -87,6 +87,7 @@ function EaseEvent:new(args)
     self.time=0
     self.frame=0
     self.period=args.easeFrame or 60
+    self.easeMode=args.easeMode=='hard' and 'hard' or'soft'
     self.aimTable=args.aimTable or {}
     self.key=args.aimKey
     self.aimValue=args.aimValue or 0
@@ -106,7 +107,12 @@ function EaseEvent:new(args)
             return false
         end
         local newProgress=self.progressFunc(self.frame/self.period)
-        self.aimTable[self.key]=self.aimTable[self.key]+(newProgress-self.lastProgress)*(self.aimValue-self.startValue)
+        local aimValue=type(self.aimValue)=="function" and self.aimValue() or self.aimValue
+        if self.easeMode=='soft' then
+            self.aimTable[self.key]=self.aimTable[self.key]+(newProgress-self.lastProgress)*(aimValue-self.startValue)
+        else
+            self.aimTable[self.key]=self.startValue+(newProgress)*(aimValue-self.startValue)
+        end
         if self.frame==self.period then
             self.times=0
             self:endFunc()

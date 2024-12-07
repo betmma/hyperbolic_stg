@@ -197,6 +197,7 @@ end
 
 function Player:testRotate(angle,restore)
     -- rotate all points by angle around player
+    -- restoring value is quicker and more accurate than calling (-angle)
     local function rotate(v)
         local r,theta=Shape.distance(self.x,self.y,v.x,v.y),Shape.to(self.x,self.y,v.x,v.y)
         v.testRotateRef={v.x,v.y,v.direction}
@@ -210,7 +211,7 @@ function Player:testRotate(angle,restore)
             v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
         end
     end
-    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit}
+    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit,Effect.Larger}
     for k,cls in pairs(list)do
         for k2,obj in pairs(cls.objects)do
             rotate(obj)
@@ -263,16 +264,16 @@ function Player:shootDirStraight(pos,damage,sprite,theta)
 end
 
 function Player:shootFrontStraight(pos,damage,sprite)
-    return self:shootDirStraight(pos,damage,sprite,-math.pi/2)
+    return self:shootDirStraight(pos,damage,sprite,-math.pi/2+self.naturalDirection)
 end
 function Player:shootBackStraight(pos,damage,sprite)
-    return self:shootDirStraight(pos,damage,sprite,math.pi/2)
+    return self:shootDirStraight(pos,damage,sprite,math.pi/2+self.naturalDirection)
 end
 
 -- note that this shoots 2 bullets, 1 on each side
 function Player:shootSideStraight(pos,damage,sprite)
     for side=0,1 do
-        self:shootDirStraight(pos,damage,sprite,math.pi*side)
+        self:shootDirStraight(pos,damage,sprite,math.pi*side+self.naturalDirection)
     end
 end
 
