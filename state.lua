@@ -589,9 +589,9 @@ G={
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
                 elseif isPressed('w')then
-                    Player.objects[1].hp=999
-                    Player.objects[1].maxhp=999
-                    Player.objects[1].moveMode=Player.moveModes.Natural
+                    -- Player.objects[1].hp=999
+                    -- Player.objects[1].maxhp=999
+                    -- Player.objects[1].moveMode=Player.moveModes.Natural
                 end
 
                 -- rest time calculation
@@ -1145,11 +1145,11 @@ G.draw=function(self)
         love.graphics.push()
         self:followModeTransform()
         if G.viewMode.object.moveMode==Player.moveModes.Natural then
-            G.viewMode.object:testRotate(-G.viewMode.object.naturalDirection)
+            G.viewMode.object:testRotate(-G.viewMode.object.naturalDirection) -- rotate all objects to make player face up. Note that due to love2d limitation, it *changes* objects' coordinates to achieve hyperbolic rotation.
         end
         self.currentUI.draw(self)
         if G.viewMode.object.moveMode==Player.moveModes.Natural then
-            G.viewMode.object:testRotate(0,true)
+            G.viewMode.object:testRotate(0,true) -- "true" means restore objects' coordinates
         end
         love.graphics.pop()
         self.currentUI.drawText(self)

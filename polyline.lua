@@ -14,6 +14,7 @@ function Point:draw()
     love.graphics.circle("line", self.x, self.y, 1) -- 1 px
 end
 
+-- Warning: points must form a convex polygon
 local PolyLine=Object:extend()
 function PolyLine:new(points,draw)
     self.doDraw=draw==nil and true or draw

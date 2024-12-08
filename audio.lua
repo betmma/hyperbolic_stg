@@ -36,6 +36,8 @@ function AudioSystem:setAudioVolume(name,volume)
 end
 local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout','enemyShot','enemyCharge','enemyPowerfulShot'},volumeCoeff=0.5}
 sfx:setAudioVolume('enemyShot',0.3)
+sfx:setAudioVolume('enemyCharge',0.6)
+sfx:setAudioVolume('enemyPowerfulShot',0.6)
 local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title'},volumeCoeff=1,looping=true}
 local Audio={
     sfx=sfx,

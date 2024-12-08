@@ -152,7 +152,8 @@ end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.backgroundBatch then
-            G:antiFollowModeTransform()
+            love.graphics.push()
+            love.graphics.origin()
         end
         if isHighlightBatch[batch] then
             love.graphics.setBlendMode("add")
@@ -166,7 +167,7 @@ Asset.drawBatches=function(self)
         end
         love.graphics.setBlendMode('alpha') -- default mode
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.backgroundBatch then
-            G:followModeTransform()
+            love.graphics.pop()
         end
     end
 end
