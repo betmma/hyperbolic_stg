@@ -55,7 +55,8 @@ local levelData={
             make=function ()
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
                 local player=Player{x=400,y=600}
-                a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSprite=BulletSprites.blackrice.blue,bulletEvents={
+                local b
+                local a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSprite=BulletSprites.blackrice.blue,bulletEvents={
                     function(cir,args)
                         local key=args.index
                         Event{
@@ -1261,7 +1262,7 @@ local levelData={
                             executeFunc=function()
                                 cir.sprite=BulletSprites.rice.red
                                 cir.speed=cir.speed+20
-                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5}
+                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5,safe=true}
                             end
                         }
                         Event.DelayEvent{
@@ -1270,7 +1271,7 @@ local levelData={
                             executeFunc=function()
                                 cir.sprite=BulletSprites.blackrice.red
                                 cir.speed=cir.speed-20
-                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5}
+                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5,safe=true}
                             end
                         }
                     end
@@ -1336,7 +1337,7 @@ local levelData={
                 Shape.removeDistance=2000
                 local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=600}
-                -- the angle of normal rotation. What this spellcard does is to replace hyperbolic rotation with normal rotation (that rotates y=-100 line), so that the direction to any other things remains same, but it looks distorted.
+                -- the angle of normal rotation. What this spellcard does is to replace hyperbolic rotation with normal rotation (that rotates y=-100 line), so that the direction to other things remains same, but it looks distorted.
                 player.naturalDirectionSpecial=0
                 player.moveMode=Player.moveModes.Natural
                 player.border:remove()
@@ -1357,7 +1358,7 @@ local levelData={
                             executeFunc=function()
                                 cir.sprite=BulletSprites.blackrice[color]
                                 cir.speed=cir.speed-30
-                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5}
+                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5,safe=true}
                             end
                         }
                         Event.DelayEvent{
@@ -1366,7 +1367,7 @@ local levelData={
                             executeFunc=function()
                                 cir.sprite=BulletSprites.rice[color]
                                 cir.speed=cir.speed+30
-                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5}
+                                Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5,safe=true}
                                 cir.direction=cir.direction+1.7*(color=='red' and 1 or -1)
                             end
                         }
