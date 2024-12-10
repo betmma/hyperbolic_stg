@@ -104,7 +104,15 @@ replayManager.runReplay=function(slot)
     player:setReplaying()
     player.keyRecord=replay.keyRecord
 
-    -- G.save.upgrades=G.upgradesRef
+    -- below is compat with old replay
+    if replay.time<'2024-12-10 21:20:00' then
+        player.shootInterval=1
+        player.shootRows.back.straight.damage=1
+        player.shootRows.side.straight.damage=1
+        player.shootRows.front.straight.damage=1
+        player.shootRows.front.homing.damage=1
+        player.shootRows.back.straight.num=player.shootRows.back.straight.num*2
+    end
 end
 
 -- note that replay param is used for pending (not saved yet) replay like when entering name. Other situations no need to input replay.

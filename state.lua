@@ -195,11 +195,11 @@ G={
                 },
                 backShot={
                     name='Back Shot',
-                    description='Add 8 rows of back shot',
+                    description='Add 4 rows of back shot that do double damage',
                     cost=50,
                     executeFunc=function()
                         local player=Player.objects[1]
-                        player.shootRows.back.straight.num=player.shootRows.back.straight.num+8
+                        player.shootRows.back.straight.num=player.shootRows.back.straight.num+4
                     end
                 },
             },
@@ -1017,6 +1017,7 @@ G.lose=function(self)
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)
+    AccumulatedTime=0
     self:removeAll()
     self.STATE=self.STATES.IN_LEVEL
     self.currentLevel={level,scene}

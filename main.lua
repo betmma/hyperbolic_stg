@@ -10,7 +10,6 @@ function love.load()
     Circle = require "circle"
     Laser=require"laser"
     PolyLine = require "polyline"
-    Player = require "player"
     Event= require "event"
     BulletSpawner=require"bulletSpawner"
     Enemy=require"enemy"
@@ -19,6 +18,7 @@ function love.load()
     SFX=Audio.sfx;BGM=Audio.bgm
     Effect=require"effect"
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
+    Player = require "player"
     G=require"state"
     BGM:play('title')
     ScreenshotManager=require"screenshotManager"
@@ -39,12 +39,12 @@ end
 local controlFPSmode=0
 local sleepTime=1/60
 local frameTime=1/60
-local accum=0
+AccumulatedTime=0
 function love.update(dt)
     if controlFPSmode==0 then
-        accum=accum+dt
-        if accum>=frameTime then
-            accum=accum-frameTime
+        AccumulatedTime=AccumulatedTime+dt
+        if AccumulatedTime>=frameTime then
+            AccumulatedTime=AccumulatedTime-frameTime
             dt=1/60
             G:update(dt)
             for key, value in pairs(KeyboardPressed) do

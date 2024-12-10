@@ -150,6 +150,9 @@ end
 ---@return number "y of new point"
 ---@return number "Euclidean polar angle"
 function Shape.rThetaPos(x,y,r,theta)
+    if r==0 then
+        return x,y,theta
+    end
     local div=math.floor(theta/(math.pi*2))
     theta=theta%(math.pi*2)
     local x2,y2,r2=Shape.getCircle(x,y,r)

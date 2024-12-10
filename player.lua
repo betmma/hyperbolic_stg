@@ -19,6 +19,34 @@ Player.moveModes={
 
     Natural='Natural'
 }
+Player.shootRows={
+    front={
+        straight={
+            num=4,
+            damage=3,
+            sprite=BulletSprites.darkdot.cyan
+        },
+        homing={
+            num=0,
+            damage=3,
+            sprite=BulletSprites.darkdot.red
+        }
+    },
+    side={
+        straight={
+            num=0,
+            damage=3,
+            sprite=BulletSprites.darkdot.blue
+        }
+    },
+    back={
+        straight={
+            num=0,
+            damage=6,
+            sprite=BulletSprites.darkdot.purple
+        }
+    }
+}
 function Player:new(args)
     Player.super.new(self, {x=args.x, y=args.y})
     self.direction=0
@@ -46,36 +74,10 @@ function Player:new(args)
     self.hurt=false --to check perfect completion
     self.invincibleTime=0
 
-    self.shootRows={
-        front={
-            straight={
-                num=4,
-                dmg=1,
-                sprite=BulletSprites.darkdot.cyan
-            },
-            homing={
-                num=0,
-                dmg=1,
-                sprite=BulletSprites.darkdot.red
-            }
-        },
-        side={
-            straight={
-                num=0,
-                dmg=1,
-                sprite=BulletSprites.darkdot.blue
-            }
-        },
-        back={
-            straight={
-                num=0,
-                dmg=1,
-                sprite=BulletSprites.darkdot.purple
-            }
-        }
-    }
+    self.shootRows=copy_table(Player.shootRows)
     self.shootRadius=0.5
     self.shootTransparency=0.5
+    self.shootInterval=3
 
     self.moveMode=Player.moveModes.Bipolar
     self.dieShockwaveRadius=2
@@ -116,7 +118,7 @@ function Player:update(dt)
         table.insert(self.keyRecord,keyVal)
     end
     -- shooting bullet
-    if self.keyIsDown('z') then
+    if self.keyIsDown('z') and self.frame%self.shootInterval==0 then
         self:shoot()
     end
     local xref=self.x
@@ -157,6 +159,9 @@ function Player:update(dt)
     end
     if self.keyIsDown('lshift') then
         self.speed=self.speed*self.focusFactor
+        self.focusing=true
+    else
+        self.focusing=false
     end
 
     self.super.update(self,dt) -- actually move

@@ -2,6 +2,10 @@ function math.acosh(x)
     return math.log(x+(x*x-1)^0.5)
 end
 
+function math.sign(x)
+    return x>0 and 1 or x<0 and -1 or 0
+end
+
 function math.inRange(x,y,xmin,xmax,ymin,ymax)
     return x>xmin and x<xmax and y>ymin and y<ymax
 end

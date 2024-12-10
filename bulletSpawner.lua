@@ -18,16 +18,18 @@ function BulletSpawner:new(args)
     self.bulletNumber=args.bulletNumber or 10
     self.angle=args.angle or 0
     self.range=args.range or math.pi*2
+    self.spawnCircleRadius=args.spawnCircleRadius or 0
+    self.spawnCircleAngle=args.spawnCircleAngle or 0
     self.bulletSpeed=args.bulletSpeed or 20
     self.bulletSize=args.bulletSize or 1
     self.bulletLifeFrame=args.bulletLifeFrame or 2000
     self.bulletEvents=args.bulletEvents or {}
     self.bulletSprite=args.bulletSprite
     self.bulletBatch=args.bulletBatch or (args.highlight and Asset.bulletHighlightBatch or BulletBatch)
-    -- when spawning bullets, spawn a fog that turns into bullet 1s later
+    -- when spawning bullets, spawn a fog that turns into bullet sometime later
     self.fogEffect=args.fogEffect or false
     self.fogTime=args.fogTime or 60
-    self.spawnSFXVolume=args.spawnSFXVolume
+    self.spawnSFXVolume=args.spawnSFXVolume -- nil means default volume set in audio.lua (50%)
     self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
         if not args.x then
             args.x=self.x
@@ -43,6 +45,7 @@ function BulletSpawner:new(args)
         end
         args.direction=math.eval(args.direction)
         args.speed=math.eval(args.speed)
+        args.invincible=self.args.invincible or false
         if Asset.SpriteData[args.sprite].laser then
             args.laserEvents=self.args.laserEvents or {}
             args.bulletEvents=self.bulletEvents
@@ -81,11 +84,13 @@ function BulletSpawner:new(args)
         local num=math.eval(self.bulletNumber)
         local range=math.eval(self.range)
         local angle=self.angle=='player' and Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y) or math.eval(self.angle)
+        local spawnCircleAngle=math.eval(self.spawnCircleAngle)
         local speed=math.eval(self.bulletSpeed)
         local size=math.eval(self.bulletSize)
         for i = 1, num, 1 do
             local direction=range*(i-0.5-num/2)/num+angle
-            self:spawnBulletFunc{x=self.x,y=self.y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch}
+            local x,y=Shape.rThetaPos(self.x,self.y,self.spawnCircleRadius,math.pi*2*(i-0.5-num/2)/num+spawnCircleAngle)
+            self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch}
         end
     end
     self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,frame=self.frame,executeFunc=function(event,dt)
