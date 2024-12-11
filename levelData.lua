@@ -1469,10 +1469,10 @@ local levelData={
                 local speeds={}
                 local lastFrameSpeeds={}
                 local rs={}
-                local layer=6
+                local layer=5
                 for i = 1, layer, 1 do
                     table.insert(angles,math.eval('-1.57+1'))
-                    local r=20*i-10
+                    local r=20*i+10
                     table.insert(rs,r)
                     table.insert(speeds,0.015/math.sinh((r+10)/100))
                     table.insert(lastFrameSpeeds,0)
@@ -1480,6 +1480,7 @@ local levelData={
                     -- table.insert(circles,cir)
                     local r2=r
                 end
+                local innerR=0
                 Event.LoopEvent{
                     period=1,
                     obj=en,
@@ -1517,6 +1518,16 @@ local levelData={
                             spawnCircleRadius=r2,invincible=true
                             }
                         end
+                        local innerSpeed=0.25
+                        if playerR<rs[1] then
+                            innerR=math.clamp(playerR,innerR-innerSpeed,math.min(rs[1],innerR+innerSpeed))
+                        else
+                            innerR=math.clamp(innerR-innerSpeed/2,0,rs[1])
+                        end
+                        BulletSpawner{x=400,y=300,period=1,frame=0,lifeFrame=2,bulletNumber=math.floor(200*math.sinh(innerR/100)),bulletSpeed=0,bulletLifeFrame=1,angle=0,bulletSprite=BulletSprites.bigRound.green,
+                        -- fogEffect=true,fogTime=120,
+                        spawnCircleRadius=innerR,invincible=true
+                        }
                     end
                 }
             end
