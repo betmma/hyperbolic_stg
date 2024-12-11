@@ -1446,10 +1446,11 @@ local levelData={
             end,
         },
         {
-            quote='test',
-            user='?',
-            spellName='?',
+            quote='Keep my speed up, and catch the right time to cross tracks!',
+            user='flandre',
+            spellName='Taboo "Labyrinthine Trap"',
             make=function()
+                -- this spellcard is to showcase hyperbolic circle has exponential growth of circumference. The outmost track provides much longer time than inner tracks before the barrier catches up. So the key is to spend most time in outer tracks, and when barrier is close, straightly cross into the center then go back to outer tracks on the other side, so that you earn half circumference of space. 
                 G.levelRemainingFrame=5400
                 Shape.removeDistance=1000
                 local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
@@ -1502,9 +1503,12 @@ local levelData={
                                 angles[i]=math.clamp(the2,angles[i]-speed,angles[i]+speed)
                                 lastFrameSpeeds[i]=angles[i]-angleRef
                             end
-                            for r=rs[i],rs[i+1],2.5 do
+                            for r=rs[i],rs[i+1],2 do
                                 local x,y=Shape.rThetaPos(400,300,r,angles[i])
-                                local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round.red,invincible=true,lifeFrame=1,radius=1,batch=Asset.bulletHighlightBatch}
+                                local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round[lastFrameSpeeds[i]>0 and 'red' or 'blue'],invincible=true,lifeFrame=5,radius=1,batch=Asset.bulletHighlightBatch,}
+                                Event.EaseEvent{
+                                    obj=cir,aimTable=cir,aimKey='sprite_transparency',aimValue=0.2,easeFrame=5
+                                }
                             end
                         end
                         for i = 1, layer, 1 do
@@ -1518,11 +1522,11 @@ local levelData={
                             spawnCircleRadius=r2,invincible=true
                             }
                         end
-                        local innerSpeed=0.25
+                        local innerSpeed=0.4
                         if playerR<rs[1] then
                             innerR=math.clamp(playerR,innerR-innerSpeed,math.min(rs[1],innerR+innerSpeed))
                         else
-                            innerR=math.clamp(innerR-innerSpeed/2,0,rs[1])
+                            innerR=math.clamp(innerR-innerSpeed/4,0,rs[1])
                         end
                         BulletSpawner{x=400,y=300,period=1,frame=0,lifeFrame=2,bulletNumber=math.floor(200*math.sinh(innerR/100)),bulletSpeed=0,bulletLifeFrame=1,angle=0,bulletSprite=BulletSprites.bigRound.green,
                         -- fogEffect=true,fogTime=120,

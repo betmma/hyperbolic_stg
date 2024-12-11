@@ -189,19 +189,18 @@ function Player:update(dt)
     if self.moveMode==Player.moveModes.Natural then
         -- problems: 1. when player is blocked by border, the moveDistance is still the assumed distance before calculating border. (solved by calculating math.distance of current pos and ref pos)
         -- 2. while not calling self:testRotate, the rightward direction is changing correctly. So, the ideal operation is posing a hyperbolic rotate transform before drawing all things (and restore after it), but obviously love2d doesn't support that. Hyperbolic rotate transform is simple as the testRotate, and the difference between normal rotate is that, the y=-100 line doesn't change (rotating player's view shouldn't change the line). Applying testRotate to all objects, changing their real position and cancelling out naturalDirection's update is not ideal and actually wrong.
-        if 1 then
-            local moveDistance=math.distance(self.x,self.y,xref,yref)
-            self.direction=Shape.to(xref,yref,self.x,self.y)
-            local dtheta=-moveDistance/self:getMoveRadius()
-            -- rightDir=rightDir-moveDistance/self.moveRadius
-            self.naturalDirection=self.naturalDirection+dtheta
-            -- self:testRotate(self.naturalDirection)
-        end
+        local moveDistance=math.distance(self.x,self.y,xref,yref)
+        self.direction=Shape.to(xref,yref,self.x,self.y)
+        local dtheta=-moveDistance/self:getMoveRadius()
+        -- rightDir=rightDir-moveDistance/self.moveRadius
+        self.naturalDirection=self.naturalDirection+dtheta
+        -- self:testRotate(self.naturalDirection)
+        
     end
 end
 
 function Player:testRotate(angle,restore)
-    -- rotate all points by angle around player
+    -- hyperbolic rotate all points by angle around player (actually change coordinates, not a visual effect, so it must be reverted later)
     -- restoring value is quicker and more accurate than calling (-angle)
     local function rotate(v)
         local r,theta=Shape.distance(self.x,self.y,v.x,v.y),Shape.to(self.x,self.y,v.x,v.y)
@@ -216,7 +215,7 @@ function Player:testRotate(angle,restore)
             v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
         end
     end
-    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit,Effect.Larger}
+    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit,Effect.Larger} -- due to different implementation, PolyLine has to be handled separately. not ideal
     for k,cls in pairs(list)do
         for k2,obj in pairs(cls.objects)do
             rotate(obj)
@@ -344,7 +343,30 @@ function Player:draw()
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
 end
 
+-- this function draws which keys are pressed. The keys are arranged as:
+--[[
+            U
+Shift Z   L D R 
+]]
+function Player:displayKeysPressed()
+    local x0,y0=15,500
+    local gridSize=20
+    local keysPoses={up={4,0},down={4,1},left={3,1},right={5,1},lshift={0,1},z={1,1}}
+    local color={love.graphics.getColor()}
+    for key, value in pairs(keysPoses) do
+        local x,y=x0+value[1]*gridSize,y0+value[2]*gridSize
+        if self.keyIsDown(key) then
+            love.graphics.setColor(1,1,1)
+            love.graphics.rectangle("fill",x,y,gridSize,gridSize)
+        end
+        love.graphics.setColor(0,0,0)
+        love.graphics.rectangle("line",x,y,gridSize,gridSize)
+    end
+    love.graphics.setColor(color[1],color[2],color[3])
+end
+
 function Player:drawText()
+    self:displayKeysPressed()
     SetFont(24)
     love.graphics.print('HP: '..string.format("%.2f", self.hp),40,110)
     love.graphics.print('X='..string.format("%.2f", self.x)..'\nY='..string.format("%.2f", self.y),30,140)
