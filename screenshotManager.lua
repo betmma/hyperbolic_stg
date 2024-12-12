@@ -24,6 +24,7 @@ for k,value in ipairs(levelData) do
     end
 end
 function screenshotManager.preSave(level,scene)
+    -- when player is about to win, make a screenshot
     local path=prePath(level,scene)
     -- Capture a screenshot of the current screen
     love.graphics.captureScreenshot(path)
@@ -31,6 +32,7 @@ function screenshotManager.preSave(level,scene)
     -- love.graphics.captureScreenshot(path)
 end
 function screenshotManager.save(level,scene)
+    -- when player actually wins, save the screenshot to the final path and prepare for display in level choosing menu
     local pre_path=prePath(level,scene)
     local path=path(level,scene)
     love.filesystem.write(path, love.filesystem.read(pre_path))

@@ -1,4 +1,4 @@
-This is an attempt to learn LÖVE and implement STG in hyperbolic geometry.
+This is an attempt to learn LÖVE and implement shoot 'em up in hyperbolic geometry.
 This game is a touhou fan-game.
 
 #### Control:
