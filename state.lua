@@ -202,6 +202,16 @@ G={
                         player.shootRows.back.straight.num=player.shootRows.back.straight.num+4
                     end
                 },
+                familiarShot={
+                    name='Familiar Shot',
+                    description='Your shots can hit enemy\'s familiars and do 1/4 damage',
+                    cost=40,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.canHitFamiliar=true
+                        player.hitFamiliarDamageFactor=0.25
+                    end
+                },
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
             -- need is also (x, y)
@@ -250,10 +260,14 @@ G={
                     },
                     {
                         upgrade='sideShot',
-                        connect={left=true},
+                        connect={left=true,right=true},
                         need={{1,3}}
                     },
-                    {}
+                    {
+                        upgrade='familiarShot',
+                        connect={left=true,down=true},
+                        need={{3,3},{3,4}}
+                    }
                 },
                 {
                     {
@@ -266,10 +280,13 @@ G={
                     },
                     {
                         upgrade='backShot',
-                        connect={left=true},
+                        connect={left=true,right=true},
                         need={{1,3}}
                     },
-                    {}
+                    {
+                        connect={up=true,left=true},
+                        need={{3,4}}
+                    }
                 },
                 {
                     {
@@ -434,7 +451,7 @@ G={
                     SetFont(24)
                     love.graphics.printf(upgrade.name,100,450,380,"left",0,1,1)
                     SetFont(18)
-                    love.graphics.printf(upgrade.description,110,485,380,"left",0,1,1)
+                    love.graphics.printf(upgrade.description,110,485,580,"left",0,1,1)
                     love.graphics.printf('Cost: '..upgrade.cost..' XP',110,540,380,"left",0,1,1)
                     love.graphics.rectangle("line",100,480,600,85)
                 end

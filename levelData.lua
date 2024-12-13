@@ -1632,7 +1632,7 @@ local levelData={
                             sentryNum=sentryNum+1
                             local choose={1,1,2,1,2,3,1,2,3,1,2,3,1,2,3}
                             table.insert(sentries,BulletSpawner(list[choose[sentryNum]]))
-                            sentries[sentryNum].dist=math.eval('0+9999')
+                            sentries[sentryNum].dist=-dis0*sentryNum
                         end
                     end
                 }

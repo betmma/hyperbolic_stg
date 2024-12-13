@@ -13,6 +13,9 @@ function Enemy:new(args)
     self.radius=10
     -- if mainEnemy is defeated, win this scene
     self.mainEnemy=args.mainEnemy or false
+    if self.mainEnemy then
+        G.mainEnemy=self
+    end
     self.hpBarTransparency=1
 end
 
@@ -25,24 +28,29 @@ function Enemy:update(dt)
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
     end
     Circle.checkHitPlayer(self)
+    self:checkHitByPlayer()
+end
+function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
+    objToReduceHp=objToReduceHp or self
+    damageFactor=damageFactor or 1
     for key, circ in pairs(Circle.objects) do
         if circ.fromPlayer and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
-            self.hp=self.hp-(circ.damage or 1)
+            objToReduceHp.hp=objToReduceHp.hp-(circ.damage or 1)*damageFactor
             circ:remove()
             SFX:play('damage')
             -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
             --     self.presaved=true
             -- end
-            if self.hp<0 and not self.removed then
+            if objToReduceHp.hp<0 and not objToReduceHp.removed then
                 SFX:play('kill')
-                self:remove()
-                if self.mainEnemy then
+                objToReduceHp:remove()
+                if objToReduceHp.mainEnemy then
                     local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
                     local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
                     if not G.replay then
                         ScreenshotManager.preSave(level,scene)
                     end
-                    Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
+                    Effect.Shockwave{x=objToReduceHp.x,y=objToReduceHp.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
                     Event.LoopEvent{
                         times=1,
                         period=60,
