@@ -68,7 +68,7 @@ function Circle:checkHitPlayer()
         for key, player in pairs(Player.objects) do
             local dis=Shape.distance(player.x,player.y,self.x,self.y)
             local radi=player.radius+self.radius
-            if dis<radi+player.radius*1.5 and not self.grazed then
+            if dis<radi+player.radius*player.grazeRadiusFactor and not self.grazed then
                 player:grazeEffect()
                 self.grazed=true
             end

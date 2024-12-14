@@ -467,7 +467,7 @@ local levelData={
                     end
                 }}
                 local a
-                a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=35,bulletSpeed='240+30',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi,bulletSprite=BulletSprites.laser.red,highlight=true,laserEvents={
+                a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=35,bulletSpeed='480',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi,bulletSprite=BulletSprites.laser.red,highlight=true,laserEvents={
                     function(laser)
                         Event.LoopEvent{
                             obj=laser,
@@ -977,10 +977,12 @@ local levelData={
                                             times=1,
                                             period=1,
                                             conditionFunc=function()
-                                                if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then--Player.objects[1].border:inside(cir.x,cir.y) then
+                                                if not(cir.x>120 and cir.x<680 and cir.y>0 and cir.y<650) then
                                                     cir:remove()
-                                                    return cir.sprite==BulletSprites.laser.yellow and cir.index%10==0 
                                                 end 
+                                                if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then
+                                                    return cir.sprite==BulletSprites.laser.yellow and cir.index%10==0 
+                                                end
                                             end,
                                             executeFunc=function(self)
                                                 if not cir.safe then

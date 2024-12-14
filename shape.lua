@@ -67,21 +67,49 @@ function Shape.to(x1,y1,x2,y2)
     return theta1-math.pi/2
 end
 
--- calculate if a point xc,yc is left to line x1,y1 to x2,y2 (in/out the semicircle if angle p1 to p2 is negative/positive // left to a vertical line)
-function Shape.leftToLine(xc,yc,x1,y1,x2,y2)
+-- calculate the SIGNED ON-SCREEN distance a point xc,yc to line [x1,y1 to x2,y2] (positive when in/out the semicircle if angle p1 to p2 is negative/positive // left to a vertical line)
+function Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<EPS then -- vertical
         if y2<y1 then -- the line goes upward
-            return xc<x1
+            return x1-xc
         end
-        return xc>x1
+        return xc-x1
     end
     local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
     local theta1=math.atan2(y1-Shape.axisY,x1-centerX)
     local theta2=math.atan2(y2-Shape.axisY,x2-centerX)
     if theta1>theta2 then
-        return math.distance(centerX,Shape.axisY,xc,yc)<radius
+        return radius-math.distance(centerX,Shape.axisY,xc,yc)
     end 
-    return math.distance(centerX,Shape.axisY,xc,yc)>radius
+    return math.distance(centerX,Shape.axisY,xc,yc)-radius
+end
+
+-- calculate if a point xc,yc is left to line [x1,y1 to x2,y2]. Uses distanceToLineSigned.
+function Shape.leftToLine(xc,yc,x1,y1,x2,y2)
+    return Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2)>0
+end
+
+function Shape.onscreenDistanceToLine(xc,yc,x1,y1,x2,y2)
+    return math.abs(Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2))
+end
+
+function Shape.distanceToSegment(xc,yc,x1,y1,x2,y2)
+    if math.abs(x1-x2)<EPS then -- vertical
+        -- make a perpendicular (hyperbolic) line from (xc,yc) to x=xc, intersects at (xc,yd)
+        local yd=math.distance(xc,yc,x1,Shape.axisY)
+        if y2<yd and y1<yd or y2>yd and y1>yd then 
+            return math.min(Shape.distance(x1,y1,xc,yc),Shape.distance(x2,y2,xc,yc))
+        end
+        return Shape.distance(x1,yd,xc,yc) -- the perpendicular line intersects the segment
+    end
+    local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
+    local theta1=math.atan2(y1-Shape.axisY,x1-centerX)
+    local theta2=math.atan2(y2-Shape.axisY,x2-centerX)
+    local thetac=math.atan2(yc-Shape.axisY,xc-centerX)
+    if theta1>thetac and theta2>thetac or theta1<thetac and theta2<thetac then
+        return math.min(Shape.distance(x1,y1,xc,yc),Shape.distance(x2,y2,xc,yc))
+    end 
+    return Shape.distance(centerX+radius*math.cos(thetac),Shape.axisY+radius*math.sin(thetac),xc,yc) -- this is INCORRECT, just an approximation when distance is small (used in lazer segment hitbox check)
 end
 
 -- find the nearest point to xc,yc on line [x1,y1 to x2,y2] 
