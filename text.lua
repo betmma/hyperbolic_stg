@@ -2,6 +2,7 @@ local Shape=require"Shape"
 local Text=Shape:extend()
 
 -- Text doesn't apply to hyperbolic geometry xD
+-- Also it's only used to display moving Spellcard name when entering level. Under other circumstances, normal print is quite enough.
 function Text:new(args)
     args.lifeFrame=999999999
     Enemy.super.new(self, args)

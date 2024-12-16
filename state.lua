@@ -1,4 +1,5 @@
 local levelData=require"levelData"
+local backgroundPattern=require"backgroundPattern"
 local function keyBindValueCalc(self,addKey,subKey,valueName,valueMax)
     if isPressed(addKey)then
         self.currentUI[valueName]=self.currentUI[valueName]%valueMax+1
@@ -25,18 +26,24 @@ local G={
             Asset:clearBatches()
             Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
             Asset.backgroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
-            Object:drawAll()
+            Object:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
             Asset:flushBatches()
             Asset:drawBatches()
         end,
     },
 }
 G={
+    backgroundPattern=backgroundPattern.Tesselation(),
     switchState=function(self,state)
         self.STATE=state
         self.currentUI=self.UIDEF[self.STATE]
         if self.UIDEF[state].enter then
             self.UIDEF[state].enter(self)
+        end
+    end,
+    replaceBackgroundPatternIfNot=function(self,patternClass)
+        if getmetatable(self.backgroundPattern)~=patternClass then
+            self.backgroundPattern=patternClass()
         end
     end,
     CONSTANTS=G.CONSTANTS,
@@ -62,15 +69,18 @@ G={
                 {text='Exit',value='EXIT'},
             },
             chosen=1,
+            enter=function(self)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+            end,
             update=function(self,dt)
-                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self.STATE=self.STATES.CHOOSE_LEVELS end,
+                optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
-                OPTIONS=function(self)self.STATE=self.STATES.OPTIONS end})
+                OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
             end,
             draw=function(self)
             end,
             drawText=function(self)
-                self.updateDynamicPatternData(self.patternData)
+                -- -- self.updateDynamicPatternData(self.patternData)
                 SetFont(96)
                 love.graphics.print("Hyperbolic\n   STG",200,100,0,1,1)
                 SetFont(36)
@@ -83,6 +93,9 @@ G={
             end
         },
         OPTIONS={
+            enter=function(self)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+            end,
             options={
                 {text='Master Volume',value='master_volume'},
                 {text='Music Volume',value='music_volume'},
@@ -91,7 +104,7 @@ G={
             },
             chosen=1,
             update=function(self,dt)
-                optionsCalc(self,{EXIT=function(self)self.STATE=self.STATES.MAIN_MENU;self:saveData() end})
+                optionsCalc(self,{EXIT=function(self)self:switchState(self.STATES.MAIN_MENU);self:saveData() end})
                 local optionKey=self.currentUI.options[self.currentUI.chosen].value
                 if love.keyboard.isDown('right') then
                     self.save.options[optionKey]=math.clamp(self.save.options[optionKey]+1,0,100)
@@ -105,13 +118,13 @@ G={
                     SFX:play('select')
                 elseif isPressed('x') or isPressed('escape')then
                     SFX:play('select')
-                    self.STATE=self.STATES.MAIN_MENU
+                    self:switchState(self.STATES.MAIN_MENU)
                 end
             end,
             draw=function(self)
             end,
             drawText=function(self)
-                self.updateDynamicPatternData(self.patternData)
+                -- -- self.updateDynamicPatternData(self.patternData)
                 SetFont(48)
                 love.graphics.print("Options", 100, 60)
                 SetFont(36)
@@ -127,6 +140,9 @@ G={
             end
         },
         UPGRADES={
+            enter=function(self)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+            end,
             upgrades={
                 increaseHP={
                     name='Increase HP',
@@ -351,7 +367,7 @@ G={
                 end
                 if isPressed('x') or isPressed('escape')then
                     SFX:play('select')
-                    self.STATE=self.STATES.CHOOSE_LEVELS
+                    self:switchState(self.STATES.CHOOSE_LEVELS)
                     self:saveData()
                 elseif isPressed('d') then
                     SFX:play('cancel',true)
@@ -404,7 +420,7 @@ G={
             end,
             drawText=function(self)
                 local color={love.graphics.getColor()}
-                self.updateDynamicPatternData(self.patternData)
+                -- -- self.updateDynamicPatternData(self.patternData)
 
                 --draw upgrades
                 local options=self.currentUI.options
@@ -439,7 +455,7 @@ G={
                         ::continue::
                     end
                 end
-                -- draw chosen
+                -- draw chosen (a bigger square around the chosen upgrade)
                 local chosen=self.currentUI.chosen
                 local chosenOption=options[chosen[2]][chosen[1]]
                 local x,y=chosen[1],chosen[2]
@@ -471,6 +487,9 @@ G={
             end
         },
         CHOOSE_LEVELS={
+            enter=function(self)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+            end,
             chosenLevel=1,
             chosenScene=1,
             update=function(self,dt)
@@ -504,10 +523,10 @@ G={
                     self:enterLevel(level,scene)
                 elseif isPressed('c') then
                     SFX:play('select')
-                    self.STATE=self.STATES.UPGRADES
+                    self:switchState(self.STATES.UPGRADES)
                 elseif isPressed('x') or isPressed('escape')then
                     SFX:play('select')
-                    self.STATE=self.STATES.MAIN_MENU
+                    self:switchState(self.STATES.MAIN_MENU)
                 elseif isPressed('[') then
                     SFX:play('select')
                     self.save.levelData[level][scene].passed=math.max(self.save.levelData[level][scene].passed-1,0)
@@ -519,7 +538,7 @@ G={
             draw=function(self)
             end,
             drawText=function(self)
-                self.updateDynamicPatternData(self.patternData)
+                -- self.updateDynamicPatternData(self.patternData)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
 
@@ -584,12 +603,15 @@ G={
             end
         },
         IN_LEVEL={
+            enter=function (self)
+                self.backgroundPattern=backgroundPattern.Empty()
+            end,
             update=function(self,dt)
                 Object:updateAll(dt)
                 if isPressed('escape') then
                     SFX:play('select')
                     -- self:removeAll()
-                    self.STATE=self.STATES.PAUSE
+                    self:switchState(self.STATES.PAUSE)
                 elseif isPressed('r')then
                     if self.replay then -- if in "replay" replay "replay" (why so strange)
                         self:leaveLevel()
@@ -669,14 +691,14 @@ G={
                 optionsCalc(self,{
                     EXIT=function(self)
                         self:removeAll()
-                        self.STATE=self.replay and self.STATES.LOAD_REPLAY or self.STATES.CHOOSE_LEVELS
+                        self:switchState(self.replay and self.STATES.LOAD_REPLAY or self.STATES.CHOOSE_LEVELS)
                         self:leaveLevel()
                     end,
-                    RESUME=function(self)self.STATE=self.STATES.IN_LEVEL end
+                    RESUME=function(self)self:switchState(self.STATES.IN_LEVEL) end
                 })
                 if isPressed('escape') then
                     SFX:play('select')
-                    self.STATE=self.STATES.IN_LEVEL
+                    self:switchState(self.STATES.IN_LEVEL)
                 end
             end,
             draw=G.CONSTANTS.DRAW,
@@ -709,7 +731,7 @@ G={
                 optionsCalc(self,{
                     EXIT=function(self)
                         self:removeAll()
-                        self.STATE=self.STATES.CHOOSE_LEVELS
+                        self:switchState(self.STATES.CHOOSE_LEVELS)
                     end,
                     SAVE_REPLAY=function(self)
                         self:switchState(self.STATES.SAVE_REPLAY)
@@ -759,7 +781,7 @@ G={
                     SFX:play('select')
                 elseif isPressed('x') or isPressed('escape')then
                     SFX:play('select')
-                    self.STATE=self.STATES.GAME_END
+                    self:switchState(self.STATES.GAME_END)
                 end
             end,
             draw=G.CONSTANTS.DRAW,
@@ -868,6 +890,7 @@ G={
             chosenMax=25,
             pageMax=4,
             enter=function(self)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
                 ReplayManager.loadAll()
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
                 self.currentUI.pageMax=ReplayManager.PAGES
@@ -886,13 +909,13 @@ G={
                     SFX:play('select')
                 elseif isPressed('x') or isPressed('escape')then
                     SFX:play('select')
-                    self.STATE=self.STATES.MAIN_MENU
+                    self:switchState(self.STATES.MAIN_MENU)
                 end
             end,
             draw=function(self)
             end,
             drawText=function(self)
-                self.updateDynamicPatternData(self.patternData)
+                -- self.updateDynamicPatternData(self.patternData)
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1)
 
@@ -910,7 +933,7 @@ G={
     }
 }
 
-G.STATE=G.STATES.MAIN_MENU
+G:switchState(G.STATES.MAIN_MENU)
 G.frame=0
 G.sceneTempObjs={}
 G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
@@ -929,9 +952,9 @@ end
 -- an example of its structure
 G.save={
     levelData={{{passed=0,tryCount=0,firstPass=0,firstPerfect=0}}},
-    options={},
+    options={master_volume=100,},
     upgrades={{{bought=true}}},
-    defaultName='',
+    defaultName='',-- when saving replay
 }
 G.loadData=function(self)
 	local file = love.filesystem.read("savedata.txt")
@@ -1009,7 +1032,7 @@ G.countPassedSceneNum=function(self)
     return passedSceneCount,allSceneCount
 end
 G.win=function(self)
-    self.STATE=self.STATES.GAME_END
+    self:switchState(self.STATES.GAME_END)
     self:leaveLevel()
     self.won_current_scene=true
     local winLevel=1
@@ -1028,7 +1051,7 @@ G.win=function(self)
     self:saveData()
 end
 G.lose=function(self)
-    self.STATE=self.STATES.GAME_END
+    self:switchState(self.STATES.GAME_END)
     self:leaveLevel()
     self.won_current_scene=false
     self:saveData()
@@ -1036,7 +1059,7 @@ end
 G.enterLevel=function(self,level,scene)
     AccumulatedTime=0
     self:removeAll()
-    self.STATE=self.STATES.IN_LEVEL
+    self:switchState(self.STATES.IN_LEVEL)
     self.currentLevel={level,scene}
     Shape.restore()
     self.levelRemainingFrame=nil
@@ -1048,7 +1071,7 @@ end
 G.leaveLevel=function(self)
     if self.replay then
         self.replay=nil
-        self.STATE=self.STATES.LOAD_REPLAY
+        self:switchState(self.STATES.LOAD_REPLAY)
         self.save.upgrades=self.upgradesRef
         return
     end
@@ -1068,6 +1091,7 @@ end
 G.update=function(self,dt)
     self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
+    self.backgroundPattern:update(dt)
     if G.replay then
         if love.keyboard.isDown('lalt') then -- +2x
             self.currentUI.update(self,dt)
@@ -1083,76 +1107,9 @@ G.update=function(self,dt)
         self.currentUI.update(self,dt)
     end
 end
--- sideNum=5 angleNum=4 -> r=107
--- sideNum=4 angleNum=5 -> r=126.2
--- sideNum=3 angleNum=7 -> r=110
--- point: where pattern begins. angle: direction of first line. sideNum: useless now as I dunno how to calculate side length. angleNum: how many sides are connected to each point. iteCount: used for recursion. plz input 0. r: side length. drawedPoints: plz input {}. color: {r,g,b}
-local function bgpattern(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,color)
-    color=color or {0.7,0.2,0.5}
-    local iteCount=(iteCount or 0)+1
-    local points={}
-    local r=r or 107--math.acosh(math.cos(math.pi/sideNum)/math.sin(math.pi/angleNum))*Shape.curvature
-    drawedPoints=drawedPoints or {}
-    local cic={Shape.getCircle(point.x,point.y,r)}
-    -- love.graphics.print(''..cic[1]..', '..cic[2]..' '..cic[3],10,10)
-    local begin=iteCount>1 and 2 or 1
-    for i=begin,angleNum do
-        local alpha=angle+math.pi*2/angleNum*(i-1)
-        local ret={Shape.rThetaPos(point.x,point.y,r,alpha)}
-        local newpoint={x=ret[1],y=ret[2]}
-        points[#points+1]=newpoint
-        -- SetFont(18)
-        local flag=true
-        local ratio=4.5
-        for k,v in pairs(drawedPoints) do
-            if ((point.x-v[1].x)^2+(point.y-v[1].y)^2+(newpoint.x-v[2].x)^2+(newpoint.y-v[2].y)^2)<ratio*point.y or ((point.x-v[2].x)^2+(point.y-v[2].y)^2+(newpoint.x-v[1].x)^2+(newpoint.y-v[1].y)^2)<ratio*point.y then
-                flag=false
-                break
-            end
-        end
-        if flag then
-            table.insert(drawedPoints,{point,newpoint})
-            local colorref={love.graphics.getColor()}
-            love.graphics.setColor(color[1],color[2],color[3])
-            PolyLine.drawOne(point,newpoint)
-            love.graphics.setColor(colorref[1],colorref[2],colorref[3])
-        end
-        -- Shape.drawLine(point.x,point.y,newpoint.x,newpoint.y)
-        -- love.graphics.print(''..newpoint.x..', '..newpoint.y..' '..alpha..' '..ret[3],10,10+50*i)
-    end
-    if iteCount==4 then return {},{} end
-    local angles={}
-    for i=1,#points do
-        local newpoint=points[i]
-        local newangle=Shape.to(newpoint.x,newpoint.y,point.x,point.y)
-        table.insert(angles,newangle)
-        bgpattern(newpoint,newangle,sideNum,angleNum,iteCount,r,drawedPoints,color)
-    end
-    return points,angles
-end
-G.patternData={point={x=400,y=150},limit={xmin=300,xmax=500,ymin=150,ymax=600},angle=math.pi/3,speed=0.0045}
-G.updateDynamicPatternData=function(data)
-    local ay=Shape.axisY
-    Shape.axisY=-30
-    bgpattern({x=data.point.x+1,y=data.point.y+1},data.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
-    local newpoint,newAngle=bgpattern(data.point,data.angle,5,5,0,126.2,{},{0.7,0.2,0.5})
-    if not math.inRange(data.point.x,data.point.y,data.limit.xmin,data.limit.xmax,data.limit.ymin,data.limit.ymax)  then
-        for i=1,#newpoint do
-            if math.inRange(newpoint[i].x,newpoint[i].y,data.limit.xmin,data.limit.xmax,data.limit.ymin,data.limit.ymax) then
-                data.point=newpoint[i]
-                data.angle=newAngle[i]
-            end
-        end
-    end
-    data.point={x=data.point.x-(data.point.x-400)*data.speed,y=data.point.y-(data.point.y-Shape.axisY)*data.speed}
-    data.angle=data.angle+0.004
-    -- love.graphics.print(''..data.point.x..', '..data.point.y,10,10+50)
-    Shape.axisY=ay
-end
-G.patternPoint={x=400,y=100}
-G.patternAngle=math.pi/3
 G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
+    self.backgroundPattern:draw()
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         self.currentUI.draw(self)
         self.currentUI.drawText(self)

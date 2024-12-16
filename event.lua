@@ -4,7 +4,7 @@ Event.modes={
     oneFrameOnce=0,
     oneFrameMultiple=1
 }
-Event.Event=Event -- for convenience as without it LoopEvent and EaseEvent need "Event." but base Event don't
+Event.Event=Event -- for convenience as without it LoopEvent and EaseEvent need "Event." but base Event doesn't
 
 -- conditionFunc, executeFunc, times, mode: Event.modes, obj
 -- when update checks if [conditionFunc(self,dt)] returns true, then execute [executeFunc(self,dt,obj)]. after executed [times] times or executeFunc returns false or obj.removed is true it's removed. [mode] can be Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple

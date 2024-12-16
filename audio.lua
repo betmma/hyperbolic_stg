@@ -23,6 +23,7 @@ function AudioSystem:play(name,restart,overrideVolume)
     self.data[name]:setVolume(self.currentVolume*self.volumeCoeff*(overrideVolume or self.audioVolumes[name]))
     self.data[name]:play()
 end
+-- set master volume of all audios (0-1 range)
 function AudioSystem:setVolume(volume)
     volume=math.clamp(volume,0,1)
     for k,v in pairs(self.data)do
@@ -30,6 +31,7 @@ function AudioSystem:setVolume(volume)
     end
     self.currentVolume=volume
 end
+-- set volume of a specific audio (0-1 range)
 function AudioSystem:setAudioVolume(name,volume)
     volume=math.clamp(volume,0,1)
     self.audioVolumes[name]=volume
