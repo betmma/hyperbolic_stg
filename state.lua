@@ -612,7 +612,7 @@ G={
                     SFX:play('select')
                     -- self:removeAll()
                     self:switchState(self.STATES.PAUSE)
-                elseif isPressed('r')then
+                elseif isPressed('r') and (not Player.objects[1] or Player.objects[1].frame>10)then
                     if self.replay then -- if in "replay" replay "replay" (why so strange)
                         self:leaveLevel()
                         ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)

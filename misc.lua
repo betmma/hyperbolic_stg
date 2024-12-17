@@ -44,6 +44,19 @@ function math.eval(str)
     end
 end
 
+-- randomly sample k elements from a table. If k is larger than the table size, k is considered as the table size.
+function math.randomSample(table,k)
+    local n=#table
+    k=math.min(n,k)
+    local result={}
+    for i=1,k do
+        local j=math.random(i,n)
+        result[i]=table[j]
+        table[j]=table[i]
+    end
+    return result
+end
+
 function copy_table(O)
     local O_type = type(O)
     local copy

@@ -48,6 +48,8 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,
             local colorref={love.graphics.getColor()}
             love.graphics.setColor(color[1],color[2],color[3])
             PolyLine.drawOne(point,newpoint)
+            love.graphics.setColor(0.35,0.15,0.8)
+            PolyLine.drawOne({x=point.x+1,y=point.y+1},{x=newpoint.x+1,y=newpoint.y+1})
             love.graphics.setColor(colorref[1],colorref[2],colorref[3])
         end
         -- Shape.drawLine(point.x,point.y,newpoint.x,newpoint.y)
@@ -80,6 +82,7 @@ function Tesselation:update(dt)
     local ay=Shape.axisY
     Shape.axisY=-30
     local newpoint,newAngle=self.newPoints or {self.point},self.newAngles or {self.angle}
+    -- if the current point is out of limit, find a new point from the drawn points (so that it seems like an infinite pattern)
     if not math.inRange(self.point.x,self.point.y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax)  then
         for i=1,#newpoint do
             if math.inRange(newpoint[i].x,newpoint[i].y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax) then
@@ -96,7 +99,7 @@ end
 function Tesselation:draw()
     local ay=Shape.axisY
     Shape.axisY=-30
-    tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
+    -- tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
     self.newPoints,self.newAngles=tesselation(self.point,self.angle,5,5,0,126.2,{},{0.7,0.2,0.5})
     Shape.axisY=ay
 end
