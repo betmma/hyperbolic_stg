@@ -43,6 +43,7 @@ G={
     end,
     replaceBackgroundPatternIfNot=function(self,patternClass)
         if getmetatable(self.backgroundPattern)~=patternClass then
+            self.backgroundPattern:remove()
             self.backgroundPattern=patternClass()
         end
     end,
@@ -73,6 +74,7 @@ G={
                 self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
             end,
             update=function(self,dt)
+                self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
                 OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
@@ -104,6 +106,7 @@ G={
             },
             chosen=1,
             update=function(self,dt)
+                self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=function(self)self:switchState(self.STATES.MAIN_MENU);self:saveData() end})
                 local optionKey=self.currentUI.options[self.currentUI.chosen].value
                 if love.keyboard.isDown('right') then
@@ -351,6 +354,7 @@ G={
                 return xp
             end,
             update=function(self,dt)
+                self.backgroundPattern:update(dt)
                 local options=self.currentUI.options
                 local chosen=self.currentUI.chosen
                 local option=options[chosen[2]][chosen[1]]
@@ -493,6 +497,7 @@ G={
             chosenLevel=1,
             chosenScene=1,
             update=function(self,dt)
+                self.backgroundPattern:update(dt)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
                 local levelNum=#levelData
@@ -545,7 +550,7 @@ G={
                 -- print Level x and Scene x
                 SetFont(36)
                 love.graphics.print("Level "..level,100,50,0,1,1)
-                SetFont(36)
+                SetFont(30)
                 for index, value in ipairs(levelData[level]) do
                     local color={love.graphics.getColor()}
                     love.graphics.setColor(.7,.6,.6)
@@ -554,11 +559,11 @@ G={
                     elseif self.save.levelData[level][index].passed==2 then
                         love.graphics.setColor(1,1,0.5)
                     end
-                    love.graphics.print("Scene "..index,100,100+index*50,0,1,1)
+                    love.graphics.print("Scene "..index,100,100+index*40,0,1,1)
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
                 -- draw rectangle to mark current selected scene 
-                love.graphics.rectangle("line",100,100+scene*50,200,50)
+                love.graphics.rectangle("line",100,100+scene*40,200,40)
 
 
                 -- show screenshot
@@ -604,9 +609,10 @@ G={
         },
         IN_LEVEL={
             enter=function (self)
-                self.backgroundPattern=backgroundPattern.Empty()
+                self:replaceBackgroundPatternIfNot(backgroundPattern.Square)
             end,
             update=function(self,dt)
+                self.backgroundPattern:update(dt)
                 Object:updateAll(dt)
                 if isPressed('escape') then
                     SFX:play('select')
@@ -896,6 +902,7 @@ G={
                 self.currentUI.pageMax=ReplayManager.PAGES
             end,
             update=function(self,dt)
+                self.backgroundPattern:update(dt)
                 keyBindValueCalc(self,'down','up','chosen',self.currentUI.chosenMax)
                 keyBindValueCalc(self,'right','left','page',self.currentUI.pageMax)
                 if isPressed('z') then
@@ -1091,7 +1098,6 @@ end
 G.update=function(self,dt)
     self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
-    self.backgroundPattern:update(dt)
     if G.replay then
         if love.keyboard.isDown('lalt') then -- +2x
             self.currentUI.update(self,dt)

@@ -60,7 +60,8 @@ replayManager.getReplayData=function(slot,name)
         scene=scene,
         upgrades=upgrades,
         name=name,
-        time=time
+        time=time,
+        version=VERSION
     }
     return data
 end
