@@ -156,9 +156,9 @@ function Shape.drawHyperbolicArc(x, y, r, s_ang, e_ang, numLines)
 end
 
 -- draw hyperbolic circle with center (x,y) and radius r. using Shape.getCircle
-function Shape.drawCircle(x,y,r)
+function Shape.drawCircle(x,y,r,mode)
     x,y,r=Shape.getCircle(x,y,r)
-    love.graphics.circle("line", x,y,r)
+    love.graphics.circle(mode or "line", x,y,r)
     return x,y,r
 end
 
