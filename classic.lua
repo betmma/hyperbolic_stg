@@ -143,4 +143,18 @@ function Object:drawTextAll()
   end
 end
 
+function Object:drawShader()
+end
+
+function Object:drawShaderAll()
+  for key, obj in pairs(self.objects) do
+    if not obj.removed then
+      obj:drawShader()
+    end
+  end
+  for key, cls in pairs(self.subclasses) do
+      cls:drawShaderAll()
+  end
+end
+
 return Object

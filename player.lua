@@ -2,6 +2,7 @@
 local Shape = require "shape"
 local Circle=require"circle"
 local PolyLine=require"polyline"
+local invertShader = love.graphics.newShader("shaders/circleInvert.glsl")
 local Player = Shape:extend()
 Player.moveModes={
     -- North Pole (player.x, Shape.axisY). Move directions are same as Polar Coordinate System in Euclid space, that is Up / Down -> close to / away from pole. Left / Right -> along the arc centered at North Pole.
@@ -392,6 +393,17 @@ function Player:dieEffect()
     end
     Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
     SFX:play('dead',true)
+end
+
+function Player:drawShader()
+    
+    if self.invincibleTime>0 then
+        -- love.graphics.setShader(invertShader)
+        -- local x,y,r=self.x,self.y,self.invincibleTime*50
+        -- x,y,r=Shape.getCircle(x,y,r)
+        -- invertShader:send("center",{x,y})
+        -- invertShader:send("radius",r)
+    end
 end
 
 return Player

@@ -23,12 +23,14 @@ end
 local G={
     CONSTANTS={
         DRAW=function(self)
+            Object:drawShaderAll()
             Asset:clearBatches()
             Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
             Asset.backgroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
             Object:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
             Asset:flushBatches()
             Asset:drawBatches()
+            love.graphics.setShader()
         end,
     },
 }
@@ -1117,7 +1119,7 @@ G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
     self.backgroundPattern:draw()
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
-        self.currentUI.draw(self)
+        self:_drawBatches()
         self.currentUI.drawText(self)
     elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW then
         if not G.viewMode.object then
@@ -1128,13 +1130,16 @@ G.draw=function(self)
         if G.viewMode.object.moveMode==Player.moveModes.Natural then
             G.viewMode.object:testRotate(-G.viewMode.object.naturalDirection) -- rotate all objects to make player face up. Note that due to love2d limitation, it *changes* objects' coordinates to achieve hyperbolic rotation.
         end
-        self.currentUI.draw(self)
+        self:_drawBatches()
         if G.viewMode.object.moveMode==Player.moveModes.Natural then
             G.viewMode.object:testRotate(0,true) -- "true" means restore objects' coordinates
         end
         love.graphics.pop()
         self.currentUI.drawText(self)
     end
+end
+G._drawBatches=function(self)
+    self.currentUI.draw(self)
 end
 G.followModeTransform=function(self)
     local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
