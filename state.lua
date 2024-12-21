@@ -1090,6 +1090,7 @@ G.leaveLevel=function(self)
     if levelData[level][scene].leave then
         levelData[level][scene].leave()
     end
+    G.viewMode.mode=G.VIEW_MODES.NORMAL
 end
 G._incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
@@ -1117,7 +1118,6 @@ G.update=function(self,dt)
 end
 G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
-    self.backgroundPattern:draw()
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         self:_drawBatches()
         self.currentUI.drawText(self)
@@ -1139,6 +1139,7 @@ G.draw=function(self)
     end
 end
 G._drawBatches=function(self)
+    self.backgroundPattern:draw()
     self.currentUI.draw(self)
 end
 G.followModeTransform=function(self)

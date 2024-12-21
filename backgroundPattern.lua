@@ -131,19 +131,21 @@ function Square:drawOne(r,angle)
         local newpoint={x=ret[1],y=ret[2]}
         points[#points+1]=newpoint
     end
-    local colorref={love.graphics.getColor()}
     local ratio=r/self.radiusMax
     love.graphics.setColor(0.5,0.7,0.9,ratio*0.3)
     for i=1,#points do
         local newpoint=points[i]
         love.graphics.line(newpoint.x,newpoint.y,points[i%#points+1].x,points[i%#points+1].y)
     end
-    love.graphics.setColor(colorref[1],colorref[2],colorref[3])
 end
 
 function Square:draw()
+    local colorref={love.graphics.getColor()}
+    love.graphics.setColor(0,0,0)
+    -- love.graphics.rectangle('fill',0,0,800,600)
     self:drawOne(self.radius,self.angle)
     self:drawOne((self.radius+35)%self.radiusMax,self.angle)
+    love.graphics.setColor(colorref[1],colorref[2],colorref[3])
 end
 
 BackgroundPattern.Square=Square

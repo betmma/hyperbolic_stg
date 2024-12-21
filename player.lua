@@ -387,6 +387,7 @@ end
 function Player:dieEffect()
     self.hp=self.hp-1
     self.hurt=true
+    self.dieFrame=self.frame
     self.invincibleTime=self.invincibleTime+1
     if self.hp<=0 then
         G:lose()
@@ -395,15 +396,20 @@ function Player:dieEffect()
     SFX:play('dead',true)
 end
 
+-- effect is strange, not used
 function Player:drawShader()
-    
-    if self.invincibleTime>0 then
-        -- love.graphics.setShader(invertShader)
-        -- local x,y,r=self.x,self.y,self.invincibleTime*50
-        -- x,y,r=Shape.getCircle(x,y,r)
-        -- invertShader:send("center",{x,y})
-        -- invertShader:send("radius",r)
-    end
+    -- if self.dieFrame and self.frame-self.dieFrame<90 then
+    --     local t=self.frame-self.dieFrame
+    --     love.graphics.setShader(invertShader)
+    --     local x,y,r=self.x,self.y,t*2
+    --     x,y,r=Shape.getCircle(x,y,r)
+    --     invertShader:send("centerInner",{x,y})
+    --     invertShader:send("radiusInner",r)
+    --     x,y,r=self.x,self.y,t*2+10
+    --     x,y,r=Shape.getCircle(x,y,r)
+    --     invertShader:send("centerOuter",{x,y})
+    --     invertShader:send("radiusOuter",r)
+    -- end
 end
 
 return Player

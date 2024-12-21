@@ -1,3 +1,4 @@
 .vscode
 bin
 make_all.toml
+unusedCode.lua
