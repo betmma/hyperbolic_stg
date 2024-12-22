@@ -93,6 +93,7 @@ function Shape.onscreenDistanceToLine(xc,yc,x1,y1,x2,y2)
     return math.abs(Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2))
 end
 
+-- used to calculate segment hitbox
 function Shape.distanceToSegment(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<EPS then -- vertical
         -- make a perpendicular (hyperbolic) line from (xc,yc) to x=xc, intersects at (xc,yd)
@@ -123,22 +124,15 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     return {centerX+radius*math.cos(direction),Shape.axisY+radius*math.sin(direction)}
 end
 
--- love is really silly to not provide arc without lines toward center
--- but anyway to draw hyperbolic arc it's better to have my own func
--- (the one in polyline can only draw arc < pi. think about it, there is no way a 3/4 circle can be drawn with only 1 scissor. also scissor doesn't apply transform)
-function Shape.drawNormalArc(x, y, r, s_ang, e_ang, numLines)
-	local step = ((e_ang-s_ang) / numLines)
-	local ang1 = s_ang
-	local ang2 = 0
-	
-	for i=1,numLines do
-		ang2 = ang1 + step
-        love.graphics.setLineWidth((y + (math.sin(ang1) * r))/400)
-		love.graphics.line(x + (math.cos(ang1) * r), y + (math.sin(ang1) * r),
-			x + (math.cos(ang2) * r), y + (math.sin(ang2) * r))
-		ang1 = ang2
-	end
-    love.graphics.setLineWidth(1)
+function Shape.drawSegment(x1,y1,x2,y2)
+    if math.abs(x1-x2)<EPS then -- vertical -> line
+        love.graphics.line(x1,y1,x2,y2)
+        return
+    end
+    local centerX,r=Shape.lineCenter(x1,y1,x2,y2)
+    local theta1=math.atan2(y1-Shape.axisY,x1-centerX)
+    local theta2=math.atan2(y2-Shape.axisY,x2-centerX)
+    math.drawArc(centerX,Shape.axisY,r,theta1,theta2,50)
 end
 
 -- draw hyperbolic arc.
@@ -148,11 +142,11 @@ end
 ---@param s_ang any 'arc start angle'
 ---@param e_ang any 'arc end angle'
 ---@param numLines any 'how many lines are used'
-function Shape.drawHyperbolicArc(x, y, r, s_ang, e_ang, numLines)
+function Shape.drawArc(x, y, r, s_ang, e_ang, numLines)
     local x2,y2,r2=Shape.getCircle(x,y,r)
     _,_,s_ang=Shape.rThetaPos(x,y,r,s_ang)
     _,_,e_ang=Shape.rThetaPos(x,y,r,e_ang)
-	Shape.drawNormalArc(x2,y2,r2,s_ang,e_ang,numLines)
+	math.drawArc(x2,y2,r2,s_ang,e_ang,numLines)
 end
 
 -- draw hyperbolic circle with center (x,y) and radius r. using Shape.getCircle

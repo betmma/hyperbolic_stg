@@ -57,6 +57,25 @@ function math.randomSample(table,k)
     return result
 end
 
+-- love is really silly to not provide arc without lines toward center
+-- but anyway to draw hyperbolic arc it's better to have my own func
+-- (the one in polyline can only draw arc < pi. think about it, there is no way a 3/4 circle can be drawn with only 1 scissor. also scissor doesn't apply transform)
+function math.drawArc(x, y, r, s_ang, e_ang, numLines)
+	local step = ((e_ang-s_ang) / numLines)
+	local ang1 = s_ang
+	local ang2 = 0
+	local lineWidth=love.graphics.getLineWidth()
+	for i=1,numLines do
+		ang2 = ang1 + step
+        love.graphics.setLineWidth((y + (math.sin(ang1) * r))/400)
+		love.graphics.line(x + (math.cos(ang1) * r), y + (math.sin(ang1) * r),
+			x + (math.cos(ang2) * r), y + (math.sin(ang2) * r))
+		ang1 = ang2
+	end
+    love.graphics.setLineWidth(lineWidth)
+end
+
+
 function copy_table(O)
     local O_type = type(O)
     local copy

@@ -71,6 +71,9 @@ end
 
 function Enemy:draw()
     local color={love.graphics.getColor()}
+    if self.mainEnemy then
+        self:drawHexagram()
+    end
     love.graphics.setColor(0,1,1)
     Shape.drawCircle(self.x,self.y,self.radius)
     self:drawHPBar()
@@ -86,12 +89,33 @@ function Enemy:drawHPBar()
     -- self.DrawArc(self.x,self.y,31,-math.pi/2,math.pi*(2*ratio-0.5),100)
     love.graphics.setColor(1,1,1,self.hpBarTransparency)
     for i=31,32,0.5 do
-        Shape.drawHyperbolicArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
+        Shape.drawArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
     end
     -- SetFont(12)
     -- love.graphics.print(""..ratio..', ', 10, 100)
     love.graphics.setColor(color[1],color[2],color[3])
 end
 
+-- due to hyperbolic geometry, it's not feasible to prepare an image for rotating hexagram
+function Enemy:drawHexagram()
+    local color={love.graphics.getColor()}
+    love.graphics.setColor(0.5,0.1,0.1)
+    local points={}
+    local theta=self.frame/100
+    local rIN=40
+    local rOUT=45
+    for i=1,6 do
+        local alpha=theta+math.pi*2/6*(i-1)
+        local nx,ny=Shape.rThetaPos(self.x,self.y,rIN,alpha)
+        local newpoint={nx,ny}
+        points[#points+1]=newpoint
+    end
+    for i=1,#points do
+        Shape.drawSegment(points[i][1],points[i][2],points[(i+1)%#points+1][1],points[(i+1)%#points+1][2])
+    end
+    Shape.drawCircle(self.x,self.y,rIN)
+    Shape.drawCircle(self.x,self.y,rOUT)
+    love.graphics.setColor(color[1],color[2],color[3])
+end
 
 return Enemy

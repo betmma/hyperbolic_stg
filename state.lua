@@ -494,6 +494,7 @@ G={
         },
         CHOOSE_LEVELS={
             enter=function(self)
+                G.viewMode.mode=G.VIEW_MODES.NORMAL
                 self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
             end,
             chosenLevel=1,
@@ -898,6 +899,7 @@ G={
             chosenMax=25,
             pageMax=4,
             enter=function(self)
+                G.viewMode.mode=G.VIEW_MODES.NORMAL
                 self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
                 ReplayManager.loadAll()
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
@@ -1090,7 +1092,6 @@ G.leaveLevel=function(self)
     if levelData[level][scene].leave then
         levelData[level][scene].leave()
     end
-    G.viewMode.mode=G.VIEW_MODES.NORMAL
 end
 G._incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel

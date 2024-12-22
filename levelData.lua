@@ -1927,7 +1927,7 @@ local levelData={
                             local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
                             local ind=math.floor(math.eval('5+4'))
                             cir.sprite=BulletSprites.rice[colors[ind]]
-                            cir.speed=math.random(9,12)
+                            cir.speed=math.random(5,5)
                         end
                         Event.LoopEvent{
                             obj=cir,
@@ -1950,6 +1950,7 @@ local levelData={
                             a.angle=a.angle+math.pi/30
                             a.bulletSpeed=a.bulletSpeed+0.5
                         end
+                        a.spawnEvent.frame=a.spawnEvent.frame+Shape.distance(a.x,a.y,en.x,en.y)*4
                         a.x,a.y=en.x,en.y
                         local frame=en.frame
                         if (frame+298)%300==0 then
@@ -1961,16 +1962,17 @@ local levelData={
                             local co={math.eval('0+3'),math.eval('0+3'),math.eval('0+3'),math.eval('0+3')}
                             a.flag=false
                             a.bulletSpeed=30
-                            a.bulletNumber=3+(hpp<0.5 and 1 or 0)
-                            a.spawnEvent.period=2
+                            a.bulletNumber=9+math.ceil((1-hpp)*6)
+                            a.spawnEvent.period=20
                             SFX:play('enemyCharge')
+                            local k=(hpp<0.7 and 1 or 0)+(hpp<0.4 and 1 or 0)+1
                             Event.EaseEvent{
                                 obj=en,
                                 aimTable=en,
                                 aimKey='x',
                                 aimValue=nx,
                                 easeFrame=200,
-                                progressFunc=function(x)return math.sin(x*math.pi/2)+(x*x*co[1]-x*co[2])*math.sin(x*math.pi) end
+                                progressFunc=function(x)return math.sin(x*math.pi/2)+(x*x*co[1]-x*co[2])*math.sin(x*math.pi*k) end
                             }
                             Event.EaseEvent{
                                 obj=en,
@@ -1979,8 +1981,8 @@ local levelData={
                                 aimValue=ny,
                                 easeFrame=200,
                                 progressFunc=function(x)
-                                    local r=math.sin(x*math.pi/2)+(x*x*co[3]-x*co[4])*math.sin(x*math.pi)
-                                    a.angle=r*(co[1]^2+co[2]^2+co[3]^2+co[4]^2)
+                                    local r=math.sin(x*math.pi/2)+(x*x*co[3]-x*co[4])*math.sin(x*math.pi*k)
+                                    a.angle=r*(co[1]^2+co[2]^2+co[3]^2+co[4]^2)/3
                                     return r end,
                                 endFunc=function()
                                     SFX:play('enemyPowerfulShot',true)

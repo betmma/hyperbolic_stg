@@ -61,28 +61,7 @@ function PolyLine.drawOne(p1,p2)
     local y1=p1.y
     local x2=p2.x
     local y2=p2.y
-    if  math.abs(x1-x2)<Shape.EPS then -- vertical -> line
-        love.graphics.line(x1,y1,x2,y2)
-        return
-    end
-    local centerX,r=Shape.lineCenter(x1,y1,x2,y2)
-    local theta1=math.atan2(y1-Shape.axisY,x1-centerX)
-    local theta2=math.atan2(y2-Shape.axisY,x2-centerX)
-    Shape.drawNormalArc(centerX,Shape.axisY,r,theta1,theta2,50)
-
-    -- we know that in Poincare half plane a straight line is a semicircle and satisfies no 2 points on it have same x, so a line segment can be got by clipping x coordinate
-    -- if math.abs(x1-x2)>20 or math.abs(y1-y2)<20 then
-    --     love.graphics.setScissor(math.min(x1,x2),math.min(y1,y2),math.abs(x1-x2),9999)
-    -- else
-    --     local height=math.abs(y1-y2)
-    --     if math.min(x1,x2)<centerX and math.max(x1,x2)>centerX then
-    --         height=r+Shape.axisY-math.min(y1,y2)
-    --     end
-    --     love.graphics.setScissor(math.min(x1,x2)-5,math.min(y1,y2),math.abs(x1-x2)+10,height)
-    -- end
-    -- love.graphics.circle("line", centerX,Shape.axisY,((centerX-x1)^2+(y1-Shape.axisY)^2)^0.5)
-    -- love.graphics.setScissor( )
-    -- love.graphics.arc("line",centerX,0,((centerX-x1)^2+y1^2)^0.5,math.min(theta1,theta2),math.max(theta1,theta2)) -- this draws 2 radii and can't be cancelled :(
+    Shape.drawSegment(x1,y1,x2,y2)
 end
 function PolyLine:remove()
     PolyLine.super.remove(self)
