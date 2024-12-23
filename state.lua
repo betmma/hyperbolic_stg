@@ -679,7 +679,7 @@ G={
                 SetFont(48)
                 local xt,yt=160,5
                 local dx,dy=72,26
-                if not player or Shape.distance(170,10,player.x,player.y)>30 or G.viewMode.mode~=G.VIEW_MODES.NORMAL then
+                if not player or Shape.distance(170,10,player.x,player.y)>50 or G.viewMode.mode~=G.VIEW_MODES.NORMAL then
                     xt,yt=160,5
                 else
                     xt,yt=560,5

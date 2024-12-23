@@ -115,6 +115,20 @@ function Enemy:drawHexagram()
     end
     Shape.drawCircle(self.x,self.y,rIN)
     Shape.drawCircle(self.x,self.y,rOUT)
+
+    -- draw miniatures between the two circles
+    local rM=(rIN+rOUT)/2
+    local dM=(rM-rIN)/2
+    local dtheta=0.03
+    for i=1,12 do
+        local alpha=theta+math.pi*2/12*(i-0.5)
+        local x1,y1=Shape.rThetaPos(self.x,self.y,rM+dM*math.sin(theta*2.167+i*3.16),alpha+dtheta*math.sin(theta*1.943+5632+i*63.3))
+        local x2,y2=Shape.rThetaPos(self.x,self.y,rM+dM*math.sin(theta*1.469+i*9.4),alpha+dtheta*(math.sin(theta*2.136+562+i*7.74))+0.03)
+        local x3,y3=Shape.rThetaPos(self.x,self.y,rM+dM*math.sin(theta*2.463+i*13.3),alpha+dtheta*(math.sin(theta*1.796+1592+i*29.1))+0.06)
+        Shape.drawSegment(x1,y1,x2,y2)
+        Shape.drawSegment(x3,y3,x2,y2)
+    end
+
     love.graphics.setColor(color[1],color[2],color[3])
 end
 
