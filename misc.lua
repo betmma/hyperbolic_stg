@@ -15,6 +15,17 @@ function math.distance(x1,y1,x2,y2)
     return ((x1-x2)^2+(y1-y2)^2)^0.5
 end
 
+function math.pointToLineDistance(x, y, x1, y1, x2, y2)
+    local A = y2 - y1
+    local B = x1 - x2
+    local C = x2 * y1 - x1 * y2
+    return math.abs(A * x + B * y + C) / ((A * A + B * B) ^ 0.5)
+end
+
+function math.rThetaPos(x,y,r,theta)
+    return x+r*math.cos(theta),y+r*math.sin(theta)
+end
+
 function math.clamp(val, lower, upper)
     assert(val and lower and upper, "nil sent to math.Clamp")
     if lower > upper then lower, upper = upper, lower end -- swap if boundaries supplied the wrong way

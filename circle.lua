@@ -40,6 +40,7 @@ function Circle:update(dt)
     end
     Circle.super.update(self,dt)
     self:checkShockwaveRemove()
+    self:checkFlashBombRemove()
     self:checkHitPlayer()
 end
 
@@ -57,6 +58,17 @@ function Circle:checkShockwaveRemove()
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do
             if shockwave.canRemove.bullet and(self.invincible==false or shockwave.canRemove.invincible) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+                self:remove()
+                self:removeEffect()
+            end
+        end
+    end
+end
+function Circle:checkFlashBombRemove()
+    if not self.safe then 
+        for k,flashBomb in pairs(Effect.FlashBomb.objects) do
+            local nx,ny=math.rThetaPos(flashBomb.x,flashBomb.y,10,flashBomb.direction)
+            if flashBomb.canRemove.bullet and(self.invincible==false or flashBomb.canRemove.invincible) and math.pointToLineDistance(self.x,self.y,flashBomb.x,flashBomb.y,nx,ny)<flashBomb.width+self.radius then
                 self:remove()
                 self:removeEffect()
             end

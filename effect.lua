@@ -100,4 +100,27 @@ function Charge:draw(dt)
     end
 end
 
+-- remove bullets in a rectangle area (like a laser)
+local FlashBomb=Effect:extend()
+Effect.FlashBomb=FlashBomb
+function FlashBomb:new(args)
+    FlashBomb.super.new(self, args)
+    self.width=args.width or 10
+    self.color=args.color or 'gray'
+    self.sprite=BulletSprites.laser[self.color]
+    self.canRemove=args.canRemove or {bullet=true,invincible=false}
+end
+
+function FlashBomb:draw()
+    local ratio=self.frame/self.lifeFrame
+    local tWidth=self.width*math.cos(ratio*math.pi/2)
+    local xa,ya=math.rThetaPos(self.x,self.y,tWidth,self.direction+math.pi/2)
+    local xb,yb=math.rThetaPos(self.x,self.y,tWidth,self.direction-math.pi/2)
+    local x1,y1=math.rThetaPos(xa,ya,1500,self.direction)
+    local x2,y2=math.rThetaPos(xb,yb,1500,self.direction)
+    local x3,y3=math.rThetaPos(xb,yb,1500,self.direction+math.pi)
+    local x4,y4=math.rThetaPos(xa,ya,1500,self.direction+math.pi)
+    Laser.LaserUnit.drawMesh(self,{{x1,y1},{x4,y4},{x3,y3},{x2,y2}})
+end
+
 return Effect

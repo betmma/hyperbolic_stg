@@ -186,6 +186,17 @@ G={
                         player.grazeHpRegen=player.grazeHpRegen+0.005
                     end
                 },
+                flashbomb={
+                    name='Flash Bomb',
+                    description='Release a flash bomb for every 100 grazes',
+                    cost=50,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.enableFlashbomb=true
+                        player.grazeCountForFlashbomb=100
+                        player.flashbombWidth=5
+                    end
+                },
                 amulet={
                     name='Amulet',
                     description='Player hitbox is 25% smaller',
@@ -250,10 +261,13 @@ G={
                     },
                     {
                         upgrade='acrobat',
-                        connect={left=true},
+                        connect={left=true,right=true},
                         need={{2,1}}
                     },
                     {
+                        upgrade='flashbomb',
+                        connect={left=true},
+                        need={{3,1}}
                     }
                 },
                 {

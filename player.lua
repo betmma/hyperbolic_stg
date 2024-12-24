@@ -72,9 +72,10 @@ function Player:new(args)
     self.hp=self.maxhp
     self.hpRegen=0
     self.grazeHpRegen=0
+    self.grazeCount=0
     self.hurt=false --to check perfect completion
     self.invincibleTime=0
-    self.grazeRadiusFactor=1.5
+    self.grazeRadiusFactor=2
 
     self.shootRows=copy_table(Player.shootRows)
     self.shootRadius=0.5
@@ -199,6 +200,8 @@ function Player:update(dt)
         -- self:testRotate(self.naturalDirection)
         
     end
+
+    self:calculateFlashbomb()
 end
 
 function Player:testRotate(angle,restore)
@@ -373,6 +376,15 @@ function Player:drawText()
     love.graphics.print('HP: '..string.format("%.2f", self.hp),40,110)
     love.graphics.print('X='..string.format("%.2f", self.x)..'\nY='..string.format("%.2f", self.y),30,140)
     -- love.graphics.print(''..self.naturalDirection,100,120)
+    if self.enableFlashbomb then -- draw fill rate for flashbomb
+        local color={love.graphics.getColor()}
+        local x0,y0=30,570
+        love.graphics.setColor(1,1,1)
+        love.graphics.rectangle("line",x0,y0,100,10)
+        love.graphics.setColor(1,0.2,0.5)
+        love.graphics.rectangle("fill",x0,y0,100*(self.grazeCount%self.grazeCountForFlashbomb)/self.grazeCountForFlashbomb,10)
+        love.graphics.setColor(color[1],color[2],color[3])
+    end
 end
 
 
@@ -381,6 +393,7 @@ function Player:grazeEffect()
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
     -- grazeHpRegen
     self.hp=math.clamp(self.hp+self.grazeHpRegen,0,self.maxhp)
+    self.grazeCount=self.grazeCount+1
 end
 
 -- actually it's hit effect, not hp = 0 effect
@@ -410,6 +423,17 @@ function Player:drawShader()
     --     invertShader:send("centerOuter",{x,y})
     --     invertShader:send("radiusOuter",r)
     -- end
+end
+
+function Player:calculateFlashbomb()
+    if not self.enableFlashbomb then
+        return
+    end
+    local count=self.flashbombCount or 1
+    if self.grazeCount>count*self.grazeCountForFlashbomb then
+        self.flashbombCount=count+1
+        Effect.FlashBomb{x=self.x,y=self.y,width=self.flashbombWidth*self:getMetric(),lifeFrame=30,direction=math.pi/2}
+    end
 end
 
 return Player
