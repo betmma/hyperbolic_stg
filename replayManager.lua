@@ -114,6 +114,9 @@ replayManager.runReplay=function(slot)
         player.shootRows.front.homing.damage=1
         player.shootRows.back.straight.num=player.shootRows.back.straight.num*2
     end
+    if not replay.version or replay.version<'0.1.2' then
+        player.grazeRadiusFactor=1.5
+    end
 end
 
 -- note that replay param is used for pending (not saved yet) replay like when entering name. Other situations no need to input replay.

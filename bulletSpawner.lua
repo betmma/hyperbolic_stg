@@ -45,7 +45,7 @@ function BulletSpawner:new(args)
         end
         args.direction=math.eval(args.direction)
         args.speed=math.eval(args.speed)
-        args.invincible=self.args.invincible or false
+        args.invincible=self.args.invincible or args.invincible or false
         if Asset.SpriteData[args.sprite].laser then
             args.laserEvents=self.args.laserEvents or {}
             args.bulletEvents=self.bulletEvents
