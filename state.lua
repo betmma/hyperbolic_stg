@@ -659,10 +659,22 @@ G={
                 -- rest time calculation
                 self.levelRemainingFrame=self.levelRemainingFrame-1
                 if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
-                    SFX:play('timeout')
+                    SFX:play('timeout',false,2)
+                end
+                local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+                local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+                if self.levelIsTimeoutSpellcard and not G.replay and self.levelRemainingFrame==60 then -- for normal levels it's done by enemy:dieEffect
+                    ScreenshotManager.preSave(level,scene)
                 end
                 if self.levelRemainingFrame==0 then
-                    self:lose()
+                    if self.levelIsTimeoutSpellcard then
+                        if not G.replay then 
+                            ScreenshotManager.save(level,scene)
+                        end
+                        self:win()
+                    else
+                        self:lose()
+                    end
                 end
             end,
             draw=G.CONSTANTS.DRAW,
@@ -1089,6 +1101,7 @@ G.enterLevel=function(self,level,scene)
     Shape.restore()
     self.levelRemainingFrame=nil
     self.levelRemainingFrameMax=nil
+    self.levelIsTimeoutSpellcard=false
     levelData[level][scene].make()
     self.levelRemainingFrame=self.levelRemainingFrame or 3600
     self.levelRemainingFrameMax=self.levelRemainingFrame

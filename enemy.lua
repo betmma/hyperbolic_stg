@@ -30,6 +30,8 @@ function Enemy:update(dt)
     Circle.checkHitPlayer(self)
     self:checkHitByPlayer()
 end
+
+-- objToReduceHp is to allow familiars to take damage for the enemy
 function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
     objToReduceHp=objToReduceHp or self
     damageFactor=damageFactor or 1
@@ -42,30 +44,34 @@ function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
             --     self.presaved=true
             -- end
             if objToReduceHp.hp<0 and not objToReduceHp.removed then
-                SFX:play('kill')
-                objToReduceHp:remove()
-                if objToReduceHp.mainEnemy then
-                    local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
-                    local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
-                    if not G.replay then
-                        ScreenshotManager.preSave(level,scene)
-                    end
-                    Effect.Shockwave{x=objToReduceHp.x,y=objToReduceHp.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
-                    Event.LoopEvent{
-                        times=1,
-                        period=60,
-                        executeFunc=function(x)
-                            local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
-                            local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
-                            if not G.replay then
-                                ScreenshotManager.save(level,scene)
-                            end
-                            G:win()
-                        end
-                    }
-                end
+                objToReduceHp:dieEffect()
             end
         end
+    end
+end
+
+function Enemy:dieEffect()
+    SFX:play('kill')
+    self:remove()
+    if self.mainEnemy then
+        local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+        local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+        if not G.replay then
+            ScreenshotManager.preSave(level,scene)
+        end
+        Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
+        Event.LoopEvent{
+            times=1,
+            period=60,
+            executeFunc=function(x)
+                local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+                local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+                if not G.replay then
+                    ScreenshotManager.save(level,scene)
+                end
+                G:win()
+            end
+        }
     end
 end
 

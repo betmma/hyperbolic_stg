@@ -202,6 +202,7 @@ function Player:update(dt)
     end
 
     self:calculateFlashbomb()
+    self.grazeCountThisFrame=0
 end
 
 function Player:testRotate(angle,restore)
@@ -392,14 +393,19 @@ function Player:grazeEffect(amount)
     amount=amount or 1
     SFX:play('graze')
     Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+    self.grazeCountThisFrame=self.grazeCountThisFrame+amount
+    if self.grazeCountThisFrame>20 then
+        return -- avoid too many grazes in a short time
+    end
     -- grazeHpRegen
     self.hp=math.clamp(self.hp+self.grazeHpRegen*amount,0,self.maxhp)
     self.grazeCount=self.grazeCount+amount
 end
 
 -- actually it's hit effect, not hp = 0 effect
-function Player:dieEffect()
-    self.hp=self.hp-1
+function Player:dieEffect(damage)
+    damage=damage or 1
+    self.hp=self.hp-damage
     self.hurt=true
     self.dieFrame=self.frame
     self.invincibleTime=self.invincibleTime+1

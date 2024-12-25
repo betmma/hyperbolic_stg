@@ -17,7 +17,7 @@ function AudioSystem:new(args)
     self.volume=args.volume or 1
 end
 function AudioSystem:play(name,restart,overrideVolume)
-    if restart then
+    if restart==true then
         love.audio.stop(self.data[name])
     end
     self.data[name]:setVolume(self.currentVolume*self.volumeCoeff*(overrideVolume or self.audioVolumes[name]))
