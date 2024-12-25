@@ -9,7 +9,7 @@ function Circle:new(args)
     self.sprite=args.sprite
     if self.sprite then
         local data=SpriteData[self.sprite]
-        self.radius=self.radius/4.5*data.hitRadius
+        self.radius=self.radius/5.0*data.hitRadius
     end
     self.extraUpdate={}
     -- safe means won't hit player 
@@ -48,7 +48,7 @@ end
 function Circle:drawSprite()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
-    local scale=r/data.hitRadius
+    local scale=r/data.hitRadius*1.1
     if self.sprite then
         self.batch:setColor(1,1,1,self.sprite_transparency)
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
@@ -81,7 +81,7 @@ function Circle:checkHitPlayer()
             local dis=Shape.distance(player.x,player.y,self.x,self.y)
             local radi=player.radius+self.radius
             if dis<radi+player.radius*player.grazeRadiusFactor and not self.grazed then
-                player:grazeEffect(self.lifeFrame<3 and 0.25 or 1)
+                player:grazeEffect((self.lifeFrame<3 or self.frame<3) and 0.25 or 1)
                 self.grazed=true
             end
             if player.invincibleTime<=0 and dis<radi then

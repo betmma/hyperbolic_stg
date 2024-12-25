@@ -42,6 +42,23 @@ function PolyLine:insideOne(xc,yc,index)
     return not Shape.leftToLine(xc,yc,self.points[index].x,self.points[index].y,self.points[index%#self.points+1].x,self.points[index%#self.points+1].y)
 end
 
+-- obj should include x, y and direction. This function modifies obj.
+function PolyLine:reflection(obj)
+    local inside,x1,y1,x2,y2=self:inside(obj.x,obj.y)
+    if inside then
+        return
+    end
+    if math.abs(x1-x2)<Shape.EPS then -- vertical
+        obj.x=2*x1-obj.x
+        obj.direction=-obj.direction
+    end
+    local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
+    local direction=math.atan2(obj.y-Shape.axisY,obj.x-centerX)
+    local r2=radius*2-math.distance(obj.x,obj.y,centerX,Shape.axisY)
+    obj.x,obj.y=centerX+r2*math.cos(direction),Shape.axisY+r2*math.sin(direction)
+    obj.direction=2*direction-obj.direction+math.pi
+end
+
 function PolyLine:draw()
     if not self.doDraw then
         return

@@ -75,7 +75,7 @@ function Player:new(args)
     self.grazeCount=0
     self.hurt=false --to check perfect completion
     self.invincibleTime=0
-    self.grazeRadiusFactor=2.5
+    self.grazeRadiusFactor=3
 
     self.shootRows=copy_table(Player.shootRows)
     self.shootRadius=0.5
