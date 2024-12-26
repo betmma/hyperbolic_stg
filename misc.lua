@@ -102,7 +102,52 @@ function copy_table(O)
     return copy
 end
 
+local fontCache={}
+local function getFont(path,size)
+    if not fontCache[path] then
+        fontCache[path]={}
+    end
+    if not fontCache[path][size] then
+        fontCache[path][size]=love.graphics.newFont(path,size)
+    end
+    return fontCache[path][size]
+end
 function SetFont(size)
-    local font = love.graphics.setNewFont('assets/m6x11plus.ttf', size)
+    local font = getFont('assets/m6x11plus.ttf', size)
+    if G.language=='zh_cn' then
+        size=size*0.8
+        font=getFont('assets/Source Han Serif CN Light.otf',size)
+    end
     love.graphics.setFont(font)
+end
+
+local localization=require 'localization.localization'
+
+-- get raw localize string containing {}. args is a table of keys, for example {'ui','start'}
+local function getRawLocalizeString(args)
+    local lang=G.language or 'en_us'
+    local current=localization
+    for key, value in ipairs(args) do
+        if current[value] then
+            current=current[value]
+        else
+            return 'ERROR'
+        end
+    end
+    if current[lang] then
+        return current[lang]
+    else
+        return current['en_us']
+    end
+end
+
+-- localize a string. args example: {'ui', 'upgradesCurrentXP', xp=100}
+function Localize(args)
+    local rawString=getRawLocalizeString(args)
+    local result=rawString
+    for key, value in pairs(args) do
+        result=result:gsub('{'..key..'}',value)
+    end
+    result=result:gsub('{.-}','MISSING VALUE')
+    return result
 end

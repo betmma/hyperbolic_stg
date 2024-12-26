@@ -89,7 +89,7 @@ G={
                 love.graphics.print("Hyperbolic\n   STG",200,100,0,1,1)
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
-                    local name=value.text
+                    local name=Localize{'ui',value.value}
                     love.graphics.print(name,300,300+index*50,0,1,1)
                 end
                 love.graphics.rectangle("line",300,300+self.currentUI.chosen*50,200,50)
@@ -576,7 +576,7 @@ G={
                     elseif self.save.levelData[level][index].passed==2 then
                         love.graphics.setColor(1,1,0.5)
                     end
-                    love.graphics.print("Scene "..index,100,100+index*40,0,1,1)
+                    love.graphics.print(level.."-"..index,100,100+index*40,0,1,1)
                     love.graphics.setColor(color[1],color[2],color[3])
                 end
                 -- draw rectangle to mark current selected scene 
@@ -598,10 +598,10 @@ G={
 
                 -- show quote
                 love.graphics.rectangle("line",325,500,400,80)
-                local text=levelData.defaultQuote
+                local text=Localize{'levelData','defaultQuote'}--levelData.defaultQuote
                 local save=self.save.levelData[level][scene]
                 if save.passed>=1 then
-                    text=levelData[level][scene].quote or ''
+                    text=Localize{'levelData',level,scene,'quote'}--levelData[level][scene].quote or ''
                 end
                 SetFont(18)
                 love.graphics.printf(text,330,510,380,"left",0,1,1)
@@ -1196,5 +1196,6 @@ G.removeAll=function(self)
     self.sceneTempObjs={}
 end
 
+G.language='en_us'--'zh_cn'
 
 return G
