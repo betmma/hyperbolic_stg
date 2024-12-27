@@ -104,6 +104,10 @@ G={
                 {text='Master Volume',value='master_volume'},
                 {text='Music Volume',value='music_volume'},
                 {text='SFX Volume',value='sfx_volume'},
+                {options={
+                    {text='English',value='en_us'},
+                    {text='简体中文',value='zh_cn'},
+                },value='language'},
                 {text='Exit',value='EXIT'},
             },
             chosen=1,
@@ -111,17 +115,38 @@ G={
                 self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=function(self)self:switchState(self.STATES.MAIN_MENU);self:saveData() end})
                 local optionKey=self.currentUI.options[self.currentUI.chosen].value
-                if love.keyboard.isDown('right') then
-                    self.save.options[optionKey]=math.clamp(self.save.options[optionKey]+1,0,100)
-                    SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
-                    BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
-                    SFX:play('select')
-                elseif love.keyboard.isDown('left') then
-                    self.save.options[optionKey]=math.clamp(self.save.options[optionKey]-1,0,100)
-                    SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
-                    BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
-                    SFX:play('select')
-                elseif isPressed('x') or isPressed('escape')then
+                if optionKey=='language' then
+                    local index=0
+                    local currentLanguage=self.save.options.language
+                    for i=1,#self.currentUI.options[self.currentUI.chosen].options do
+                        if self.currentUI.options[self.currentUI.chosen].options[i].value==currentLanguage then
+                            index=i
+                            break
+                        end
+                    end
+                    if isPressed('right') then
+                        self.save.options[optionKey]=self.currentUI.options[self.currentUI.chosen].options[index%#self.currentUI.options[self.currentUI.chosen].options+1].value
+                        self.language=self.save.options.language
+                        SFX:play('select')
+                    elseif isPressed('left') then
+                        self.save.options[optionKey]=self.currentUI.options[self.currentUI.chosen].options[(index-2)%#self.currentUI.options[self.currentUI.chosen].options+1].value
+                        self.language=self.save.options.language
+                        SFX:play('select')
+                    end
+                elseif optionKey~='EXIT' then
+                    if love.keyboard.isDown('right') then
+                        self.save.options[optionKey]=math.clamp(self.save.options[optionKey]+1,0,100)
+                            SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
+                            BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
+                        SFX:play('select')
+                    elseif love.keyboard.isDown('left') then
+                        self.save.options[optionKey]=math.clamp(self.save.options[optionKey]-1,0,100)
+                        SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
+                        BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
+                        SFX:play('select')
+                    end
+                end
+                if isPressed('x') or isPressed('escape')then
                     SFX:play('select')
                     self:switchState(self.STATES.MAIN_MENU)
                 end
@@ -131,13 +156,25 @@ G={
             drawText=function(self)
                 -- -- self.updateDynamicPatternData(self.patternData)
                 SetFont(48)
-                love.graphics.print("Options", 100, 60)
+                love.graphics.print(Localize{'ui',"OPTIONS"}, 100, 60)
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
-                    local name=value.text
+                    local name=Localize{'ui',value.value}
                     love.graphics.print(name,100,index<#self.currentUI.options and 100+index*50 or 500,0,1,1)
                     if value.value~='EXIT' then
-                        love.graphics.printf(self.save.options[value.value],600,100+index*50,100,'right')
+                        local toPrint=self.save.options[value.value]
+                        if value.value=='language' then
+                            local languageIndex=0
+                            local currentLanguage=self.save.options.language
+                            for i=1,#self.currentUI.options[index].options do
+                                if self.currentUI.options[index].options[i].value==currentLanguage then
+                                    languageIndex=i
+                                    break
+                                end
+                            end
+                            toPrint=self.currentUI.options[index].options[languageIndex].text
+                        end
+                        love.graphics.printf(toPrint,500,100+index*50,200,'right')
                     end
                 end
                 love.graphics.rectangle("line",100,self.currentUI.chosen<#self.currentUI.options and 100+self.currentUI.chosen*50 or 500,600,50)
@@ -149,6 +186,7 @@ G={
                 self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
             end,
             upgrades={
+                -- Warning: real texts are in localization.lua. Following texts are for coding reference only.
                 increaseHP={
                     name='Increase HP',
                     description='Increase HP by 1',
@@ -485,23 +523,25 @@ G={
                 if chosenOption.upgrade then
                     local upgrade=self.currentUI.upgrades[chosenOption.upgrade]
                     SetFont(24)
-                    love.graphics.printf(upgrade.name,100,450,380,"left",0,1,1)
+                    local name=Localize{'upgrades',chosenOption.upgrade,'name'}
+                    love.graphics.printf(name,100,450,380,"left",0,1,1)
                     SetFont(18)
-                    love.graphics.printf(upgrade.description,110,485,580,"left",0,1,1)
-                    love.graphics.printf('Cost: '..upgrade.cost..' XP',110,540,380,"left",0,1,1)
+                    local description=Localize{'upgrades',chosenOption.upgrade,'description'}
+                    love.graphics.printf(description,110,485,580,"left",0,1,1)
+                    love.graphics.printf(Localize{'ui','upgradesCostXP',xp=upgrade.cost},110,540,380,"left",0,1,1)
                     love.graphics.rectangle("line",100,480,600,85)
                 end
 
 
                 SetFont(48)
-                love.graphics.print("Upgrades", 100, 60)
+                love.graphics.print(Localize{'ui','upgrades'}, 100, 60)
                 SetFont(36)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 
                 -- show "X: return"
                 SetFont(18)
-                love.graphics.printf("X: Return  Z: Buy / Refund  D: Refund All",100,570,380,"left",0,1,1)
-                love.graphics.printf("Current XP: "..self.currentUI.calculateRestXP(self),500,570,380,"left",0,1,1)
+                love.graphics.printf(Localize{'ui','upgradesUIHint'},100,570,380,"left",0,1,1)
+                love.graphics.printf(Localize{'ui','upgradesCurrentXP',xp=self.currentUI.calculateRestXP(self)},500,570,380,"left",0,1,1)
 
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end
@@ -566,7 +606,7 @@ G={
 
                 -- print Level x and Scene x
                 SetFont(36)
-                love.graphics.print("Level "..level,100,50,0,1,1)
+                love.graphics.print(Localize{'ui','level',level=level},100,50,0,1,1)
                 SetFont(30)
                 for index, value in ipairs(levelData[level]) do
                     local color={love.graphics.getColor()}
@@ -608,20 +648,20 @@ G={
 
                 -- show try count / first pass / first perfect data
                 SetFont(14)
-                love.graphics.printf(save.tryCount..' tries',710,325,90,'left')
-                love.graphics.printf('First pass:\n'..save.firstPass..' tries',710,350,90,'left')
-                love.graphics.printf('First perfect:\n'..save.firstPerfect..' tries',710,390,90,'left')
+                love.graphics.printf(Localize{'ui','tryCount',tries=save.tryCount},710,325,90,'left')
+                love.graphics.printf(Localize{'ui','firstPass',tries=save.firstPass},710,350,90,'left')
+                love.graphics.printf(Localize{'ui','firstPerfect',tries=save.firstPerfect},710,390,90,'left')
 
                 -- show number of passed levels needed for next level
                 local passedSceneCount,allSceneCount=self:countPassedSceneNum()
                 local needSceneCount=levelData.needPass[level]
                 SetFont(14)
-                love.graphics.printf('Passed Scenes: '..passedSceneCount..'/'..allSceneCount,710,5,90,'left')
-                love.graphics.printf(''..needSceneCount..' scenes to unlock next level',710,50,90,'left')
+                love.graphics.printf(Localize{'ui','passedScenes',passed=passedSceneCount,all=allSceneCount},710,5,90,'left')
+                love.graphics.printf(Localize{'ui','needSceneToUnlockNextLevel',need=needSceneCount},710,50,90,'left')
 
                 -- show "C: upgrades menu"
                 SetFont(18)
-                love.graphics.printf("C: Upgrades Menu",100,570,380,"left",0,1,1)
+                love.graphics.printf(Localize{'ui','levelUIHint'},100,570,380,"left",0,1,1)
             end
         },
         IN_LEVEL={
@@ -746,10 +786,10 @@ G={
                 love.graphics.rectangle("fill",0,0,9999,9999)
                 love.graphics.setColor(color[1],color[2],color[3])
                 SetFont(48)
-                love.graphics.print("Paused",100,50,0,1,1)
+                love.graphics.print(Localize{'ui','paused'},100,50,0,1,1)
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
-                    local name=value.text
+                    local name=Localize{'ui',value.value}
                     love.graphics.print(name,100,200+index*100,0,1,1)
                 end
                 love.graphics.rectangle("line",100,200+self.currentUI.chosen*100,200,50)
@@ -786,10 +826,10 @@ G={
                 love.graphics.rectangle("fill",0,0,9999,9999)
                 love.graphics.setColor(color[1],color[2],color[3])
                 SetFont(48)
-                love.graphics.print(self.won_current_scene and "WIN" or "LOSE",100,50,0,1,1)
+                love.graphics.print(self.won_current_scene and Localize{'ui','win'} or Localize{'ui','lose'},100,50,0,1,1)
                 SetFont(36)
                 for index, value in ipairs(self.currentUI.options) do
-                    local name=value.text
+                    local name=Localize{'ui',value.value}
                     love.graphics.print(name,100,200+index*50,0,1,1)
                 end
                 love.graphics.rectangle("line",100,200+self.currentUI.chosen*50,200,50)
@@ -830,7 +870,7 @@ G={
                 love.graphics.setColor(color[1],color[2],color[3])
 
                 local chosen,page=self.currentUI.chosen,self.currentUI.page
-                SetFont(16)
+                SetFont(16,Fonts.en_us)
                 for i=page*25+1-25,page*25 do
                     local replayDesc=ReplayManager.getDescriptionString(i)
                     ReplayManager.monospacePrint(replayDesc,10,145,50+(i-1)%25*20)
@@ -901,11 +941,11 @@ G={
                 love.graphics.rectangle("fill",0,0,9999,9999)
                 love.graphics.setColor(color[1],color[2],color[3])
 
-                SetFont(16)
+                SetFont(16,Fonts.en_us)
                 local replayDesc=ReplayManager.getDescriptionString(self.currentUI.slot,ReplayManager.getReplayData(self.currentUI.slot,self.currentUI.name))
                 ReplayManager.monospacePrint(replayDesc,10,145,50)
 
-                SetFont(24)
+                SetFont(24,Fonts.en_us)
                 for row, value in pairs(self.currentUI.keyboard) do
                     for column, char in pairs(value) do
                         if char~=' 'then
@@ -957,7 +997,7 @@ G={
                 love.graphics.setColor(1,1,1)
 
                 local chosen,page=self.currentUI.chosen,self.currentUI.page
-                SetFont(17)
+                SetFont(17,Fonts.en_us)
                 for i=page*25+1-25,page*25 do
                     local replayDesc=ReplayManager.getDescriptionString(i)
                     ReplayManager.monospacePrint(replayDesc,10,145,50+(i-1)%25*20)
@@ -1017,12 +1057,19 @@ G.loadData=function(self)
         end
     end
     -- add options data
+    local defaultOptions={
+        master_volume=100,
+        music_volume=100,
+        sfx_volume=100,
+        language='en_us',
+    }
     if not self.save.options then
-        self.save.options={
-            master_volume=100,
-            music_volume=100,
-            sfx_volume=100
-        }
+        self.save.options=defaultOptions
+    end
+    for key,value in pairs(defaultOptions) do
+        if not self.save.options[key] then
+            self.save.options[key]=value
+        end
     end
     SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
     BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
@@ -1052,6 +1099,8 @@ G.loadData=function(self)
     self:saveData()
 end
 G:loadData()
+
+G.language=G.save.options.language--'zh_cn'--'en_us'--
 
 ---@param self table
 ---@return integer "number of passed scenes"
@@ -1195,7 +1244,5 @@ G.removeAll=function(self)
     end
     self.sceneTempObjs={}
 end
-
-G.language='en_us'--'zh_cn'
 
 return G

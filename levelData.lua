@@ -11,6 +11,7 @@ BulletSpawner=require"bulletSpawner"
 -- level EX: protagonists' spells again.
 local levelData={
     {
+        -- Warning: as text data need localization, all [quotes] and [spellNames] here aren't used in game and are only for coding reference. Data used are in localization.lua. But [user] parameter is used as a key to get localization.
         {
             quote="In this world things appear smaller when closer to top.",
             user='marisa',
@@ -1036,8 +1037,8 @@ local levelData={
         },
         {
             quote='??',
-            user='??',
-            spellName='???',
+            user='yukari',
+            spellName='Barrier "Boundary of Monad and Dyad"', -- this spell card should be remade later to add more interesting patterns. like laser
             make=function()
                 Shape.removeDistance=2000
                 local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
@@ -2286,7 +2287,8 @@ for index, value in ipairs(levelData) do
                     if not value2.spellName then
                         value2.spellName=''
                     end
-                    local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=value2.spellName,fontSize=18,color={1,1,1,0},align='center'}
+                    local name=Localize{'levelData',index,index2,'spellName'}
+                    local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=name,fontSize=18,color={1,1,1,0},align='center'}
                     G.spellNameText=txt
                     Event.EaseEvent{
                         obj=txt,
@@ -2309,7 +2311,7 @@ for index, value in ipairs(levelData) do
                 -- show timeout spellcard text
                 do
                     if G.levelIsTimeoutSpellcard then
-                        local txt=Text{x=100,y=250,width=600,height=100,bordered=false,text='T I M E O U T',fontSize=72,color={1,1,1,0},align='center',lifeFrame=60}
+                        local txt=Text{x=100,y=250,width=600,height=100,bordered=false,text=Localize{'ui','timeout'},fontSize=72,color={1,1,1,0},align='center',lifeFrame=60}
                         Event.EaseEvent{
                             obj=txt,
                             easeFrame=60,

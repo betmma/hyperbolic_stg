@@ -112,11 +112,21 @@ local function getFont(path,size)
     end
     return fontCache[path][size]
 end
-function SetFont(size)
-    local font = getFont('assets/m6x11plus.ttf', size)
+
+Fonts={
+    en_us='assets/m6x11plus.ttf',
+    zh_cn='assets/Source Han Sans CN Heavy.otf'
+}
+-- set font size. The font changes with language. In menus like replay saving and loading, where character width is important and hardcoded for process, the forcedFont parameter should be set to Fonts.en_us.
+function SetFont(size,forcedFont)
+    if forcedFont then
+        love.graphics.setFont(getFont(forcedFont,size))
+        return
+    end
+    local font = getFont(Fonts.en_us, size)
     if G.language=='zh_cn' then
         size=size*0.8
-        font=getFont('assets/Source Han Serif CN Light.otf',size)
+        font=getFont(Fonts.zh_cn,size)
     end
     love.graphics.setFont(font)
 end
