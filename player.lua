@@ -388,11 +388,15 @@ function Player:drawText()
     end
 end
 
-
+-- spawn a white dot to show the graze effect. Actually this random speed and direction particle has broken old replays sooooo many times each time I tweak bullet size or graze range :(
 function Player:grazeEffect(amount)
     amount=amount or 1
     SFX:play('graze')
-    Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+    if self.version and self.version<'0.2.0.1' then
+        Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+    else -- non-random graze effect
+        Effect.Larger{x=self.x,y=self.y,speed=50+30*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+    end
     self.grazeCountThisFrame=self.grazeCountThisFrame+amount
     if self.grazeCountThisFrame>20 then
         return -- avoid too many grazes in a short time

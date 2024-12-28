@@ -1,6 +1,11 @@
 --! file: circle.lua
 local Shape = require "shape"
 local Circle = Shape:extend()
+function Circle.restore()
+    Circle.sizeFactor=5.0
+    Circle.spriteSizeFactor=1.1
+end
+Circle.restore()
 
 function Circle:new(args)
     Circle.super.new(self, args)
@@ -9,7 +14,7 @@ function Circle:new(args)
     self.sprite=args.sprite
     if self.sprite then
         local data=SpriteData[self.sprite]
-        self.radius=self.radius/5.0*data.hitRadius
+        self.radius=self.radius/Circle.sizeFactor*data.hitRadius
     end
     self.extraUpdate={}
     -- safe means won't hit player 
@@ -48,7 +53,7 @@ end
 function Circle:drawSprite()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
-    local scale=r/data.hitRadius*1.1
+    local scale=r/data.hitRadius*Circle.spriteSizeFactor
     if self.sprite then
         self.batch:setColor(1,1,1,self.sprite_transparency)
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)

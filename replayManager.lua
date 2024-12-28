@@ -114,8 +114,14 @@ replayManager.runReplay=function(slot)
         player.shootRows.front.homing.damage=1
         player.shootRows.back.straight.num=player.shootRows.back.straight.num*2
     end
-    if not replay.version or replay.version<'0.1.2' then
+    local version=replay.version or '0.0.0'
+    player.version=version
+    if version<'0.1.2' then
         player.grazeRadiusFactor=1.5
+    end
+    if version<'0.1.3' then
+        Circle.sizeFactor=4.5
+        Circle.spriteSizeFactor=1.0
     end
 end
 

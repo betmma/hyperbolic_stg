@@ -1148,6 +1148,7 @@ G.enterLevel=function(self,level,scene)
     self:switchState(self.STATES.IN_LEVEL)
     self.currentLevel={level,scene}
     Shape.restore()
+    Circle.restore()
     self.levelRemainingFrame=nil
     self.levelRemainingFrameMax=nil
     self.levelIsTimeoutSpellcard=false
