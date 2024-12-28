@@ -2307,11 +2307,50 @@ for index, value in ipairs(levelData) do
                         progressFunc=function(x)return math.sin(x*math.pi/2) end
                     }
                 end
+                -- show user name
+                do
+                    local name=Localize{'levelData','names',value2.user}
+                    local name=Text{x=300,y=200,width=500,height=100,bordered=false,text=name,fontSize=64,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
+                    Event.EaseEvent{
+                        obj=name,
+                        easeFrame=60,
+                        aimTable=name,
+                        aimKey='x',
+                        aimValue=500,
+                        easeMode='hard',
+                        progressFunc=function(x)return (2*x-1)^3*0.5+0.5 end
+                    }
+                    Event.EaseEvent{
+                        obj=name,
+                        easeFrame=60,
+                        aimTable=name,
+                        aimKey='fontSize',
+                        aimValue=72,
+                        progressFunc=function(x)return math.sin(x*math.pi) end
+                    }
+                    Event.EaseEvent{
+                        obj=name,
+                        easeFrame=60,
+                        aimTable=name.color,
+                        aimKey=4,
+                        aimValue=0.5,
+                        progressFunc=function(x)return math.sin(x*math.pi) end
+                    }
+                end
                 ref()
                 -- show timeout spellcard text
                 do
                     if G.levelIsTimeoutSpellcard then
-                        local txt=Text{x=100,y=250,width=600,height=100,bordered=false,text=Localize{'ui','timeout'},fontSize=72,color={1,1,1,0},align='center',lifeFrame=60}
+                        local txt=Text{x=300,y=400,width=600,height=100,bordered=false,text=Localize{'ui','timeout'},fontSize=72,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
+                        Event.EaseEvent{
+                            obj=txt,
+                            easeFrame=60,
+                            aimTable=txt,
+                            aimKey='x',
+                            aimValue=500,
+                            easeMode='hard',
+                            progressFunc=function(x)return (2*x-1)^3*0.5+0.5 end
+                        }
                         Event.EaseEvent{
                             obj=txt,
                             easeFrame=60,

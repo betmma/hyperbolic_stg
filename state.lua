@@ -742,7 +742,7 @@ G={
                     love.graphics.print("REPLAYING... "..speedText, 150, 580)
                 end
                 local player=Player.objects[1]
-                SetFont(48)
+                SetFont(48,Fonts.en_us)
                 local xt,yt=160,5
                 local dx,dy=72,26
                 if not player or Shape.distance(170,10,player.x,player.y)>50 or G.viewMode.mode~=G.VIEW_MODES.NORMAL then
@@ -751,7 +751,7 @@ G={
                     xt,yt=560,5
                 end
                 love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', xt, yt)
-                SetFont(18)
+                SetFont(18,Fonts.en_us)
                 love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), xt+dx, yt+dy)
                 
             end
