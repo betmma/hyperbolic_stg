@@ -397,7 +397,7 @@ function Player:grazeEffect(amount)
     else -- non-random graze effect
         Effect.Larger{x=self.x,y=self.y,speed=50+30*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
     end
-    self.grazeCountThisFrame=self.grazeCountThisFrame+amount
+    self.grazeCountThisFrame=(self.grazeCountThisFrame or 0)+amount
     if self.grazeCountThisFrame>20 then
         return -- avoid too many grazes in a short time
     end

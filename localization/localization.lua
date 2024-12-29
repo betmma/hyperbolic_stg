@@ -77,6 +77,10 @@ return {
                 en_us='Yukari Yakumo',
                 zh_cn='八云紫',
             },
+            shou={
+                en_us='Shou Toramaru',
+                zh_cn='寅丸星',
+            },
         },
         { -- level 1
             {
@@ -323,6 +327,16 @@ return {
                 spellName = {
                     en_us = 'Mind of God "Distant Memory"',
                     zh_cn='神脑 "远古的记忆"',
+                },
+            },
+            {
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn='还没想好 :P',
+                },
+                spellName = {
+                    en_us = 'Tiger Sign "Famished Tiger"',
+                    zh_cn='寅符 "饿虎扑食"',
                 },
             },
         },
