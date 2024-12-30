@@ -1,7 +1,6 @@
 local Asset={}
 local bulletImage = love.graphics.newImage( "assets/bullets.png" )
 Asset.bulletImage=bulletImage
-local bgImage = love.graphics.newImage( "assets/bg.png" )
 bulletImage:setFilter("nearest", "linear") -- this "linear filter" removes some artifacts if we were to scale the tiles
 local tileSize = 8
 local function quad(x,y,width,height)
@@ -100,8 +99,11 @@ for i, value in ipairs(types) do
         Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color}
     end
 end
+local bgImage = love.graphics.newImage( "assets/bg.png" )
 Asset.backgroundLeft=love.graphics.newQuad(0,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 Asset.backgroundRight=love.graphics.newQuad(650,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
+local titleImage = love.graphics.newImage( "assets/title.png" )
+Asset.title=love.graphics.newQuad(0,0,1280,720,titleImage:getWidth(),titleImage:getHeight())
 --[[
 Batches are used to seperate different draw layers. Generally, order should be:
 
@@ -120,6 +122,7 @@ UI (left half and right half foreground)
 Dialogue (niy)
 Dialogue Characters (niy)
 ]]
+Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream')
 Asset.backgroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')

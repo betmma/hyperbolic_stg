@@ -80,20 +80,28 @@ G={
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
                 OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
+                Asset.titleBatch:clear()
+                Asset.titleBatch:add(Asset.title,70,0,0,0.5,0.5,0,0)
             end,
             draw=function(self)
+                Asset.titleBatch:flush()
+                love.graphics.draw(Asset.titleBatch)
             end,
             drawText=function(self)
                 -- -- self.updateDynamicPatternData(self.patternData)
-                SetFont(96)
-                love.graphics.print("Hyperbolic\n   STG",200,100,0,1,1)
+                local color={love.graphics.getColor()}
                 SetFont(36)
+                love.graphics.setColor(1,1,1,0.6)
+                love.graphics.printf("Hyperbolic STG",200,270,400,'center')
+                SetFont(36)
+                love.graphics.setColor(1,1,1,1)
                 for index, value in ipairs(self.currentUI.options) do
                     local name=Localize{'ui',value.value}
                     love.graphics.print(name,300,300+index*50,0,1,1)
                 end
                 love.graphics.rectangle("line",300,300+self.currentUI.chosen*50,200,50)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end
         },
         OPTIONS={

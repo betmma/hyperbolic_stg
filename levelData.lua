@@ -2273,7 +2273,7 @@ local levelData={
             spellName='Tiger Sign "Famished Tiger"',
             make=function()
                 G.levelRemainingFrame=5400
-                Shape.removeDistance=100000
+                Shape.removeDistance=10000000
                 local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=500}
                 player.moveMode=Player.moveModes.Natural
@@ -2347,6 +2347,8 @@ local levelData={
                                         local num=hpp<0.4 and 150 or 90
                                         BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=2,bulletNumber=num,bulletSpeed=70,bulletLifeFrame=500,angle=angle,bulletSprite=BulletSprites.scale.yellow,highlight=true,bulletEvents={
                                             function(cir,args,self)
+                                                cir.x=cir.x*math.eval('1+0.04')
+                                                cir.y=cir.y*math.eval('1+0.04')
                                                 local rand=math.eval('0+1')
                                                 local dang=rand^3*math.pi*(hpp<0.4 and 4 or 2)
                                                 cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+dang
@@ -2426,7 +2428,11 @@ for index, value in ipairs(levelData) do
                 -- show user name
                 do
                     local name=Localize{'levelData','names',value2.user}
-                    local name=Text{x=300,y=200,width=500,height=100,bordered=false,text=name,fontSize=64,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
+                    local fontSize=72
+                    if string.len(name)>20 then
+                        fontSize=math.floor(72*20/string.len(name))
+                    end
+                    local name=Text{x=300,y=200,width=500,height=100,bordered=false,text=name,fontSize=fontSize-8,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
                     Event.EaseEvent{
                         obj=name,
                         easeFrame=60,
@@ -2441,7 +2447,7 @@ for index, value in ipairs(levelData) do
                         easeFrame=60,
                         aimTable=name,
                         aimKey='fontSize',
-                        aimValue=72,
+                        aimValue=fontSize,
                         progressFunc=function(x)return math.sin(x*math.pi) end
                     }
                     Event.EaseEvent{

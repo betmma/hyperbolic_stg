@@ -90,7 +90,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Magic Sign "Otherworld Star Dust"',
-                    zh_cn='魔符 "异界星尘"',
+                    zh_cn='魔符「异界星尘」',
                 },
             },
             {
@@ -100,7 +100,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Moon Sign "Cerulean Lunatic Dream"',
-                    zh_cn='月符 "蔚蓝色的狂梦"',
+                    zh_cn='月符「蔚蓝色的狂梦」',
                 },
             },
             {
@@ -110,7 +110,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Spirit Sign "Fantasy Seal -Focus-"',
-                    zh_cn='灵符 "梦想封印 -聚-"',
+                    zh_cn='灵符「梦想封印 -聚-」',
                 },
             },
             {
@@ -120,7 +120,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Illusion Trap "Killing Grid"',
-                    zh_cn='幻阱 "杀戮方阵"',
+                    zh_cn='幻阱「杀戮方阵」',
                 },
             },
             {
@@ -130,7 +130,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Preparation "Suwa Daimyōjin Invocation"',
-                    zh_cn='准备 "召请诹访大明神"',
+                    zh_cn='准备「召请诹访大明神」',
                 },
             },
             {
@@ -140,7 +140,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Manacles Sign "Manacles a Criminal Can\'t Take Off"',
-                    zh_cn='铐符 "罪人不释之铐"',
+                    zh_cn='铐符「罪人不释之铐」',
                 },
             },
         },
@@ -152,7 +152,7 @@ return {
                 },
                 spellName = {
                     en_us = '"Hakurei Transmit Barrier"',
-                    zh_cn='"博丽传送结界"',
+                    zh_cn='「博丽传送结界」',
                 },
             },
             {
@@ -162,7 +162,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Black Magic "Gamma-ray Burst"',
-                    zh_cn='黑魔 "伽马射线暴"',
+                    zh_cn='黑魔「伽马射线暴」',
                 },
             },
             {
@@ -172,7 +172,7 @@ return {
                 }, -- I have a feeling that something will happen if I linger till...'
                 spellName = {
                     en_us = 'Unconscious "Super-Ego\'s Trace"',
-                    zh_cn='无意识 "超我的痕迹"',
+                    zh_cn='无意识「超我的痕迹」',
                 },
             },
             {
@@ -182,7 +182,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Freeze Sign "Rime Ice"',
-                    zh_cn='冻符 "雾凇冰晶"',
+                    zh_cn='冻符「雾凇冰晶」',
                 },
             },
             {
@@ -192,7 +192,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Crystalization "Supernatural Lattice"',
-                    zh_cn='结晶 "超自然晶格"',
+                    zh_cn='结晶「超自然晶格」',
                 },
             },
             {
@@ -202,7 +202,7 @@ return {
                 },
                 spellName = {
                     en_us = '"Eye of Horus"',
-                    zh_cn='"荷鲁斯之眼"',
+                    zh_cn='「荷鲁斯之眼」',
                 },
             },
             {
@@ -212,7 +212,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Barrier "Boundary of Monad and Dyad"',
-                    zh_cn='结界 "己与彼的境界"',
+                    zh_cn='结界「己与彼的境界」',
                 },
             },
         },
@@ -224,7 +224,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Scarlet Sign "Vampirish Plaza"',
-                    zh_cn='红符 "吸血鬼广场"',
+                    zh_cn='红符「吸血鬼广场」',
                 },
             },
             {
@@ -234,7 +234,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Big Four Arcanum "Knock Out In Three Sides"',
-                    zh_cn='四天王奥义 "三角必杀"',
+                    zh_cn='四天王奥义「三角必杀」',
                 },
             },
             {
@@ -244,7 +244,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Turnabout "Change Orientation"',
-                    zh_cn='逆转 "方向变换"',
+                    zh_cn='逆转「方向变换」',
                 },
             },
             {
@@ -254,7 +254,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Turnabout "Change Projection"',
-                    zh_cn='逆转 "投影变换"',
+                    zh_cn='逆转「投影变换」',
                 },
             },
             {
@@ -264,7 +264,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Taboo "Labyrinthine Trap"',
-                    zh_cn='禁忌 "环形陷阱"',
+                    zh_cn='禁忌「环形陷阱」',
                 },
             },
             {
@@ -274,7 +274,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Battle Machine "Autonomous Sentries"',
-                    zh_cn='战斗兵器 "自动哨兵"',
+                    zh_cn='战斗兵器「自动哨兵」',
                 },
             },
             {
@@ -284,7 +284,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Forbidden Barrage "Border break"',
-                    zh_cn='禁弹 "边界破碎"',
+                    zh_cn='禁弹「边界破碎」',
                 },
             },
         },
@@ -296,17 +296,17 @@ return {
                 },
                 spellName = {
                     en_us = 'Strike Sign "Drunken Fist"',
-                    zh_cn='击符 "醉拳"',
+                    zh_cn='击符「醉拳」',
                 },
             },
             {
                 quote = {
                     en_us = 'The thread is stretched far away but still connected. So called "Celestial Thread".',
-                    zh_cn='线拉得很远但仍然连接着。这就是所谓"通天线"吧。',
+                    zh_cn='线拉得很远但仍然连接着。这就是所谓「通天线」吧。',
                 },
                 spellName = {
                     en_us = 'Moon Wood Sign "Celestial Thread"',
-                    zh_cn='月木符 "通天线"',
+                    zh_cn='月木符「通天线」',
                 },
             },
             {
@@ -316,7 +316,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Divine Tool "Moriya\'s Elastic Ring"',
-                    zh_cn='神具 "洩矢的弹性环"',
+                    zh_cn='神具「洩矢的弹性环」',
                 },
             },
             {
@@ -326,7 +326,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Mind of God "Distant Memory"',
-                    zh_cn='神脑 "远古的记忆"',
+                    zh_cn='神脑「远古的记忆」',
                 },
             },
             {
@@ -336,7 +336,7 @@ return {
                 },
                 spellName = {
                     en_us = 'Tiger Sign "Famished Tiger"',
-                    zh_cn='寅符 "饿虎扑食"',
+                    zh_cn='寅符「饿虎扑食」',
                 },
             },
         },

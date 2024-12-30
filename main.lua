@@ -1,8 +1,9 @@
-VERSION="0.2.0.1"
+VERSION="0.2.0.2"
 if arg[2] == "debug" then
     require("lldebugger").start()
 end
 io.stdout:setvbuf("no")
+love.window.setTitle('Hyperbolic STG')
 require'misc'
 function love.load()
     Object = require "classic"
