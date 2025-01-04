@@ -140,6 +140,8 @@ local function getRawLocalizeString(args)
     for key, value in ipairs(args) do
         if current[value] then
             current=current[value]
+        elseif current['__default__'] then
+            current=current['__default__']
         else
             return 'ERROR'
         end

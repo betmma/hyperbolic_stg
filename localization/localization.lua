@@ -5,6 +5,10 @@ return {
             zh_cn='这里会发生什么呢？',
         },
         names={
+            __default__={
+                en_us='Unknown',
+                zh_cn='未知',
+            },
             reimu={
                 en_us='Reimu Hakurei',
                 zh_cn='博丽灵梦',
@@ -81,6 +85,10 @@ return {
                 en_us='Shou Toramaru',
                 zh_cn='寅丸星',
             },
+            hina={
+                en_us='Hina Kagiyama',
+                zh_cn='键山雏',
+            }
         },
         { -- level 1
             {
@@ -339,6 +347,16 @@ return {
                     zh_cn='寅符「饿虎扑食」',
                 },
             },
+            {
+                quote = {
+                    en_us = 'The misfortune released from her leaves a scar on the ground. Hope she will clean it up after the battle.',
+                    zh_cn='她释放的厄运在地上留下了痕迹。希望她在战斗后能清理干净。',
+                },
+                spellName = {
+                    en_us = 'Misfortune Sign "Scar of Calamity"',
+                    zh_cn='厄符「灾厄之痕」',
+                },
+            }
         },
     },
     ui = {
