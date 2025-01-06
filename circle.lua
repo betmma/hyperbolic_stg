@@ -99,4 +99,14 @@ end
 function Circle:removeEffect()
     Effect.Larger{x=self.x,y=self.y,sprite=Asset.shards.round,radius=5,growSpeed=1.1,animationFrame=20}
 end
+
+function Circle:changeSpriteColor(color)
+    if not color then
+        local colors=Asset.SpriteData[self.sprite].color2 and Asset.colors2 or Asset.colors
+        local ind=math.floor(math.random(1,#colors+0.999999))
+        color=colors[ind]
+    end
+    self.sprite=Asset.SpriteData[self.sprite].super[color] or self.sprite
+end
+
 return Circle

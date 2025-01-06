@@ -88,7 +88,11 @@ return {
             hina={
                 en_us='Hina Kagiyama',
                 zh_cn='键山雏',
-            }
+            },
+            alice={
+                en_us='Alice Margatroid',
+                zh_cn='爱丽丝·玛格特洛依德',
+            },
         },
         { -- level 1
             {
@@ -356,7 +360,17 @@ return {
                     en_us = 'Misfortune Sign "Scar of Calamity"',
                     zh_cn='厄符「灾厄之痕」',
                 },
-            }
+            },
+            {
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn='还没想好 :P',
+                },
+                spellName = {
+                    en_us = 'Magic Sign "Explosive Marionette"',
+                    zh_cn='魔符「爆裂玩偶」',
+                },
+            },
         },
     },
     ui = {

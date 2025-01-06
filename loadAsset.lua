@@ -58,12 +58,13 @@ for k,wave in pairs(Asset.shards) do
 end
 local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14}
 local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
+Asset.colors=colors
 local types={'laser','scale','rim','round','rice','kunai','crystal','bill','bullet','blackrice','star'}
 for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(4*j-4,2*i-2,2,2)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=16,hitRadius=hitRadius[value],color=color,laser=value=='laser'}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=16,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],laser=value=='laser'}
     end
 end
 types={'darkdot','dot'}
@@ -71,7 +72,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(2*((j-1)%4),18+6*i+(j>4 and 1 or 0),1,1)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=8,hitRadius=hitRadius[value],color=color}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=8,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value]}
     end
 end
 types={'bigStar','bigRound','butterfly','knife','ellipse','fog',}
@@ -79,7 +80,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(4*j-4,29+4*i+0.5,4,4)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value]}
     end
 end
 types={'heart'}
@@ -87,16 +88,17 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(30+4*j,29+4*i+0.5,4,4)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value]}
     end
 end
 types={'giant'}
 local colors2={'red','blue','green','yellow'}
+Asset.colors2=colors2
 for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors2) do
         Asset.bulletSprites[value][color]=quad(8*j-8,49+8*i+0.5,8,8)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],color2=true}
     end
 end
 local bgImage = love.graphics.newImage( "assets/bg.png" )
@@ -115,7 +117,7 @@ Enemy without HP bar (probably won't appear)
 Items (niy)
 Enemy bullets highlighted (add blend mode)
 Enemy bullets
-Effects (now only shockwave)
+Effects
 Player spell (niy)
 Player focus 
 UI (left half and right half foreground)
