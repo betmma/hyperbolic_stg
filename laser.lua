@@ -38,6 +38,11 @@ function LaserUnit:draw()
     end
 end
 
+-- extract coordinates of all LaserUnits linked. Each unit yields 2 points that are perpendicular to its direction.
+-- for example: 
+-- v v v
+---o-o-o---->
+-- ^ ^ ^
 function LaserUnit:extractCoordinates()
     local poses = {}
     local unit = self
@@ -49,7 +54,30 @@ function LaserUnit:extractCoordinates()
         table.insert(poses, {x1-r1*math.cos(the),y1-r1*math.sin(the)})
         unit = unit.next
     end
-    return poses
+    -- if gap between units is too large, add more points to make it smooth (hyperbolic line is arc, while mesh is line segment)
+    local newPoses={}
+    for i=1,#poses,2 do
+        table.insert(newPoses,poses[i])
+        table.insert(newPoses,poses[i+1])
+        if i+2<=#poses then
+            local x1,y1,x2,y2=poses[i][1],poses[i][2],poses[i+2][1],poses[i+2][2]
+            local dis=Shape.distance(x1,y1,x2,y2)
+            local limit=self.radius*10
+            if dis>limit then
+                local the=Shape.to(x1,y1,x2,y2)
+                local the2=Shape.to(poses[i+1][1],poses[i+1][2],poses[i+3][1],poses[i+3][2])
+                local num=math.min(math.ceil(dis/limit),10) -- at most 10 points
+                for j=1,num-1 do
+                    local nx,ny=Shape.rThetaPos(x1,y1,dis/num*j,the)
+                    table.insert(newPoses,{nx,ny})
+                    nx,ny=Shape.rThetaPos(poses[i+1][1],poses[i+1][2],dis/num*j,the2)
+                    table.insert(newPoses,{nx,ny})
+                end
+            end
+
+        end
+    end
+    return newPoses
 end
 
 function LaserUnit:drawMesh(poses)

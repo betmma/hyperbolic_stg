@@ -109,4 +109,12 @@ function Circle:changeSpriteColor(color)
     self.sprite=Asset.SpriteData[self.sprite].super[color] or self.sprite
 end
 
+function Circle:changeSprite(sprite)
+    local data=SpriteData[self.sprite]
+    self.radius=self.radius/data.hitRadius
+    self.sprite=sprite
+    data=SpriteData[self.sprite]
+    self.radius=self.radius*data.hitRadius
+end
+
 return Circle

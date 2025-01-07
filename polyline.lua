@@ -43,6 +43,7 @@ function PolyLine:insideOne(xc,yc,index)
 end
 
 -- obj should include x, y and direction. This function modifies obj.
+-- usage example: adding a LoopEvent with condition = not polyline:inside(obj) and execute func = polyline:reflection(obj)
 function PolyLine:reflection(obj)
     local inside,x1,y1,x2,y2=self:inside(obj.x,obj.y)
     if inside then

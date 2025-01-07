@@ -371,6 +371,16 @@ return {
                     zh_cn='魔符「爆裂玩偶」',
                 },
             },
+            {
+                quote = {
+                    en_us = 'With solar energy stored inside, the alloy is hot and untouchable.',
+                    zh_cn='蕴含太阳能的合金炽热无比，不可触碰。',
+                },
+                spellName = {
+                    en_us = 'Sun Metal Sign "Solar Alloy"',
+                    zh_cn='日金符「太阳合金」',
+                },
+            },
         },
     },
     ui = {
