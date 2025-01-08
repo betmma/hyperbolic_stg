@@ -93,6 +93,10 @@ return {
                 en_us='Alice Margatroid',
                 zh_cn='爱丽丝·玛格特洛依德',
             },
+            utsuho={
+                en_us='Utsuho Reiuji',
+                zh_cn='灵乌路空',
+            },
         },
         { -- level 1
             {
@@ -382,6 +386,18 @@ return {
                 },
             },
         },
+        { -- level 5
+            {
+                quote = {
+                    en_us = 'Find the critical bullet that will explode! Sharp eyes are needed.',
+                    zh_cn='找到即将爆炸的关键子弹！要火眼金睛才行。',
+                },
+                spellName = {
+                    en_us = 'Explosion Sign "Critical Mass"',
+                    zh_cn='爆符「临界质量」',
+                },
+            },
+        }
     },
     ui = {
         START = {

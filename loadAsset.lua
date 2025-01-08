@@ -14,8 +14,8 @@ Asset.playerFocus=quad(34,2,8,8)
 Asset.shockwave={
     red=quad(50,2,8,8),
     blue=quad(58,2,8,8),
-    yellow=quad(50,10,8,8),
-    green=quad(58,10,8,8),
+    yellow=quad(34,10,8,8),
+    green=quad(42,10,8,8),
 }
 Asset.shards={
     leaf =quad(63.625,49.25,1,1),
