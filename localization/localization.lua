@@ -397,6 +397,16 @@ return {
                     zh_cn='爆符「临界质量」',
                 },
             },
+            {
+                quote = {
+                    en_us = 'Through the experiment, she found the way to make bigger nukes in this world.',
+                    zh_cn='通过实验，她找到了在这个世界制造更大核弹的方法。',
+                },
+                spellName = {
+                    en_us = 'Atomic Fire "Nuclear Experiment Expansion"',
+                    zh_cn='核热「核反应扩大试验」',
+                },
+            },
         }
     },
     ui = {

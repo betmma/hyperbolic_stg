@@ -26,6 +26,15 @@ function Circle:new(args)
 
     self.batch=args.batch or BulletBatch
     self.sprite_transparency=args.sprite_transparency or 1
+
+    self.spriteExtraDirection=0
+    self.spriteRotationSpeed=0
+
+    if self.sprite==Asset.nuke then
+        self.invincible=true
+        self.batch=Asset.bulletHighlightBatch
+        self.spriteRotationSpeed=0.01
+    end
 end
 
 function Circle:draw()
@@ -47,6 +56,7 @@ function Circle:update(dt)
     self:checkShockwaveRemove()
     self:checkFlashBombRemove()
     self:checkHitPlayer()
+    self.spriteExtraDirection=self.spriteExtraDirection+self.spriteRotationSpeed*Shape.timeSpeed
 end
 
 -- this happens in draw.
@@ -55,8 +65,12 @@ function Circle:drawSprite()
     local data=SpriteData[self.sprite]
     local scale=r/data.hitRadius*Circle.spriteSizeFactor
     if self.sprite then
-        self.batch:setColor(1,1,1,self.sprite_transparency)
-        self.batch:add(self.sprite,x,y,self.direction+math.pi/2,scale,scale,data.size/2,data.size/2)
+        if data.forcedColor then
+            self.batch:setColor(data.forcedColor[1],data.forcedColor[2],data.forcedColor[3],self.sprite_transparency)
+        else
+            self.batch:setColor(1,1,1,self.sprite_transparency)
+        end
+        self.batch:add(self.sprite,x,y,self.direction+math.pi/2+self.spriteExtraDirection,scale,scale,data.size/2,data.size/2)
     end
 end
 function Circle:checkShockwaveRemove()

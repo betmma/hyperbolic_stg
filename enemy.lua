@@ -17,6 +17,7 @@ function Enemy:new(args)
         G.mainEnemy=self
     end
     self.hpBarTransparency=1
+    self.hpSegments=args.hpSegments or {}
 end
 
 function Enemy:update(dt)
@@ -96,6 +97,13 @@ function Enemy:drawHPBar()
     love.graphics.setColor(1,1,1,self.hpBarTransparency)
     for i=31,32,0.5 do
         Shape.drawArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
+    end
+    -- love.graphics.setColor(1,0.3,0.3,self.hpBarTransparency)
+    for i,ratio in pairs(self.hpSegments) do
+        local rin,rout=29.5,33.5
+        local x1,y1=Shape.rThetaPos(self.x,self.y,rin,math.pi*(1.5-2*ratio))
+        local x2,y2=Shape.rThetaPos(self.x,self.y,rout,math.pi*(1.5-2*ratio))
+        Shape.drawSegment(x1,y1,x2,y2)
     end
     -- SetFont(12)
     -- love.graphics.print(""..ratio..', ', 10, 100)

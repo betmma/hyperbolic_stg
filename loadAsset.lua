@@ -2,6 +2,7 @@ local Asset={}
 local bulletImage = love.graphics.newImage( "assets/bullets.png" )
 Asset.bulletImage=bulletImage
 bulletImage:setFilter("nearest", "linear") -- this "linear filter" removes some artifacts if we were to scale the tiles
+
 local tileSize = 8
 local function quad(x,y,width,height)
     local ret= love.graphics.newQuad(x*tileSize+5,y*tileSize+6,width*tileSize,height*tileSize,bulletImage:getWidth(),bulletImage:getHeight())
@@ -23,7 +24,9 @@ Asset.shards={
     round=quad(65.625,49.25,1,1),
     dot  =quad(66.625,49.25,1,1),
 }
+Asset.nuke=love.graphics.newQuad(306,547,256,256,bulletImage:getWidth(),bulletImage:getHeight())
 Asset.bulletSprites={
+    nuke=Asset.nuke,
     laser=template,
     scale=template,
     rim=template,
@@ -50,6 +53,7 @@ Asset.bulletSprites={
 }
 Asset.SpriteData={
 }
+Asset.SpriteData[Asset.nuke]={size=256,hitRadius=96}
 for k,wave in pairs(Asset.shockwave) do
     Asset.SpriteData[wave]={size=64}
 end
