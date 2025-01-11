@@ -2705,29 +2705,36 @@ local levelData={
                 player.border=PolyLine(poses)
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 G.viewMode.object=player
+                local function q(cir)
+                    cir.speed=math.eval('50+50')
+                    cir.x=cir.x+math.eval('0+20')
+                    cir.y=cir.y+math.eval('0+20')
+                    Event.EaseEvent{
+                        obj=cir,
+                        aimTable=cir,
+                        aimKey='speed',
+                        aimValue=20,
+                        easeFrame=120
+                    }
+                    Event.LoopEvent{
+                        obj=cir,
+                        period=1,
+                        conditionFunc=function()return not player.border:inside(cir.x,cir.y) end,
+                        executeFunc=function()
+                            player.border:reflection(cir)
+                        end
+                    }
+                end
                 local a
                 local t0=480
-                a=BulletSpawner{x=400,y=300,period=600,frame=540,lifeFrame=10000,bulletNumber=100,bulletSpeed=30,bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.bigRound.red,bulletEvents={
+                a=BulletSpawner{x=400,y=300,period=600,frame=540,lifeFrame=10000,bulletNumber=40,bulletSpeed=30,bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.bigRound.red,bulletEvents={
                     function(cir,args,self)
-                        cir.speed=math.eval('50+50')
-                        cir.x=cir.x+math.eval('0+20')
-                        cir.y=cir.y+math.eval('0+20')
-                        Event.EaseEvent{
-                            obj=cir,
-                            aimTable=cir,
-                            aimKey='speed',
-                            aimValue=20,
-                            easeFrame=120
-                        }
-                        Event.LoopEvent{
-                            obj=cir,
-                            period=1,
-                            conditionFunc=function()return not player.border:inside(cir.x,cir.y) end,
-                            executeFunc=function()
-                                player.border:reflection(cir)
-                            end
-                        }
+                        q(cir)
                         if args.index==1 then
+                            BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=1,bulletNumber=20,bulletSpeed=20,bulletLifeFrame=10000,angle='0+999',bulletSprite=BulletSprites.dot.red,bulletEvents={
+                                function(cir,args,self)
+                                    q(cir)
+                                end}}
                             cir.invincible=true
                             local count=0
                             Event.LoopEvent{
@@ -2790,11 +2797,12 @@ local levelData={
                         end
                     end
                 }}
+                local hpflag=false
                 Event.LoopEvent{
                     obj=en,
                     period=1,
                     executeFunc=function()
-                        local fr=en.frame%600
+                        local fr=(a.spawnEvent.frame-540)%600
                         if fr==120 then
                             Event.EaseEvent{
                                 obj=en,
@@ -2819,8 +2827,14 @@ local levelData={
                         if en.frame>500 then
                             a.bulletNumber=20
                         end
+                        if hpp<0.5 and not hpflag then
+                            hpflag=true
+                            SFX:play('enemyCharge',true)
+                            Effect.Shockwave{x=en.x,y=en.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
+                            a.spawnEvent.frame=540
+                        end 
                         if hpp<0.5 and fr==81 then
-                            a.bulletSprite=BulletSprites.round.red
+                            a.bulletSprite=BulletSprites.giant.red
                             t0=260
                             a:spawnBatchFunc()
                             t0=480

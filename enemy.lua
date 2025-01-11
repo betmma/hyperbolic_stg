@@ -17,7 +17,7 @@ function Enemy:new(args)
         G.mainEnemy=self
     end
     self.hpBarTransparency=1
-    self.hpSegments=args.hpSegments or {}
+    self.hpSegments=args.hpSegments or {} -- draw a small bar marking special hp values. These are only visual effects.
 end
 
 function Enemy:update(dt)
