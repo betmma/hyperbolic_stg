@@ -707,7 +707,7 @@ G={
                 -- rest time calculation
                 self.levelRemainingFrame=self.levelRemainingFrame-1
                 if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
-                    SFX:play('timeout',false,2)
+                    SFX:play('timeout',true,2)
                 end
                 local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
                 local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene

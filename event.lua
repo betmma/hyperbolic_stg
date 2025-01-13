@@ -33,7 +33,7 @@ function Event:update(dt)
         first=false
         local ret
         if self:conditionFunc(dt) and self.executedTimes<self.times then
-            self:executeFunc(dt)
+            self:executeFunc(self.executedTimes)
             self.executedTimes=self.executedTimes+1
         end
         if self.executedTimes>=self.times or self.obj.removed then
@@ -76,10 +76,11 @@ end
 
 Event.DelayEvent=DelayEvent
 
-Event.sineProgressFunc=function(x)return math.sin((x-0.5)*math.pi)*0.5+0.5 end
--- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames.
+Event.sineIOProgressFunc=function(x)return math.sin((x-0.5)*math.pi)*0.5+0.5 end
+Event.sineOprogressFunc=Event.sineOProgressFunc
+-- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames. It can't modify plain variables. If [aimTable] is not provided, it defaults to [obj].
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
--- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be changed by other sources simultaneously, while 'hard' means the value is fixed by progressFunc.
+-- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be simultaneously changed by other sources, while 'hard' means the value is fixed by progressFunc.
 -- when EaseEvent ends, call [endFunc].
 local EaseEvent = Event:extend()
 function EaseEvent:new(args)
@@ -88,7 +89,7 @@ function EaseEvent:new(args)
     self.frame=0
     self.period=args.easeFrame or 60
     self.easeMode=args.easeMode=='hard' and 'hard' or'soft'
-    self.aimTable=args.aimTable or {}
+    self.aimTable=args.aimTable or args.obj or {}
     self.key=args.aimKey
     self.aimValue=args.aimValue or 0
     self.startValue=self.aimTable[self.key]

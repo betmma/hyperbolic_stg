@@ -115,13 +115,16 @@ replayManager.runReplay=function(slot)
         player.shootRows.back.straight.num=player.shootRows.back.straight.num*2
     end
     local version=replay.version or '0.0.0'
-    player.version=version
+    player.version=version -- version<0.2.0.1 old graze effect is in player.lua
     if version<'0.1.2' then
         player.grazeRadiusFactor=1.5
     end
     if version<'0.1.3' then
         Circle.sizeFactor=4.5
         Circle.spriteSizeFactor=1.0
+    end
+    if version<'0.2.1' then
+        player.grazeRadiusFactor=3.0
     end
 end
 

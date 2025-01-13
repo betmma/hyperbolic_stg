@@ -347,8 +347,8 @@ return {
             },
             {
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn='还没想好 :P',
+                    en_us = 'Her pounce even moves the border. Moving too far in this world seems dangerous.',
+                    zh_cn='她的扑击甚至移动了边界。在这个世界里走得太远似乎很危险。',
                 },
                 spellName = {
                     en_us = 'Tiger Sign "Famished Tiger"',
@@ -405,6 +405,16 @@ return {
                 spellName = {
                     en_us = 'Atomic Fire "Nuclear Experiment Expansion"',
                     zh_cn='核热「核反应扩大试验」',
+                },
+            },
+            {
+                spellName = {
+                    en_us = 'Crossroad Sign "Wind-Chasing Track"',
+                    zh_cn='岐符「逐风小径」',
+                },
+                quote = {
+                    en_us = 'Escaping along the track and feeling the rustling wind, a unique experience.',
+                    zh_cn='沿着小路全速逃跑，感受风声呼啸，也算独特的体验。',
                 },
             },
         }
