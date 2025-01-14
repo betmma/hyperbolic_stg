@@ -97,6 +97,10 @@ return {
                 en_us='Utsuho Reiuji',
                 zh_cn='灵乌路空',
             },
+            aya={
+                en_us='Aya Shameimaru',
+                zh_cn='射命丸文',
+            }
         },
         { -- level 1
             {
