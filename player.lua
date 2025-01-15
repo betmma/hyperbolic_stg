@@ -215,7 +215,7 @@ function Player:testRotate(angle,restore)
         v.x,v.y=Shape.rThetaPos(self.x,self.y,r,theta+angle)
         local thetaRev2=Shape.to(v.x,v.y,self.x,self.y)
         if v.direction then
-            v.direction=v.direction+thetaRev2-thetaRev
+            v.direction=v.direction+thetaRev2-thetaRev -- not using +angle is because the uninterchangeability of direction at both point of a straight line (in hyperbolic plane).
         end
     end
     if restore then

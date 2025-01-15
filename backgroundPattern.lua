@@ -19,6 +19,7 @@ BackgroundPattern.Empty=Empty
 -- sideNum=5 angleNum=4 -> r=107
 -- sideNum=4 angleNum=5 -> r=126.2
 -- sideNum=3 angleNum=7 -> r=110
+-- sideNum->p, angleNum->q, length between center and vertex is 2*atanh(sqrt((tan(π / 2 - π / q) - tan(π / p)) / (tan(π / 2 - π / q) + tan(π / p)))). 
 -- point: where pattern begins. angle: direction of first line. sideNum: useless now as I dunno how to calculate side length. angleNum: how many sides are connected to each point. iteCount: used for recursion. plz input 0. r: side length. drawedPoints: plz input {}. color: {r,g,b}. leftMost: input nil.
 -- currently it's only used to draw {4,5} tesselation. Upon inspecting the tesselation, I found a non-overlapping way to draw it: at depth 0, extend 5 branches, at depth 1, extend 3 branches (excluding the rightmost one and the one it comes from), at depth >=2, if the point is marked as the leftmost branch of last depth, don't extend the first branch (but this line should be drawn). Such specific implementation makes it not able to draw other tesselations :(.
 local function tesselation(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,color,leftMost)

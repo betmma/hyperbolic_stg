@@ -3145,6 +3145,84 @@ local levelData={
                 
             end
         },
+        {
+            quote='?',
+            user='aya',
+            spellName='Wind Sign ""', 
+            make=function()
+                G.levelRemainingFrame=5400
+                Shape.removeDistance=10000000
+                local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
+                local player=Player{x=400,y=500}
+                player.moveMode=Player.moveModes.Natural
+                player.border:remove()
+                local poses={}
+                for i = 1, 12, 1 do
+                    local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
+                    table.insert(poses,{nx,ny})
+                end
+                player.border=PolyLine(poses)
+                G.viewMode.mode=G.VIEW_MODES.FOLLOW
+                G.viewMode.object=player
+                local a
+                a=BulletSpawner{x=400,y=300,period=90,frame=40,lifeFrame=10000,bulletNumber=30,bulletSpeed=30,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.scale.blue,bulletEvents={
+                    function(cir,args,self)
+                        local dir0=cir.direction
+                        local speed=cir.speed
+                        local frame=cir.frame
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            executeFunc=function()
+                                -- Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.scale.blue,safe=true,lifeFrame=3,sprite_transparency=0.4}
+                                cir.x,cir.y=Shape.rThetaPos(en.x,en.y,speed*(cir.frame-frame)/60,dir0)
+                            end
+                        }
+                    end
+
+                }
+                }
+
+                local borderCenter=Shape{x=400,y=300,lifeFrame=99999999}
+                Event.LoopEvent{
+                    obj=en,
+                    period=1,
+                    executeFunc=function()
+                        a.x,a.y=en.x,en.y
+                        local hpp=en.hp/en.maxhp
+                        a.spawnEvent.period=40+50*hpp
+                        local fr=en.frame%800
+                        local times=math.floor(en.frame/800)
+                        if fr==50 then
+                            SFX:play('enemyCharge',true)
+                        end
+                        if fr==100 then --dash towards player
+                            SFX:play('enemyPowerfulShot',true)
+                            local angle=0.1*(times%2==0 and 1 or -1)+math.pi/2
+                            local speed=86
+                            en.direction=angle
+                            borderCenter.direction=angle
+                            local e2
+                            e2=Event.LoopEvent{
+                                obj=en,
+                                period=1,
+                                times=600,
+                                executeFunc=function()-- change border as been crashed into
+                                    local times=e2.executedTimes
+                                    local ratio=times/(e2.times-1)
+                                    borderCenter.speed=speed*math.sin(ratio*math.pi)
+                                    en.speed=speed*math.sin(ratio*math.pi)
+                                    for i = 1, 12, 1 do
+                                        player.border.points[i].x,player.border.points[i].y=Shape.rThetaPos(borderCenter.x,borderCenter.y,100,math.pi/6*(i-.5))
+                                    end
+                                end
+                            }
+                        end
+                    end
+                }
+
+            end
+        },
     }
 }
 levelData.needPass={3,6,9,12,15,18}
