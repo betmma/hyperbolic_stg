@@ -421,6 +421,16 @@ return {
                     zh_cn='沿着小路全速逃跑，感受风声呼啸，也算独特的体验。',
                 },
             },
+            {
+                spellName = {
+                    en_us = 'Wind God "Tengu\'s Gale"',
+                    zh_cn='风神「天狗疾风」',
+                },
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn='还没想好 :P',
+                },
+            },
         }
     },
     ui = {
@@ -531,6 +541,10 @@ return {
         timeout={ -- the spell card type is timeout
             en_us = 'T I M E O U T',
             zh_cn='耐 久',
+        },
+        replaying={
+            en_us = 'Replaying',
+            zh_cn='回放中',
         }
     },
     upgrades = {

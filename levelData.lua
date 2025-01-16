@@ -3148,11 +3148,11 @@ local levelData={
         {
             quote='?',
             user='aya',
-            spellName='Wind Sign ""', 
+            spellName='Wind God "Frenzied Wind"', 
             make=function()
-                G.levelRemainingFrame=5400
+                G.levelRemainingFrame=7200
                 Shape.removeDistance=10000000
-                local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
+                local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=10800,hpSegments={0.7,0.4}}
                 local player=Player{x=400,y=500}
                 player.moveMode=Player.moveModes.Natural
                 player.border:remove()
@@ -3163,19 +3163,28 @@ local levelData={
                 end
                 player.border=PolyLine(poses)
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
+                local dummy=Shape{x=400,y=400,lifeFrame=99999999}
                 G.viewMode.object=player
+                local alpha=0
+                local angle=0
                 local a
-                a=BulletSpawner{x=400,y=300,period=90,frame=40,lifeFrame=10000,bulletNumber=30,bulletSpeed=30,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.scale.blue,bulletEvents={
+                a=BulletSpawner{x=400,y=300,period=5,frame=-50,lifeFrame=10000,bulletNumber=10,bulletSpeed=60,bulletLifeFrame=400,angle=math.eval('0+999'),range=math.pi*2,bulletSprite=BulletSprites.scale.blue,bulletEvents={
                     function(cir,args,self)
                         local dir0=cir.direction
                         local speed=cir.speed
                         local frame=cir.frame
+                        local flag=args.index%2==1
+                        local inc=cir.sprite==BulletSprites.scale.red and 1 or 0
+                        local delta=0
                         Event.LoopEvent{
                             obj=cir,
                             period=1,
                             executeFunc=function()
                                 -- Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.scale.blue,safe=true,lifeFrame=3,sprite_transparency=0.4}
-                                cir.x,cir.y=Shape.rThetaPos(en.x,en.y,speed*(cir.frame-frame)/60,dir0)
+                                local r=speed*(cir.frame-frame)/60
+                                cir.x,cir.y=Shape.rThetaPos(en.x,en.y,r,dir0+delta)
+                                cir.direction=dir0+delta
+                                delta=delta+inc*cir.frame/r/960*(flag and 1 or -1)
                             end
                         }
                     end
@@ -3188,21 +3197,39 @@ local levelData={
                     obj=en,
                     period=1,
                     executeFunc=function()
+                        a.angle=a.angle+0.008*math.sign(math.sin((en.frame-50)/800*math.pi))
                         a.x,a.y=en.x,en.y
                         local hpp=en.hp/en.maxhp
-                        a.spawnEvent.period=40+50*hpp
+                        if en.frame%90==0 and hpp<0.7 then
+                            if hpp<0.4 then
+                                a.bulletSprite=BulletSprites.scale.red
+                                a.bulletNumber=60
+                            else
+                                a.bulletSprite=BulletSprites.scale.yellow
+                                a.bulletNumber=30
+                            end
+                                a.bulletSpeed=20
+                                a:spawnBatchFunc()
+                                a.bulletNumber=10
+                                a.bulletSpeed=60
+                                a.bulletSprite=BulletSprites.scale.blue
+                        -- elseif hpp>0.4 then
+                        -- else
+                        --     a.bulletSprite=BulletSprites.scale.yellow
+                        end
                         local fr=en.frame%800
                         local times=math.floor(en.frame/800)
                         if fr==50 then
                             SFX:play('enemyCharge',true)
                         end
-                        if fr==100 then --dash towards player
+                        if fr==100 then 
                             SFX:play('enemyPowerfulShot',true)
-                            local angle=0.1*(times%2==0 and 1 or -1)+math.pi/2
-                            local speed=86
+                            angle=0.3*(times%2==0 and 1 or -1)+math.pi/2
+                            local speed=50
                             en.direction=angle
                             borderCenter.direction=angle
                             local e2
+                            local alpha1=alpha
                             e2=Event.LoopEvent{
                                 obj=en,
                                 period=1,
@@ -3213,8 +3240,12 @@ local levelData={
                                     borderCenter.speed=speed*math.sin(ratio*math.pi)
                                     en.speed=speed*math.sin(ratio*math.pi)
                                     for i = 1, 12, 1 do
-                                        player.border.points[i].x,player.border.points[i].y=Shape.rThetaPos(borderCenter.x,borderCenter.y,100,math.pi/6*(i-.5))
+                                        player.border.points[i].x,player.border.points[i].y=Shape.rThetaPos(borderCenter.x,borderCenter.y,100,math.pi/6*(i-.5)+en.direction-angle+alpha1)
                                     end
+                                    if times==599 then
+                                        alpha=alpha+en.direction-angle
+                                    end
+                                        
                                 end
                             }
                         end

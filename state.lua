@@ -747,7 +747,9 @@ G={
                         speed=speed-0.5
                     end
                     local speedText=speed==1 and '' or '['..speed..'x]'
-                    love.graphics.print("REPLAYING... "..speedText, 150, 580)
+                    local num=3-math.ceil(self.levelRemainingFrame/30)%4
+                    local ellipsis=string.rep('.',num)..string.rep(' ',3-num)
+                    love.graphics.print(Localize{'ui','replaying'}..ellipsis..speedText, 150, 580)
                 end
                 local player=Player.objects[1]
                 SetFont(48,Fonts.en_us)
