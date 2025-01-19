@@ -124,7 +124,7 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     return {centerX+radius*math.cos(direction),Shape.axisY+radius*math.sin(direction)}
 end
 
-function Shape.drawSegment(x1,y1,x2,y2)
+function Shape.drawSegment(x1,y1,x2,y2,segNum)
     if math.abs(x1-x2)<EPS then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)
         return
@@ -132,7 +132,7 @@ function Shape.drawSegment(x1,y1,x2,y2)
     local centerX,r=Shape.lineCenter(x1,y1,x2,y2)
     local theta1=math.atan2(y1-Shape.axisY,x1-centerX)
     local theta2=math.atan2(y2-Shape.axisY,x2-centerX)
-    math.drawArc(centerX,Shape.axisY,r,theta1,theta2,50)
+    math.drawArc(centerX,Shape.axisY,r,theta1,theta2,segNum or 50)
 end
 
 -- draw hyperbolic arc.

@@ -16,17 +16,33 @@ function Empty:new(args)
 end
 BackgroundPattern.Empty=Empty
 
+local sideLengthCache={}
+local calculateSideLength=function(sideNum,angleNum)
+    if sideLengthCache[sideNum] and sideLengthCache[sideNum][angleNum] then
+        return sideLengthCache[sideNum][angleNum]
+    end
+    local centerToVertex=(math.sqrt((math.tan(math.pi/2-math.pi/angleNum)-math.tan(math.pi/sideNum))/(math.tan(math.pi/2-math.pi/angleNum)+math.tan(math.pi/sideNum)))) -- reference: https://www.malinc.se/noneuclidean/en/poincaretiling.php. actually this radius is on a poincare disk
+    local x1,y1=centerToVertex,0
+    local x2,y2=centerToVertex*math.cos(math.pi*2/sideNum),centerToVertex*math.sin(math.pi*2/sideNum)
+    local d=2*math.distance(x1,y1,x2,y2)^2/(1-centerToVertex^2)^2
+    local ret= math.acosh(1+d)*Shape.curvature
+    sideLengthCache[sideNum]=sideLengthCache[sideNum] or {}
+    sideLengthCache[sideNum][angleNum]=ret
+    return ret
+end
+
+local fourFiveLength=calculateSideLength(4,5)
 -- sideNum=5 angleNum=4 -> r=107
 -- sideNum=4 angleNum=5 -> r=126.2
 -- sideNum=3 angleNum=7 -> r=110
 -- sideNum->p, angleNum->q, length between center and vertex is 2*atanh(sqrt((tan(π / 2 - π / q) - tan(π / p)) / (tan(π / 2 - π / q) + tan(π / p)))). 
 -- point: where pattern begins. angle: direction of first line. sideNum: useless now as I dunno how to calculate side length. angleNum: how many sides are connected to each point. iteCount: used for recursion. plz input 0. r: side length. drawedPoints: plz input {}. color: {r,g,b}. leftMost: input nil.
 -- currently it's only used to draw {4,5} tesselation. Upon inspecting the tesselation, I found a non-overlapping way to draw it: at depth 0, extend 5 branches, at depth 1, extend 3 branches (excluding the rightmost one and the one it comes from), at depth >=2, if the point is marked as the leftmost branch of last depth, don't extend the first branch (but this line should be drawn). Such specific implementation makes it not able to draw other tesselations :(.
-local function tesselation(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,color,leftMost)
+local function tesselation(point,angle,sideNum,angleNum,iteCount,drawedPoints,color,leftMost)
     color=color or {0.7,0.2,0.5}
     local iteCount=(iteCount or 0)+1
     local points={}
-    local r=r or 107--math.acosh(math.cos(math.pi/sideNum)/math.sin(math.pi/angleNum))*Shape.curvature
+    local r=calculateSideLength(sideNum,angleNum)
     drawedPoints=drawedPoints or {}
     local cic={Shape.getCircle(point.x,point.y,r)}
     -- love.graphics.print(''..cic[1]..', '..cic[2]..' '..cic[3],10,10)
@@ -38,12 +54,13 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,
         local newpoint={x=ret[1],y=ret[2]}
         points[#points+1]=newpoint
         -- SetFont(18)
-            table.insert(drawedPoints,{point,newpoint})
+            -- table.insert(drawedPoints,{point,newpoint})
             local colorref={love.graphics.getColor()}
             love.graphics.setColor(color[1],color[2],color[3])
-            PolyLine.drawOne(point,newpoint)
+            local num=math.ceil(math.min(25,Shape.distance(point.x,point.y,newpoint.x,newpoint.y)/10))
+            Shape.drawSegment(point.x,point.y,newpoint.x,newpoint.y,num)
             love.graphics.setColor(0.35,0.15,0.8)
-            PolyLine.drawOne({x=point.x+1,y=point.y+1},{x=newpoint.x+1,y=newpoint.y+1})
+            Shape.drawSegment(point.x+1,point.y+1,newpoint.x+1,newpoint.y+1,num)
             love.graphics.setColor(colorref[1],colorref[2],colorref[3])
         -- Shape.drawLine(point.x,point.y,newpoint.x,newpoint.y)
         -- love.graphics.print(''..newpoint.x..', '..newpoint.y..' '..alpha..' '..ret[3],10,10+50*i)
@@ -51,13 +68,13 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount,r,drawedPoints,
     if leftMost and iteCount>2 then
         table.remove(points,1)
     end
-    if iteCount==4 then return {},{} end
+    if iteCount==5 then return {},{} end
     local angles={}
     for i=1,#points do
         local newpoint=points[i]
         local newangle=Shape.to(newpoint.x,newpoint.y,point.x,point.y)
         table.insert(angles,newangle)
-        tesselation(newpoint,newangle,sideNum,angleNum,iteCount,r,drawedPoints,color,i==1)
+        tesselation(newpoint,newangle,sideNum,angleNum,iteCount,drawedPoints,color,i==1)
     end
     return points,angles
 end
@@ -68,34 +85,47 @@ function Tesselation:new(args)
     -- self.name='Tesselation'
     args=args or {}
     self.point=args.point or {x=400,y=150}
-    self.limit=args.limit or {xmin=300,xmax=500,ymin=150,ymax=600}
+    self.limit=args.limit or {xmin=300,xmax=500,ymin=100,ymax=600}
     self.angle=args.angle or math.pi/3
     self.speed=args.speed or 0.0045
 end
 
 function Tesselation:update(dt)
-    local ay=Shape.axisY
-    Shape.axisY=-30
     local newpoint,newAngle=self.newPoints or {self.point},self.newAngles or {self.angle}
     -- if the current point is out of limit, find a new point from the drawn points (so that it seems like an infinite pattern)
-    if not math.inRange(self.point.x,self.point.y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax)  then
+    -- if not math.inRange(self.point.x,self.point.y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax)  then
+    --     for i=1,#newpoint do
+    --         if math.inRange(newpoint[i].x,newpoint[i].y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax) then
+    --             self.point=newpoint[i]
+    --             self.angle=newAngle[i]
+    --         end
+    --     end
+    -- end
+    local centerExpected={x=400,y=300}
+    local currentMinimumDistance=Shape.distance(self.point.x,self.point.y,centerExpected.x,centerExpected.y)
+    if currentMinimumDistance>fourFiveLength/2 then
         for i=1,#newpoint do
-            if math.inRange(newpoint[i].x,newpoint[i].y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax) then
+            local distance=Shape.distance(newpoint[i].x,newpoint[i].y,centerExpected.x,centerExpected.y)
+            if distance<currentMinimumDistance then
                 self.point=newpoint[i]
                 self.angle=newAngle[i]
+                currentMinimumDistance=distance
             end
         end
     end
+
     self.point={x=self.point.x-(self.point.x-400)*self.speed,y=self.point.y-(self.point.y-Shape.axisY)*self.speed}
     self.angle=self.angle+0.004
-    Shape.axisY=ay
 end
 
 function Tesselation:draw()
     local ay=Shape.axisY
-    Shape.axisY=-30
+    Shape.axisY=-10
     -- tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
-    self.newPoints,self.newAngles=tesselation(self.point,self.angle,5,5,0,126.2,{},{0.7,0.2,0.5})
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(10)
+    self.newPoints,self.newAngles=tesselation(self.point,self.angle,4,5,0,{},{0.7,0.2,0.5})
+    love.graphics.setLineWidth(width)
     Shape.axisY=ay
 end
 
@@ -138,8 +168,11 @@ function Square:draw()
     local colorref={love.graphics.getColor()}
     love.graphics.setColor(0,0,0)
     -- love.graphics.rectangle('fill',0,0,800,600)
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(10)
     self:drawOne(self.radius,self.angle)
     self:drawOne((self.radius+35)%self.radiusMax,self.angle)
+    love.graphics.setLineWidth(width)
     love.graphics.setColor(colorref[1],colorref[2],colorref[3])
 end
 

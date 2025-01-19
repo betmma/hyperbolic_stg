@@ -3176,13 +3176,14 @@ local levelData={
                         local flag=args.index%2==1
                         local inc=cir.sprite==BulletSprites.scale.red and 1 or 0
                         local delta=0
+                        local x0,y0=cir.x,cir.y
                         Event.LoopEvent{
                             obj=cir,
                             period=1,
                             executeFunc=function()
                                 -- Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.scale.blue,safe=true,lifeFrame=3,sprite_transparency=0.4}
                                 local r=speed*(cir.frame-frame)/60
-                                cir.x,cir.y=Shape.rThetaPos(en.x,en.y,r,dir0+delta)
+                                cir.x,cir.y=Shape.rThetaPos(x0,y0,r,dir0+delta)
                                 cir.direction=dir0+delta
                                 delta=delta+inc*cir.frame/r/960*(flag and 1 or -1)
                             end
@@ -3208,11 +3209,11 @@ local levelData={
                                 a.bulletSprite=BulletSprites.scale.yellow
                                 a.bulletNumber=30
                             end
-                                a.bulletSpeed=20
-                                a:spawnBatchFunc()
-                                a.bulletNumber=10
-                                a.bulletSpeed=60
-                                a.bulletSprite=BulletSprites.scale.blue
+                            a.bulletSpeed=40
+                            a:spawnBatchFunc()
+                            a.bulletNumber=10
+                            a.bulletSpeed=60
+                            a.bulletSprite=BulletSprites.scale.blue
                         -- elseif hpp>0.4 then
                         -- else
                         --     a.bulletSprite=BulletSprites.scale.yellow

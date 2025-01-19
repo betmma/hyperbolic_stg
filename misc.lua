@@ -2,6 +2,10 @@ function math.acosh(x)
     return math.log(x+(x*x-1)^0.5)
 end
 
+function math.atanh(x)
+    return 0.5*math.log((1+x)/(1-x))
+end
+
 function math.sign(x)
     return x>0 and 1 or x<0 and -1 or 0
 end
@@ -78,7 +82,7 @@ function math.drawArc(x, y, r, s_ang, e_ang, numLines)
 	local lineWidth=love.graphics.getLineWidth()
 	for i=1,numLines do
 		ang2 = ang1 + step
-        love.graphics.setLineWidth((y + (math.sin(ang1) * r))/400)
+        love.graphics.setLineWidth((y + (math.sin(ang1) * r))/400*lineWidth)
 		love.graphics.line(x + (math.cos(ang1) * r), y + (math.sin(ang1) * r),
 			x + (math.cos(ang2) * r), y + (math.sin(ang2) * r))
 		ang1 = ang2
