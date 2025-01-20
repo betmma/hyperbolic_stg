@@ -77,7 +77,7 @@ end
 Event.DelayEvent=DelayEvent
 
 Event.sineIOProgressFunc=function(x)return math.sin((x-0.5)*math.pi)*0.5+0.5 end
-Event.sineOprogressFunc=Event.sineOProgressFunc
+Event.sineOProgressFunc=function(x)return math.sin(x*math.pi/2) end
 -- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames. It can't modify plain variables. If [aimTable] is not provided, it defaults to [obj].
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
 -- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be simultaneously changed by other sources, while 'hard' means the value is fixed by progressFunc.
