@@ -10,6 +10,11 @@ function math.sign(x)
     return x>0 and 1 or x<0 and -1 or 0
 end
 
+-- return 1 or -1 randomly
+function math.randomSign()
+    return math.random(2)==1 and 1 or -1
+end
+
 function math.inRange(x,y,xmin,xmax,ymin,ymax)
     return x>xmin and x<xmax and y>ymin and y<ymax
 end
