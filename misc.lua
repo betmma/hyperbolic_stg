@@ -10,6 +10,11 @@ function math.sign(x)
     return x>0 and 1 or x<0 and -1 or 0
 end
 
+-- return 1 if x is even, -1 if x is odd
+function math.mod2Sign(x)
+    return x%2==0 and 1 or -1
+end
+
 -- return 1 or -1 randomly
 function math.randomSign()
     return math.random(2)==1 and 1 or -1

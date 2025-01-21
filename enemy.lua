@@ -3,6 +3,10 @@ local Circle=require'circle'
 local Event=require"event"
 
 local Enemy=Shape:extend()
+Enemy.hpSegmentsFuncShockwave=function(self,hpLevel)
+    SFX:play('enemyCharge',true)
+    Effect.Shockwave{x=self.x,y=self.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
+end
 
 -- parameters: [maxhp], [hp] (defaulted as maxhp), [mainEnemy] if true, killing it wins the scene.
 function Enemy:new(args)
@@ -17,7 +21,10 @@ function Enemy:new(args)
         G.mainEnemy=self
     end
     self.hpBarTransparency=1
-    self.hpSegments=args.hpSegments or {} -- draw a small bar marking special hp values. These are only visual effects.
+    self.hpSegments=args.hpSegments or {} -- draw a small bar marking special hp values. These are only visual effects. If you want a shockwave removing bullets when reaching special values, you need to do it manually.
+    table.sort(self.hpSegments,function (a,b) return a>b end) -- we want it decreasing
+    self.hpSegmentsFunc=args.hpSegmentsFunc or function(self,hpLevel)end 
+    self.damageResistance=1
 end
 
 function Enemy:update(dt)
@@ -29,7 +36,35 @@ function Enemy:update(dt)
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
     end
     Circle.checkHitPlayer(self)
+    local hpLevel=self:getHPLevel()
     self:checkHitByPlayer()
+    if self:getHPLevel()~=hpLevel then
+        self.hpSegmentsFunc(self,hpLevel)
+    end
+end
+
+-- get the hp level of the enemy. Useful with hpSegments set. e.g. if hpSegments={0.8,0.5,0.2}, getHPLevel() returns 1 if hp/maxhp is in [0.8,1], 2 if in [0.5,0.8), 3 if in [0.2,0.5), 4 if in [0,0.2).
+function Enemy:getHPLevel()
+    local hpp=self.hp/self.maxhp
+    for i=1,#self.hpSegments do
+        if hpp>=self.hpSegments[i] then
+            return i
+        end
+    end
+    return #self.hpSegments+1
+end
+
+-- increase enemy's damageResistance by [value] and fade out in [time] frames
+-- to prevent player from killing the enemy too quickly
+function Enemy:addHPProtection(time,value)
+    self.damageResistance=(self.damageResistance or 1)+value
+    Event.EaseEvent{
+        obj=self,
+        easeFrame=time,
+        aimTable=self,
+        aimKey='damageResistance',
+        aimValue=self.damageResistance-value,
+    }
 end
 
 -- objToReduceHp is to allow familiars to take damage for the enemy
@@ -38,7 +73,7 @@ function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
     damageFactor=damageFactor or 1
     for key, circ in pairs(Circle.objects) do
         if circ.fromPlayer and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
-            objToReduceHp.hp=objToReduceHp.hp-(circ.damage or 1)*damageFactor
+            objToReduceHp.hp=objToReduceHp.hp-(circ.damage or 1)*damageFactor/(objToReduceHp.damageResistance or 1)
             circ:remove()
             SFX:play('damage')
             -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
@@ -93,8 +128,8 @@ function Enemy:drawHPBar()
     Shape.drawCircle(self.x,self.y,30.5)--inner circle
     Shape.drawCircle(self.x,self.y,32.5)--outer circle
     local ratio=self.hp/self.maxhp
-    -- self.DrawArc(self.x,self.y,31,-math.pi/2,math.pi*(2*ratio-0.5),100)
-    love.graphics.setColor(1,1,1,self.hpBarTransparency)
+    local yellowRatio=(self.damageResistance or 1)^0.5
+    love.graphics.setColor(1,1,1/yellowRatio,self.hpBarTransparency)
     for i=31,32,0.5 do
         Shape.drawArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
     end
