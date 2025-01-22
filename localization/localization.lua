@@ -100,7 +100,11 @@ return {
             aya={
                 en_us='Aya Shameimaru',
                 zh_cn='射命丸文',
-            }
+            },
+            clownpiece={
+                en_us='Clownpiece',
+                zh_cn='克劳恩皮丝',
+            },
         },
         { -- level 1
             {
@@ -429,6 +433,16 @@ return {
                 quote = {
                     en_us = 'not come up yet :P',
                     zh_cn='还没想好 :P',
+                },
+            },
+            {
+                spellName = {
+                    en_us = 'Hell Sign "Erroneous Orbit"',
+                    zh_cn='狱符「错误轨道」',
+                },
+                quote = {
+                    en_us = 'The orbit is ellipse, or more like rotating ellipse, or what?',
+                    zh_cn='这轨道是椭圆，还是更像旋转的椭圆，或者说是什么？',
                 },
             },
         }
