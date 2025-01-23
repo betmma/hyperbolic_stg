@@ -33,12 +33,53 @@ end
 
 local fourFiveLength=calculateSideLength(4,5)
 
--- point: where pattern begins. angle: direction of first line. sideNum: useless now as I dunno how to calculate side length. angleNum: how many sides are connected to each point. iteCount: used for recursion. plz input 0. r: side length. color: {r,g,b}. leftMost: input nil.
--- currently it's only used to draw {4,5} tesselation. Upon inspecting the tesselation, I found a non-overlapping way to draw it: at depth 0, extend 5 branches, at depth 1, extend 3 branches (excluding the rightmost one and the one it comes from), at depth >=2, if the point is marked as the leftmost branch of last depth, don't extend the first branch (but this line should be drawn). Such specific implementation makes it not able to draw other tesselations :(.
+local function drawSideLine(x1,y1,x2,y2,color)
+    local colorref={love.graphics.getColor()}
+    love.graphics.setColor(color[1],color[2],color[3])
+    local num=math.ceil(math.min(25,Shape.distance(x1,y1,x2,y2)/10))
+    Shape.drawSegment(x1,y1,x2,y2,num)
+    love.graphics.setColor(0.35,0.15,0.8)
+    Shape.drawSegment(x1+1,y1+1,x2+1,y2+1,num)
+    love.graphics.setColor(colorref[1],colorref[2],colorref[3])
+end
+
+-- draw a face of a polygon. x1,y1,x2,y2: two points of the side. color: {r,g,b}. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point.
+-- bad: since a polygon is drawn once for each side, bigger sideNum causes a polygon to be drawn redundant sideNum/2 times.
+local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
+    local vertices={}
+    local function addVerticesOnSide(x1,y1,x2,y2,num)
+        local xCenter,radius=Shape.lineCenter(x1,y1,x2,y2)
+        local theta1,theta2=math.atan2(y1-Shape.axisY,x1-xCenter),math.atan2(y2-Shape.axisY,x2-xCenter)
+        for i=1,num do
+            local alpha=theta1+(theta2-theta1)*(i-1)/(num)
+            local x,y=xCenter+radius*math.cos(alpha),Shape.axisY+radius*math.sin(alpha)
+            vertices[#vertices+1]=x
+            vertices[#vertices+1]=y
+        end
+    end
+    local sideLength=calculateSideLength(sideNum,angleNum)
+    for sideIndex=1,sideNum do
+        local alpha1=math.pi*2/angleNum+Shape.to(x2,y2,x1,y1)
+        local num=math.min(15,Shape.distance(x1,y1,x2,y2)/5)
+        addVerticesOnSide(x1,y1,x2,y2,num)
+        x1,y1=x2,y2
+        x2,y2=Shape.rThetaPos(x2,y2,sideLength,alpha1)
+    end
+    local colorref={love.graphics.getColor()}
+    love.graphics.setColor(color[1],color[2],color[3])
+    -- without triangulate love.graphics.polygon("fill",vertices) is buggy at some concave part
+    local triangles = love.math.triangulate(vertices)
+    for i, triangle in ipairs(triangles) do
+        love.graphics.polygon("fill", triangle)
+    end
+    love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
+end
+
+-- point: where pattern begins. angle: direction of first line. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point. iteCount: currently only to check if it's first point. r: side length. color: {r,g,b}. leftMost: useless now. centerPoint: input nil. toDrawNum: how many lines to draw (an approximation). If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
+-- the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) is added to prevent the side drawn 0 or 2 times.
 local drawedPointsNum=0
 local pointsQueue={}
-local function tesselation(point,angle,sideNum,angleNum,iteCount,color,leftMost, centerPoint, toDrawNum)
-    color=color or {0.7,0.2,0.5}
+local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, toDrawNum, sidesTable)
     centerPoint=centerPoint or point
     if iteCount==0 then
         drawedPointsNum=0
@@ -47,10 +88,9 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount,color,leftMost,
     local iteCount=(iteCount or 0)+1
     local points={}
     local r=calculateSideLength(sideNum,angleNum)
-    local cic={Shape.getCircle(point.x,point.y,r)}
-    -- love.graphics.print(''..cic[1]..', '..cic[2]..' '..cic[3],10,10)
     local begin=1
     local en=angleNum--iteCount>1 and angleNum-2 or angleNum
+    sidesTable=sidesTable or {}
 
     drawedPointsNum=drawedPointsNum+1
     local distance0=Shape.distance(point.x,point.y,centerPoint.x,centerPoint.y)
@@ -66,17 +106,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount,color,leftMost,
             goto continue
         end
         points[#points+1]=newpoint
-        -- SetFont(18)
-            -- table.insert(drawedPoints,{point,newpoint})
-            local colorref={love.graphics.getColor()}
-            love.graphics.setColor(color[1],color[2],color[3])
-            local num=math.ceil(math.min(25,Shape.distance(point.x,point.y,newpoint.x,newpoint.y)/10))
-            Shape.drawSegment(point.x,point.y,newpoint.x,newpoint.y,num)
-            love.graphics.setColor(0.35+iteCount*.04,0.15,0.8)
-            Shape.drawSegment(point.x+1,point.y+1,newpoint.x+1,newpoint.y+1,num)
-            love.graphics.setColor(colorref[1],colorref[2],colorref[3])
-        -- Shape.drawLine(point.x,point.y,newpoint.x,newpoint.y)
-        -- love.graphics.print(''..newpoint.x..', '..newpoint.y..' '..alpha..' '..ret[3],10,10+50*i)
+        sidesTable[#sidesTable+1]={point,newpoint,index=drawedPointsNum*angleNum+i}
         ::continue::
     end
     -- if leftMost and iteCount>2 then
@@ -95,12 +125,12 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount,color,leftMost,
         -- tesselation(newpoint,newangle,sideNum,angleNum,iteCount,color,i==1,centerPoint)
     end
     if drawedPointsNum<toDrawNum/angleNum and pointsQueue[drawedPointsNum]then 
-        tesselation(pointsQueue[drawedPointsNum][1],pointsQueue[drawedPointsNum][2],sideNum,angleNum,pointsQueue[drawedPointsNum][3],color,true,centerPoint,toDrawNum)
+        tesselation(pointsQueue[drawedPointsNum][1],pointsQueue[drawedPointsNum][2],sideNum,angleNum,pointsQueue[drawedPointsNum][3],centerPoint,toDrawNum,sidesTable)
     else
         pointsQueue={}
     end
 
-    return points,angles
+    return points,angles,sidesTable
 end
 
 local function randomSideNumAndAngleNum()
@@ -165,7 +195,21 @@ function Tesselation:draw()
     -- tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)
-    self.newPoints,self.newAngles=tesselation(self.point,self.angle,self.sideNum,self.angleNum,0,{0.7,0.2,0.5},nil,nil,800)
+    local sides
+    self.newPoints,self.newAngles,sides=tesselation(self.point,self.angle,self.sideNum,self.angleNum,0,nil,380)
+    -- table.sort(sides,function(a,b)
+    --     return a[1].y+a[2].y>b[1].y+b[2].y
+    -- end)
+    for i=1,#sides do
+        local centerX,centerY=(sides[i][2].x+sides[i][1].x)/2,(sides[i][2].y+sides[i][1].y)/2
+        local index=sides[i].index
+        -- local color={math.cos(index/100)*0.8+0.2,math.cos(index/70)*0.5+0.5,math.sin(centerX/centerY/10)*0.7+0.3}
+        local color=index%2==0 and {0.4,0.3,0.1} or {0.1,0.4,0.3}
+        drawSideFace(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,color,self.sideNum,self.angleNum)
+    end
+    for i=1,#sides do
+        drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.7,0.2,0.5})
+    end
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
 end
