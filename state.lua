@@ -674,7 +674,7 @@ G={
         },
         IN_LEVEL={
             enter=function (self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.Square)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.FixedTesselation)
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)

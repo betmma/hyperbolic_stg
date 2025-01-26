@@ -12,7 +12,7 @@ local function savePath(slot)
     return dir..'/'..string.format('%03d',slot)..'.rpy'
 end
 
-local function hash64(input)
+function Hash64(input)
     local hash_table = {}
     local seed = 0xABCDEF  -- Seed value to initialize the hashing process
     -- Initialize the hash table with 64 default values
@@ -49,7 +49,7 @@ replayManager.getReplayData=function(slot,name)
     local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
     local upgrades=G.save.upgrades
     local time=Player.objects[1].realCreatedTime
-    local hash=hash64(time..name..seed..level..scene)
+    local hash=Hash64(time..name..seed..level..scene)
     for i = 1, #hash do
         table.insert(keyRecord,hash[i])
     end
@@ -79,7 +79,7 @@ replayManager.loadReplay=function(slot)
         return false
     end
     local data = lume.deserialize(file)
-    local hash=hash64(data.time..data.name..data.seed..data.level..data.scene)
+    local hash=Hash64(data.time..data.name..data.seed..data.level..data.scene)
     local len=#data.keyRecord
     for i=0,#hash-1 do
         if data.keyRecord[len-i]~=hash[#hash-i]then

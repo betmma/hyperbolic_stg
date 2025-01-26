@@ -1,4 +1,5 @@
 BulletSpawner=require"bulletSpawner"
+local backgroundPattern = require "backgroundPattern"
 
 -- currently levels are randomly stored, and need to be reorganized after majority of levels are done. The draft of final arrangement is as follows:
 -- main idea: similar to original game, characters are sorted by the stage they appear in the original game. Like fan-game "Shatter All Spell Card", it's a good idea to add secret levels and unlock secret upgrades.
@@ -3150,6 +3151,8 @@ local levelData={
             user='aya',
             spellName='Wind God "Frenzied Wind"', 
             make=function()
+                G.backgroundPattern:remove()
+                G.backgroundPattern=backgroundPattern.FixedTesselation{toDrawNum=5}
                 G.levelRemainingFrame=7200
                 Shape.removeDistance=10000000
                 local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=10800,hpSegments={0.7,0.4}}
@@ -3249,6 +3252,12 @@ local levelData={
                                         
                                 end
                             }
+                        end
+
+                        for i=1,5 do
+                            local side=G.backgroundPattern.sidesTable[i]
+                            side[1].x,side[1].y=en.x,en.y
+                            side[2].x,side[2].y=Shape.rThetaPos(en.x,en.y,G.backgroundPattern.sideLength,math.pi/5*2*(i-1))
                         end
                     end
                 }

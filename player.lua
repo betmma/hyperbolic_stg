@@ -2,6 +2,7 @@
 local Shape = require "shape"
 local Circle=require"circle"
 local PolyLine=require"polyline"
+local BackgroundPattern = require "backgroundPattern"
 local invertShader = love.graphics.newShader("shaders/circleInvert.glsl")
 local Player = Shape:extend()
 Player.moveModes={
@@ -232,6 +233,13 @@ function Player:testRotate(angle,restore)
     for k2,obj in pairs(PolyLine.objects)do
         for k,point in pairs(obj.points) do
             rotate(point)
+        end
+    end
+    if G.backgroundPattern:is(BackgroundPattern.FixedTesselation) then
+        local pattern=G.backgroundPattern
+        for i=1,#pattern.sidesTable do
+            rotate(pattern.sidesTable[i][1])
+            rotate(pattern.sidesTable[i][2])
         end
     end
 end

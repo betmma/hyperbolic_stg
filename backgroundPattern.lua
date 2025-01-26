@@ -7,7 +7,7 @@ local BackgroundPattern=Object:extend()
 -- 3. draw(): draw the background pattern, called in love.draw()
 -- It will be bound to G and called in G.update and G.draw.
 function BackgroundPattern:new(args)
-
+    self.notRespondToDrawAll=true -- Since background should be drawn before everything else, it should not be drawn by Object:drawAll but directly called in G.draw before Object:drawAll.
 end
 
 local Empty=BackgroundPattern:extend()
@@ -38,8 +38,8 @@ local function drawSideLine(x1,y1,x2,y2,color)
     love.graphics.setColor(color[1],color[2],color[3])
     local num=math.ceil(math.min(25,Shape.distance(x1,y1,x2,y2)/10))
     Shape.drawSegment(x1,y1,x2,y2,num)
-    love.graphics.setColor(0.35,0.15,0.8)
-    Shape.drawSegment(x1+1,y1+1,x2+1,y2+1,num)
+    -- love.graphics.setColor(0.35,0.15,0.8)
+    -- Shape.drawSegment(x1+1,y1+1,x2+1,y2+1,num)
     love.graphics.setColor(colorref[1],colorref[2],colorref[3])
 end
 
@@ -60,7 +60,7 @@ local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
     local sideLength=calculateSideLength(sideNum,angleNum)
     for sideIndex=1,sideNum do
         local alpha1=math.pi*2/angleNum+Shape.to(x2,y2,x1,y1)
-        local num=math.min(15,Shape.distance(x1,y1,x2,y2)/5)
+        local num=math.clamp(Shape.distance(x1,y1,x2,y2)/5,3,15)
         addVerticesOnSide(x1,y1,x2,y2,num)
         x1,y1=x2,y2
         x2,y2=Shape.rThetaPos(x2,y2,sideLength,alpha1)
@@ -75,11 +75,11 @@ local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
     love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
 end
 
--- point: where pattern begins. angle: direction of first line. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point. iteCount: currently only to check if it's first point. r: side length. color: {r,g,b}. leftMost: useless now. centerPoint: input nil. toDrawNum: how many lines to draw (an approximation). If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
+-- point: where pattern begins. angle: direction of first line. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point. iteCount: currently only to check if it's first point. r: side length. color: {r,g,b}. centerPoint: input nil. toDrawNum: how many lines to draw (an approximation). If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
 -- the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) is added to prevent the side drawn 0 or 2 times.
 local drawedPointsNum=0
 local pointsQueue={}
-local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, toDrawNum, sidesTable)
+local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, toDrawNum, sidesTable, skipInRangeLimit)
     centerPoint=centerPoint or point
     if iteCount==0 then
         drawedPointsNum=0
@@ -95,7 +95,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
     drawedPointsNum=drawedPointsNum+1
     local distance0=Shape.distance(point.x,point.y,centerPoint.x,centerPoint.y)
     for i=begin,en do
-        if not math.inRange(point.x,point.y,-400,1200,-5,4000) then
+        if not skipInRangeLimit and not math.inRange(point.x,point.y,-400,1200,-5,4000) then
             break
         end
         local alpha=angle+math.pi*2/angleNum*(i)
@@ -125,7 +125,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         -- tesselation(newpoint,newangle,sideNum,angleNum,iteCount,color,i==1,centerPoint)
     end
     if drawedPointsNum<toDrawNum/angleNum and pointsQueue[drawedPointsNum]then 
-        tesselation(pointsQueue[drawedPointsNum][1],pointsQueue[drawedPointsNum][2],sideNum,angleNum,pointsQueue[drawedPointsNum][3],centerPoint,toDrawNum,sidesTable)
+        tesselation(pointsQueue[drawedPointsNum][1],pointsQueue[drawedPointsNum][2],sideNum,angleNum,pointsQueue[drawedPointsNum][3],centerPoint,toDrawNum,sidesTable, skipInRangeLimit)
     else
         pointsQueue={}
     end
@@ -208,7 +208,7 @@ function Tesselation:draw()
         drawSideFace(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,color,self.sideNum,self.angleNum)
     end
     for i=1,#sides do
-        drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.7,0.2,0.5})
+        drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.35,0.15,0.8})
     end
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
@@ -262,5 +262,49 @@ function Square:draw()
 end
 
 BackgroundPattern.Square=Square
+
+
+local FixedTesselation=BackgroundPattern:extend()
+-- FixedTesselation is a tesselation that calculate all sides upon new() and doesn't update. 
+function FixedTesselation:new(args)
+    FixedTesselation.super.new(self,args)
+    args=args or {}
+    self.sideNum=args.sideNum or 4
+    self.angleNum=args.angleNum or 5
+    self.centerPoint=args.centerPoint or {x=400,y=300}
+    self.color=args.color or {0.05,0.15,0.18}
+    self.toDrawNum=args.toDrawNum or 40
+    self.points,self.angles,self.sidesTable=tesselation(self.centerPoint,0,self.sideNum,self.angleNum,0,nil,self.toDrawNum,nil,true)
+    for i=1,#self.sidesTable do
+        local hashValue=Hash64(''..self.sidesTable[i][1].x..self.sidesTable[i][1].y..self.sidesTable[i][2].x..self.sidesTable[i][2].y..(i).."loool")
+        local coeff=0.1
+        local color={hashValue[3]/256*coeff,hashValue[1]/256*coeff,hashValue[2]/256*coeff}
+        self.sidesTable[i].color=color
+        self.sidesTable[i][1]=copy_table(self.sidesTable[i][1])
+        self.sidesTable[i][2]=copy_table(self.sidesTable[i][2])
+    end
+    self.sideLength=calculateSideLength(self.sideNum,self.angleNum)
+end
+
+function FixedTesselation:update(dt)
+    -- fixed tesselation doesn't need to update
+end
+
+function FixedTesselation:draw()
+    local ay=Shape.axisY
+    -- Shape.axisY=-10
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(10)
+    for i=1,#self.sidesTable do
+        local color=self.sidesTable[i].color
+        drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.sideNum,self.angleNum)
+    end
+    for i=1,#self.sidesTable do
+        drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.color)
+    end
+    love.graphics.setLineWidth(width)
+    Shape.axisY=ay
+end
+BackgroundPattern.FixedTesselation=FixedTesselation
 
 return BackgroundPattern

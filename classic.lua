@@ -119,7 +119,7 @@ end
 
 function Object:drawAll()
   for key, obj in pairs(self.objects) do
-    if not obj.removed then
+    if not obj.removed and not obj.notRespondToDrawAll then
       obj:draw()
     end
   end
