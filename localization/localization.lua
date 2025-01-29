@@ -445,6 +445,16 @@ return {
                     zh_cn='这轨道是椭圆，还是更像旋转的椭圆，或者说是什么？',
                 },
             },
+            {
+                spellName = {
+                    en_us = '??',
+                    zh_cn='??',
+                },
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn='还没想好 :P',
+                },
+            },
         }
     },
     ui = {
