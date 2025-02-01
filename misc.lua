@@ -46,8 +46,10 @@ function math.clamp(val, lower, upper)
     return math.max(lower, math.min(upper, val))
 end
 
--- return a value that is congruent with [val] modulo 2*[radius] in the range of [center-radius,center+radius]. Useful to wrap around a circle.
+-- return a value that is congruent with [val] modulo 2*[radius] in the range of [center-radius,center+radius]. Useful to wrap around 2pi radians. center and radius default to 0 and pi.
 function math.modClamp(val,center,radius)
+    center=center or 0
+    radius=radius or math.pi
     return center+(val-center+radius)%(radius*2)-radius
 end
 

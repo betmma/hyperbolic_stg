@@ -455,6 +455,16 @@ return {
                     zh_cn='还没想好 :P',
                 },
             },
+            {
+                spellName = {
+                    en_us = 'Water Sign "Kappa\'s Meandering Current"',
+                    zh_cn='水符「河童的蜿蜒河流」',
+                },
+                quote = {
+                    en_us = 'I noticed the banks are diverging at far away place. It seems a complicated question whether river can exist in this world.',
+                    zh_cn='河岸在远处逐渐分开。在这个世界里河能不能存在好像是个很复杂的问题。',
+                },
+            },
         }
     },
     ui = {
