@@ -74,6 +74,7 @@ G={
             chosen=1,
             enter=function(self)
                 self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                BGM:play('title')
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
@@ -558,6 +559,7 @@ G={
             enter=function(self)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
                 self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                BGM:play('title')
             end,
             chosenLevel=1,
             chosenScene=1,
@@ -675,6 +677,7 @@ G={
         IN_LEVEL={
             enter=function (self)
                 self:replaceBackgroundPatternIfNot(backgroundPattern.FixedTesselation)
+                BGM:play('level1')
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
