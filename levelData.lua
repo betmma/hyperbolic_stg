@@ -3416,8 +3416,11 @@ local levelData={
                     function(cir,args,self)
                         local hpLevel=en:getHPLevel()
                         if hpLevel==2 then
-                            local d={1,5,3,7,2,6,4,8}
-                            cir.speed=cir.speed-d[args.index%8+1]*5
+                            -- local d={1,5,3,7,2,6,4,8}
+                            -- cir.speed=cir.speed-d[args.index%8+1]*5
+                            local ret=args.index%squareSize
+                            cir.speed=cir.speed-3*math.abs(squareSize/2-ret)-(args.index%(squareSize*2)<squareSize and 3 or 0)
+                            cir.direction=cir.direction-math.clamp((ret-squareSize/4),0,squareSize/2)*math.pi/b.bulletNumber*4
                         elseif hpLevel==1 then
                             local ret=args.index%squareSize
                             cir.speed=cir.speed-1.5*math.abs(squareSize/2-ret)
@@ -3450,8 +3453,18 @@ local levelData={
                                             aimKey='speed',
                                             aimValue=0,
                                             easeFrame=20,
+                                            endFunc=function()
+                                                Event.EaseEvent{
+                                                    obj=c,
+                                                    aimTable=c,
+                                                    aimKey='direction',
+                                                    aimValue=cir.direction,
+                                                    easeFrame=20,
+                                                }
+                                            end
                                         }
                                     end
+                                    cir:remove()
                                 end
                             }
                         end
@@ -3496,9 +3509,13 @@ local levelData={
                                 end
                             end
                         elseif hpLevel==2 then
+                            squareSize=4
                             b.bulletNumber=216
+                            b.angle='0+999'
+                            if b.spawnEvent.frame==20 then
+                                b:spawnBatchFunc()
+                            end
                         else
-                            b.angle=math.eval('0+999')
                             a.bulletNumber=1
                             a.spawnCircleRadius=20
                             -- a.fogTime=100
