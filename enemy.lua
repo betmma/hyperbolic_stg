@@ -54,6 +54,18 @@ function Enemy:getHPLevel()
     return #self.hpSegments+1
 end
 
+function Enemy:getHPPercentOfCurrentLevel()
+    local hpp=self.hp/self.maxhp
+    local hpLevel=self:getHPLevel()
+    if hpLevel>#self.hpSegments then
+        return hpp/self.hpSegments[hpLevel-1]
+    elseif hpLevel==1 then
+        return (hpp-self.hpSegments[hpLevel])/(1-self.hpSegments[hpLevel])
+    else
+        return (hpp-self.hpSegments[hpLevel])/(self.hpSegments[hpLevel-1]-self.hpSegments[hpLevel])
+    end
+end
+
 -- increase enemy's damageResistance by [value] and fade out in [time] frames
 -- to prevent player from killing the enemy too quickly
 function Enemy:addHPProtection(time,value)
