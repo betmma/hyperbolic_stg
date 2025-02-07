@@ -677,7 +677,7 @@ G={
         IN_LEVEL={
             enter=function (self)
                 self:replaceBackgroundPatternIfNot(backgroundPattern.FixedTesselation)
-                BGM:play('level1')
+                BGM:play('level2')
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)

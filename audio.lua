@@ -20,7 +20,7 @@ function AudioSystem:new(args)
         ::continue::
     end
     self.volumeCoeff=args.volumeCoeff or 1
-    -- volume is used for options, while volumeCoeff is unchangable to player
+    -- currentVolume is used for options, while volumeCoeff is unchangable to player
     self.currentVolume=args.currentVolume or 1
 end
 -- play a specific audio. If restart is true, the audio will be played from the beginning, otherwise if the audio is already playing, it does nothing.
@@ -61,6 +61,7 @@ sfx:setAudioVolume('enemyCharge',0.6)
 sfx:setAudioVolume('enemyPowerfulShot',0.6)
 local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title'}
 bgm:setAudioVolume('level1',0.8)
+bgm:setAudioVolume('level2',1)
 local Audio={
     sfx=sfx,
     bgm=bgm

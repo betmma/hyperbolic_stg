@@ -3653,8 +3653,8 @@ local levelData={
         },
         {
             quote='?',
-            user='?',
-            spellName='?', 
+            user='shou',
+            spellName='Light Sign "Light of Purification"', 
             make=function()
                 G.levelRemainingFrame=7200
                 Shape.removeDistance=1500
@@ -3684,7 +3684,7 @@ local levelData={
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 G.viewMode.object=player
                 local direction=0
-                a=BulletSpawner{x=400,y=300,period=200,frame=100,lifeFrame=10000,bulletNumber=15,bulletSpeed=40,bulletLifeFrame=1200,angle='player',range=math.pi/5,bulletSprite=BulletSprites.rice.red,bulletEvents={
+                a=BulletSpawner{x=400,y=300,period=200,frame=100,lifeFrame=10000,bulletNumber=15,bulletSpeed=40,bulletLifeFrame=1200,angle='player',range=math.pi/5,spawnSFXVolume=1,bulletSprite=BulletSprites.rice.red,bulletEvents={
                     function(cir,args,self)
                         -- if args.index%2==0 then
                         --     cir.sprite=BulletSprites.rice.blue
@@ -3696,6 +3696,7 @@ local levelData={
                                 cir.speed=cir.speed+1
                                 if not border:inside(cir.x,cir.y) then
                                     border:reflection(cir)
+                                    SFX:play('enemyShot',true,0.5)
                                     local color=Asset.SpriteData[cir.sprite].color
                                     local direction
                                     if color=='red' then
@@ -3703,13 +3704,35 @@ local levelData={
                                     elseif color=='blue' then
                                         direction=Shape.to(cir.x,cir.y,player.x,player.y)
                                     end
-                                    local laser=Laser{x=cir.x,y=cir.y,direction=direction,speed=100,sprite=BulletSprites.laser[color],lifeFrame=25}
-                                    local laser2=Laser{x=cir.x,y=cir.y,direction=direction,speed=300,sprite=BulletSprites.laser[color],lifeFrame=5,warningFrame=5,}
+                                    local laser=Laser{x=cir.x,y=cir.y,direction=direction,speed=30,sprite=BulletSprites.laser[color],lifeFrame=25,frequency=3,smoothFrame=3,bulletEvents={
+                                        function(laser,args,self)
+                                            Event.EaseEvent{
+                                                obj=laser,
+                                                aimTable=laser,
+                                                aimKey='speed',
+                                                aimValue=100,
+                                                easeFrame=50
+                                            }
+                                        end
+                                    }}
+                                    local laser2=Laser{x=cir.x,y=cir.y,direction=direction,speed=300,sprite=BulletSprites.laser[color],lifeFrame=5,warningFrame=5,bulletEvents={
+                                        function(laser,args,self)
+                                            if laser.speed<100 then
+                                                Event.EaseEvent{
+                                                    obj=laser,
+                                                    aimTable=laser,
+                                                    aimKey='speed',
+                                                    aimValue=100,
+                                                    easeFrame=50
+                                                }
+                                            end
+                                        end
+                                    }}
                                     Event.EaseEvent{
                                         obj=laser2,
                                         aimTable=laser2.args,
                                         aimKey='speed',
-                                        aimValue=100,
+                                        aimValue=30,
                                         easeFrame=5
                                     }
                                     cir:remove()

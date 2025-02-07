@@ -465,6 +465,16 @@ return {
                     zh_cn='河岸在远处逐渐分开。在这个世界里河能不能存在好像是个很复杂的问题。',
                 },
             },
+            {
+                spellName = {
+                    en_us = 'Light Sign "Light of Purification"',
+                    zh_cn='光符「净化之光」',
+                },
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn='还没想好 :P',
+                },
+            },
         }
     },
     ui = {

@@ -12,6 +12,7 @@ end
 local function sigmoid(x)
     return 1/(1+2.718^-x)
 end
+
 function LaserUnit:update(dt)
     LaserUnit.super.update(self,dt)
     self:updateWarningAndFading(self.parent)
@@ -138,12 +139,14 @@ end
 -- To prevent unintended safe spot inside the laser, when enableWarningAndFading is true the speed of LaserUnits is added 1% of randomness. (this is before I added line segment check for player hit, so now it's not needed, but to not break replays I keep it)
 function Laser:new(args)
     Laser.super.new(self,args)
-    self.radius=args.radius or 5
+    self.radius=args.radius or 1
     self.args=copy_table(args)
     self.lifeFrame=args.lifeFrame or 100
     self.warningFrame=args.warningFrame or 0
     self.fadingFrame=args.fadingFrame or 0
     self.enableWarningAndFading=(args.warningFrame~=nil and args.warningFrame~=0 or args.fadingFrame~=nil and args.fadingFrame~=0)
+    self.smoothFrame=args.smoothFrame or 0
+    self.smooth=not self.enableWarningAndFading and self.smoothFrame>0
     args.lifeFrame=9999
     args.batch=args.batch or Asset.bulletHighlightBatch
     self.frame=0
@@ -159,6 +162,9 @@ function Laser:new(args)
             args.speed=math.eval(self.args.speed)
             if self.enableWarningAndFading then
                 args.speed=args.speed*math.eval('1+0.01')
+            end
+            if self.smooth then
+                args.radius=self.radius*sigmoid(self.frame/self.smoothFrame-1)*sigmoid((self.lifeFrame-self.frame)/self.smoothFrame-1)
             end
             local cir=LaserUnit(args)
             cir.index=self.spawnEvent.executedTimes
