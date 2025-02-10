@@ -3850,7 +3850,12 @@ local levelData={
                                     executeFunc=function(self,times)
                                         local ratio=1-(1-times/100)^2
                                         local r2=rAim*ratio+(1-ratio)*r
-                                        local the2=the+ratio*math.pi*(en:getHPLevel()<=2 and 2 or 1)*(args.index/a.bulletNumber*2-1)
+                                        local the2
+                                        if en:getHPLevel()<=2 then
+                                            the2=the+ratio*math.pi*2*(args.index/a.bulletNumber*4%1*2-1)
+                                        else
+                                            the2=the+ratio*math.pi*(args.index/a.bulletNumber*2-1)
+                                        end
                                         local x,y=Shape.rThetaPos(playerx,playery,r2,the2)
                                         cir.x,cir.y=x,y
                                         cir.direction=-(Shape.to(cir.x,cir.y,playerx,playery)+deltaDir)+math.pi
@@ -3888,11 +3893,13 @@ local levelData={
                         local hpLevel=en:getHPLevel()
                         if hpLevel==1 then
                             if t2==10 then
-                                a.spawnEvent.frame=0
-                                a.spawnEvent.period=6
+                                for i=1,10 do
+                                    a.bulletSpeed=20+1*i
+                                    a:spawnBatchFunc()
+                                end
                             elseif t2==70 then
-                                a.spawnEvent.frame=0
-                                a.spawnEvent.period=10000
+                                -- a.spawnEvent.frame=0
+                                -- a.spawnEvent.period=10000
                                 a.angle=math.eval('0+999')
                             end
                         elseif hpLevel==2 then

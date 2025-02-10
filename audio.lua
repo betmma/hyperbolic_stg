@@ -25,7 +25,7 @@ function AudioSystem:new(args)
 end
 -- play a specific audio. If restart is true, the audio will be played from the beginning, otherwise if the audio is already playing, it does nothing.
 function AudioSystem:play(name,restart,overrideVolume)
-    if self.unique and self.currentAudio and self.currentAudio~=name then
+    if self.unique==true and self.currentAudio and self.currentAudio~=name then
         love.audio.stop(self.data[self.currentAudio])
     end
     if not self.data[name] then

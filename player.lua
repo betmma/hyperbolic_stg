@@ -453,6 +453,7 @@ function Player:calculateFlashbomb()
     local count=self.flashbombCount or 1
     if self.grazeCount>count*self.grazeCountForFlashbomb then
         self.flashbombCount=count+1
+        SFX:play('enemyPowerfulShot',true,0.8)
         Effect.FlashBomb{x=self.x,y=self.y,width=self.flashbombWidth*self:getMetric(),lifeFrame=30,direction=math.pi/2}
     end
 end
