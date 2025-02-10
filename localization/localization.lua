@@ -105,6 +105,10 @@ return {
                 en_us='Clownpiece',
                 zh_cn='克劳恩皮丝',
             },
+            reisen={
+                en_us='Reisen Udongein Inaba',
+                zh_cn='铃仙·优昙华院·因幡',
+            }
         },
         { -- level 1
             {
@@ -473,6 +477,18 @@ return {
                 quote = {
                     en_us = 'not come up yet :P',
                     zh_cn='还没想好 :P',
+                },
+            },
+        },
+        { -- level 6
+            {
+                quote = {
+                    en_us = 'Suddenly bullets fade and scatter all around me, but next moment they return solid.',
+                    zh_cn = '子弹突然虚化，四处飘散，但下一刻又变为实体。',
+                },
+                spellName = {
+                    en_us = 'Scatter Sign "Phantom Mirage"',
+                    zh_cn = '散符「幻影蜃景」',
                 },
             },
         }
