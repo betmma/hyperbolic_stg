@@ -10,6 +10,25 @@ function math.sign(x)
     return x>0 and 1 or x<0 and -1 or 0
 end
 
+-- sometimes (especially particle system) random numbers are needed each frame. The bad part of using math.random is it easily break every replay on slightest change of a particle. So use this function instead. seeds can be (obj, seed2) which expands to (obj.x, seed2, obj.y, obj.frame). seed2 is to generate different numbers for same obj at same frame.
+function math.pseudoRandom(seed1,seed2,seed3,seed4)
+    if type(seed1)=='table' then
+        seed3=seed1.y
+        seed4=seed1.frame
+        seed1=seed1.x
+    end
+    seed1=seed1 or 0
+    seed2=seed2 or 0
+    seed3=seed3 or 0
+    seed4=seed4 or 0
+
+    local h
+    h = seed1*4613213 + seed2*3424761393 + seed3*3543761393 + seed4*92014631
+    h = h - seed1^2*135431 - seed2^2*976320 - seed3^2*463409 - seed4^2*123469
+    
+    return math.sin(h)*0.5+0.5
+end
+
 -- return 1 if x is even, -1 if x is odd
 function math.mod2Sign(x)
     return x%2==0 and 1 or -1

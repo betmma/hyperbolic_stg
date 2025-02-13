@@ -491,6 +491,16 @@ return {
                     zh_cn = '散符「幻影蜃景」',
                 },
             },
+            {
+                quote = {
+                    en_us = 'Two misty figures cast deadly radiance. Mystic and dangerous illusion.',
+                    zh_cn = '两处朦胧投射出致命的光辉。神秘而危险的幻象。',
+                },
+                spellName = {
+                    en_us = 'Illusion Light "Moon of Void"',
+                    zh_cn = '幻光「虚无之月」',
+                },
+            },
         }
     },
     ui = {

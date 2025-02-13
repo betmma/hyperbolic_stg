@@ -116,7 +116,7 @@ end
 
 function Circle:changeSpriteColor(color)
     if not color then
-        local colors=Asset.SpriteData[self.sprite].color2 and Asset.colors2 or Asset.colors
+        local colors=Asset.SpriteData[self.sprite].possibleColors
         local ind=math.floor(math.random(1,#colors+0.999999))
         color=colors[ind]
     end

@@ -68,7 +68,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(4*j-4,2*i-2,2,2)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=16,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],laser=value=='laser'}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=16,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],laser=value=='laser',possibleColors=colors}
     end
 end
 types={'darkdot','dot'}
@@ -76,7 +76,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(2*((j-1)%4),18+6*i+(j>4 and 1 or 0),1,1)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=8,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value]}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=8,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],possibleColors=colors}
     end
 end
 types={'bigStar','bigRound','butterfly','knife','ellipse','fog',}
@@ -84,7 +84,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(4*j-4,29+4*i+0.5,4,4)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value]}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],possibleColors=colors}
     end
 end
 types={'heart'}
@@ -92,7 +92,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors) do
         Asset.bulletSprites[value][color]=quad(30+4*j,29+4*i+0.5,4,4)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value]}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=32,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],possibleColors=colors}
     end
 end
 types={'giant'}
@@ -102,7 +102,7 @@ for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors2) do
         Asset.bulletSprites[value][color]=quad(8*j-8,49+8*i+0.5,8,8)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],color2=true}
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],possibleColors=colors2}
     end
 end
 local bgImage = love.graphics.newImage( "assets/bg.png" )
@@ -113,7 +113,7 @@ Asset.title=love.graphics.newQuad(0,0,1280,720,titleImage:getWidth(),titleImage:
 --[[
 Batches are used to seperate different draw layers. Generally, order should be:
 
-Background (not implemented yet (niy))
+Background (backgroundPattern class)
 Enemy with HP bar (boss)
 Player bullets
 Player (niy)
