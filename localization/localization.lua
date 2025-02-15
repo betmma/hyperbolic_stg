@@ -718,5 +718,15 @@ return {
                 zh_cn='自机子弹可以击中敌人的使魔，造成1/4伤害',
             },
         },
+        vortex={
+            name = {
+                en_us = 'Vortex',
+                zh_cn='漩涡',
+            },
+            description = {
+                en_us = 'Create a vortex rounding you that can absorb bullets',
+                zh_cn='产生一个环绕自己的漩涡，可以吸收子弹',
+            },
+        },
     }
 }

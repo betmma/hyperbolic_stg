@@ -224,7 +224,7 @@ function Player:testRotate(angle,restore)
             v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
         end
     end
-    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit,Effect.Larger} -- due to different implementation, PolyLine has to be handled separately. not ideal
+    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit,Effect.Larger,Effect.Shockwave} -- due to different implementation, PolyLine has to be handled separately. not ideal
     for k,cls in pairs(list)do
         for k2,obj in pairs(cls.objects)do
             rotate(obj)

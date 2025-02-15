@@ -29,10 +29,11 @@ end
 
 function Larger:draw()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local scale=r/30.3333
+    local scale=r/30.3333*(self.scale or 1)
     local size=Asset.SpriteData[self.sprite].size
+    local direction=self.direction or 0
     Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
-    Asset.effectBatch:add(self.sprite,x,y,0,scale,scale,size/2,size/2)
+    Asset.effectBatch:add(self.sprite,x,y,direction,scale,scale,size/2,size/2)
 end
 
 -- A growing shockwave, that removes touched bullets and activate their :removeEffect

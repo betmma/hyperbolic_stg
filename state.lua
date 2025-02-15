@@ -291,6 +291,28 @@ G={
                         player.hitFamiliarDamageFactor=0.25
                     end
                 },
+                vortex={
+                    name='Vortex',
+                    description='A vortex rounding you that can absorb bullets',
+                    cost=40,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        Event.LoopEvent{
+                            obj=player,
+                            period=1,
+                            executeFunc=function(self,executedTimes)
+                                local x,y=player.x,player.y
+                                local theta=0.02*executedTimes
+                                local r=20
+                                local nx,ny=Shape.rThetaPos(x,y,r,theta)
+                                local vortex=Effect.Shockwave{x=nx,y=ny,radius=2,canRemove={bullet=true,invincible=false},animationFrame=1}
+                                vortex.scale=2
+                                vortex.direction=theta*5
+                                vortex.sprite=Asset.misc.vortex
+                            end
+                        }
+                    end
+                },
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
             -- need is also (x, y)
@@ -313,8 +335,13 @@ G={
                     },
                     {
                         upgrade='flashbomb',
-                        connect={left=true},
+                        connect={left=true,right=true},
                         need={{3,1}}
+                    },
+                    {
+                        upgrade='vortex',
+                        connect={left=true},
+                        need={{4,1}}
                     }
                 },
                 {
@@ -327,6 +354,7 @@ G={
                         connect={up=true,},
                         need={{2,1}}
                     },
+                    {},
                     {},
                     {}
                 },
@@ -349,7 +377,8 @@ G={
                         upgrade='familiarShot',
                         connect={left=true,down=true},
                         need={{3,3},{3,4}}
-                    }
+                    },
+                    {}
                 },
                 {
                     {
@@ -368,7 +397,8 @@ G={
                     {
                         connect={up=true,left=true},
                         need={{3,4}}
-                    }
+                    },
+                    {}
                 },
                 {
                     {
@@ -376,6 +406,7 @@ G={
                         connect={up=true},
                         need={}
                     },
+                    {},
                     {},
                     {},
                     {}

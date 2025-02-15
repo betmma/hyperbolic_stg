@@ -18,6 +18,13 @@ Asset.shockwave={
     yellow=quad(34,10,8,8),
     green=quad(42,10,8,8),
 }
+Asset.misc={
+    leaf=quad(34,28,4,4),
+    leafRed=quad(38,28,4,4),
+    smallShockwave=quad(42,28,4,4),
+    vortex=quad(46,28,4,4),
+    furBall=quad(50,28,4,4),
+}
 Asset.shards={
     leaf =quad(63.625,49.25,1,1),
     drop =quad(64.625,49.25,1,1),
@@ -49,6 +56,9 @@ Asset.bulletSprites={
     heart=template,
     giant={
         red=...,blue=...,green=...,yellow=...,
+    },
+    hollow={
+        grey=...,red=...,blue=...,green=...,yellow=...,
     }
 }
 Asset.SpriteData={
@@ -57,10 +67,13 @@ Asset.SpriteData[Asset.nuke]={size=256,hitRadius=96}
 for k,wave in pairs(Asset.shockwave) do
     Asset.SpriteData[wave]={size=64}
 end
-for k,wave in pairs(Asset.shards) do
-    Asset.SpriteData[wave]={size=8}
+for k,misc in pairs(Asset.misc) do
+    Asset.SpriteData[misc]={size=32,hitRadius=6}
 end
-local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14}
+for k,shard in pairs(Asset.shards) do
+    Asset.SpriteData[shard]={size=8}
+end
+local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14,hollow=2.4}
 local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
 Asset.colors=colors
 local types={'laser','scale','rim','round','rice','kunai','crystal','bill','bullet','blackrice','star'}
@@ -97,12 +110,20 @@ for i, value in ipairs(types) do
 end
 types={'giant'}
 local colors2={'red','blue','green','yellow'}
-Asset.colors2=colors2
 for i, value in ipairs(types) do
     Asset.bulletSprites[value]={}
     for j,color in ipairs(colors2) do
         Asset.bulletSprites[value][color]=quad(8*j-8,49+8*i+0.5,8,8)
         Asset.SpriteData[Asset.bulletSprites[value][color]]={size=64,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],possibleColors=colors2}
+    end
+end
+types={'hollow'}
+colors2={'grey','red','blue','green','yellow'}
+for i, value in ipairs(types) do
+    Asset.bulletSprites[value]={}
+    for j,color in ipairs(colors2) do
+        Asset.bulletSprites[value][color]=quad(2*j+16,28+2*i,2,2)
+        Asset.SpriteData[Asset.bulletSprites[value][color]]={size=16,hitRadius=hitRadius[value],color=color,super=Asset.bulletSprites[value],possibleColors=colors2}
     end
 end
 local bgImage = love.graphics.newImage( "assets/bg.png" )
