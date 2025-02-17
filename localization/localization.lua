@@ -501,6 +501,16 @@ return {
                     zh_cn = '幻光「虚无之月」',
                 },
             },
+            {
+                quote = {
+                    en_us = '',
+                    zh_cn = '',
+                },
+                spellName = {
+                    en_us = 'Conjuring "The Clock that Doesn\'t Tell Time"',
+                    zh_cn = '奇术「不报时的钟表」',
+                },
+            },
         }
     },
     ui = {

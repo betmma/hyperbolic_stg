@@ -4080,6 +4080,107 @@ local levelData={
                 
             end
         },
+        {
+            quote='?',
+            user='sakuya',
+            spellName='Conjuring "The Clock that Doesn\'t Tell Time"', -- lenen reference lol
+            make=function()
+                G.backgroundPattern:remove()
+                G.backgroundPattern=backgroundPattern.Pendulum()
+                G.levelRemainingFrame=7200
+                Shape.removeDistance=1500
+                local a,b,t
+                local en
+                en=Enemy{x=400,y=300,mainEnemy=true,maxhp=9600,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
+                    Enemy.hpSegmentsFuncShockwave(self,hpLevel)
+                    -- a.spawnEvent.frame=290
+                    -- b.spawnEvent.frame=50
+                    -- t=0
+                    en:addHPProtection(600,10)
+                end}
+                en:addHPProtection(600,10)
+                local player=Player{x=400,y=600}
+                player.moveMode=Player.moveModes.Natural
+                player.border:remove()
+                local poses={}
+                for i = 1, 12, 1 do
+                    local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
+                    table.insert(poses,{nx,ny})
+                end
+                player.border=PolyLine(poses)
+                G.viewMode.mode=G.VIEW_MODES.FOLLOW
+                G.viewMode.object=player
+                local period=120 -- 2 seconds, same as the period of pendulum clock
+                local bulletSpeed=30
+                a=BulletSpawner{x=400,y=300,period=120,frame=60,lifeFrame=10000,bulletNumber=8,bulletSpeed=bulletSpeed,bulletLifeFrame=12000,angle=0,range=math.pi*2,spawnSFXVolume=0.5,bulletSprite=BulletSprites.knife.red,bulletEvents={
+                    function(cir,args,self)
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            times=1,
+                            conditionFunc=function()return not player.border:inside(cir.x,cir.y) end,
+                            executeFunc=function()
+                                player.border:reflection(cir)
+                                cir:changeSpriteColor('blue')
+                            end
+                        }
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            executeFunc=function()
+                                local t=en.frame
+                                if t%(period)==0 or t%(period)==period/2 then
+                                    cir.speed=cir.speed+50
+                                    Event.EaseEvent{
+                                        obj=cir,
+                                        aimTable=cir,
+                                        aimKey='speed',
+                                        aimValue=cir.speed-50,
+                                        easeFrame=period/10
+                                    }
+                                end
+                            end
+                        }
+
+                    end
+                }
+                }
+                
+
+                Event.LoopEvent{
+                    obj=en,
+                    period=1,
+                    executeFunc=function()
+                        local t=en.frame
+                        local r=500
+                        local amplitude=0.1
+                        local theta=amplitude*math.sin(-t/period*math.pi*2)
+                        local dx,dy=r*math.sin(theta),r*(math.cos(theta)-1)
+                        G.viewOffset.x, G.viewOffset.y=dx,dy
+                        if t%(period)==0 or t%(period)==period/2 then
+                            SFX:play('graze',true,2) -- mimic clock ticking
+                        end
+                        if a.spawnEvent.frame==1 then
+                            local angle=a.angle
+                            Event.LoopEvent{
+                                obj=a,
+                                period=1,
+                                times=24,
+                                executeFunc=function(self,times)
+                                    a.angle=angle+0.02*(times%8)
+                                    a.bulletSpeed=bulletSpeed-2*math.floor(times/8)
+                                    a:spawnBatchFunc()
+                                end
+                            }
+                        elseif a.spawnEvent.frame==60 then
+                            a.bulletSpeed=bulletSpeed
+                            a.angle=math.eval('0+999')
+                        end
+                    end
+                }
+                
+            end
+        },
     }
 }
 levelData.needPass={3,6,9,12,15,18}
@@ -4095,6 +4196,7 @@ for index, value in ipairs(levelData) do
                 G.randomseed=seed
                 Shape.timeSpeed=1
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
+                G.viewOffset={x=0,y=0}
                 -- show spellcard name
                 do
                     if not value2.spellName then
@@ -4183,7 +4285,7 @@ for index, value in ipairs(levelData) do
                 local options=G.UIDEF.UPGRADES.options
                 for k,value in ipairs(options) do
                     for i,option in pairs(value) do
-                        if option.upgrade and G.save.upgrades[i][k] and G.save.upgrades[i][k].bought==true then
+                        if option.upgrade and G.save.upgrades[i] and G.save.upgrades[i][k] and G.save.upgrades[i][k].bought==true then
                             G.UIDEF.UPGRADES.upgrades[option.upgrade].executeFunc()
                         end
                     end

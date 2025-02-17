@@ -305,7 +305,7 @@ G={
                                 local theta=0.02*executedTimes
                                 local r=20
                                 local nx,ny=Shape.rThetaPos(x,y,r,theta)
-                                local vortex=Effect.Shockwave{x=nx,y=ny,radius=2,canRemove={bullet=true,invincible=false},animationFrame=1}
+                                local vortex=Effect.Shockwave{x=nx,y=ny,radius=2,canRemove={bullet=true,invincible=false,safe=false},animationFrame=1}
                                 vortex.scale=2
                                 vortex.direction=theta*5
                                 vortex.sprite=Asset.misc.vortex
@@ -717,7 +717,7 @@ G={
                     SFX:play('select')
                     -- self:removeAll()
                     self:switchState(self.STATES.PAUSE)
-                elseif isPressed('r') and (not Player.objects[1] or Player.objects[1].frame>10)then
+                elseif (isPressed('r')or isPressed('w')) and (not Player.objects[1] or Player.objects[1].frame>10)then
                     if self.replay then -- if in "replay" replay "replay" (why so strange)
                         self:leaveLevel()
                         ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
@@ -1247,6 +1247,9 @@ G.draw=function(self)
         if not G.viewMode.object then
             G.viewMode.object=Player.objects[1]
         end
+        if self.backgroundPattern.noZoom then
+            self.backgroundPattern:draw()
+        end
         love.graphics.push()
         self:followModeTransform()
         if G.viewMode.object.moveMode==Player.moveModes.Natural then
@@ -1261,20 +1264,32 @@ G.draw=function(self)
     end
 end
 G._drawBatches=function(self)
-    self.backgroundPattern:draw()
+    if not self.backgroundPattern.noZoom or G.viewMode.mode==G.VIEW_MODES.NORMAL then
+        self.backgroundPattern:draw()
+    end
     self.currentUI.draw(self)
 end
 G.followModeTransform=function(self)
     local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local screenWidth, screenHeight = love.graphics.getDimensions()
-    love.graphics.translate((screenWidth / 2-G.viewMode.object.x*scale),(screenHeight / 2-G.viewMode.object.y*scale))
+    local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
+    if G.viewOffset then
+        wantedX=wantedX+G.viewOffset.x
+        wantedY=wantedY+G.viewOffset.y
+    end
+    love.graphics.translate((wantedX-G.viewMode.object.x*scale),(wantedY-G.viewMode.object.y*scale))
     love.graphics.scale(scale)
 end
 G.antiFollowModeTransform=function(self)
     local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local screenWidth, screenHeight = love.graphics.getDimensions()
+    local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
+    if G.viewOffset then
+        wantedX=wantedX+G.viewOffset.x
+        wantedY=wantedY+G.viewOffset.y
+    end
     love.graphics.scale(1/scale)
-    love.graphics.translate(-(screenWidth / 2-G.viewMode.object.x*scale),-(screenHeight / 2-G.viewMode.object.y*scale))
+    love.graphics.translate(-(wantedX-G.viewMode.object.x*scale),-(wantedY-G.viewMode.object.y*scale))
 end
 G.removeAll=function(self)
     Asset:clearBatches()

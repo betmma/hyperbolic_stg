@@ -307,4 +307,54 @@ function FixedTesselation:draw()
 end
 BackgroundPattern.FixedTesselation=FixedTesselation
 
+local Pendulum=BackgroundPattern:extend()
+-- euclid pendulum clock (for scene 6-3)
+function Pendulum:new(args)
+    Pendulum.super.new(self,args)
+    args=args or {}
+    self.radius=args.radius or 500
+    self.amplitude=args.amplitude or 0.1
+    self.period=args.period or 240
+    self.centerPoint=args.centerPoint or {x=400,y=-200}
+    self.point={x=self.centerPoint.x,y=self.centerPoint.y}
+    self.frame=0
+    self.noZoom=true
+end
+
+function Pendulum:update(dt)
+    self.angle=math.sin(self.frame/self.period*math.pi*2)*self.amplitude+math.pi/2
+    local x,y=math.rThetaPos(self.centerPoint.x,self.centerPoint.y,self.radius,self.angle)
+    self.point={x=x,y=y}
+    self.frame=self.frame+1
+end
+
+function Pendulum:draw() -- ugh direct drawing looks really cringe. find an image for this later.
+    local colorref={love.graphics.getColor()}
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(10)
+    local x1,y1=self.centerPoint.x,self.centerPoint.y
+    local x2,y2=self.point.x,self.point.y
+    -- the background
+    local outerBGColor={0.25,0.10,0.04}
+    love.graphics.setColor(outerBGColor)
+    love.graphics.rectangle('fill',250,0,300,400) -- outer rectangle
+    love.graphics.setColor({0.15,0.07,0.02})
+    love.graphics.rectangle('fill',300,100,200,250) -- inner rectangle
+    love.graphics.setColor({0.10,0.05,0.02})
+    love.graphics.rectangle('line',300,100,200,250) -- darker sides of inner rectangle
+    love.graphics.rectangle('fill',250,400,300,20)
+    -- the pendulum
+    love.graphics.setColor({0.45,0.45,0.38})
+    love.graphics.line(x1,y1,x2,y2)
+    love.graphics.setColor({0.25,0.25,0.08})
+    love.graphics.circle("fill",x2,y2,40)
+    -- the upper part of background should block the view of the pendulum
+    love.graphics.setColor(outerBGColor)
+    love.graphics.rectangle('fill',250,0,300,95)
+    love.graphics.setLineWidth(width)
+    love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
+end
+
+BackgroundPattern.Pendulum=Pendulum
+
 return BackgroundPattern
