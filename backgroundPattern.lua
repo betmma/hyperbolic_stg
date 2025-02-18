@@ -329,6 +329,10 @@ function Pendulum:update(dt)
     self.frame=self.frame+1
 end
 
+local clockImage = love.graphics.newImage( "assets/pics/clock.png" )
+local clockWidth, clockHeight = clockImage:getDimensions()
+local clockQuad = love.graphics.newQuad(0, 0, clockWidth, clockHeight, clockWidth, clockHeight)
+
 function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an image for this later.
     local colorref={love.graphics.getColor()}
     local width=love.graphics.getLineWidth()
@@ -357,6 +361,8 @@ function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an
     -- the upper part of background should block the view of the pendulum
     love.graphics.setColor(outerBGColor)
     love.graphics.rectangle('fill',250,0,300,95)
+    love.graphics.setColor(colorMult{0.5,.5,.5})
+    love.graphics.draw(clockImage, clockQuad, 150,0,0,1,1)
     love.graphics.setLineWidth(width)
     love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
 end

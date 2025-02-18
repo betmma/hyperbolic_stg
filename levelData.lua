@@ -4119,7 +4119,7 @@ local levelData={
                                     aimTable=G.backgroundPattern,
                                     aimKey='amplitude',
                                     aimValue=0.1,
-                                    easeFrame=120
+                                    easeFrame=600
                                 }
                             end
                         }
