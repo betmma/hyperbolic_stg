@@ -294,7 +294,7 @@ G={
                 vortex={
                     name='Vortex',
                     description='A vortex rounding you that can absorb bullets',
-                    cost=40,
+                    cost=60,
                     executeFunc=function()
                         local player=Player.objects[1]
                         Event.LoopEvent{

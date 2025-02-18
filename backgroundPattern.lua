@@ -317,6 +317,7 @@ function Pendulum:new(args)
     self.period=args.period or 240
     self.centerPoint=args.centerPoint or {x=400,y=-200}
     self.point={x=self.centerPoint.x,y=self.centerPoint.y}
+    self.colorRatio=args.colorRatio or 0 -- gradually increase this parameter to make pendulum looks like gradually appear
     self.frame=0
     self.noZoom=true
 end
@@ -328,25 +329,30 @@ function Pendulum:update(dt)
     self.frame=self.frame+1
 end
 
-function Pendulum:draw() -- ugh direct drawing looks really cringe. find an image for this later.
+function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an image for this later.
     local colorref={love.graphics.getColor()}
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)
     local x1,y1=self.centerPoint.x,self.centerPoint.y
     local x2,y2=self.point.x,self.point.y
+    local function colorMult(colorTable)
+        return {colorTable[1]*self.colorRatio,colorTable[2]*self.colorRatio,colorTable[3]*self.colorRatio}
+    end
     -- the background
-    local outerBGColor={0.25,0.10,0.04}
+    local outerBGColor=colorMult{0.25,0.10,0.04}
     love.graphics.setColor(outerBGColor)
     love.graphics.rectangle('fill',250,0,300,400) -- outer rectangle
-    love.graphics.setColor({0.15,0.07,0.02})
+    love.graphics.rectangle('fill',230,400,340,30) -- base of clock
+    love.graphics.setColor(colorMult{0.15,0.07,0.02})
     love.graphics.rectangle('fill',300,100,200,250) -- inner rectangle
-    love.graphics.setColor({0.10,0.05,0.02})
+    love.graphics.setColor(colorMult{0.10,0.05,0.02})
     love.graphics.rectangle('line',300,100,200,250) -- darker sides of inner rectangle
-    love.graphics.rectangle('fill',250,400,300,20)
+    love.graphics.rectangle('fill',250,390,300,10) -- shadow of base
+    love.graphics.rectangle('fill',230,430,340,10) -- shadow of base
     -- the pendulum
-    love.graphics.setColor({0.45,0.45,0.38})
+    love.graphics.setColor(colorMult{0.45,0.45,0.38})
     love.graphics.line(x1,y1,x2,y2)
-    love.graphics.setColor({0.25,0.25,0.08})
+    love.graphics.setColor(colorMult{0.25,0.25,0.08})
     love.graphics.circle("fill",x2,y2,40)
     -- the upper part of background should block the view of the pendulum
     love.graphics.setColor(outerBGColor)
