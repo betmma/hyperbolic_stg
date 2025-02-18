@@ -37,10 +37,11 @@ local G={
 G={
     backgroundPattern=backgroundPattern.Tesselation(),
     switchState=function(self,state)
+        local lastState=self.STATE
         self.STATE=state
         self.currentUI=self.UIDEF[self.STATE]
         if self.UIDEF[state].enter then
-            self.UIDEF[state].enter(self)
+            self.UIDEF[state].enter(self,lastState)
         end
     end,
     replaceBackgroundPatternIfNot=function(self,patternClass)
@@ -706,9 +707,11 @@ G={
             end
         },
         IN_LEVEL={
-            enter=function (self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.FixedTesselation)
-                BGM:play('level2')
+            enter=function(self,previousState)
+                if previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
+                    self:replaceBackgroundPatternIfNot(backgroundPattern.FixedTesselation)
+                    BGM:play('level2')
+                end
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
