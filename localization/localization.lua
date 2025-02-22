@@ -108,7 +108,11 @@ return {
             reisen={
                 en_us='Reisen Udongein Inaba',
                 zh_cn='铃仙·优昙华院·因幡',
-            }
+            },
+            junko={
+                en_us='Junko',
+                zh_cn='纯狐',
+            },
         },
         { -- level 1
             {
@@ -442,7 +446,7 @@ return {
             {
                 spellName = {
                     en_us = 'Hell Sign "Erroneous Orbit"',
-                    zh_cn='狱符「错误轨道」',
+                    zh_cn='狱符「谬误轨道」',
                 },
                 quote = {
                     en_us = 'The orbit is ellipse, or more like rotating ellipse, or what?',
@@ -503,12 +507,22 @@ return {
             },
             {
                 quote = {
-                    en_us = '',
-                    zh_cn = '',
+                    en_us = 'Ehh, how did I become the bob of this clock? Dizzying.',
+                    zh_cn = '诶，我怎么成了这个钟的摆锤？头好晕。',
                 },
                 spellName = {
                     en_us = 'Conjuring "The Clock that Doesn\'t Tell Time"',
                     zh_cn = '奇术「不报时的钟表」',
+                },
+            },
+            {
+                quote = {
+                    en_us = '',
+                    zh_cn = '',
+                },
+                spellName = {
+                    en_us = '"Sterile Flowers of Murderous Intent"',
+                    zh_cn = '「杀意的徒花」',
                 },
             },
         }

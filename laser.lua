@@ -160,7 +160,7 @@ function Laser:new(args)
         executeFunc=function()
             args.direction=math.eval(self.args.direction)
             args.speed=math.eval(self.args.speed)
-            if self.enableWarningAndFading then
+            if self.enableWarningAndFading and G.replay and G.replay.version<'0.2.8.7' then
                 args.speed=args.speed*math.eval('1+0.01')
             end
             if self.smooth then
@@ -194,7 +194,7 @@ function Laser:update(dt)
         self:remove()
     end
     for k,shockwave in pairs(Effect.Shockwave.objects) do
-        if shockwave.canRemove.bulletSpawner and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+        if shockwave.canRemove.bulletSpawner or (self.args.canRemovedByBulletRemover and shockwave.canRemove.bullet) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
             self:remove()
         end
     end
