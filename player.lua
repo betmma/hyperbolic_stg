@@ -57,11 +57,9 @@ function Player:new(args)
     self.speed=0
     self.movespeed=args.movespeed or 60
     self.focusFactor=0.4444
-    --when pressed left or right player moves in an arc with center (centerX,0)
     self.centerX=400
-    --drawn as a circle
     self.radius = 0.5
-    -- self.border={minx=0,maxx=love.graphics.getWidth(),miny=0,maxy=love.graphics.getHeight()}
+    self.drawRadius=0.5
     local minx=150
     local maxx=650
     local miny=0
@@ -203,8 +201,60 @@ function Player:update(dt)
         
     end
 
+    self:calculateMovingTransitionSprite()
+    self:calculateFocusPointTransparency()
     self:calculateFlashbomb()
     self.grazeCountThisFrame=0
+end
+
+-- calculate which player sprite to use (normal, moveTransition and moving). Specifically, when not moving, loop through 8 normal sprites for each 8 frames. when moving, loop through 4 moveTransition sprites for each 2 frames, and after it loop through 8 moving sprites for each 8 frames. Use [tilt] to record.
+function Player:calculateMovingTransitionSprite()
+    local lingerFrame={normal=8,moveTransition=2,moving=8}
+    local tiltMax=#Asset.player.moveTransition.left*lingerFrame.moveTransition
+    local right=self:isDownInt("right")-self:isDownInt("left")
+    local tilt=self.tilt or 0
+    local keptFrame=self.keptFrame or 0 -- how long player has been keeping unmove or moving at the same direction (after transition of tiltMax frames)
+    if tilt==0 then
+        if right==0 then
+            keptFrame=keptFrame+1 -- at current frame keeping unmove
+        else
+            keptFrame=0 -- start moving
+            tilt=tilt+right
+        end
+    elseif math.abs(tilt)==tiltMax then
+        if math.sign(right)==math.sign(tilt) then -- keep moving at the same direction
+            keptFrame=keptFrame+1
+        else
+            keptFrame=0
+            tilt=tilt-math.sign(tilt) -- reduce tilt as not moving at the same direction
+        end
+    else
+        keptFrame=0
+        tilt=tilt+(right==0 and -math.sign(tilt) or right) -- if do move, change tilt to the moving direction. if not moving, reduce tilt towards 0.
+    end
+    self.tilt=tilt
+    self.keptFrame=keptFrame
+    local direction=tilt>0 and 'right' or 'left'
+    local sprite
+    if tilt==0 then
+        sprite=Asset.player.normal[math.ceil(keptFrame/lingerFrame.normal)%#Asset.player.normal+1]
+    elseif math.abs(tilt)==tiltMax then
+        sprite=Asset.player.moving[direction][math.ceil(keptFrame/lingerFrame.moving)%#Asset.player.moving[direction]+1]
+    else
+        sprite=Asset.player.moveTransition[direction][math.ceil(math.abs(tilt)/lingerFrame.moveTransition)]
+    end
+    self.sprite=sprite
+end
+
+function Player:calculateFocusPointTransparency()
+    local focus=self.keyIsDown('lshift')
+    self.focusPointTransparency=self.focusPointTransparency or 0
+    local add=0.2
+    if focus then
+        self.focusPointTransparency=math.min(1,self.focusPointTransparency+add)
+    else
+        self.focusPointTransparency=math.max(0,self.focusPointTransparency-add)
+    end
 end
 
 function Player:testRotate(angle,restore)
@@ -350,13 +400,17 @@ function Player:draw()
     if self.invincibleTime>0 then
         love.graphics.setColor(1,0,0)
     end
-    Shape.drawCircle(self.x,self.y,self.radius)
+    -- Shape.drawCircle(self.x,self.y,self.drawRadius)
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
     --draw hit point
-    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
+    local x,y,r=Shape.getCircle(self.x,self.y,self.drawRadius)
+    Asset.playerFocusBatch:setColor(1,1,1,self.focusPointTransparency)
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
+    if self.sprite then
+        Asset.playerBatch:add(self.sprite,x,y,0,r*0.53,r*0.53,Asset.player.width/2,Asset.player.height/2)
+    end
 end
 
 -- this function draws which keys are pressed. The keys are arranged as:

@@ -25,8 +25,8 @@ local G={
         DRAW=function(self)
             Object:drawShaderAll()
             Asset:clearBatches()
-            Asset.backgroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
-            Asset.backgroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
+            Asset.foregroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
+            Asset.foregroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
             Object:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
             Asset:flushBatches()
             Asset:drawBatches()

@@ -131,11 +131,32 @@ Asset.backgroundLeft=love.graphics.newQuad(0,0,150,bgImage:getHeight(),bgImage:g
 Asset.backgroundRight=love.graphics.newQuad(650,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 local titleImage = love.graphics.newImage( "assets/title.png" )
 Asset.title=love.graphics.newQuad(0,0,1280,720,titleImage:getWidth(),titleImage:getHeight())
+local playerImage = love.graphics.newImage( "assets/player.png" )
+Asset.player={
+    normal={},
+    moveTransition={left={},right={}},
+    moving={left={},right={}},
+} -- each sprite is 32x48
+local playerWidth,playerHeight=32,48
+Asset.player.width=playerWidth
+Asset.player.height=playerHeight
+for i=1,8 do
+    Asset.player.normal[i]=love.graphics.newQuad((i-1)*playerWidth,0,playerWidth,playerHeight,playerImage:getWidth(),playerImage:getHeight())
+end
+for i=1,4 do
+    Asset.player.moveTransition.left[i]=love.graphics.newQuad((i-1)*playerWidth,playerHeight,playerWidth,playerHeight,playerImage:getWidth(),playerImage:getHeight())
+    Asset.player.moveTransition.right[i]=love.graphics.newQuad((i-1)*playerWidth,playerHeight*2,playerWidth,playerHeight,playerImage:getWidth(),playerImage:getHeight())
+end
+for i=1,4 do
+    Asset.player.moving.left[i]=love.graphics.newQuad((i-1+4)*playerWidth,playerHeight,playerWidth,playerHeight,playerImage:getWidth(),playerImage:getHeight())
+    Asset.player.moving.right[i]=love.graphics.newQuad((i-1+4)*playerWidth,playerHeight*2,playerWidth,playerHeight,playerImage:getWidth(),playerImage:getHeight())
+end
+
 --[[
 Batches are used to seperate different draw layers. Generally, order should be:
 
 Background (backgroundPattern class)
-Enemy with HP bar (boss)
+Enemy with HP bar (boss, currently it's drawn as a circle so actually niy)
 Player bullets
 Player (niy)
 Enemy without HP bar (probably won't appear)
@@ -149,21 +170,32 @@ UI (left half and right half foreground)
 Dialogue (niy)
 Dialogue Characters (niy)
 ]]
-Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream')
-Asset.backgroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
+Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title screen
+
+Asset.playerBatch=love.graphics.newSpriteBatch(playerImage, 5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.laserBatch={}
 Asset.bulletBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
-Asset.Batches={Asset.playerBulletBatch,Asset.bulletHighlightBatch,Asset.laserBatch,Asset.bulletBatch,Asset.effectBatch,Asset.playerFocusBatch,Asset.backgroundBatch,}
+Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
+Asset.Batches={
+    Asset.playerBatch,
+    Asset.playerBulletBatch,
+    Asset.bulletHighlightBatch,
+    Asset.laserBatch,
+    Asset.bulletBatch,
+    Asset.effectBatch,
+    Asset.playerFocusBatch,
+    Asset.foregroundBatch,
+}
 local isHighlightBatch={}
 isHighlightBatch[Asset.bulletHighlightBatch]=true
 isHighlightBatch[Asset.laserBatch]=true
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        if type(batch)=='table' then
+        if type(batch)=='table' then -- laser batch that is actually a table of laser meshes
             for key in pairs(batch) do
                 batch[key] = nil
             end
@@ -181,7 +213,7 @@ Asset.flushBatches=function(self)
 end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.backgroundBatch then
+        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.push()
             love.graphics.origin()
         end
@@ -196,7 +228,7 @@ Asset.drawBatches=function(self)
             love.graphics.draw(batch)
         end
         love.graphics.setBlendMode('alpha') -- default mode
-        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.backgroundBatch then
+        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.pop()
         end
     end

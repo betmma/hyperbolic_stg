@@ -1368,7 +1368,7 @@ local levelData={
             make=function()
                 -- What this spellcard does is forcing player to look at the enemy by changing player's natural direction.
                 G.levelRemainingFrame=5400
-                Shape.removeDistance=2000
+                Shape.removeDistance=1000
                 local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
                 local player=Player{x=400,y=600}
                 player.moveMode=Player.moveModes.Natural
