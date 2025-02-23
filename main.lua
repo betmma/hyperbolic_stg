@@ -1,4 +1,4 @@
-VERSION="0.2.10"
+VERSION="0.2.10.1"
 if arg[2] == "debug" then
     require("lldebugger").start()
 end
@@ -44,6 +44,7 @@ AccumulatedTime=0
 function love.update(dt)
     if controlFPSmode==0 then
         AccumulatedTime=AccumulatedTime+dt
+        AccumulatedTime=math.min(AccumulatedTime,frameTime*5)
         if AccumulatedTime>=frameTime then
             AccumulatedTime=AccumulatedTime-frameTime
             dt=1/60

@@ -198,3 +198,32 @@ function Localize(args)
     result=result:gsub('{.-}','MISSING VALUE')
     return result
 end
+
+function isVersionSmaller(version1, version2)
+    -- Split version strings into tables of numbers
+    local function split_version(version)
+        local result = {}
+        for num in version:gmatch("%d+") do
+            table.insert(result, tonumber(num))
+        end
+        return result
+    end
+
+    -- Split the versions into tables of numbers
+    local v1 = split_version(version1)
+    local v2 = split_version(version2)
+
+    -- Compare each part of the version
+    for i = 1, math.max(#v1, #v2) do
+        local part1 = v1[i] or 0  -- If there's no part, consider it 0
+        local part2 = v2[i] or 0  -- If there's no part, consider it 0
+
+        if part1 < part2 then
+            return true  -- version1 is less than version2
+        elseif part1 > part2 then
+            return false   -- version1 is greater than version2
+        end
+    end
+
+    return false  -- versions are equal
+end
