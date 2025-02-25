@@ -55,6 +55,21 @@ function LaserUnit:extractCoordinates()
         table.insert(poses, {x1-r1*math.cos(the),y1-r1*math.sin(the)})
         unit = unit.next
     end
+    -- if poses only has 2 points, then it's a point laser, so add 2 more points to make it a line segment
+    if #poses==2 then
+        poses={}
+        unit=self
+        local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
+        r1 = SpriteData[self.sprite].size / 2 * r1 / SpriteData[self.sprite].hitRadius
+        r1 = r1 * 2^0.5
+        local the=unit.direction+math.pi/4
+        for i=1,4 do
+            table.insert(poses, {x1+r1*math.cos(the),y1+r1*math.sin(the)})
+            the=the+math.pi/2
+        end
+        poses[3],poses[4]=poses[4],poses[3] -- due to mesh drawing, the order of points should be 1,2,4,3
+    end
+
     -- if gap between units is too large, add more points to make it smooth (hyperbolic line is arc, while mesh is line segment)
     local newPoses={}
     for i=1,#poses,2 do

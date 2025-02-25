@@ -93,7 +93,7 @@ function Shape.onscreenDistanceToLine(xc,yc,x1,y1,x2,y2)
     return math.abs(Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2))
 end
 
--- used to calculate segment hitbox
+-- used to calculate segment hitbox (note it's approx.)
 function Shape.distanceToSegment(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<EPS then -- vertical
         -- make a perpendicular (hyperbolic) line from (xc,yc) to x=xc, intersects at (xc,yd)

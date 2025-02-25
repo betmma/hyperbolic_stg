@@ -17,6 +17,7 @@ end
 BackgroundPattern.Empty=Empty
 
 local sideLengthCache={}
+-- calculate the side length of a polygon with [sideNum] sides and each angle 2pi/[angleNum] in hyperbolic geometry. The result is cached.
 local calculateSideLength=function(sideNum,angleNum)
     if sideLengthCache[sideNum] and sideLengthCache[sideNum][angleNum] then
         return sideLengthCache[sideNum][angleNum]
@@ -133,6 +134,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
     return points,angles,sidesTable
 end
 
+-- this function isn't used in main menu cuz sometimes random parameters gets laggy
 local function randomSideNumAndAngleNum()
     math.randomseed(os.time())
     local sideNum=math.random(3,8)
@@ -333,7 +335,7 @@ local clockImage = love.graphics.newImage( "assets/pics/clock.png" )
 local clockWidth, clockHeight = clockImage:getDimensions()
 local clockQuad = love.graphics.newQuad(0, 0, clockWidth, clockHeight, clockWidth, clockHeight)
 
-function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an image for this later.
+function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an image for this later. (done but this is still kept)
     local colorref={love.graphics.getColor()}
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)

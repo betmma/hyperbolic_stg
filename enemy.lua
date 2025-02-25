@@ -130,11 +130,18 @@ function Enemy:draw()
     end
     love.graphics.setColor(0,1,1)
     Shape.drawCircle(self.x,self.y,self.radius)
-    self:drawHPBar()
+    self:drawCircleHPBar()
     love.graphics.setColor(color[1],color[2],color[3])
 end
 
-function Enemy:drawHPBar()
+function Enemy:drawText()
+    if self.showUpperHPBar then
+        self:drawUpperHPBar()
+    end
+end
+
+-- an HP bar around enemy (like DDC)
+function Enemy:drawCircleHPBar()
     local color={love.graphics.getColor()}
     love.graphics.setColor(1,0.3,0.3,self.hpBarTransparency)
     Shape.drawCircle(self.x,self.y,30.5)--inner circle
@@ -154,6 +161,29 @@ function Enemy:drawHPBar()
     end
     -- SetFont(12)
     -- love.graphics.print(""..ratio..', ', 10, 100)
+    love.graphics.setColor(color[1],color[2],color[3])
+end
+
+-- an HP bar at top of screen (like UFO)
+function Enemy:drawUpperHPBar()
+    local color={love.graphics.getColor()}
+    local ratio=self.hp/self.maxhp
+    local yellowRatio=(self.damageResistance or 1)^0.5
+    local beginX=150+5
+    local width=490
+    local last=0
+    local num=#self.hpSegments
+    local hpLevel=self:getHPLevel()
+    for i=num,hpLevel,-1 do -- increasing order of hpSegments. hpLevel is the last full part of the bar and drawn as grey
+        local ratio=self.hpSegments[i]
+        love.graphics.setColor(0.5,0.5,0.5,0.7)
+        love.graphics.rectangle('fill',beginX+width*last,1,width*(ratio-last),3)
+        last=ratio
+        love.graphics.setColor(1,0.3,0.3,1)
+        love.graphics.rectangle('fill',beginX+width*ratio,0,3,5) -- a red mark on segment point
+    end
+    love.graphics.setColor(1,1,1/yellowRatio,0.7)
+    love.graphics.rectangle('fill',beginX+width*last,1,width*(ratio-last),3)
     love.graphics.setColor(color[1],color[2],color[3])
 end
 

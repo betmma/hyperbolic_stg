@@ -81,7 +81,7 @@ Event.sineOProgressFunc=function(x)return math.sin(x*math.pi/2) end
 -- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames. It can't modify plain variables. If [aimTable] is not provided, it defaults to [obj].
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
 -- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be simultaneously changed by other sources, while 'hard' means the value is fixed by progressFunc.
--- when EaseEvent ends, call [endFunc].
+-- when EaseEvent ends, call [afterFunc].
 local EaseEvent = Event:extend()
 function EaseEvent:new(args)
     LoopEvent.super.new(self, args)
@@ -116,12 +116,12 @@ function EaseEvent:new(args)
         end
         if self.frame==self.period then
             self.times=0
-            self:endFunc()
+            self:afterFunc()
             self:remove()
         end
         self.lastProgress=newProgress
     end
-    self.endFunc=args.endFunc or function(self)end
+    self.afterFunc=args.afterFunc or function(self)end
 end
 function EaseEvent:update(dt)
     -- self.time=self.time+dt

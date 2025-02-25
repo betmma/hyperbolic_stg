@@ -50,9 +50,9 @@ function AudioSystem:setVolume(volume)
     end
     self.currentVolume=volume
 end
--- set volume of a specific audio (0-1 range)
+-- set volume of a specific audio (normally 0-1 range)
 function AudioSystem:setAudioVolume(name,volume)
-    volume=math.clamp(volume,0,1)
+    volume=math.clamp(volume,0,1/self.volumeCoeff)
     self.audioVolumes[name]=volume
 end
 local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout','enemyShot','enemyCharge','enemyPowerfulShot'},volumeCoeff=0.5}

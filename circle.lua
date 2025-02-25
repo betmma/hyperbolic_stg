@@ -9,7 +9,6 @@ Circle.restore()
 
 function Circle:new(args)
     Circle.super.new(self, args)
-    --A circle doesn't have a width or height. It has a radius.
     self.radius = args.radius or 1
     self.sprite=args.sprite
     if self.sprite then

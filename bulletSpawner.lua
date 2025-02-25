@@ -73,7 +73,7 @@ function BulletSpawner:new(args)
                 aimKey='sprite_transparency',
                 aimValue=0,
                 -- period=self.fogTime,
-                endFunc=function()
+                afterFunc=function()
                     self.spawnBulletFuncRef(self,args)
                 end
             }

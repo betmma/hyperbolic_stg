@@ -314,6 +314,17 @@ G={
                         }
                     end
                 },
+                fixedHPDisplay={
+                    name='Fixed HP Display',
+                    description='Show enemy HP at the top of the screen. (Wow, this is an upgrade?)', -- useful when enemy is off screen, specifically in 6-5 phase 3 where enemy is always at opposite direction of player, and player's projectiles go awry, with this upgrade it's easier to know if the shot is hitting the enemy. (Though I've raised the hitting sfx volume at that phase, adding a visual cue is still better)
+                    cost=10,
+                    executeFunc=function()
+                        local enemy=G.mainEnemy
+                        if enemy then
+                            enemy.showUpperHPBar=true
+                        end
+                    end
+                }
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
             -- need is also (x, y)
@@ -404,10 +415,14 @@ G={
                 {
                     {
                         upgrade='amulet',
-                        connect={up=true},
+                        connect={up=true,right=true},
                         need={}
                     },
-                    {},
+                    {
+                        upgrade='fixedHPDisplay',
+                        connect={left=true},
+                        need={{1,5}}
+                    },
                     {},
                     {},
                     {}
@@ -1167,7 +1182,7 @@ end
 G.win=function(self)
     self:switchState(self.STATES.GAME_END)
     self:leaveLevel()
-    self.won_current_scene=true
+    self.won_current_scene=true -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     local winLevel=1
     if Player.objects[1].hurt==false then
         winLevel=2
@@ -1186,11 +1201,11 @@ end
 G.lose=function(self)
     self:switchState(self.STATES.GAME_END)
     self:leaveLevel()
-    self.won_current_scene=false
+    self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)
-    AccumulatedTime=0
+    AccumulatedTime=0 -- prevent lagging in menu causing accelerated frames in level
     self:removeAll()
     self:switchState(self.STATES.IN_LEVEL)
     self.currentLevel={level,scene}
@@ -1203,6 +1218,7 @@ G.enterLevel=function(self,level,scene)
     self.levelRemainingFrame=self.levelRemainingFrame or 3600
     self.levelRemainingFrameMax=self.levelRemainingFrame
 end
+-- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), pressing "R" to restart or exiting from pause menu.
 G.leaveLevel=function(self)
     if self.replay then
         self.replay=nil

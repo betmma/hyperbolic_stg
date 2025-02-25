@@ -354,10 +354,14 @@ end
 -- 'clamp': math.clamp(aimDirection,cir.direction-0.01,cir.direction+0.01)
 local function addHoming(cir,mode)
     mode=mode or 'abrupt'
+    cir.homing=true
     Event.LoopEvent{
         obj=cir,
         period=1,
         executeFunc=function()
+            if not cir.homing then -- some level effect removing homing
+                return
+            end
             local closestEnemy
             local closestDistance=9e9
             for key, value in pairs(Enemy.objects) do

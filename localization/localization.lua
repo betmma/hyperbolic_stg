@@ -113,6 +113,10 @@ return {
                 en_us='Junko',
                 zh_cn='纯狐',
             },
+            renko={
+                en_us='Renko Usami',
+                zh_cn='宇佐见莲子',
+            },
         },
         { -- level 1
             {
@@ -517,12 +521,22 @@ return {
             },
             {
                 quote = {
-                    en_us = '',
-                    zh_cn = '',
+                    en_us = 'Junko must have improved her gardening skills. No longer only lilies.',
+                    zh_cn = '纯狐一定是提高了她的园艺技能。不再只有百合了。',
                 },
                 spellName = {
                     en_us = '"Sterile Flowers of Murderous Intent"',
                     zh_cn = '「杀意的徒花」',
+                },
+            },
+            {
+                quote = {
+                    en_us = '',
+                    zh_cn = '',
+                },
+                spellName = {
+                    en_us = 'Capture "Fabry-Pérot Cavity"',
+                    zh_cn = '捕获「法布里-佩罗腔」'
                 },
             },
         }
@@ -752,5 +766,15 @@ return {
                 zh_cn='产生一个环绕自己的漩涡，可以吸收子弹',
             },
         },
+        fixedHPDisplay={
+            name = {
+                en_us = 'Fixed HP Display',
+                zh_cn='固定生命值显示',
+            },
+            description = {
+                en_us = 'Show enemy HP at the top of the screen. (Wow, this is an upgrade?)',
+                zh_cn='在屏幕顶部显示敌人生命值。（哇，这也算升级？）',
+            },
+        }
     }
 }
