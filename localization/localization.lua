@@ -531,12 +531,22 @@ return {
             },
             {
                 quote = {
-                    en_us = '',
-                    zh_cn = '',
+                    en_us = 'A real physicist here. What a clever trick to capture my shots.',
+                    zh_cn = '货真价实的物理学家。捕捉我的子弹，真是个聪明的把戏。',
                 },
                 spellName = {
                     en_us = 'Capture "Fabry-Pérot Cavity"',
                     zh_cn = '捕获「法布里-佩罗腔」'
+                },
+            },
+            {
+                quote = {
+                    en_us = 'Monochrome light makes the mandala kind of bland. A limitation of interference pattern?',
+                    zh_cn = '单色光让曼荼罗有点单调。这是干涉图案的局限性吗？',
+                },
+                spellName = {
+                    en_us = 'Interference "Wavefront Mandala"',
+                    zh_cn = '干涉「波前曼荼罗」'
                 },
             },
         }

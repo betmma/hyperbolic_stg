@@ -143,7 +143,7 @@ function LaserUnit:checkHitPlayer()
                 self.grazed=true
             end
             if player.invincibleTime<=0 and hitFunction(player) then
-                player:dieEffect(self.damage or 1)
+                player:hitEffect(self.damage or 1)
             end
         end
     end

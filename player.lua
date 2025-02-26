@@ -474,8 +474,11 @@ function Player:grazeEffect(amount)
     self.grazeCount=self.grazeCount+amount
 end
 
--- actually it's hit effect, not hp = 0 effect
-function Player:dieEffect(damage)
+-- it's hit effect, not hp = 0 effect
+function Player:hitEffect(damage)
+    if self.invincibleTime>0 then
+        return
+    end
     damage=damage or 1
     self.hp=self.hp-damage
     self.hurt=true

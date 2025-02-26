@@ -103,7 +103,7 @@ function Circle:checkHitPlayer()
                 self.grazed=true
             end
             if player.invincibleTime<=0 and dis<radi then
-                player:dieEffect(self.damage or 1)
+                player:hitEffect(self.damage or 1)
             end
         end
     end

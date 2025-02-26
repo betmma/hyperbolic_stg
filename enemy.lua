@@ -130,12 +130,14 @@ function Enemy:draw()
     end
     love.graphics.setColor(0,1,1)
     Shape.drawCircle(self.x,self.y,self.radius)
-    self:drawCircleHPBar()
+    if not G.levelIsTimeoutSpellcard then 
+        self:drawCircleHPBar()
+    end
     love.graphics.setColor(color[1],color[2],color[3])
 end
 
 function Enemy:drawText()
-    if self.showUpperHPBar then
+    if self.showUpperHPBar and not G.levelIsTimeoutSpellcard then
         self:drawUpperHPBar()
     end
 end
