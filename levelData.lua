@@ -4418,7 +4418,7 @@ local levelData={
                 local cavityAngle=0
                 local level3Frame=0
                 SFX.damageVolumeRef=SFX.audioVolumes.damage
-                en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200,hpSegments={0.7,0.3},hpSegmentsFunc=function(self,hpLevel)
+                en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200,hpSegments={0.6,0.2},hpSegmentsFunc=function(self,hpLevel)
                     Enemy.hpSegmentsFuncShockwave(self,hpLevel)
                     if hpLevel==1 then
                         a.bulletNumber=4
@@ -4621,7 +4621,7 @@ local levelData={
         {
             quote='?',
             user='renko',
-            spellName='Interference "', 
+            spellName='Interference "Wavefront Mandala"', 
             make=function()
                 G.levelRemainingFrame=5400
                 G.levelIsTimeoutSpellcard=true

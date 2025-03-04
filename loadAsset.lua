@@ -233,4 +233,17 @@ Asset.drawBatches=function(self)
         end
     end
 end
+
+
+local upgradeIconsImage = love.graphics.newImage( "assets/upgrades.png" )
+local upgradeSize,upgradeGap=30,32
+Asset.upgradeIcons={}
+Asset.upgradeIconsImage=upgradeIconsImage
+for x=0,7 do
+    Asset.upgradeIcons[x]={}
+    for y=0,3 do
+        Asset.upgradeIcons[x][y]=love.graphics.newQuad(x*upgradeGap,y*upgradeGap,upgradeSize,upgradeSize,upgradeIconsImage:getWidth(),upgradeIconsImage:getHeight())
+    end
+end
+Asset.upgradeSize=30
 return Asset

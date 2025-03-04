@@ -205,7 +205,8 @@ G={
                         local player=Player.objects[1]
                         player.hp=player.hp+1
                         player.maxhp=player.maxhp+1
-                    end
+                    end,
+                    spritePos={x=0,y=0}
                 },
                 regenerate={
                     name='Regenerate',
@@ -214,7 +215,8 @@ G={
                     executeFunc=function()
                         local player=Player.objects[1]
                         player.hpRegen=player.hpRegen+0.024
-                    end
+                    end,
+                    spritePos={x=1,y=0}
                 },
                 unyielding={
                     name='Unyielding',
@@ -223,7 +225,8 @@ G={
                     executeFunc=function()
                         local player=Player.objects[1]
                         player.dieShockwaveRadius=player.dieShockwaveRadius+1
-                    end
+                    end,
+                    spritePos={x=2,y=0}
                 },
                 acrobat={ -- add a scene that costs HP when grazing, and unlock this upgrade for it
                     name='Acrobat',
@@ -232,7 +235,8 @@ G={
                     executeFunc=function()
                         local player=Player.objects[1]
                         player.grazeHpRegen=player.grazeHpRegen+0.005
-                    end
+                    end,
+                    spritePos={x=3,y=0}
                 },
                 flashbomb={
                     name='Flash Bomb',
@@ -243,7 +247,8 @@ G={
                         player.enableFlashbomb=true
                         player.grazeCountForFlashbomb=100
                         player.flashbombWidth=5
-                    end
+                    end,
+                    spritePos={x=4,y=0}
                 },
                 amulet={
                     name='Amulet',
@@ -252,7 +257,8 @@ G={
                     executeFunc=function()
                         local player=Player.objects[1]
                         player.radius = player.radius*0.75
-                    end
+                    end,
+                    spritePos={x=5,y=0}
                 },
                 homingShot={
                     name='Homing Shot',
@@ -262,7 +268,8 @@ G={
                         local player=Player.objects[1]
                         player.shootRows.front.straight.num=player.shootRows.front.straight.num-2
                         player.shootRows.front.homing.num=player.shootRows.front.homing.num+2
-                    end
+                    end,
+                    spritePos={x=6,y=0}
                 },
                 sideShot={
                     name='Side Shot',
@@ -271,7 +278,8 @@ G={
                     executeFunc=function()
                         local player=Player.objects[1]
                         player.shootRows.side.straight.num=player.shootRows.side.straight.num+4
-                    end
+                    end,
+                    spritePos={x=7,y=0}
                 },
                 backShot={
                     name='Back Shot',
@@ -280,7 +288,8 @@ G={
                     executeFunc=function()
                         local player=Player.objects[1]
                         player.shootRows.back.straight.num=player.shootRows.back.straight.num+4
-                    end
+                    end,
+                    spritePos={x=0,y=1}
                 },
                 familiarShot={
                     name='Familiar Shot',
@@ -290,7 +299,8 @@ G={
                         local player=Player.objects[1]
                         player.canHitFamiliar=true
                         player.hitFamiliarDamageFactor=0.25
-                    end
+                    end,
+                    spritePos={x=1,y=1}
                 },
                 vortex={
                     name='Vortex',
@@ -312,7 +322,8 @@ G={
                                 vortex.sprite=Asset.misc.vortex
                             end
                         }
-                    end
+                    end,
+                    spritePos={x=2,y=1}
                 },
                 fixedHPDisplay={
                     name='Fixed HP Display',
@@ -323,7 +334,8 @@ G={
                         if enemy then
                             enemy.showUpperHPBar=true
                         end
-                    end
+                    end,
+                    spritePos={x=3,y=1}
                 }
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
@@ -565,6 +577,10 @@ G={
                                 love.graphics.setColor(.8,.8,.8)
                             end
                             love.graphics.rectangle(bought and "fill" or "line",gap+xbegin+dx*x,gap+ybegin+dx*y,size,size)
+                            
+                            local upgrade=option.upgrade
+                            local spritePos=self.currentUI.upgrades[upgrade].spritePos
+                            love.graphics.draw(Asset.upgradeIconsImage, Asset.upgradeIcons[spritePos.x][spritePos.y], gap+xbegin+dx*x,gap+ybegin+dx*y,0,1,1)
                         end
                         ::continue::
                     end

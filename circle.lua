@@ -73,7 +73,7 @@ function Circle:drawSprite()
     end
 end
 function Circle:checkShockwaveRemove()
-    if not self.fromPlayer then 
+    if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do
             if shockwave.canRemove.bullet==true and(self.invincible==false or shockwave.canRemove.invincible==true)and(self.safe==false or shockwave.canRemove.safe==true) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
                 self:remove()
