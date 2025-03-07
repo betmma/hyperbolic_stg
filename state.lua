@@ -35,7 +35,7 @@ local G={
     },
 }
 G={
-    backgroundPattern=backgroundPattern.Tesselation(),
+    backgroundPattern=backgroundPattern.MainMenuTesselation(),
     switchState=function(self,state)
         local lastState=self.STATE
         self.STATE=state
@@ -74,7 +74,7 @@ G={
             },
             chosen=1,
             enter=function(self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
                 BGM:play('title')
             end,
             update=function(self,dt)
@@ -108,7 +108,7 @@ G={
         },
         OPTIONS={
             enter=function(self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
             end,
             options={
                 {text='Master Volume',value='master_volume'},
@@ -193,7 +193,7 @@ G={
         },
         UPGRADES={
             enter=function(self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
             end,
             upgrades={
                 -- Warning: real texts are in localization.lua. Following texts are for coding reference only.
@@ -621,7 +621,7 @@ G={
         CHOOSE_LEVELS={
             enter=function(self)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
-                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
                 BGM:play('title')
             end,
             chosenLevel=1,
@@ -740,7 +740,7 @@ G={
         IN_LEVEL={
             enter=function(self,previousState)
                 if previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
-                    self:replaceBackgroundPatternIfNot(backgroundPattern.FixedTesselation)
+                    self:replaceBackgroundPatternIfNot(backgroundPattern.FollowingTesselation)
                     BGM:play('level2')
                 end
             end,
@@ -1044,7 +1044,7 @@ G={
             pageMax=4,
             enter=function(self)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
-                self:replaceBackgroundPatternIfNot(backgroundPattern.Tesselation)
+                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
                 ReplayManager.loadAll()
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
                 self.currentUI.pageMax=ReplayManager.PAGES

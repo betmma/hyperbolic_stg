@@ -285,7 +285,7 @@ function Player:testRotate(angle,restore)
             rotate(point)
         end
     end
-    if G.backgroundPattern:is(BackgroundPattern.FixedTesselation) then
+    if G.backgroundPattern:is(BackgroundPattern.FixedTesselation) or G.backgroundPattern:is(BackgroundPattern.FollowingTesselation) then
         local pattern=G.backgroundPattern
         for i=1,#pattern.sidesTable do
             rotate(pattern.sidesTable[i][1])

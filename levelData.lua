@@ -10,7 +10,7 @@ local backgroundPattern = require "backgroundPattern"
 -- level 10: introduce boardless levels? I really wonder if this leads to interesting gameplay.
 -- (an idea for boardless level: player needs to go far away then return to initial place. Without compass it's very difficult in hyperbolic world.)
 -- level EX: protagonists' spells again.
--- some other idea: pun on the game name "soukyokuiki", where "soukyo" could be "壮挙", "soukyoku" could be "箏曲""双極", "kyokuiki" could be "局域". "箏曲域" can cue the mastermind is related to koto (yatsuhashi tsukumo), and "双極" relates to tsukumo sisters. nice idea.
+-- some other idea: pun on the game name "soukyokuiki", where "soukyo" could be "壮挙", "soukyoku" could be "箏曲""双極", "kyokuiki" could be "局域". "箏曲域" can cue the mastermind is related to koto (yatsuhashi tsukumo), and "双極" relates to tsukumo sisters. nice idea. "奏曲""葬曲" are also good.
 local levelData={
     {
         -- Warning: as text data need localization, all [quotes] and [spellNames] here aren't used in game and are only for coding reference. Data used are in localization.lua. But [user] parameter is used as a key to get localization.

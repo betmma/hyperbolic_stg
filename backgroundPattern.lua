@@ -17,22 +17,29 @@ end
 BackgroundPattern.Empty=Empty
 
 local sideLengthCache={}
--- calculate the side length of a polygon with [sideNum] sides and each angle 2pi/[angleNum] in hyperbolic geometry. The result is cached.
+-- calculate {the side length} and {radius of circumcircle} of a polygon with [sideNum] sides and each angle 2pi/[angleNum] in hyperbolic geometry. The result is cached.
 local calculateSideLength=function(sideNum,angleNum)
     if sideLengthCache[sideNum] and sideLengthCache[sideNum][angleNum] then
-        return sideLengthCache[sideNum][angleNum]
+        return sideLengthCache[sideNum][angleNum][1],sideLengthCache[sideNum][angleNum][2]
     end
     local centerToVertex=(math.sqrt((math.tan(math.pi/2-math.pi/angleNum)-math.tan(math.pi/sideNum))/(math.tan(math.pi/2-math.pi/angleNum)+math.tan(math.pi/sideNum)))) -- reference: https://www.malinc.se/noneuclidean/en/poincaretiling.php. sideNum->p, angleNum->q. actually this radius is on a poincare disk
     local x1,y1=centerToVertex,0
-    local x2,y2=centerToVertex*math.cos(math.pi*2/sideNum),centerToVertex*math.sin(math.pi*2/sideNum)
+    local x2,y2=centerToVertex*math.cos(math.pi*2/sideNum),centerToVertex*math.sin(math.pi*2/sideNum) -- two points on a side, on a poincare disk
     local d=2*math.distance(x1,y1,x2,y2)^2/(1-centerToVertex^2)^2
-    local ret= math.acosh(1+d)*Shape.curvature
+    local sideLength= math.acosh(1+d)*Shape.curvature -- distance formula of poincare disk. reference: https://en.wikipedia.org/wiki/Poincar%C3%A9_disk_model
+    local circumcircleRadius=2*math.atanh(centerToVertex)*Shape.curvature -- distance formula when 1 point is at center. 
     sideLengthCache[sideNum]=sideLengthCache[sideNum] or {}
-    sideLengthCache[sideNum][angleNum]=ret
-    return ret
+    sideLengthCache[sideNum][angleNum]={sideLength,circumcircleRadius}
+    return sideLength,circumcircleRadius
 end
 
-local fourFiveLength=calculateSideLength(4,5)
+local function getCenterOfPolygonWithSide(x1,y1,x2,y2,sideNum,angleNum)
+    local direction=Shape.to(x2,y2,x1,y1)
+    local toCenterDirection=direction+math.pi*2/angleNum/2
+    local _,centerRadius=calculateSideLength(sideNum,angleNum)
+    local x,y=Shape.rThetaPos(x2,y2,centerRadius,toCenterDirection)
+    return x,y
+end
 
 local function drawSideLine(x1,y1,x2,y2,color)
     local colorref={love.graphics.getColor()}
@@ -48,6 +55,7 @@ end
 -- bad: since a polygon is drawn once for each side, bigger sideNum causes a polygon to be drawn redundant sideNum/2 times.
 local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
     local vertices={}
+    -- since love.graphics.polygon draws straight sides, need to insert vertices on each hyperbolic side to smooth the curve
     local function addVerticesOnSide(x1,y1,x2,y2,num)
         local xCenter,radius=Shape.lineCenter(x1,y1,x2,y2)
         local theta1,theta2=math.atan2(y1-Shape.axisY,x1-xCenter),math.atan2(y2-Shape.axisY,x2-xCenter)
@@ -76,8 +84,13 @@ local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
     love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
 end
 
--- point: where pattern begins. angle: direction of first line. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point. iteCount: currently only to check if it's first point. r: side length. color: {r,g,b}. centerPoint: input nil. toDrawNum: how many lines to draw (an approximation). If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
--- the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) is added to prevent the side drawn 0 or 2 times.
+--[[
+params: 
+[point]: where pattern begins. [angle]: direction of first line. [sideNum]: how many sides do each polygon have. [angleNum]: how many sides are connected to each point. [iteCount]: currently only to check if it's first point. [centerPoint]: input nil. [toDrawNum]: how many lines to draw (an approximation). If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
+returns: 
+adjacentPoints,angles,sidesTable. [adjacentPoints]: adjacent points to centerPoint (inputted point). [angles]: angles from each adjacent point to center point. I knew it's only used to update center point while keeping the pattern same, so angle should be to center point. [sidesTable]: all sides that are drawn. Each side is a table {point1,point2,index}. index is the index of the side in the sidesTable.
+the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) is added to prevent the side drawn 0 or 2 times.
+pointsQueue is a queue that stores points that are not drawn yet, drawedPointsNum being the pointer. If drawedPointsNum is more than toDrawNum/angleNum, clear the queue to stop the tesselation. So that you shouldn't try getting points information from pointsQueue since it's always cleared when function ends.]]
 local drawedPointsNum=0
 local pointsQueue={}
 local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, toDrawNum, sidesTable, skipInRangeLimit)
@@ -87,7 +100,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         pointsQueue={}
     end
     local iteCount=(iteCount or 0)+1
-    local points={}
+    local adjacentPoints={}
     local r=calculateSideLength(sideNum,angleNum)
     local begin=1
     local en=angleNum--iteCount>1 and angleNum-2 or angleNum
@@ -106,7 +119,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         if distance<distance0 and (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) then
             goto continue
         end
-        points[#points+1]=newpoint
+        adjacentPoints[#adjacentPoints+1]=newpoint
         sidesTable[#sidesTable+1]={point,newpoint,index=drawedPointsNum*angleNum+i}
         ::continue::
     end
@@ -118,8 +131,8 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
     --     return {},{}
     -- end
     local angles={}
-    for i=1,#points do
-        local newpoint=points[i]
+    for i=1,#adjacentPoints do
+        local newpoint=adjacentPoints[i]
         local newangle=Shape.to(newpoint.x,newpoint.y,point.x,point.y)
         table.insert(angles,newangle)
         pointsQueue[#pointsQueue+1]={newpoint,newangle,iteCount}
@@ -131,7 +144,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         pointsQueue={}
     end
 
-    return points,angles,sidesTable
+    return adjacentPoints,angles,sidesTable
 end
 
 -- this function isn't used in main menu cuz sometimes random parameters gets laggy
@@ -146,9 +159,10 @@ local function randomSideNumAndAngleNum()
     return sideNum,angleNum
 end
 
-local Tesselation=BackgroundPattern:extend()
-function Tesselation:new(args)
-    Tesselation.super.new(self,args)
+-- a tesselation that moves and rotates. It's used in main menu.
+local MainMenuTesselation=BackgroundPattern:extend()
+function MainMenuTesselation:new(args)
+    MainMenuTesselation.super.new(self,args)
     -- self.name='Tesselation'
     args=args or {}
     self.point=args.point or {x=400,y=150}
@@ -163,7 +177,7 @@ function Tesselation:new(args)
     end
 end
 
-function Tesselation:update(dt)
+function MainMenuTesselation:update(dt)
     local newpoint,newAngle=self.newPoints or {self.point},self.newAngles or {self.angle}
     -- if the current point is out of limit, find a new point from the drawn points (so that it seems like an infinite pattern)
     -- if not math.inRange(self.point.x,self.point.y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax)  then
@@ -191,7 +205,7 @@ function Tesselation:update(dt)
     self.angle=self.angle+self.dangle
 end
 
-function Tesselation:draw()
+function MainMenuTesselation:draw()
     local ay=Shape.axisY
     Shape.axisY=-10
     -- tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
@@ -216,7 +230,7 @@ function Tesselation:draw()
     Shape.axisY=ay
 end
 
-BackgroundPattern.Tesselation=Tesselation
+BackgroundPattern.MainMenuTesselation=MainMenuTesselation
 
 local Square=BackgroundPattern:extend()
 function Square:new(args)
@@ -267,7 +281,7 @@ BackgroundPattern.Square=Square
 
 
 local FixedTesselation=BackgroundPattern:extend()
--- FixedTesselation is a tesselation that calculate all sides upon new() and doesn't update. 
+-- FixedTesselation is a tesselation that calculate all sides upon new() and doesn't update. Used in normal levels.
 function FixedTesselation:new(args)
     FixedTesselation.super.new(self,args)
     args=args or {}
@@ -276,13 +290,15 @@ function FixedTesselation:new(args)
     self.centerPoint=args.centerPoint or {x=400,y=300}
     self.color=args.color or {0.05,0.15,0.18}
     self.toDrawNum=args.toDrawNum or 40
-    self.points,self.angles,self.sidesTable=tesselation(self.centerPoint,0,self.sideNum,self.angleNum,0,nil,self.toDrawNum,nil,true)
+    self.angle=args.angle or 0
+    self.adjacentPoints,self.angles,self.sidesTable=tesselation(self.centerPoint,self.angle,self.sideNum,self.angleNum,0,nil,self.toDrawNum,nil,true) -- self.adjacentPoints and self.angles are not used in FixedTesselation but in FollowingTesselation so don't remove them
     for i=1,#self.sidesTable do
-        local hashValue=Hash64(''..self.sidesTable[i][1].x..self.sidesTable[i][1].y..self.sidesTable[i][2].x..self.sidesTable[i][2].y..(i).."loool")
+        local centerPos={getCenterOfPolygonWithSide(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.sideNum,self.angleNum)}
+        local hashValue=Hash64(''..centerPos[1]..centerPos[2].."loool")
         local coeff=0.1
         local color={hashValue[3]/256*coeff,hashValue[1]/256*coeff,hashValue[2]/256*coeff}
         self.sidesTable[i].color=color
-        self.sidesTable[i][1]=copy_table(self.sidesTable[i][1])
+        self.sidesTable[i][1]=copy_table(self.sidesTable[i][1]) -- without copying player's hyperbolic rotate can't retrieve the original position (i forgor why tho) and will crash after few frames
         self.sidesTable[i][2]=copy_table(self.sidesTable[i][2])
     end
     self.sideLength=calculateSideLength(self.sideNum,self.angleNum)
@@ -308,6 +324,80 @@ function FixedTesselation:draw()
     Shape.axisY=ay
 end
 BackgroundPattern.FixedTesselation=FixedTesselation
+
+local FollowingTesselation=BackgroundPattern:extend()
+-- FollowingTesselation is a seemingly fixed tesselation that changes its center point to follow a target object (usually player), so that not need to draw many sides, but still filling the screen in player's view.
+-- use FixedTesselation to generate the initial tesselation, and whenever the center point leaves the range, calculate the new center point and use a new FixedTesselation to update the sides.
+function FollowingTesselation:new(args)
+    FollowingTesselation.super.new(self,args)
+    args=args or {}
+    args.sideNum=args.sideNum or 4
+    args.angleNum=args.angleNum or 5
+    args.color=args.color or {0.05,0.15,0.18}
+    args.toDrawNum=args.toDrawNum or 40
+    args.centerPoint=args.centerPoint or {x=400,y=300}
+    args.target=args.target or Player.objects[1]
+    args.updateRange=args.updateRange or 50
+    self.args=args
+    self.sidesTable=nil
+    local initialTesselation=FixedTesselation(args)
+    self.adjacentPoints,self.angles,self.sidesTable=initialTesselation.adjacentPoints,initialTesselation.angles,initialTesselation.sidesTable
+    initialTesselation:remove()
+end
+
+function FollowingTesselation:update(dt)
+    local target=self.args.target
+    if not target then
+        if Player.objects[1] then
+            self.args.target=Player.objects[1]
+            target=Player.objects[1]
+        else
+            return
+        end
+    end
+    local centerPoint=self.args.centerPoint
+    local updateRange=self.args.updateRange
+    local currentDistance=Shape.distance(target.x,target.y,centerPoint.x,centerPoint.y)
+    if currentDistance>updateRange then -- first check all adjacentPoints and see if any is closer to the target
+        local closestPointIndex=1
+        local closestDistance=Shape.distance(target.x,target.y,self.adjacentPoints[1].x,self.adjacentPoints[1].y)
+        for i=2,#self.adjacentPoints do
+            local distance=Shape.distance(target.x,target.y,self.adjacentPoints[i].x,self.adjacentPoints[i].y)
+            if distance<closestDistance then
+                closestDistance=distance
+                closestPointIndex=i
+            end
+        end
+        if closestDistance>currentDistance then -- if the closest point is still farther than the center point, don't update
+            return
+        end
+        local newCenterPoint=self.adjacentPoints[closestPointIndex]
+        local newAngle=self.angles[closestPointIndex]
+        self.args.centerPoint=newCenterPoint
+        self.args.angle=newAngle
+        local newTesselation=FixedTesselation(self.args)
+        self.adjacentPoints,self.angles,self.sidesTable=newTesselation.adjacentPoints,newTesselation.angles,newTesselation.sidesTable
+        newTesselation:remove()
+        
+    end
+end
+
+function FollowingTesselation:draw()
+    local ay=Shape.axisY
+    -- Shape.axisY=-10
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(10)
+    for i=1,#self.sidesTable do
+        local color=self.sidesTable[i].color
+        drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.args.sideNum,self.args.angleNum)
+    end
+    for i=1,#self.sidesTable do
+        drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.args.color)
+    end
+    love.graphics.setLineWidth(width)
+    Shape.axisY=ay
+end
+BackgroundPattern.FollowingTesselation=FollowingTesselation
 
 local Pendulum=BackgroundPattern:extend()
 -- euclid pendulum clock (for scene 6-3)
