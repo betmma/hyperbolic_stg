@@ -642,17 +642,21 @@ G={
                 if isPressed('down') then
                     self.currentUI.chosenScene=self.currentUI.chosenScene%sceneNum+1
                     SFX:play('select')
+                    G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('up') then
                     self.currentUI.chosenScene=(self.currentUI.chosenScene-2)%sceneNum+1
                     SFX:play('select')
+                    G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('right') then
                     self.currentUI.chosenLevel=self.currentUI.chosenLevel%levelNum+1
                     self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#levelData[self.currentUI.chosenLevel])
                     SFX:play('select')
+                    G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('left') then
                     self.currentUI.chosenLevel=(self.currentUI.chosenLevel-2)%levelNum+1
                     self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#levelData[self.currentUI.chosenLevel])
                     SFX:play('select')
+                    G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('z') then
                     SFX:play('select')
                     self:enterLevel(level,scene)
@@ -677,12 +681,12 @@ G={
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
 
+                local color={love.graphics.getColor()}
                 -- print Level x and Scene x
                 SetFont(36)
                 love.graphics.print(Localize{'ui','level',level=level},100,50,0,1,1)
                 SetFont(30)
                 for index, value in ipairs(levelData[level]) do
-                    local color={love.graphics.getColor()}
                     love.graphics.setColor(.7,.6,.6)
                     if self.save.levelData[level][index].passed==1 then
                         love.graphics.setColor(.7,1,.7)
@@ -690,11 +694,15 @@ G={
                         love.graphics.setColor(1,1,0.5)
                     end
                     love.graphics.print(level.."-"..index,100,100+index*40,0,1,1)
-                    love.graphics.setColor(color[1],color[2],color[3])
                 end
                 -- draw rectangle to mark current selected scene 
                 love.graphics.rectangle("line",100,100+scene*40,200,40)
 
+                -- add smooth transition when switching scenes or levels (setting the transparency of screenshot and qupte)
+                local transparency=G.UIDEF.CHOOSE_LEVELS.transparency or 1
+                transparency=transparency*0.9+0.1
+                G.UIDEF.CHOOSE_LEVELS.transparency=transparency
+                love.graphics.setColor(color[1],color[2],color[3],transparency)
 
                 -- show screenshot
                 if ScreenshotManager.data[level][scene].batch then
@@ -719,6 +727,7 @@ G={
                 SetFont(18)
                 love.graphics.printf(text,330,510,380,"left",0,1,1)
 
+                love.graphics.setColor(color[1],color[2],color[3],color[4])
                 -- show try count / first pass / first perfect data
                 SetFont(14)
                 love.graphics.printf(Localize{'ui','tryCount',tries=save.tryCount},710,325,90,'left')

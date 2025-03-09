@@ -288,15 +288,15 @@ function FixedTesselation:new(args)
     self.sideNum=args.sideNum or 4
     self.angleNum=args.angleNum or 5
     self.centerPoint=args.centerPoint or {x=400,y=300}
-    self.color=args.color or {0.05,0.15,0.18}
+    self.color=args.color or {0.1,0.1,0.1}
     self.toDrawNum=args.toDrawNum or 40
     self.angle=args.angle or 0
     self.adjacentPoints,self.angles,self.sidesTable=tesselation(self.centerPoint,self.angle,self.sideNum,self.angleNum,0,nil,self.toDrawNum,nil,true) -- self.adjacentPoints and self.angles are not used in FixedTesselation but in FollowingTesselation so don't remove them
     for i=1,#self.sidesTable do
         local centerPos={getCenterOfPolygonWithSide(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.sideNum,self.angleNum)}
         local hashValue=Hash64(''..centerPos[1]..centerPos[2].."loool")
-        local coeff=0.1
-        local color={hashValue[3]/256*coeff,hashValue[1]/256*coeff,hashValue[2]/256*coeff}
+        local coeff=self.color
+        local color={hashValue[3]/256*coeff[1],hashValue[1]/256*coeff[2],hashValue[2]/256*coeff[3]}
         self.sidesTable[i].color=color
         self.sidesTable[i][1]=copy_table(self.sidesTable[i][1]) -- without copying player's hyperbolic rotate can't retrieve the original position (i forgor why tho) and will crash after few frames
         self.sidesTable[i][2]=copy_table(self.sidesTable[i][2])
