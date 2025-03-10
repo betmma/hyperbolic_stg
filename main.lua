@@ -1,4 +1,4 @@
-VERSION="0.2.12.1"
+VERSION="0.2.12.2"
 if arg[2] == "debug" then
     require("lldebugger").start()
 end

@@ -673,6 +673,9 @@ G={
                     SFX:play('select')
                     self.save.levelData[level][scene].passed=math.min(self.save.levelData[level][scene].passed+1,2)
                 end
+                local transparency=G.UIDEF.CHOOSE_LEVELS.transparency or 1
+                transparency=transparency*0.9+0.1
+                G.UIDEF.CHOOSE_LEVELS.transparency=transparency
             end,
             draw=function(self)
             end,
@@ -700,8 +703,6 @@ G={
 
                 -- add smooth transition when switching scenes or levels (setting the transparency of screenshot and qupte)
                 local transparency=G.UIDEF.CHOOSE_LEVELS.transparency or 1
-                transparency=transparency*0.9+0.1
-                G.UIDEF.CHOOSE_LEVELS.transparency=transparency
                 love.graphics.setColor(color[1],color[2],color[3],transparency)
 
                 -- show screenshot
@@ -727,12 +728,13 @@ G={
                 SetFont(18)
                 love.graphics.printf(text,330,510,380,"left",0,1,1)
 
-                love.graphics.setColor(color[1],color[2],color[3],color[4])
                 -- show try count / first pass / first perfect data
                 SetFont(14)
                 love.graphics.printf(Localize{'ui','tryCount',tries=save.tryCount},710,325,90,'left')
                 love.graphics.printf(Localize{'ui','firstPass',tries=save.firstPass},710,350,90,'left')
                 love.graphics.printf(Localize{'ui','firstPerfect',tries=save.firstPerfect},710,390,90,'left')
+
+                love.graphics.setColor(color[1],color[2],color[3],color[4]) -- below doesn't apply transparency
 
                 -- show number of passed levels needed for next level
                 local passedSceneCount,allSceneCount=self:countPassedSceneNum()
@@ -883,6 +885,9 @@ G={
             end
         },
         GAME_END={
+            enter=function(self)
+                self.currentUI.transparency=0
+            end,
             options={
                 {text='Restart',value='RESTART'},
                 {text='Save Replay',value='SAVE_REPLAY'},
@@ -902,16 +907,20 @@ G={
                         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
                     end
                 })
+                local transparency=self.currentUI.transparency or 1
+                transparency=transparency*0.98+0.02
+                self.currentUI.transparency=transparency
             end,
             draw=G.CONSTANTS.DRAW,
             drawText=function(self)
+                local transparency=self.currentUI.transparency or 1
                 Object:drawTextAll()
                 local color={love.graphics.getColor()}
-                love.graphics.setColor(1,1,1,0.5)
+                love.graphics.setColor(1,1,1,0.5*transparency)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
-                love.graphics.setColor(0,0,0,0.5)
+                love.graphics.setColor(0,0,0,0.5*transparency)
                 love.graphics.rectangle("fill",0,0,9999,9999)
-                love.graphics.setColor(color[1],color[2],color[3])
+                love.graphics.setColor(1,1,1,transparency)
                 SetFont(48)
                 love.graphics.print(self.won_current_scene and Localize{'ui','win'} or Localize{'ui','lose'},100,50,0,1,1)
                 SetFont(36)
@@ -920,6 +929,7 @@ G={
                     love.graphics.print(name,100,200+index*50,0,1,1)
                 end
                 love.graphics.rectangle("line",100,200+self.currentUI.chosen*50,200,50)
+                love.graphics.setColor(color[1],color[2],color[3],color[4])
             end
         },
         SAVE_REPLAY={
