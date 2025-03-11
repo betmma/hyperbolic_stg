@@ -54,6 +54,7 @@ function Enemy:getHPLevel()
     return #self.hpSegments+1
 end
 
+-- get the ratio of hp in the current level. e.g. if hpSegments={0.8,0.5,0.2}, getHPPercentOfCurrentLevel() returns 0.5 if hp/maxhp is 0.9 (half of the way from 0.8 to 1), 0.65 (half of the way from 0.5 to 0.8), 0.35 (half of the way from 0.2 to 0.5), and 0.1 (half of the way from 0 to 0.2).
 function Enemy:getHPPercentOfCurrentLevel()
     local hpp=self.hp/self.maxhp
     local hpLevel=self:getHPLevel()

@@ -40,6 +40,7 @@ local function getCenterOfPolygonWithSide(x1,y1,x2,y2,sideNum,angleNum)
     local x,y=Shape.rThetaPos(x2,y2,centerRadius,toCenterDirection)
     return x,y
 end
+BackgroundPattern.getCenterOfPolygonWithSide=getCenterOfPolygonWithSide
 
 local function drawSideLine(x1,y1,x2,y2,color)
     local colorref={love.graphics.getColor()}
@@ -288,15 +289,16 @@ function FixedTesselation:new(args)
     self.sideNum=args.sideNum or 4
     self.angleNum=args.angleNum or 5
     self.centerPoint=args.centerPoint or {x=400,y=300}
-    self.color=args.color or {0.1,0.1,0.1}
+    self.faceColor=args.faceColor or {0.1,0.1,0.1}
+    self.sideColor=args.sideColor or {0.15,0.1,0.2}
+    self.overallColorScale=args.overallColorScale or 1
     self.toDrawNum=args.toDrawNum or 40
     self.angle=args.angle or 0
     self.adjacentPoints,self.angles,self.sidesTable=tesselation(self.centerPoint,self.angle,self.sideNum,self.angleNum,0,nil,self.toDrawNum,nil,true) -- self.adjacentPoints and self.angles are not used in FixedTesselation but in FollowingTesselation so don't remove them
     for i=1,#self.sidesTable do
         local centerPos={getCenterOfPolygonWithSide(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.sideNum,self.angleNum)}
         local hashValue=Hash64(''..centerPos[1]..centerPos[2].."loool")
-        local coeff=self.color
-        local color={hashValue[3]/256*coeff[1],hashValue[1]/256*coeff[2],hashValue[2]/256*coeff[3]}
+        local color={hashValue[3]/256,hashValue[1]/256,hashValue[2]/256}
         self.sidesTable[i].color=color
         self.sidesTable[i][1]=copy_table(self.sidesTable[i][1]) -- without copying player's hyperbolic rotate can't retrieve the original position (i forgor why tho) and will crash after few frames
         self.sidesTable[i][2]=copy_table(self.sidesTable[i][2])
@@ -313,12 +315,18 @@ function FixedTesselation:draw()
     -- Shape.axisY=-10
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)
+    local overallColorScale=self.overallColorScale
+    local faceColorCoeff=self.faceColor
     for i=1,#self.sidesTable do
         local color=self.sidesTable[i].color
+        color={color[1]*faceColorCoeff[1],color[2]*faceColorCoeff[2],color[3]*faceColorCoeff[3]}
+        color={color[1]*overallColorScale,color[2]*overallColorScale,color[3]*overallColorScale}
         drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.sideNum,self.angleNum)
     end
+    local color=self.sideColor
+    color={color[1]*overallColorScale,color[2]*overallColorScale,color[3]*overallColorScale}
     for i=1,#self.sidesTable do
-        drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.color)
+        drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color)
     end
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
@@ -333,35 +341,44 @@ function FollowingTesselation:new(args)
     args=args or {}
     args.sideNum=args.sideNum or 4
     args.angleNum=args.angleNum or 5
-    args.color=args.color or {0.05,0.15,0.18}
+    args.faceColor=args.faceColor or {0.1,0.1,0.1}
+    args.sideColor=args.sideColor or {0.15,0.1,0.2}
+    args.overallColorScale=args.overallColorScale or 1
     args.toDrawNum=args.toDrawNum or 40
     args.centerPoint=args.centerPoint or {x=400,y=300}
     args.target=args.target or Player.objects[1]
     args.updateRange=args.updateRange or 50
-    self.args=args
+    for key, value in pairs(args) do
+        self[key]=value
+    end
     self.sidesTable=nil
-    local initialTesselation=FixedTesselation(args)
+    self:updateSides()
+end
+
+function FollowingTesselation:updateSides()
+    local initialTesselation=FixedTesselation(self)
     self.adjacentPoints,self.angles,self.sidesTable=initialTesselation.adjacentPoints,initialTesselation.angles,initialTesselation.sidesTable
     initialTesselation:remove()
 end
 
+-- update the tesselation when the target is out of range
 function FollowingTesselation:update(dt)
-    local target=self.args.target
+    local target=self.target
     if not target then
         if Player.objects[1] then
-            self.args.target=Player.objects[1]
+            self.target=Player.objects[1]
             target=Player.objects[1]
         else
             return
         end
     end
-    local centerPoint=self.args.centerPoint
-    local updateRange=self.args.updateRange
+    local centerPoint=self.centerPoint
+    local updateRange=self.updateRange
     local currentDistance=Shape.distance(target.x,target.y,centerPoint.x,centerPoint.y)
-    if currentDistance>updateRange then -- first check all adjacentPoints and see if any is closer to the target
+    if currentDistance>updateRange then -- should update the tesselation
         local closestPointIndex=1
         local closestDistance=Shape.distance(target.x,target.y,self.adjacentPoints[1].x,self.adjacentPoints[1].y)
-        for i=2,#self.adjacentPoints do
+        for i=2,#self.adjacentPoints do -- first check all adjacentPoints and see if any is closer to the target
             local distance=Shape.distance(target.x,target.y,self.adjacentPoints[i].x,self.adjacentPoints[i].y)
             if distance<closestDistance then
                 closestDistance=distance
@@ -373,29 +390,15 @@ function FollowingTesselation:update(dt)
         end
         local newCenterPoint=self.adjacentPoints[closestPointIndex]
         local newAngle=self.angles[closestPointIndex]
-        self.args.centerPoint=newCenterPoint
-        self.args.angle=newAngle
-        local newTesselation=FixedTesselation(self.args)
-        self.adjacentPoints,self.angles,self.sidesTable=newTesselation.adjacentPoints,newTesselation.angles,newTesselation.sidesTable
-        newTesselation:remove()
+        self.centerPoint=newCenterPoint
+        self.angle=newAngle
+        self:updateSides()
         
     end
 end
 
 function FollowingTesselation:draw()
-    local ay=Shape.axisY
-    -- Shape.axisY=-10
-    local width=love.graphics.getLineWidth()
-    love.graphics.setLineWidth(10)
-    for i=1,#self.sidesTable do
-        local color=self.sidesTable[i].color
-        drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.args.sideNum,self.args.angleNum)
-    end
-    for i=1,#self.sidesTable do
-        drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.args.color)
-    end
-    love.graphics.setLineWidth(width)
-    Shape.axisY=ay
+    FixedTesselation.draw(self)
 end
 BackgroundPattern.FollowingTesselation=FollowingTesselation
 

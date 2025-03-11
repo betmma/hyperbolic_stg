@@ -621,6 +621,7 @@ G={
         CHOOSE_LEVELS={
             enter=function(self)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
+                self.currentUI.enterFrame=self.frame
                 self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
                 BGM:play('title')
             end,
@@ -685,7 +686,13 @@ G={
                 local scene=self.currentUI.chosenScene
 
                 local color={love.graphics.getColor()}
-                -- print Level x and Scene x
+
+                local deltaFrame=self.frame-self.currentUI.enterFrame
+                local leftOffset,rightOffset=300,300
+                local ratio=0.8^deltaFrame
+                leftOffset,rightOffset=leftOffset*ratio,rightOffset*ratio
+                love.graphics.translate(-leftOffset,0) -- left part begins
+                -- print Level x and Scene x (left part)
                 SetFont(36)
                 love.graphics.print(Localize{'ui','level',level=level},100,50,0,1,1)
                 SetFont(30)
@@ -698,9 +705,11 @@ G={
                     end
                     love.graphics.print(level.."-"..index,100,100+index*40,0,1,1)
                 end
-                -- draw rectangle to mark current selected scene 
+                -- draw rectangle to mark current selected scene (left part)
+                love.graphics.setColor(1,1,1)
                 love.graphics.rectangle("line",100,100+scene*40,200,40)
 
+                love.graphics.translate(leftOffset+rightOffset,0) -- right part begins
                 -- add smooth transition when switching scenes or levels (setting the transparency of screenshot and qupte)
                 local transparency=G.UIDEF.CHOOSE_LEVELS.transparency or 1
                 love.graphics.setColor(color[1],color[2],color[3],transparency)
@@ -742,6 +751,8 @@ G={
                 SetFont(14)
                 love.graphics.printf(Localize{'ui','passedScenes',passed=passedSceneCount,all=allSceneCount},710,5,90,'left')
                 love.graphics.printf(Localize{'ui','needSceneToUnlockNextLevel',need=needSceneCount},710,50,90,'left')
+
+                love.graphics.translate(-rightOffset,0) -- right part ends
 
                 -- show "C: upgrades menu"
                 SetFont(18)
@@ -908,7 +919,7 @@ G={
                     end
                 })
                 local transparency=self.currentUI.transparency or 1
-                transparency=transparency*0.98+0.02
+                transparency=transparency*0.96+0.04
                 self.currentUI.transparency=transparency
             end,
             draw=G.CONSTANTS.DRAW,
