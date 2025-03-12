@@ -919,7 +919,7 @@ G={
                     end
                 })
                 local transparency=self.currentUI.transparency or 1
-                transparency=transparency*0.96+0.04
+                transparency=transparency*0.92+0.08
                 self.currentUI.transparency=transparency
             end,
             draw=G.CONSTANTS.DRAW,

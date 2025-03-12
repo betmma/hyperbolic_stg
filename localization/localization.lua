@@ -117,6 +117,10 @@ return {
                 en_us='Renko Usami',
                 zh_cn='宇佐见莲子',
             },
+            keiki={
+                en_us='Keiki Haniyasushin',
+                zh_cn='埴安神袿姬',
+            },
         },
         { -- level 1
             {
@@ -547,6 +551,16 @@ return {
                 spellName = {
                     en_us = 'Interference "Wavefront Mandala"',
                     zh_cn = '干涉「波前曼荼罗」'
+                },
+            },
+            {
+                quote = {
+                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry. If isn\'t in battle, I\'d like to buy one.',
+                    zh_cn = '看来袿姬的能力可以用来制作首饰。如果不是在战斗中，我都想买一个了。',
+                },
+                spellName = {
+                    en_us = 'Polygon Shape "Facet Sculpting Art"',
+                    zh_cn = '多边形「刻面造形术」'
                 },
             },
         }

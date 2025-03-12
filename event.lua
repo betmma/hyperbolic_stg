@@ -20,7 +20,7 @@ function Event:new(args)
     self.obj=args.obj or self
     local conditionFunc=args.conditionFunc or function(self,dt)return true end
     self.conditionFunc=function(self,dt)return self.obj.removed~=true and conditionFunc(self,dt)end
-    self.executeFunc=args.executeFunc or function(self,dt)return true end
+    self.executeFunc=args.executeFunc or function(self,_,_)return true end
     self.activated=args.activated or true
 end
 
@@ -33,7 +33,7 @@ function Event:update(dt)
         first=false
         local ret
         if self:conditionFunc(dt) and self.executedTimes<self.times then
-            self:executeFunc(self.executedTimes)
+            self:executeFunc(self.executedTimes,self.times)
             self.executedTimes=self.executedTimes+1
         end
         if self.executedTimes>=self.times or self.obj.removed then
