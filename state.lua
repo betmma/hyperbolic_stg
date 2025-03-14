@@ -37,7 +37,32 @@ local G={
 G={
     backgroundPattern=backgroundPattern.MainMenuTesselation(),
     switchState=function(self,state)
+        if state==self.STATES.TRANSITION then
+            error("Illegal to switch to transition state")
+        end
+
         local lastState=self.STATE
+
+        -- check if there is transition data between current state and the state to switch to
+        local transitionData=self.transitionData[lastState]
+        if transitionData and transitionData[state] then
+            local data=transitionData[state]
+            local slideDirection=data.slideDirection
+            local slideRatio=data.slideRatio or 0.15
+            local slideFrame=data.slideFrame or 300
+            self.STATE=self.STATES.TRANSITION
+            self.currentUI=self.UIDEF[self.STATE]
+            self.UIDEF.TRANSITION.enter(self,{
+                type='slide',
+                slideDirection=slideDirection,
+                slideRatio=slideRatio,
+                transitionFrame=slideFrame,
+                nextState=state,
+                lastState=lastState
+            })
+            return
+        end
+
         self.STATE=state
         self.currentUI=self.UIDEF[self.STATE]
         if self.UIDEF[state].enter then
@@ -61,9 +86,46 @@ G={
         GAME_END='GAME_END',--either win or lose
         SAVE_REPLAY='SAVE_REPLAY',
         SAVE_REPLAY_ENTER_NAME='SAVE_REPLAY_ENTER_NAME',
-        LOAD_REPLAY='LOAD_REPLAY'
+        LOAD_REPLAY='LOAD_REPLAY',
+        TRANSITION='TRANSITION',
     },
     STATE=...,
+    transitionData={ -- transitionData[STATE1][STATE2] is the transition data from STATE1 to STATE2. like, if transitionData[MAIN_MENU][CHOOSE_LEVELS].slideDirection='up', then when switching from MAIN_MENU to CHOOSE_LEVELS, the texts of both states will slide up.
+        MAIN_MENU={
+            CHOOSE_LEVELS={
+                slideDirection='up'
+            },
+            LOAD_REPLAY={
+                slideDirection='left'
+            },
+            OPTIONS={
+                slideDirection='right'
+            }
+        },
+        OPTIONS={
+            MAIN_MENU={
+                slideDirection='left'
+            }
+        },
+        UPGRADES={
+            CHOOSE_LEVELS={
+                slideDirection='down'
+            }
+        },
+        CHOOSE_LEVELS={
+            UPGRADES={
+                slideDirection='up'
+            },
+            MAIN_MENU={
+                slideDirection='down'
+            }
+        },
+        LOAD_REPLAY={
+            MAIN_MENU={
+                slideDirection='right'
+            }
+        },
+    },
     UIDEF={
         MAIN_MENU={
             options={
@@ -86,10 +148,10 @@ G={
                 Asset.titleBatch:add(Asset.title,70,0,0,0.5,0.5,0,0)
             end,
             draw=function(self)
-                Asset.titleBatch:flush()
-                love.graphics.draw(Asset.titleBatch)
             end,
             drawText=function(self)
+                Asset.titleBatch:flush()
+                love.graphics.draw(Asset.titleBatch)
                 -- -- self.updateDynamicPatternData(self.patternData)
                 local color={love.graphics.getColor()}
                 SetFont(36)
@@ -491,7 +553,7 @@ G={
                         break
                     end
                 end
-                if isPressed('x') or isPressed('escape')then
+                if isPressed('x') or isPressed('escape') or isPressed('c')then
                     SFX:play('select')
                     self:switchState(self.STATES.CHOOSE_LEVELS)
                     self:saveData()
@@ -607,8 +669,8 @@ G={
 
                 SetFont(48)
                 love.graphics.print(Localize{'ui','upgrades'}, 100, 60)
-                SetFont(36)
-                love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                -- SetFont(36)
+                -- love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 
                 -- show "X: return"
                 SetFont(18)
@@ -616,10 +678,10 @@ G={
                 love.graphics.printf(Localize{'ui','upgradesCurrentXP',xp=self.currentUI.calculateRestXP(self)},500,570,380,"left",0,1,1)
 
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
-            end
+            end,
         },
         CHOOSE_LEVELS={
-            enter=function(self)
+            enter=function(self,lastState)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
                 self.currentUI.enterFrame=self.frame
                 self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
@@ -757,7 +819,7 @@ G={
                 -- show "C: upgrades menu"
                 SetFont(18)
                 love.graphics.printf(Localize{'ui','levelUIHint'},100,570,380,"left",0,1,1)
-            end
+            end,
         },
         IN_LEVEL={
             enter=function(self,previousState)
@@ -1115,6 +1177,84 @@ G={
                 love.graphics.setColor(color[1],color[2],color[3])
             end
         },
+        TRANSITION={
+            enter=function(self,transitionArgs)
+                transitionArgs.startFrame=self.frame
+                self.currentUI.transitionArgs=transitionArgs
+                self.currentUI.transitionFrame=0
+                self.currentUI.complete=false
+                if transitionArgs.type=='slide' then
+                    transitionArgs.aimDxy={DirectionName2Dxy(transitionArgs.slideDirection)}
+                    transitionArgs.aimDxy={transitionArgs.aimDxy[1]*WINDOW_WIDTH,transitionArgs.aimDxy[2]*WINDOW_HEIGHT}
+                    -- transitionArgs.length={WINDOW_WIDTH,WINDOW_HEIGHT}
+                    transitionArgs.currentDxy={0,0}
+                end
+                local currentUI=self.currentUI
+                self.currentUI=self.UIDEF[transitionArgs.nextState]
+                self.currentUI.enter(self,transitionArgs.lastState)
+                self.currentUI=currentUI
+            end,
+            update=function(self,dt)
+                local args=self.currentUI.transitionArgs
+                self.currentUI.transitionFrame=self.currentUI.transitionFrame+1
+                if self.currentUI.transitionFrame>=args.transitionFrame or self.currentUI.complete==true then
+                    -- doesn't call switchState directly, because switchState will call nextState:enter, which has been called in TRANSITION:enter.
+                    self.STATE=args.nextState
+                    self.currentUI=self.UIDEF[self.STATE]
+                    self.currentUI.complete=true
+                    return
+                end
+                if args.type=='slide' then
+                    local ratio=args.slideRatio
+                    for i=1,2 do
+                        args.currentDxy[i]=args.currentDxy[i]*(1-ratio)+args.aimDxy[i]*ratio
+                    end
+                end
+                local currentUI=self.currentUI
+                self.STATE=args.nextState
+                self.currentUI=self.UIDEF[args.nextState]
+                self.currentUI.update(self,dt)
+                if self.STATE~=args.nextState and self.STATE~=self.STATES.TRANSITION then
+                    --[[explain the condition: if the state is changed in the update function, there are 2 possibilities.
+                    1. it's changed without a new transition (means it's abrupt), then stop current transition by setting complete to true.
+                    2. it's changed with a new transition, then no need to stop current transition, because the new transition has overwritten the current one. If do so, the new transition will be stopped immediately and stuck.]]
+                    self.currentUI.complete=true
+                    return
+                end
+                self.currentUI=currentUI
+                self.STATE=self.STATES.TRANSITION
+            end,
+            draw=function(self)
+                local args=self.currentUI.transitionArgs
+                if args.type=='slide' then
+                    local currentUI=self.currentUI
+                    local currentDxy=args.currentDxy
+                    love.graphics.translate(currentDxy[1],currentDxy[2])
+                    self.currentUI=self.UIDEF[args.lastState]
+                    self.currentUI.draw(self)
+                    love.graphics.translate(-args.aimDxy[1],-args.aimDxy[2])
+                    self.currentUI=self.UIDEF[args.nextState]
+                    self.currentUI.draw(self)
+                    love.graphics.translate(args.aimDxy[1]-currentDxy[1],args.aimDxy[2]-currentDxy[2])
+                    self.currentUI=currentUI
+                end
+            end,
+            drawText=function(self)
+                local args=self.currentUI.transitionArgs
+                if args.type=='slide' then
+                    local currentUI=self.currentUI
+                    local currentDxy=args.currentDxy
+                    love.graphics.translate(currentDxy[1],currentDxy[2])
+                    self.currentUI=self.UIDEF[args.lastState]
+                    self.currentUI.drawText(self)
+                    love.graphics.translate(-args.aimDxy[1],-args.aimDxy[2])
+                    self.currentUI=self.UIDEF[args.nextState]
+                    self.currentUI.drawText(self)
+                    love.graphics.translate(args.aimDxy[1]-currentDxy[1],args.aimDxy[2]-currentDxy[2])
+                    self.currentUI=currentUI
+                end
+            end
+        }
     }
 }
 
