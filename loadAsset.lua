@@ -127,6 +127,7 @@ for i, value in ipairs(types) do
     end
 end
 local bgImage = love.graphics.newImage( "assets/bg.png" )
+Asset.backgroundImage=bgImage
 Asset.backgroundLeft=love.graphics.newQuad(0,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 Asset.backgroundRight=love.graphics.newQuad(650,0,150,bgImage:getHeight(),bgImage:getWidth(),bgImage:getHeight())
 local titleImage = love.graphics.newImage( "assets/title.png" )

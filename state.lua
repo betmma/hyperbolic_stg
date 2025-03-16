@@ -37,8 +37,11 @@ local G={
 G={
     backgroundPattern=backgroundPattern.MainMenuTesselation(),
     switchState=function(self,state)
-        if state==self.STATES.TRANSITION then
-            error("Illegal to switch to transition state")
+        if not self.UIDEF[state] then
+            error("State "..state.." not defined")
+        end
+        if self.UIDEF[state].TRANSITION then
+            error("Illegal to switch to a transition state directly")
         end
 
         local lastState=self.STATE
@@ -47,19 +50,26 @@ G={
         local transitionData=self.transitionData[lastState]
         if transitionData and transitionData[state] then
             local data=transitionData[state]
-            local slideDirection=data.slideDirection
-            local slideRatio=data.slideRatio or 0.15
-            local slideFrame=data.slideFrame or 300
-            self.STATE=self.STATES.TRANSITION
+            local transitionState=data.transitionState or self.STATES.TRANSITION_SLIDE
+            local args={nextState=state,lastState=lastState}
+            if transitionState==self.STATES.TRANSITION_SLIDE then
+                local slideDirection=data.slideDirection
+                local slideRatio=data.slideRatio or 0.15
+                local slideFrame=data.slideFrame or 300
+                args.slideDirection=slideDirection
+                args.slideRatio=slideRatio
+                args.transitionFrame=slideFrame
+            elseif transitionState==self.STATES.TRANSITION_IMAGE then
+                local image=data.image
+                local thershold=data.thershold or 0.5
+                local frame=data.fadeFrame or 60
+                args.image=image
+                args.thershold=thershold
+                args.transitionFrame=frame
+            end
+            self.STATE=transitionState
             self.currentUI=self.UIDEF[self.STATE]
-            self.UIDEF.TRANSITION.enter(self,{
-                type='slide',
-                slideDirection=slideDirection,
-                slideRatio=slideRatio,
-                transitionFrame=slideFrame,
-                nextState=state,
-                lastState=lastState
-            })
+            self.currentUI.enter(self,args)
             return
         end
 
@@ -83,11 +93,12 @@ G={
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
         PAUSE='PAUSE',
-        GAME_END='GAME_END',--either win or lose
+        GAME_END='GAME_END', -- either win or lose
         SAVE_REPLAY='SAVE_REPLAY',
         SAVE_REPLAY_ENTER_NAME='SAVE_REPLAY_ENTER_NAME',
         LOAD_REPLAY='LOAD_REPLAY',
-        TRANSITION='TRANSITION',
+        TRANSITION_SLIDE='TRANSITION_SLIDE', -- a state that slides the screen. Draw both last state and next state, while update is only called for next state
+        TRANSITION_IMAGE='TRANSITION_IMAGE', -- an image that covers the screen and fades
     },
     STATE=...,
     transitionData={ -- transitionData[STATE1][STATE2] is the transition data from STATE1 to STATE2. like, if transitionData[MAIN_MENU][CHOOSE_LEVELS].slideDirection='up', then when switching from MAIN_MENU to CHOOSE_LEVELS, the texts of both states will slide up.
@@ -118,11 +129,17 @@ G={
             },
             MAIN_MENU={
                 slideDirection='down'
+            },
+            IN_LEVEL={
+                transitionState='TRANSITION_IMAGE',
             }
         },
         LOAD_REPLAY={
             MAIN_MENU={
                 slideDirection='right'
+            },
+            IN_LEVEL={
+                transitionState='TRANSITION_IMAGE',
             }
         },
     },
@@ -1177,18 +1194,17 @@ G={
                 love.graphics.setColor(color[1],color[2],color[3])
             end
         },
-        TRANSITION={
+        TRANSITION_SLIDE={
+            TRANSITION=true,
             enter=function(self,transitionArgs)
                 transitionArgs.startFrame=self.frame
                 self.currentUI.transitionArgs=transitionArgs
                 self.currentUI.transitionFrame=0
                 self.currentUI.complete=false
-                if transitionArgs.type=='slide' then
                     transitionArgs.aimDxy={DirectionName2Dxy(transitionArgs.slideDirection)}
                     transitionArgs.aimDxy={transitionArgs.aimDxy[1]*WINDOW_WIDTH,transitionArgs.aimDxy[2]*WINDOW_HEIGHT}
                     -- transitionArgs.length={WINDOW_WIDTH,WINDOW_HEIGHT}
                     transitionArgs.currentDxy={0,0}
-                end
                 local currentUI=self.currentUI
                 self.currentUI=self.UIDEF[transitionArgs.nextState]
                 self.currentUI.enter(self,transitionArgs.lastState)
@@ -1204,29 +1220,25 @@ G={
                     self.currentUI.complete=true
                     return
                 end
-                if args.type=='slide' then
-                    local ratio=args.slideRatio
-                    for i=1,2 do
-                        args.currentDxy[i]=args.currentDxy[i]*(1-ratio)+args.aimDxy[i]*ratio
-                    end
+                local ratio=args.slideRatio
+                for i=1,2 do
+                    args.currentDxy[i]=args.currentDxy[i]*(1-ratio)+args.aimDxy[i]*ratio
                 end
                 local currentUI=self.currentUI
                 self.STATE=args.nextState
                 self.currentUI=self.UIDEF[args.nextState]
                 self.currentUI.update(self,dt)
-                if self.STATE~=args.nextState and self.STATE~=self.STATES.TRANSITION then
+                if self.STATE~=args.nextState then
                     --[[explain the condition: if the state is changed in the update function, there are 2 possibilities.
                     1. it's changed without a new transition (means it's abrupt), then stop current transition by setting complete to true.
                     2. it's changed with a new transition, then no need to stop current transition, because the new transition has overwritten the current one. If do so, the new transition will be stopped immediately and stuck.]]
-                    self.currentUI.complete=true
                     return
                 end
                 self.currentUI=currentUI
-                self.STATE=self.STATES.TRANSITION
+                self.STATE=self.STATES.TRANSITION_SLIDE
             end,
             draw=function(self)
                 local args=self.currentUI.transitionArgs
-                if args.type=='slide' then
                     local currentUI=self.currentUI
                     local currentDxy=args.currentDxy
                     love.graphics.translate(currentDxy[1],currentDxy[2])
@@ -1237,11 +1249,9 @@ G={
                     self.currentUI.draw(self)
                     love.graphics.translate(args.aimDxy[1]-currentDxy[1],args.aimDxy[2]-currentDxy[2])
                     self.currentUI=currentUI
-                end
             end,
             drawText=function(self)
                 local args=self.currentUI.transitionArgs
-                if args.type=='slide' then
                     local currentUI=self.currentUI
                     local currentDxy=args.currentDxy
                     love.graphics.translate(currentDxy[1],currentDxy[2])
@@ -1252,7 +1262,80 @@ G={
                     self.currentUI.drawText(self)
                     love.graphics.translate(args.aimDxy[1]-currentDxy[1],args.aimDxy[2]-currentDxy[2])
                     self.currentUI=currentUI
+            end
+        },
+        TRANSITION_IMAGE={
+            TRANSITION=true,
+            enter=function(self,transitionArgs)
+                transitionArgs.startFrame=self.frame
+                transitionArgs.image=transitionArgs.image or Asset.backgroundImage
+                transitionArgs.shader=transitionArgs.shader or love.graphics.newShader("shaders/transitionImage.glsl")
+                transitionArgs.thershold=transitionArgs.thershold or 0.3
+                self.currentUI.transitionArgs=transitionArgs
+                self.currentUI.transitionFrame=0
+                self.currentUI.complete=false
+            end,
+            update=function(self,dt)
+                local args=self.currentUI.transitionArgs
+                self.currentUI.transitionFrame=self.currentUI.transitionFrame+1
+                if self.currentUI.transitionFrame*2>=args.transitionFrame and self.currentUI.transitionFrame*2-2<args.transitionFrame then
+                    local currentUI=self.currentUI
+                    self.currentUI=self.UIDEF[args.nextState]
+                    self.currentUI.enter(self,args.lastState)
+                    self.currentUI=currentUI
                 end
+                if self.currentUI.transitionFrame>=args.transitionFrame or self.currentUI.complete==true then 
+                    self.STATE=args.nextState
+                    self.currentUI=self.UIDEF[self.STATE]
+                    self.currentUI.complete=true
+                end
+            end,
+            draw=function(self)
+                local args=self.currentUI.transitionArgs
+                local ratio=self.currentUI.transitionFrame/args.transitionFrame
+
+                local currentUI=self.currentUI
+                if ratio<0.5 then
+                    self.currentUI=self.UIDEF[args.lastState]
+                    self.currentUI.draw(self)
+                else
+                    self.currentUI=self.UIDEF[args.nextState]
+                    self.currentUI.draw(self)
+                end
+                self.currentUI=currentUI
+            end,
+            drawText=function(self)
+                local args=self.currentUI.transitionArgs
+                local progress=0.0001+self.currentUI.transitionFrame/args.transitionFrame
+
+                local currentUI=self.currentUI
+                if progress<0.5 then
+                    self.currentUI=self.UIDEF[args.lastState]
+                    self.currentUI.drawText(self)
+                else
+                    self.currentUI=self.UIDEF[args.nextState]
+                    self.currentUI.drawText(self)
+                end
+                self.currentUI=currentUI
+
+                --[[ ratio -> new ratio and meaning:
+                0 -> 0 beginning of transition, image shouldn't be visible
+                thershold -> 1 the point when image is fully visible
+                0.5 -> 1 half way, execute nextState:enter()
+                1 - thershold -> 1 image is still fully visible
+                1 -> 0 end of transition, image shouldn't be visible
+
+                so that, for shader ratio = 0 to 1 directly means invisible to visible
+                ]]
+                progress=-math.abs(progress-0.5)*2+1
+                progress=math.min(progress*0.5/(args.thershold),1)
+
+                local image=args.image
+                local shader=args.shader
+                shader:send("progress",progress)
+                love.graphics.setShader(shader)
+                love.graphics.draw(image,0,0,0,1,1)
+                love.graphics.setShader()
             end
         }
     }
