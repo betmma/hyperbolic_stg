@@ -1175,6 +1175,23 @@ G={
                     SFX:play('select')
                     self:switchState(self.STATES.MAIN_MENU)
                 end
+                local digits='0123456789'
+                for i=1,#digits do
+                    if isPressed(digits:sub(i,i)) or isPressed('kp'..digits:sub(i,i)) then
+                        local index=tonumber(digits:sub(i,i))
+                        local slot
+                        if not self.currentUI.firstDigit then
+                            self.currentUI.firstDigit=index
+                            slot=index
+                        else
+                            slot=self.currentUI.firstDigit*10+index
+                            self.currentUI.firstDigit=nil
+                        end
+                        if slot==0 then slot=100 end
+                        self.currentUI.page=math.ceil((slot-1)/25)
+                        self.currentUI.chosen=(slot-1)%25+1
+                    end
+                end
             end,
             draw=function(self)
             end,
