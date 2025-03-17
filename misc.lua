@@ -227,3 +227,16 @@ function isVersionSmaller(version1, version2)
 
     return false  -- versions are equal
 end
+
+function DirectionName2Dxy(direction)
+    if direction==0 or direction=='up' or direction=='u' then
+        return 0,-1
+    elseif direction==1 or direction=='right' or direction=='r' then
+        return 1,0
+    elseif direction==2 or direction=='down' or direction=='d' then
+        return 0,1
+    elseif direction==3 or direction=='left' or direction=='l' then
+        return -1,0
+    end
+    error('Invalid direction: '..tostring(direction))
+end

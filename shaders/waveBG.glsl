@@ -16,7 +16,7 @@ float shapeDistanceVec(vec2 p1, vec2 p2, float curvature, float axisY) {
 uniform float curvature;
 uniform float axisY;
 uniform float time;
-uniform float thereshold;
+uniform float thershold;
 uniform vec2 source1;
 uniform float amplitude1;
 uniform float frequency1;
@@ -34,7 +34,7 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     float sum = amplitude1 * sin(phase1) + amplitude2 * sin(phase2);
     sum = sum / (amplitude1 + amplitude2) * 0.5 + 0.5; // Normalize to [0, 1]
     float c = sum;
-    if (c < thereshold) c = c * 0.8; // Create a boundary effect
+    if (c < thershold) c = c * 0.8; // Create a boundary effect
     float brightness = 1 / dist1 / dist1 + 1 / dist2 / dist2;
     if (brightness > 1) brightness = 1;
     float r = c * colorMix.x + brightness * (1 - colorMix.x);

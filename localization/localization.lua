@@ -615,8 +615,8 @@ return {
             zh_cn='升级',
         },
         upgradesUIHint = {
-            en_us = 'X: Return  Z: Buy / Refund  D: Refund All',
-            zh_cn='X: 返回  Z: 购买 / 取消升级  D: 取消全部',
+            en_us = 'X/C: Return  Z: Buy / Refund  D: Refund All',
+            zh_cn='X/C: 返回  Z: 购买 / 取消升级  D: 取消全部',
         },
         upgradesCurrentXP = {
             en_us = 'Current XP: {xp}',
