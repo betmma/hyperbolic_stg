@@ -799,6 +799,16 @@ return {
                 en_us = 'Show enemy HP at the top of the screen. (Wow, this is an upgrade?)',
                 zh_cn='在屏幕顶部显示敌人生命值。（哇，这也算升级？）',
             },
+        },
+        clairvoyance={
+            name = {
+                en_us = 'Clairvoyance',
+                zh_cn='透视',
+            },
+            description = {
+                en_us = 'Widen your vision, somewhat',
+                zh_cn='略微扩大视野',
+            },
         }
     }
 }

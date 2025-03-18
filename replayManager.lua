@@ -101,6 +101,9 @@ replayManager.runReplay=function(slot)
     G.save.upgrades=replay.upgrades
     G:enterLevel(replay.level,replay.scene)
     -- seed restoring is in levelData
+end
+
+replayManager.replayTweak=function(replay)
     local player=Player.objects[1]
     player:setReplaying()
     player.keyRecord=replay.keyRecord

@@ -25,6 +25,8 @@ local G={
         DRAW=function(self)
             Object:drawShaderAll()
             Asset:clearBatches()
+            local colorRef={love.graphics.getColor()}
+            Asset.foregroundBatch:setColor(colorRef[1],colorRef[2],colorRef[3],self.foregroundTransparency)
             Asset.foregroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
             Asset.foregroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
             Object:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
@@ -83,6 +85,12 @@ G={
         if getmetatable(self.backgroundPattern)~=patternClass then
             self.backgroundPattern:remove()
             self.backgroundPattern=patternClass()
+        end
+    end,
+    replaceBackgroundPatternIfIs=function(self,patternClass,patternClass2)
+        if getmetatable(self.backgroundPattern)==patternClass then
+            self.backgroundPattern:remove()
+            self.backgroundPattern=patternClass2()
         end
     end,
     CONSTANTS=G.CONSTANTS,
@@ -415,6 +423,15 @@ G={
                         end
                     end,
                     spritePos={x=3,y=1}
+                },
+                clairvoyance={
+                    name='Clairvoyance',
+                    description='Widen your vision, somewhat',
+                    cost=40,
+                    executeFunc=function()
+                        G.foregroundTransparency=0.8
+                    end,
+                    spritePos={x=4,y=1}
                 }
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
@@ -511,10 +528,14 @@ G={
                     },
                     {
                         upgrade='fixedHPDisplay',
-                        connect={left=true},
+                        connect={left=true,right=true},
                         need={{1,5}}
                     },
-                    {},
+                    {
+                        upgrade='clairvoyance',
+                        connect={left=true},
+                        need={{2,5}}
+                    },
                     {},
                     {}
                 }
@@ -840,9 +861,25 @@ G={
         },
         IN_LEVEL={
             enter=function(self,previousState)
+                -- transition animation caused this function to be called frames LATER than G.enterLevel (precisely, TRANSITION_IMAGE calls enter at half point of the transition). so I move G.enterLevel code and call replayManager's tweak code here.
                 if previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
-                    self:replaceBackgroundPatternIfNot(backgroundPattern.FollowingTesselation)
+                    self:replaceBackgroundPatternIfIs(backgroundPattern.MainMenuTesselation,backgroundPattern.FollowingTesselation)
                     BGM:play('level2')
+                end
+                AccumulatedTime=0 -- prevent lagging in menu causing accelerated frames in level
+                self:removeAll()
+                local level,scene=self.currentLevel[1],self.currentLevel[2]
+                Shape.restore()
+                Circle.restore()
+                self.levelRemainingFrame=nil
+                self.levelRemainingFrameMax=nil
+                self.levelIsTimeoutSpellcard=false
+                self.foregroundTransparency=1
+                levelData[level][scene].make()
+                self.levelRemainingFrame=self.levelRemainingFrame or 3600
+                self.levelRemainingFrameMax=self.levelRemainingFrame
+                if self.replay then
+                    ReplayManager.replayTweak(self.replay)
                 end
             end,
             update=function(self,dt)
@@ -1491,18 +1528,8 @@ G.lose=function(self)
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)
-    AccumulatedTime=0 -- prevent lagging in menu causing accelerated frames in level
-    self:removeAll()
-    self:switchState(self.STATES.IN_LEVEL)
     self.currentLevel={level,scene}
-    Shape.restore()
-    Circle.restore()
-    self.levelRemainingFrame=nil
-    self.levelRemainingFrameMax=nil
-    self.levelIsTimeoutSpellcard=false
-    levelData[level][scene].make()
-    self.levelRemainingFrame=self.levelRemainingFrame or 3600
-    self.levelRemainingFrameMax=self.levelRemainingFrame
+    self:switchState(self.STATES.IN_LEVEL)
 end
 -- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), pressing "R" to restart or exiting from pause menu.
 G.leaveLevel=function(self)

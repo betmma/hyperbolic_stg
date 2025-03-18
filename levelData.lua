@@ -4208,7 +4208,7 @@ local levelData={
                     obj=en,
                     period=1,
                     executeFunc=function()
-                        amplitude=G.backgroundPattern.amplitude
+                        amplitude=G.backgroundPattern.amplitude or 0
                         local t=en.frame
                         local theta=amplitude*math.sin(-t/period*math.pi*2)
                         dx,dy=r*math.sin(theta),r*(math.cos(theta)-1)
@@ -4667,7 +4667,7 @@ local levelData={
                     end
                     local x1,y1=translate(a.x,a.y)
                     shader:send("time", time)
-                    shader:send("thereshold", thereshold)
+                    shader:send("thershold", thereshold)
                     shader:send("colorMix", colorMix)
                     shader:send("source1", {x1,y1})
                     shader:send("frequency1", freq1)

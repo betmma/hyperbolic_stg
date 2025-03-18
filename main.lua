@@ -1,4 +1,4 @@
-VERSION="0.3.0.1"
+VERSION="0.3.0.2"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -30,6 +30,9 @@ local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
 KeyboardPressed={up=false,down=false,left=false,right=false,escape=false,lctrl=false}
 for i=1,#keyConstants do
     KeyboardPressed[keyConstants:sub(i,i)]=false
+end
+for i=0,9 do
+    KeyboardPressed['kp'..i]=false
 end
 function love.keyreleased(key)
     KeyboardPressed[key]=false
