@@ -555,12 +555,22 @@ return {
             },
             {
                 quote = {
-                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry. If isn\'t in battle, I\'d like to buy one.',
-                    zh_cn = '看来袿姬的能力可以用来制作首饰。如果不是在战斗中，我都想买一个了。',
+                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry? Will she consider this?',
+                    zh_cn = '看来袿姬的能力可以用来制作首饰？她会考虑这个吗？',
                 },
                 spellName = {
                     en_us = 'Polygon Shape "Facet Sculpting Art"',
                     zh_cn = '多边形「刻面造形术」'
+                },
+            },
+            {
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn = '还没想好 :P',
+                },
+                spellName = {
+                    en_us = 'Tessellation "N-Sided Nirvana"',
+                    zh_cn = '密铺「N边的涅槃」'
                 },
             },
         }

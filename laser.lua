@@ -8,6 +8,7 @@ function LaserUnit:new(args)
     self.radiusRef=self.radius
     self.previous=nil
     self.next=nil
+    self.meshLimit=args.meshLimit
 end
 local function sigmoid(x)
     return 1/(1+2.718^-x)
@@ -82,7 +83,7 @@ function LaserUnit:extractCoordinates()
             if dis>limit then
                 local the=Shape.to(x1,y1,x2,y2)
                 local the2=Shape.to(poses[i+1][1],poses[i+1][2],poses[i+3][1],poses[i+3][2])
-                local num=math.min(math.ceil(dis/limit),10) -- at most 10 points
+                local num=math.min(math.ceil(dis/limit),self.meshLimit or 10) -- at most 10 points
                 for j=1,num-1 do
                     local nx,ny=Shape.rThetaPos(x1,y1,dis/num*j,the)
                     table.insert(newPoses,{nx,ny})

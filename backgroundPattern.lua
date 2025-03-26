@@ -317,16 +317,20 @@ function FixedTesselation:draw()
     love.graphics.setLineWidth(10)
     local overallColorScale=self.overallColorScale
     local faceColorCoeff=self.faceColor
-    for i=1,#self.sidesTable do
-        local color=self.sidesTable[i].color
-        color={color[1]*faceColorCoeff[1],color[2]*faceColorCoeff[2],color[3]*faceColorCoeff[3]}
-        color={color[1]*overallColorScale,color[2]*overallColorScale,color[3]*overallColorScale}
-        drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.sideNum,self.angleNum)
+    if not self.dontDrawFaces then
+        for i=1,#self.sidesTable do
+            local color=self.sidesTable[i].color
+            color={color[1]*faceColorCoeff[1],color[2]*faceColorCoeff[2],color[3]*faceColorCoeff[3]}
+            color={color[1]*overallColorScale,color[2]*overallColorScale,color[3]*overallColorScale}
+            drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.sideNum,self.angleNum)
+        end
     end
     local color=self.sideColor
     color={color[1]*overallColorScale,color[2]*overallColorScale,color[3]*overallColorScale}
-    for i=1,#self.sidesTable do
-        drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color)
+    if not self.dontDrawSides then
+        for i=1,#self.sidesTable do
+            drawSideLine(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color)
+        end
     end
     love.graphics.setLineWidth(width)
     Shape.axisY=ay

@@ -1330,9 +1330,10 @@ G={
                 self.currentUI.complete=false
             end,
             update=function(self,dt)
+                -- in this transition no need to consider interrupt because no state's update is called, so no new transition is possible.
                 local args=self.currentUI.transitionArgs
                 self.currentUI.transitionFrame=self.currentUI.transitionFrame+1
-                if self.currentUI.transitionFrame*2>=args.transitionFrame and self.currentUI.transitionFrame*2-2<args.transitionFrame then
+                if self.currentUI.transitionFrame*2>=args.transitionFrame and self.currentUI.transitionFrame*2-2<args.transitionFrame then -- half point, execute nextState:enter()
                     local currentUI=self.currentUI
                     self.currentUI=self.UIDEF[args.nextState]
                     self.currentUI.enter(self,args.lastState)
