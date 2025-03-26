@@ -65,7 +65,11 @@ function Player:new(args)
     local miny=0
     local maxy=540
     
-    self.border=PolyLine({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
+    if args.noBorder then
+        self.border=nil
+    else
+        self.border=PolyLine({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
+    end
 
     self.maxhp=3
     self.hp=self.maxhp

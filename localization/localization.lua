@@ -555,8 +555,8 @@ return {
             },
             {
                 quote = {
-                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry? Will she consider this?',
-                    zh_cn = '看来袿姬的能力可以用来制作首饰？她会考虑这个吗？',
+                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry. Will she consider this?',
+                    zh_cn = '看来袿姬的能力可以用来制作首饰，她会考虑一下吗？',
                 },
                 spellName = {
                     en_us = 'Polygon Shape "Facet Sculpting Art"',
@@ -565,8 +565,8 @@ return {
             },
             {
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'Lines from extremely far away converge to me.',
+                    zh_cn = '来自远方的直线到达我这里。',
                 },
                 spellName = {
                     en_us = 'Tessellation "N-Sided Nirvana"',

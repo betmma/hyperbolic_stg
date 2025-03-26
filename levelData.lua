@@ -4883,7 +4883,7 @@ local levelData={
         },
         {
             quote='?',
-            user='?',
+            user='keiki',
             spellName='Tessellation "N-Sided Nirvana"', 
             make=function()
                 G.levelRemainingFrame=7200
@@ -4892,7 +4892,7 @@ local levelData={
                 local en
                 local backgroundPatt
                 local sideNum,angleNum=4,5
-                en=Enemy{x=400,y=300,mainEnemy=true,maxhp=12800,hpSegments={0.8,0.5,0.2},hpSegmentsFunc=function(self,hpLevel)
+                en=Enemy{x=400,y=300,mainEnemy=true,maxhp=10800,hpSegments={0.8,0.5,0.2},hpSegmentsFunc=function(self,hpLevel)
                     if hpLevel==1 then
                         sideNum=5
                         angleNum=4
@@ -4905,7 +4905,7 @@ local levelData={
                     end
                     Enemy.hpSegmentsFuncShockwave(self,hpLevel)
                     -- a.spawnEvent.frame=a.spawnEvent.period-60
-                    en:addHPProtection(750,10)
+                    en:addHPProtection(600,10)
                 end}
                 en:addHPProtection(600,10)
                 en.removeDistance=9999
@@ -4988,11 +4988,11 @@ local levelData={
                                         local the=dir0
                                         local r
                                         if cir.frame<t1 then
-                                            r=0
+                                            r=A/t1*cir.frame
                                         elseif cir.frame<t2 then
-                                            r=r1*(1-(1-(cir.frame-t1)/(t2-t1))^2)
+                                            r=A+r1*(1-(1-(cir.frame-t1)/(t2-t1))^2)
                                         elseif cir.frame<t2+t3 then
-                                            r=r1*((1-(cir.frame-t2)/(t3))^2)
+                                            r=(A+r1)*((1-(cir.frame-t2)/(t3))^2)
                                         else
                                             cir:remove()
                                             return
@@ -5041,9 +5041,52 @@ local levelData={
 
             end
         },
+    },
+    {
+        {
+            quote='?',
+            user='?',
+            spellName='?', 
+            make=function()
+                G.levelRemainingFrame=7200
+                Shape.removeDistance=1e100
+                local colors={'','blue','purple'}
+                local a
+                local en
+                en=Enemy{x=400,y=400000,mainEnemy=true,maxhp=9600000,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
+                    Enemy.hpSegmentsFuncShockwave(self,hpLevel)
+                    a.spawnEvent.frame=a.spawnEvent.period-60
+                    en:addHPProtection(600,10)
+                end}
+                en:addHPProtection(600,10)
+                local player=Player{x=400,y=600000,noBorder=true}
+                player.moveMode=Player.moveModes.Natural
+                local poses={}
+                for i = 1, 50, 1 do
+                    local nx,ny=Shape.rThetaPos(400,600000,700,math.pi/25*(i-.5))
+                    table.insert(poses,{nx,ny})
+                end
+                player.border=PolyLine(poses)
+                G.viewMode.mode=G.VIEW_MODES.FOLLOW
+                G.viewMode.object=player
+                a=BulletSpawner{x=400,y=400000,period=15000,frame=80,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval('0+360'),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
+                    function(cir,args,self)
+                    end
+                }}
+                
+
+                Event.LoopEvent{
+                    obj=en,
+                    period=1,
+                    executeFunc=function()
+                    end
+                }
+                
+            end
+        },
     }
 }
-levelData.needPass={3,6,9,12,16,20}
+levelData.needPass={3,6,9,12,16,20,25,30}
 local Text=require"text"
 for index, value in ipairs(levelData) do
     for index2, value2 in ipairs(value) do
