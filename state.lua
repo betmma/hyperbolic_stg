@@ -866,6 +866,9 @@ G={
                     self:replaceBackgroundPatternIfIs(backgroundPattern.MainMenuTesselation,backgroundPattern.FollowingTesselation)
                     BGM:play('level2')
                 end
+                if previousState==self.STATES.PAUSE then
+                    return
+                end
                 AccumulatedTime=0 -- prevent lagging in menu causing accelerated frames in level
                 self:removeAll()
                 local level,scene=self.currentLevel[1],self.currentLevel[2]
