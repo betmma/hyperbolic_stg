@@ -866,6 +866,11 @@ G={
                     self:replaceBackgroundPatternIfIs(backgroundPattern.MainMenuTesselation,backgroundPattern.FollowingTesselation)
                     BGM:play('level2')
                 end
+                -- if previousState==self.STATES.GAME_END then
+                --     self.backgroundPattern:remove()
+                --     self.backgroundPattern=backgroundPattern.FollowingTesselation()
+                --     BGM:play('level2')
+                -- end
                 if previousState==self.STATES.PAUSE then
                     return
                 end

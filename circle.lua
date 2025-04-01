@@ -24,7 +24,7 @@ function Circle:new(args)
     self.invincible=args.invincible or false
 
     self.batch=args.batch or BulletBatch
-    self.sprite_transparency=args.sprite_transparency or 1
+    self.spriteTransparency=args.spriteTransparency or 1
 
     self.spriteExtraDirection=0
     self.spriteRotationSpeed=0
@@ -65,9 +65,9 @@ function Circle:drawSprite()
     local scale=r/data.hitRadius*Circle.spriteSizeFactor
     if self.sprite then
         if data.forcedColor then
-            self.batch:setColor(data.forcedColor[1],data.forcedColor[2],data.forcedColor[3],self.sprite_transparency)
+            self.batch:setColor(data.forcedColor[1],data.forcedColor[2],data.forcedColor[3],self.spriteTransparency)
         else
-            self.batch:setColor(1,1,1,self.sprite_transparency)
+            self.batch:setColor(1,1,1,self.spriteTransparency)
         end
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2+self.spriteExtraDirection,scale,scale,data.size/2,data.size/2)
     end

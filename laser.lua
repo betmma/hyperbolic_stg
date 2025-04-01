@@ -51,7 +51,7 @@ function LaserUnit:extractCoordinates()
     while unit and not unit.removed do
         local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
         r1 = SpriteData[self.sprite].size / 2 * r1 / SpriteData[self.sprite].hitRadius
-        local the=unit.direction+math.pi/2
+        local the=unit.direction+math.pi/2+(unit.deltaOrientation or 0)
         table.insert(poses, {x1+r1*math.cos(the),y1+r1*math.sin(the)})
         table.insert(poses, {x1-r1*math.cos(the),y1-r1*math.sin(the)})
         unit = unit.next
@@ -78,17 +78,33 @@ function LaserUnit:extractCoordinates()
         table.insert(newPoses,poses[i+1])
         if i+2<=#poses then
             local x1,y1,x2,y2=poses[i][1],poses[i][2],poses[i+2][1],poses[i+2][2]
-            local dis=Shape.distance(x1,y1,x2,y2)
-            local limit=self.radius*10
+            local x3,y3,x4,y4=poses[i+1][1],poses[i+1][2],poses[i+3][1],poses[i+3][2]
+            --[[ like this:
+            x1,y1            x2,y2
+              o-xc1,yc1--------o-xc2,yc2
+            x3,y3            x4,y4
+
+            should use xc1,yc1 and xc2,yc2 to calculate middle points, not x1,y1 and x2,y2 (or x3,y3 and x4,y4) because when distance is large (same magnitude as curvature), the edge of laser can't be considered a straight line. If do so the laser at middle part will be much thinner than edge part.
+            ]]
+            local xc1,yc1,xc2,yc2=0.5*(x1+x3),0.5*(y1+y3),0.5*(x2+x4),0.5*(y2+y4)
+            local dis=Shape.distance(xc1,yc1,xc2,yc2)
+            local limit=10
             if dis>limit then
-                local the=Shape.to(x1,y1,x2,y2)
-                local the2=Shape.to(poses[i+1][1],poses[i+1][2],poses[i+3][1],poses[i+3][2])
-                local num=math.min(math.ceil(dis/limit),self.meshLimit or 10) -- at most 10 points
+                local the=Shape.to(xc1,yc1,xc2,yc2)
+                local r1=Shape.distance(x1,y1,xc1,yc1)
+                local dtheta1=math.modClamp(Shape.to(xc1,yc1,x1,y1)-the)
+                local r2=Shape.distance(x2,y2,xc2,yc2) 
+                local dtheta2=math.modClamp(Shape.to(xc2,yc2,x2,y2)-Shape.to(xc2,yc2,xc1,yc1)+math.pi,math.pi/2,math.pi)
+                local num=math.min(math.ceil(dis/limit),self.meshLimit or 10) -- at most self.meshLimit or 10 points
                 for j=1,num-1 do
-                    local nx,ny=Shape.rThetaPos(x1,y1,dis/num*j,the)
-                    table.insert(newPoses,{nx,ny})
-                    nx,ny=Shape.rThetaPos(poses[i+1][1],poses[i+1][2],dis/num*j,the2)
-                    table.insert(newPoses,{nx,ny})
+                    local nx,ny=Shape.rThetaPos(xc1,yc1,dis/num*j,the)
+                    local the2=Shape.to(nx,ny,xc2,yc2)
+                    local rj=r1+(r2-r1)/dis*j
+                    local dthetaj=dtheta1+math.modClamp(dtheta2-dtheta1,0,math.pi)/num*j
+                    local nx2,ny2=Shape.rThetaPos(nx,ny,rj,the2+dthetaj)
+                    table.insert(newPoses,{nx2,ny2})
+                    nx2,ny2=Shape.rThetaPos(nx,ny,rj,the2+dthetaj+math.pi)
+                    table.insert(newPoses,{nx2,ny2})
                 end
             end
 

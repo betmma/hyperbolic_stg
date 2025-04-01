@@ -1193,11 +1193,11 @@ local levelData={
                             delayFrame=1800,
                             executeFunc=function()
                                 cir.safe=true
-                                cir.sprite_transparency=0.6
+                                cir.spriteTransparency=0.6
                                 Event.EaseEvent{
                                     obj=cir,
                                     aimTable=cir,
-                                    aimKey='sprite_transparency',
+                                    aimKey='spriteTransparency',
                                     aimValue=0,
                                     easeFrame=200,
                                 }
@@ -1291,7 +1291,7 @@ local levelData={
                                     obj=fog,
                                     easeFrame=60,
                                     aimTable=fog,
-                                    aimKey='sprite_transparency',
+                                    aimKey='spriteTransparency',
                                     aimValue=0,
                                     -- period=60,
                                     afterFunc=function()
@@ -1634,7 +1634,7 @@ local levelData={
                                 local x,y=Shape.rThetaPos(400,300,r,angles[i])
                                 local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round[lastFrameSpeeds[i]>0 and 'red' or 'blue'],invincible=true,lifeFrame=5,radius=1,batch=Asset.bulletHighlightBatch,}
                                 Event.EaseEvent{
-                                    obj=cir,aimTable=cir,aimKey='sprite_transparency',aimValue=0.2,easeFrame=5
+                                    obj=cir,aimTable=cir,aimKey='spriteTransparency',aimValue=0.2,easeFrame=5
                                 }
                             end
                         end
@@ -1836,11 +1836,11 @@ local levelData={
                                             local angle=math.eval('0+999')
                                             local bulletEvent=function(cir)
                                                 cir.safe=true
-                                                cir.sprite_transparency=0
+                                                cir.spriteTransparency=0
                                                 Event.EaseEvent{
-                                                    obj=cir,aimTable=cir,aimKey='sprite_transparency',aimValue=0.5,easeFrame=90,
+                                                    obj=cir,aimTable=cir,aimKey='spriteTransparency',aimValue=0.5,easeFrame=90,
                                                     afterFunc=function ()
-                                                        cir.sprite_transparency=1
+                                                        cir.spriteTransparency=1
                                                         cir.safe=false
                                                     end
                                                 }
@@ -1893,11 +1893,11 @@ local levelData={
                         for x = -100, 900, 25 do
                             for y = 0, 1000, 25 do
                                 if newPolyline:inside(x,y) then
-                                    local ci=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.fog.red,invincible=true,safe=true,lifeFrame=200,batch=Asset.bulletHighlightBatch,radius=1.5/(y-Shape.axisY)*500,sprite_transparency=0}
+                                    local ci=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.fog.red,invincible=true,safe=true,lifeFrame=200,batch=Asset.bulletHighlightBatch,radius=1.5/(y-Shape.axisY)*500,spriteTransparency=0}
                                     Event.EaseEvent{
                                         obj=ci,
                                         aimTable=ci,
-                                        aimKey='sprite_transparency',
+                                        aimKey='spriteTransparency',
                                         aimValue=0.1,
                                         easeFrame=200,
                                         progressFunc=function(x)return math.sin(x*math.pi) end
@@ -2613,7 +2613,7 @@ local levelData={
                 local e
                 e=BulletSpawner{x=400,y=300,period=30,frame=-100,lifeFrame=10000,bulletNumber=48,bulletSpeed=150,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.giant.red,bulletEvents={
                     function(cir,args,self)
-                        cir.sprite_transparency=0.1
+                        cir.spriteTransparency=0.1
                         cir.safe=true
                         Event.LoopEvent{
                             obj=cir,
@@ -2626,7 +2626,7 @@ local levelData={
                                 Event.EaseEvent{
                                     obj=cir,
                                     aimTable=cir,
-                                    aimKey='sprite_transparency',
+                                    aimKey='spriteTransparency',
                                     aimValue=1,
                                     easeFrame=10
                                 }
@@ -2766,11 +2766,11 @@ local levelData={
                                             if args.index==1 then
                                                 p.spawnCircleRadius=p.spawnCircleRadius+0.35
                                             end
-                                            cir.sprite_transparency=0.1
+                                            cir.spriteTransparency=0.1
                                             Event.EaseEvent{
                                                 obj=cir,
                                                 aimTable=cir,
-                                                aimKey='sprite_transparency',
+                                                aimKey='spriteTransparency',
                                                 aimValue=1,
                                                 easeFrame=30
                                             }
@@ -3185,7 +3185,7 @@ local levelData={
                             obj=cir,
                             period=1,
                             executeFunc=function()
-                                -- Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.scale.blue,safe=true,lifeFrame=3,sprite_transparency=0.4}
+                                -- Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.scale.blue,safe=true,lifeFrame=3,spriteTransparency=0.4}
                                 local r=speed*(cir.frame-frame)/60
                                 cir.x,cir.y=Shape.rThetaPos(x0,y0,r,dir0+delta)
                                 cir.direction=dir0+delta
@@ -3836,9 +3836,9 @@ local levelData={
                             end,
                             times=10,
                             executeFunc=function()
-                                -- local newCir=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=cir.speed,sprite=BulletSprites.rice.red,lifeFrame=1000,safe=true,sprite_transparency=0.5}
+                                -- local newCir=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=cir.speed,sprite=BulletSprites.rice.red,lifeFrame=1000,safe=true,spriteTransparency=0.5}
                                 cir.safe=true
-                                cir.sprite_transparency=0.5
+                                cir.spriteTransparency=0.5
                                 local r,the=Shape.distance(cir.x,cir.y,player.x,player.y),Shape.to(player.x,player.y,cir.x,cir.y)
                                 local theI=Shape.to(cir.x,cir.y,player.x,player.y)
                                 local deltaDir=cir.direction-theI
@@ -3864,11 +3864,11 @@ local levelData={
                                         -- newCir.x,newCir.y=x,y
                                         if times==99 then
                                             cir.safe=false
-                                            cir.sprite_transparency=1
+                                            cir.spriteTransparency=1
                                             cir:changeSpriteColor('blue')
                                             cir.speed=40
                                             -- newCir.safe=false
-                                            -- newCir.sprite_transparency=1
+                                            -- newCir.spriteTransparency=1
                                             -- newCir:changeSpriteColor('blue')
                                             -- newCir.direction=-(Shape.to(newCir.x,newCir.y,playerx,playery)+deltaDir)+math.pi
                                         end
@@ -3962,18 +3962,18 @@ local levelData={
                         times=3,
                         executeFunc=function()
                             cir.safe=true
-                            cir.sprite_transparency=cir.aim_transparency or 0.15
+                            cir.spriteTransparency=cir.aim_transparency or 0.15
                             Event.LoopEvent{
                                 obj=cir,
                                 period=1,
                                 times=time,
                                 executeFunc=function(self,times)
                                     if times>=time-10 then
-                                        cir.sprite_transparency=(times-time+10)/10+0.1
+                                        cir.spriteTransparency=(times-time+10)/10+0.1
                                     end
                                     if times==time-1 then
                                         cir.safe=false
-                                        cir.sprite_transparency=1
+                                        cir.spriteTransparency=1
                                         cir:changeSpriteColor('blue')
                                         if not cir.aim_transparency then
                                             cir.speed=60
@@ -4032,7 +4032,7 @@ local levelData={
                             period=1,
                             executeFunc=function()
                                 -- create a white fog effect
-                                Circle{x=cir.x,y=cir.y,direction=math.pseudoRandom(cir)*math.pi*2,speed=math.pseudoRandom(cir,2)*60,sprite=BulletSprites.fog.gray,lifeFrame=30,sprite_transparency=0.23-.03*hpLevel,radius=cir.radius*hpLevel,highlight=true,safe=true}
+                                Circle{x=cir.x,y=cir.y,direction=math.pseudoRandom(cir)*math.pi*2,speed=math.pseudoRandom(cir,2)*60,sprite=BulletSprites.fog.gray,lifeFrame=30,spriteTransparency=0.23-.03*hpLevel,radius=cir.radius*hpLevel,highlight=true,safe=true}
                             end
                         }
                     end
@@ -4147,8 +4147,8 @@ local levelData={
                 a=BulletSpawner{x=400,y=300,period=120,frame=60,lifeFrame=10000,bulletNumber=8,bulletSpeed=bulletSpeed,bulletLifeFrame=12000,angle=0,range=math.pi*2,spawnSFXVolume=0.5,bulletSprite=BulletSprites.knife.red,bulletEvents={
                     function(cir,args,self)
                         cir.safe=true
-                        cir.sprite_transparency=0
-                        local visibleCir=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=cir.speed,sprite=a.bulletSprite,lifeFrame=10000,sprite_transparency=1}
+                        cir.spriteTransparency=0
+                        local visibleCir=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=cir.speed,sprite=a.bulletSprite,lifeFrame=10000,spriteTransparency=1}
                         local hpLevel=en:getHPLevel()
                         Event.LoopEvent{
                             obj=visibleCir,
@@ -4477,7 +4477,7 @@ local levelData={
                                     end
                                     if cir.safe then
                                         cir.safe=false
-                                        cir.sprite_transparency=1
+                                        cir.spriteTransparency=1
                                         cir.sprite=BulletSprites.rice[SpriteData[cir.sprite].color]
                                         -- cir.speed=80
                                     end
@@ -5050,7 +5050,6 @@ local levelData={
             make=function()
                 G.levelRemainingFrame=7200
                 Shape.removeDistance=1e100
-                local colors={'','blue','purple'}
                 local a
                 local en
                 en=Enemy{x=400,y=400000,mainEnemy=true,maxhp=9600000,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
@@ -5062,15 +5061,106 @@ local levelData={
                 local player=Player{x=400,y=600000,noBorder=true}
                 player.moveMode=Player.moveModes.Natural
                 local poses={}
-                for i = 1, 50, 1 do
-                    local nx,ny=Shape.rThetaPos(400,600000,700,math.pi/25*(i-.5))
+                for i = 1, 30, 1 do
+                    local nx,ny=Shape.rThetaPos(400,600000,700,math.pi/15*(i-.5))
                     table.insert(poses,{nx,ny})
                 end
                 player.border=PolyLine(poses)
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 G.viewMode.object=player
-                a=BulletSpawner{x=400,y=400000,period=15000,frame=80,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval('0+360'),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
+                a=BulletSpawner{x=400,y=400000,period=400,frame=280,lifeFrame=10000,bulletNumber=16,bulletSpeed=150,bulletLifeFrame=350,angle='player',range=math.pi*2,bulletSprite=BulletSprites.giant.yellow,bulletEvents={
                     function(cir,args,self)
+                        cir.spriteTransparency=0.5
+                        cir.safe=true
+                        if args.index%2==1 then
+                            cir.speed=cir.speed+50
+                        end
+                        local times=a.spawnEvent.executedTimes
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            executeFunc=function()
+                                local frame=cir.frame
+                                local x,y=cir.x,cir.y
+                                cir.speed=cir.speed-1
+                                if times%2==0 and frame==150 or times%2==1 then
+                                    local deltaTheta=0.35
+                                    local laser=Laser{x=x,y=y,direction=cir.direction+math.pi-deltaTheta,lifeFrame=2,frequency=1,speed=80,sprite=Asset.bulletSprites.laser.gray,radius=2,invincible=true,meshLimit=100,laserEvents={
+                                        function(laser)
+                                            Event.LoopEvent{
+                                                obj=laser,
+                                                period=1,
+                                                executeFunc=function()
+                                                    laser.args.direction=laser.args.direction+deltaTheta*2
+                                                end
+                                            }
+                                        end
+                                        },
+                                    bulletEvents={
+                                        function(cir)
+                                            if cir.index==1 then
+                                                cir.deltaOrientation=math.pi
+                                            end
+                                            Event.LoopEvent{
+                                                obj=cir,
+                                                period=30,
+                                                executeFunc=function()
+                                                    Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi,speed=50,sprite=BulletSprites.giant.red,lifeFrame=1000}
+                                                end
+                                            }
+                                            Event.DelayEvent{
+                                                obj=cir,
+                                                delayFrame=180,
+                                                executeFunc=function()
+                                                    Event.EaseEvent{
+                                                        obj=cir,
+                                                        aimTable=cir,
+                                                        aimKey='direction',
+                                                        aimValue=cir.direction+math.mod2Sign(cir.index)*deltaTheta/5*2,
+                                                        easeFrame=40
+                                                    }
+                                                    Event.EaseEvent{
+                                                        obj=cir,
+                                                        aimTable=cir,
+                                                        aimKey='speed',
+                                                        aimValue=-cir.speed*2,
+                                                        easeFrame=40
+                                                    }
+                                                    Event.EaseEvent{
+                                                        obj=cir,
+                                                        aimTable=cir,
+                                                        aimKey='radius',
+                                                        aimValue=10,
+                                                        easeFrame=240
+                                                    }
+                                                end
+                                            }
+                                            Event.DelayEvent{
+                                                obj=cir,
+                                                delayFrame=420,
+                                                executeFunc=function()
+                                                    Event.EaseEvent{
+                                                        obj=cir,
+                                                        aimTable=cir,
+                                                        aimKey='radius',
+                                                        aimValue=0,
+                                                        easeFrame=20
+                                                    }
+                                                end
+                                            }
+                                            Event.DelayEvent{
+                                                obj=cir,
+                                                delayFrame=440,
+                                                executeFunc=function()
+                                                    cir:remove()
+                                                end
+                                            }
+                                        end
+                                    }}
+                                    cir:remove()
+                                end
+                            end
+                        }
                     end
                 }}
                 
@@ -5079,6 +5169,10 @@ local levelData={
                     obj=en,
                     period=1,
                     executeFunc=function()
+                        local toPlayerAngle=Shape.to(en.x,en.y,player.x,player.y)
+                        local dis=Shape.distance(en.x,en.y,player.x,player.y)
+                        en.x,en.y=Shape.rThetaPos(en.x,en.y,math.min(dis,0.1),toPlayerAngle)
+                        a.x,a.y=en.x,en.y
                     end
                 }
                 
