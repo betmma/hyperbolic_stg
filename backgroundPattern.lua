@@ -368,7 +368,7 @@ end
 -- update the tesselation when the target is out of range
 function FollowingTesselation:update(dt)
     local target=self.target
-    if not target then
+    if not target or target.removed then
         if Player.objects[1] then
             self.target=Player.objects[1]
             target=Player.objects[1]
@@ -404,6 +404,7 @@ end
 function FollowingTesselation:draw()
     FixedTesselation.draw(self)
 end
+
 BackgroundPattern.FollowingTesselation=FollowingTesselation
 
 local Pendulum=BackgroundPattern:extend()
