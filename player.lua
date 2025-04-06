@@ -56,6 +56,7 @@ function Player:new(args)
     self.lifeFrame=9999999
     self.speed=0
     self.movespeed=args.movespeed or 60
+    self.diagonalSpeedAddition=false -- if false, speed is always movespeed. if true, speed is the addition of 2 vectors of U/D and L/R. (Vanilla game is false but dunno why I implemented true from very beginning (^^;))
     self.focusFactor=0.4444
     self.centerX=400
     self.radius = 0.5
@@ -160,7 +161,12 @@ function Player:update(dt)
         end
     else
         local upOrDownDir=math.pi/2*down+downDir
-        self.speed=self.movespeed*2*math.cos((self.direction-upOrDownDir)/2)
+        local ratio=math.cos((self.direction-upOrDownDir)/2)
+        if self.diagonalSpeedAddition then 
+            self.speed=self.movespeed*2*ratio -- it means when moving diagonally, the speed is the addition of 2 vectors of U/D and L/R. Not multiplying by sqrt(2) is because U/D vector and L/R vector could be not orthogonal.
+        else
+            self.speed=self.movespeed*math.sign(ratio)
+        end
         self.direction=(self.direction+upOrDownDir)/2
     end
     if self.keyIsDown('lshift') then

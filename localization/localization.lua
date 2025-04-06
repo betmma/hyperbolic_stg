@@ -845,6 +845,16 @@ return {
                 en_us = 'Widen your vision, somewhat',
                 zh_cn='略微扩大视野',
             },
-        }
+        },
+        diagonalMover={
+            name = {
+                en_us = 'Diagonal Mover',
+                zh_cn='角行者',
+            },
+            description = {
+                en_us = 'You move faster when moving diagonally',
+                zh_cn='斜向移动时速度更快',
+            },
+        },
     }
 }

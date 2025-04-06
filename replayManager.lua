@@ -108,7 +108,7 @@ replayManager.replayTweak=function(replay)
     player:setReplaying()
     player.keyRecord=replay.keyRecord
 
-    -- below is compat with old replay
+    -- below is compat with old replay. Newer modification should be applied earlier, otherwise old modification will be overwritten by the new one.
     if replay.time<'2024-12-10 21:20:00' then
         player.shootInterval=1
         player.shootRows.back.straight.damage=1
@@ -119,6 +119,9 @@ replayManager.replayTweak=function(replay)
     end
     local version=replay.version or '0.0.0'
     player.version=version -- version<0.2.0.1 old graze effect is in player.lua
+    if isVersionSmaller(version,'0.3.2') then
+        player.diagonalSpeedAddition=true
+    end
     if isVersionSmaller(version,'0.1.3') then
         Circle.sizeFactor=4.5
         Circle.spriteSizeFactor=1.0

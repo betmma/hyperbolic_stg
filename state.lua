@@ -435,6 +435,16 @@ G={
                         G.foregroundTransparency=0.8
                     end,
                     spritePos={x=4,y=1}
+                },
+                diagonalMover={
+                    name='Diagonal Mover',
+                    description='You move faster when moving diagonally',
+                    cost=30,
+                    executeFunc=function()
+                        local player=Player.objects[1]
+                        player.diagonalSpeedAddition=true
+                    end,
+                    spritePos={x=5,y=1}
                 }
             },
             -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
@@ -531,7 +541,7 @@ G={
                     },
                     {
                         upgrade='fixedHPDisplay',
-                        connect={left=true,right=true},
+                        connect={left=true,right=true,down=true},
                         need={{1,5}}
                     },
                     {
@@ -539,6 +549,17 @@ G={
                         connect={left=true},
                         need={{2,5}}
                     },
+                    {},
+                    {}
+                },
+                {
+                    {},
+                    {
+                        upgrade='diagonalMover',
+                        connect={up=true},
+                        need={{2,5}}
+                    },
+                    {},
                     {},
                     {}
                 }
@@ -653,7 +674,7 @@ G={
 
                 --draw upgrades
                 local options=self.currentUI.options
-                local xbegin,ybegin=50,100
+                local xbegin,ybegin=50,80
                 local dx,size=50,30
                 local gap=(dx-size)/2
                 local sizeX,sizeY=#self.currentUI.options[1],#self.currentUI.options
