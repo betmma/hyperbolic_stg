@@ -211,7 +211,7 @@ G={
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=function(self)self:switchState(self.STATES.MAIN_MENU);self:saveData() end})
-                if self.state~=G.STATES.OPTIONS then
+                if self.STATE~=G.STATES.OPTIONS then
                     return -- means exited through exit button
                 end
                 local optionKey=self.currentUI.options[self.currentUI.chosen].value
