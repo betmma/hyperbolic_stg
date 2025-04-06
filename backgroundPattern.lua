@@ -368,7 +368,8 @@ end
 -- update the tesselation when the target is out of range
 function FollowingTesselation:update(dt)
     local target=self.target
-    if not target or target.removed then
+    if not target or target.removed or target:is(Player) and target~=Player.objects[1] then
+        -- look i really dont understand why after pressing r to restart or restart in game end screen, there is only one object in Player.objects, but the target is still the old one, and target.removed is nil. so i have to check if target is in Player.objects[1]
         if Player.objects[1] then
             self.target=Player.objects[1]
             target=Player.objects[1]
@@ -376,6 +377,8 @@ function FollowingTesselation:update(dt)
             return
         end
     end
+    -- print(self.target.x..', '..self.target.y..', '..(#Player.objects)..', '..(self.target==Player.objects[1]and 't' or 'f'),400,300)
+
     local centerPoint=self.centerPoint
     local updateRange=self.updateRange
     local currentDistance=Shape.distance(target.x,target.y,centerPoint.x,centerPoint.y)

@@ -210,10 +210,6 @@ function Player:update(dt)
     self:calculateFlashbomb()
     self.grazeCountThisFrame=0
 
-    -- when level ends player isn't removed and caused problem where following tesselation still traces old player. So, remove player when level ends
-    if G.STATE==G.STATES.GAME_END then
-        self:remove()
-    end
 end
 
 -- calculate which player sprite to use (normal, moveTransition and moving). Specifically, when not moving, loop through 8 normal sprites for each 8 frames. when moving, loop through 4 moveTransition sprites for each 2 frames, and after it loop through 8 moving sprites for each 8 frames. Use [tilt] to record.

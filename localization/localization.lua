@@ -121,6 +121,10 @@ return {
                 en_us='Keiki Haniyasushin',
                 zh_cn='埴安神袿姬',
             },
+            youmu={
+                en_us='Youmu Konpaku',
+                zh_cn='魂魄妖梦',
+            },
         },
         { -- level 1
             {
@@ -571,6 +575,18 @@ return {
                 spellName = {
                     en_us = 'Tessellation "N-Sided Nirvana"',
                     zh_cn = '密铺「N边的涅槃」'
+                },
+            },
+        },
+        { -- level 7
+            {
+                quote = {
+                    en_us = 'The world is full of her "sword spirit". I can feel the power of her sword.',
+                    zh_cn = '这个世界充满了她的“剑气”。我能感受到她的力量。',
+                },
+                spellName = {
+                    en_us = 'Sword Spirit "Slash of Echoing Ghost Blade"',
+                    zh_cn = '剑气「回响灵刃斩」',
                 },
             },
         }
