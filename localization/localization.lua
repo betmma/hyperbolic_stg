@@ -585,8 +585,18 @@ return {
                     zh_cn = '这个世界充满了她的“剑气”。我能感受到她的力量。',
                 },
                 spellName = {
-                    en_us = 'Sword Spirit "Slash of Echoing Ghost Blade"',
-                    zh_cn = '剑气「回响灵刃斩」',
+                    en_us = 'Soul-Body Sword "Slash of Echoing Ghost Blade"',
+                    zh_cn = '魂魄剑「回响灵刃斩」',
+                },
+            },
+            {
+                quote = {
+                    en_us = 'Follow the rhythm... do\'nt tell me the idea is from dance pad.',
+                    zh_cn = '跟紧节奏……难道这个创意是来自跳舞毯？',
+                },
+                spellName = {
+                    en_us = 'Instant Sword "Fleeting Crossing Slash"',
+                    zh_cn = '刹那剑「无常横断斩」',
                 },
             },
         }

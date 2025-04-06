@@ -62,6 +62,9 @@ end
 function Circle:drawSprite()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
+    if not data then
+        error('Circle:drawSprite: self.sprite not found in SpriteData')
+    end
     local scale=r/data.hitRadius*Circle.spriteSizeFactor
     if self.sprite then
         if data.forcedColor then

@@ -20,6 +20,8 @@ function Enemy:new(args)
     if self.mainEnemy then
         G.mainEnemy=self
     end
+    -- safe means enemy's body (circle) won't hit player, similar to circle.safe
+    self.safe=false
     self.hpBarTransparency=1
     self.hpSegments=args.hpSegments or {} -- draw a small bar marking special hp values. These are only visual effects. If you want a shockwave removing bullets when reaching special values, you need to do it manually.
     table.sort(self.hpSegments,function (a,b) return a>b end) -- we want it decreasing
