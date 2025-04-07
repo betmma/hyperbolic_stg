@@ -686,6 +686,14 @@ return {
             en_us = '{need} scenes to unlock next day',
             zh_cn='通过{need}个场景\n解锁下一天',
         },
+        playTimeOverall = {
+            en_us = 'Playtime Overall:\n{playtime}',
+            zh_cn='总游戏时间: {playtime}',
+        },
+        playTimeInLevel = {
+            en_us = 'Playtime in levels:\n{playtime}',
+            zh_cn='关卡内游戏时间: {playtime}',
+        },
         levelUIHint = {
             en_us = 'C: Upgrades Menu',
             zh_cn='C: 升级菜单',

@@ -876,6 +876,11 @@ G={
                 love.graphics.printf(Localize{'ui','passedScenes',passed=passedSceneCount,all=allSceneCount},710,5,90,'left')
                 love.graphics.printf(Localize{'ui','needSceneToUnlockNextLevel',need=needSceneCount},710,50,90,'left')
 
+                -- show play time
+                local playTimeTable=self.save.playTimeTable
+                love.graphics.printf(Localize{'ui','playTimeOverall',playtime=math.formatTime(playTimeTable.playTimeOverall)},710,100,90,'left')
+                love.graphics.printf(Localize{'ui','playTimeInLevel',playtime=math.formatTime(playTimeTable.playTimeInLevel)},710,130,90,'left')
+
                 love.graphics.translate(-rightOffset,0) -- right part ends
 
                 -- show "C: upgrades menu"
@@ -1449,7 +1454,11 @@ G.save={
     levelData={{{passed=0,tryCount=0,firstPass=0,firstPerfect=0}}},
     options={master_volume=100,},
     upgrades={{{bought=true}}},
-    defaultName='',-- when saving replay
+    defaultName='',-- the default name when saving replay
+    playTimeTable={
+        playTimeOverall=0,
+        playTimeInLevel=0,
+    },
 }
 G.loadData=function(self)
 	local file = love.filesystem.read("savedata.txt")
@@ -1512,6 +1521,21 @@ G.loadData=function(self)
     -- add default name for saving replay
     if not self.save.defaultName then
         self.save.defaultName=''
+    end
+
+    -- add play time data
+    if not self.save.playTimeTable then
+        self.save.playTimeTable={}
+    end
+    local defaultPlayTimeTable={
+        -- unit is seconds
+        playTimeOverall=0,
+        playTimeInLevel=0,
+    }
+    for k,value in pairs(defaultPlayTimeTable) do
+        if not self.save.playTimeTable[k] then
+            self.save.playTimeTable[k]=value
+        end
     end
 
     self:saveData()
@@ -1588,6 +1612,8 @@ end
 G.update=function(self,dt)
     self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
+
+    -- replay speed control
     if G.replay then
         if love.keyboard.isDown('lalt') then -- +2x
             self.currentUI.update(self,dt)
@@ -1602,6 +1628,13 @@ G.update=function(self,dt)
     else
         self.currentUI.update(self,dt)
     end
+
+    -- playtime calculation
+    if self.STATE==self.STATES.IN_LEVEL then
+        self.save.playTimeTable.playTimeInLevel=self.save.playTimeTable.playTimeInLevel+dt
+    end
+    self.save.playTimeTable.playTimeOverall=self.save.playTimeTable.playTimeOverall+dt
+
 end
 G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
@@ -1661,6 +1694,8 @@ G.antiFollowModeTransform=function(self)
     love.graphics.scale(1/scale)
     love.graphics.translate(-(wantedX-G.viewMode.object.x*scale),-(wantedY-G.viewMode.object.y*scale))
 end
+
+-- remove all objects in the scene
 G.removeAll=function(self)
     Asset:clearBatches()
     Object:removeAll()

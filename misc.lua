@@ -121,6 +121,15 @@ function math.drawArc(x, y, r, s_ang, e_ang, numLines)
     love.graphics.setLineWidth(lineWidth)
 end
 
+-- format time in seconds to hh:mm:ss
+-- example: 3661 -> 01:01:01
+function math.formatTime(seconds)
+    local hours = math.floor(seconds / 3600)
+    local minutes = math.floor((seconds % 3600) / 60)
+    local seconds = math.floor(seconds % 60)
+    return string.format("%02d:%02d:%02d", hours, minutes, seconds)
+end
+
 
 function copy_table(O)
     local O_type = type(O)
