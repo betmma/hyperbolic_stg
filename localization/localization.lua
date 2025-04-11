@@ -599,6 +599,16 @@ return {
                     zh_cn = '刹那剑「无常横断斩」',
                 },
             },
+            {
+                quote = {
+                    en_us = 'The border corners are like horns, much deeper than I thought and provide space to escape.',
+                    zh_cn = '边界的角落是号角形的，比我想象的要深得多，提供了逃跑的空间。',
+                },
+                spellName = {
+                    en_us = 'Karmic Binding Sword "Karmic Retribution Slash"',
+                    zh_cn = '业缚剑「宿业断罪斩」',
+                },
+            },
         }
     },
     ui = {
