@@ -113,15 +113,32 @@ function Shape.distanceToSegment(xc,yc,x1,y1,x2,y2)
     return Shape.distance(centerX+radius*math.cos(thetac),Shape.axisY+radius*math.sin(thetac),xc,yc) -- this is INCORRECT, just an approximation when distance is small (used in lazer segment hitbox check)
 end
 
--- find the nearest point to xc,yc on line [x1,y1 to x2,y2] 
+-- find the nearest point to xc,yc on line [x1,y1 to x2,y2]
 ---@return table "{x,y}"
 function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<EPS then -- vertical
         return {x1,yc}
     end
     local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
-    local direction=math.atan2(yc-Shape.axisY,xc-centerX)
-    return {centerX+radius*math.cos(direction),Shape.axisY+radius*math.sin(direction)}
+    --[[ let the semicircle from xc,yc to the foot of the perpendicular line intersecting the semicircle of (centerX,radius) be (centerX2, radius2), then radius2 is radius*tan(direction) (this can be negative, but we only use squared value below so doesn't matter), centerX2 is centerX+radius/cos(direction), xc,yc is on it, so (xc-centerX2)^2+(yc-Shape.axisY)^2=radius2^2, which is:
+    (xc-centerX-radius/cos(direction))^2+(yc-Shape.axisY)^2=radius^2*tan(direction)^2
+    let xc-centerX=a, (yc-Shape.axisY)^2=b, radius=R, then we have:
+    (a-R/cos(direction))^2+b=R^2*tan(direction)^2
+    expand, we get:
+    a^2-2aR/cos(direction)+R^2/cos(direction)^2+b=R^2*tan(direction)^2
+    a^2-2aR/cos(direction)+R^2/cos(direction)^2+b=R^2*(1/cos(direction)^2-1)
+    multiplying cos(direction)^2 and let cos(direction)=x, we get:
+    (a^2+b)x^2-2aRx+R^2=R^2-R^2x^2
+    (a^2+b+R^2)x^2-2aRx=0
+    x=(2aR)/(a^2+b+R^2) (discard x=0 solution)
+    ]]
+    local a=xc-centerX
+    local b=(yc-Shape.axisY)^2
+    local R=radius
+    local x=(2*a*R)/(a^2+b+R^2)
+    -- direction is limited in (0,pi) so sin(direction) is positive
+
+    return {centerX+radius*x,Shape.axisY+radius*math.sqrt(1-x^2)}
 end
 
 function Shape.drawSegment(x1,y1,x2,y2,segNum)

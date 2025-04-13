@@ -61,6 +61,8 @@ function Player:new(args)
     self.centerX=400
     self.radius = 0.5
     self.drawRadius=0.5
+    -- orientation determines extra rotation of player sprite and focus sprite. since player sprite faces up, orientation is normally 0. It's not 0 in some cases, like when calculating mirrored player sprite.
+    self.orientation=0
     local minx=150
     local maxx=650
     local miny=0
@@ -412,19 +414,26 @@ function Player:draw()
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
     local color={love.graphics.getColor()}
     love.graphics.setColor(1,1,0)
-    if self.invincibleTime>0 then
+    if self.invincibleTime and self.invincibleTime>0 then
         love.graphics.setColor(1,0,0)
     end
     -- Shape.drawCircle(self.x,self.y,self.drawRadius)
     love.graphics.setColor(color[1],color[2],color[3])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
-    --draw hit point
+    local orientation=self.orientation or 0
+    local horizontalFlip=self.horizontalFlip or false
+    
+    -- x and y is the actual position on screen
     local x,y,r=Shape.getCircle(self.x,self.y,self.drawRadius)
+    
+    --draw hit point
+    local focusSizeFactor=0.4
     Asset.playerFocusBatch:setColor(1,1,1,self.focusPointTransparency)
-    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5,r*0.4,r*0.4,31,33)-- the image is 64*64 but the focus center seems slightly off
+    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,31,33)-- the image is 64*64 but the focus center seems slightly off
+    local spriteSizeFactor=0.53
     if self.sprite then
-        Asset.playerBatch:add(self.sprite,x,y,0,r*0.53,r*0.53,Asset.player.width/2,Asset.player.height/2)
+        Asset.playerBatch:add(self.sprite,x,y,orientation,r*spriteSizeFactor*(horizontalFlip and -1 or 1),r*spriteSizeFactor,Asset.player.width/2,Asset.player.height/2)
     end
 end
 

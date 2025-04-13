@@ -5814,6 +5814,89 @@ local levelData={
                 
             end
         },
+        {
+            quote='?',
+            user='?',
+            spellName='?', 
+            make=function()
+                G.levelRemainingFrame=7200
+                Shape.removeDistance=100000
+                local a,b
+                local en
+                en=Enemy{x=500,y=300,mainEnemy=true,maxhp=96000000}
+                en:addHPProtection(600,10)
+                local player=Player{x=400,y=600}
+                player.moveMode=Player.moveModes.Natural
+                player.border:remove()
+                local poses={}
+                for i = 1, 4, 1 do
+                    local nx,ny=Shape.rThetaPos(400,300,200,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i)))
+                    table.insert(poses,{nx,ny})
+                end
+                player.border=PolyLine(poses)
+                G.viewMode.mode=G.VIEW_MODES.FOLLOW
+                G.viewMode.object=player
+
+                --- input player object and (x1,y1), (x2,y2) that determines the mirror, return a fake player object (a table with x, y and necessary information to send into player.draw)
+                ---@param player "Player"
+                ---@param x1 number
+                ---@param y1 number
+                ---@param x2 number
+                ---@param y2 number
+                ---@return table
+                local function playerReflection(player,x1,y1,x2,y2)
+                    local xs,ys=player.x,player.y
+                    local nearest=Shape.nearestToLinePrecise(xs,ys,x1,y1,x2,y2)
+                    local x3,y3=nearest[1],nearest[2]
+                    local x3toself=Shape.to(x3,y3,xs,ys)
+                    local selftox3=Shape.to(xs,ys,x3,y3)
+                    local distance=Shape.distance(xs,ys,x3,y3)
+                    if distance<Shape.EPS then
+                        return player
+                    end
+                    local xReflection,yReflection=Shape.rThetaPos(x3,y3,distance,x3toself+math.pi)
+                    --[[this is complex, lemme explain:
+                       (xs,ys)\______(x3,y3)______/(xRe,yRe)     (Re is Reflection)
+                        ↘selftox3  ←x3toself     ↙xRetox3
+                    let the orientation of player be 0.
+                    first calculate the orientation, when moving player from (xs,ys) to (x3,y3) along the straight line. The difference of orientation is x3toself-selftox3+pi. so the result, calling it ori1, is x3toself-selftox3+pi.
+                    then calculate the reflection. after reflection, the orientation is 2*tangent direction at (x3,y3)-ori1+pi (a little tricky for this pi, but it's correct). we know that x3toself is perpendicular to tangent, so the result after reflection, calling it ori2, is 2*(x3toself+pi/2)-ori1+pi=x3toself+selftox3+pi.
+                    finally move the reflection to (xRe,yRe). difference is xRetox3-x3toself. so the result, calling it ori3, is xRetox3-x3toself+ori2=xRetox3+selftox3+pi.
+                    for the initial orientation, it's easy to know the reflection rotates in the opposite direction, so minus initial orientation.
+
+                    also flip the horizontalFlip boolean.
+                    ]]
+                    local deltaOrientation=
+                        Shape.to(xReflection,yReflection,xs,ys)+Shape.to(xs,ys,x3,y3)+math.pi-player.orientation
+                    local fakePlayer={x=xReflection,y=yReflection,orientation=deltaOrientation,sprite=player.sprite,drawRadius=player.drawRadius,focusPointTransparency=player.focusPointTransparency,time=-player.time,horizontalFlip=not player.horizontalFlip}
+                    return fakePlayer
+                end
+
+                local playerDrawRef=player.draw
+                player.draw=function(self,layer)
+                    playerDrawRef(self)
+                    layer=layer or 0
+                    if layer==3 then return end
+                    local xs,ys=self.x,self.y
+                    local border=player.border
+                    for i=1,#border.points do
+                        local x1,y1=border.points[i].x,border.points[i].y
+                        local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
+                        local fakePlayer=playerReflection(self,x1,y1,x2,y2)
+                        player.draw(fakePlayer,layer+1)
+                    end
+                end
+
+
+                Event.LoopEvent{
+                    obj=en,
+                    period=1,
+                    executeFunc=function()
+                    end
+                }
+                
+            end
+        },
     }
 }
 levelData.needPass={3,6,9,12,16,20,25,30}
