@@ -32,6 +32,7 @@ local calculateSideLength=function(sideNum,angleNum)
     sideLengthCache[sideNum][angleNum]={sideLength,circumcircleRadius}
     return sideLength,circumcircleRadius
 end
+BackgroundPattern.calculateSideLength=calculateSideLength
 
 local function getCenterOfPolygonWithSide(x1,y1,x2,y2,sideNum,angleNum)
     local direction=Shape.to(x2,y2,x1,y1)

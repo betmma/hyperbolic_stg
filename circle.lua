@@ -72,7 +72,7 @@ function Circle:drawSprite()
         else
             self.batch:setColor(1,1,1,self.spriteTransparency)
         end
-        self.batch:add(self.sprite,x,y,self.direction+math.pi/2+self.spriteExtraDirection,scale,scale,data.size/2,data.size/2)
+        self.batch:add(self.sprite,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.size/2,data.size/2)
     end
 end
 function Circle:checkShockwaveRemove()

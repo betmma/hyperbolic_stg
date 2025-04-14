@@ -5820,73 +5820,142 @@ local levelData={
             spellName='?', 
             make=function()
                 G.levelRemainingFrame=7200
+                G.levelIsTimeoutSpellcard=true
                 Shape.removeDistance=100000
                 local a,b
                 local en
                 en=Enemy{x=500,y=300,mainEnemy=true,maxhp=96000000}
                 en:addHPProtection(600,10)
                 local player=Player{x=400,y=600}
+                player.cancelVortex=true
+                player.shoot=function() end
                 player.moveMode=Player.moveModes.Natural
                 player.border:remove()
+                local _,r=backgroundPattern.calculateSideLength(4,5)
                 local poses={}
                 for i = 1, 4, 1 do
-                    local nx,ny=Shape.rThetaPos(400,300,200,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i)))
+                    local nx,ny=Shape.rThetaPos(400,300,r,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i)))
                     table.insert(poses,{nx,ny})
                 end
                 player.border=PolyLine(poses)
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 G.viewMode.object=player
 
-                --- input player object and (x1,y1), (x2,y2) that determines the mirror, return a fake player object (a table with x, y and necessary information to send into player.draw)
-                ---@param player "Player"
+                --- input object and (x1,y1), (x2,y2) that determines the mirror, return a fake object (a table with x, y and orientation)
+                ---@param obj table
                 ---@param x1 number
                 ---@param y1 number
                 ---@param x2 number
                 ---@param y2 number
                 ---@return table
-                local function playerReflection(player,x1,y1,x2,y2)
-                    local xs,ys=player.x,player.y
-                    local nearest=Shape.nearestToLinePrecise(xs,ys,x1,y1,x2,y2)
-                    local x3,y3=nearest[1],nearest[2]
-                    local x3toself=Shape.to(x3,y3,xs,ys)
-                    local selftox3=Shape.to(xs,ys,x3,y3)
-                    local distance=Shape.distance(xs,ys,x3,y3)
-                    if distance<Shape.EPS then
-                        return player
-                    end
-                    local xReflection,yReflection=Shape.rThetaPos(x3,y3,distance,x3toself+math.pi)
-                    --[[this is complex, lemme explain:
-                       (xs,ys)\______(x3,y3)______/(xRe,yRe)     (Re is Reflection)
-                        ↘selftox3  ←x3toself     ↙xRetox3
-                    let the orientation of player be 0.
-                    first calculate the orientation, when moving player from (xs,ys) to (x3,y3) along the straight line. The difference of orientation is x3toself-selftox3+pi. so the result, calling it ori1, is x3toself-selftox3+pi.
-                    then calculate the reflection. after reflection, the orientation is 2*tangent direction at (x3,y3)-ori1+pi (a little tricky for this pi, but it's correct). we know that x3toself is perpendicular to tangent, so the result after reflection, calling it ori2, is 2*(x3toself+pi/2)-ori1+pi=x3toself+selftox3+pi.
-                    finally move the reflection to (xRe,yRe). difference is xRetox3-x3toself. so the result, calling it ori3, is xRetox3-x3toself+ori2=xRetox3+selftox3+pi.
-                    for the initial orientation, it's easy to know the reflection rotates in the opposite direction, so minus initial orientation.
-
-                    also flip the horizontalFlip boolean.
-                    ]]
-                    local deltaOrientation=
-                        Shape.to(xReflection,yReflection,xs,ys)+Shape.to(xs,ys,x3,y3)+math.pi-player.orientation
-                    local fakePlayer={x=xReflection,y=yReflection,orientation=deltaOrientation,sprite=player.sprite,drawRadius=player.drawRadius,focusPointTransparency=player.focusPointTransparency,time=-player.time,horizontalFlip=not player.horizontalFlip}
-                    return fakePlayer
+                local function objReflection(obj,x1,y1,x2,y2)
+                    local xs,ys=obj.x,obj.y
+                    local xReflection,yReflection,deltaOrientation=Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
+                    local fakeObj={x=xReflection,y=yReflection,orientation=deltaOrientation-(obj.orientation or 0),sprite=obj.sprite} 
+                    return fakeObj
                 end
 
-                local playerDrawRef=player.draw
-                player.draw=function(self,layer)
-                    playerDrawRef(self)
+                -- wrap obj.functionName to achieve calling the original function on every reflection object.
+                -- functionName should be "atomic" function that doesn't call other obj methods (so only love draw)
+                -- using copy_table on reflected object above is clearly a heavy load and causes fps drop, so you need to copy needed attributes from self to reflectedSelf
+                local function reflectFunctionalize(obj,functionName,exitLayer,drawConditionFunc,modificationToReflectionFunc)
+                    local originalFunc=obj[functionName]
+                    obj[functionName]=function(self,...) -- add layer, lastIndex and inReflection parameter
+                        local paramLength=select('#',...)
+                        local inReflection=paramLength>0 and select(-1,...)=='inReflection'
+                        local layer=0
+                        local lastIndex
+                        local args={...}
+                        if inReflection then
+                            layer=select(-3,...)
+                            lastIndex=select(-2,...)
+                        else
+                            table.insert(args,0)
+                            table.insert(args,0)
+                            table.insert(args,'inReflection')
+                        end
+                        if not drawConditionFunc or drawConditionFunc(self,layer) then
+                            originalFunc(self,...)
+                        end
+                        args[#args-2]=layer+1 -- layer+=1
+                        if layer==exitLayer then return end
+                        local border=player.border
+                        for i=1,#border.points do
+                            if i==lastIndex then
+                                goto continue
+                            end
+                            local x1,y1=border.points[i].x,border.points[i].y
+                            local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
+                            local reflectedSelf=objReflection(self,x1,y1,x2,y2)
+                            if modificationToReflectionFunc then
+                                modificationToReflectionFunc(reflectedSelf,self,x1,y1,x2,y2)
+                            end
+                            args[#args-1]=i -- lastIndex
+                            obj[functionName](reflectedSelf,unpack(args))
+                            ::continue::
+                        end
+                    end
+                end
+
+                reflectFunctionalize(player,'draw',2,function(self,layer)
+                    return layer>0 
+                end,function(fakePlayer,self)
+                    fakePlayer.drawRadius=self.drawRadius
+                    fakePlayer.focusPointTransparency=self.focusPointTransparency
+                    fakePlayer.time=-self.time
+                    fakePlayer.horizontalFlip=not self.horizontalFlip
+                end)
+
+
+                local borderdrawOneRef=player.border.drawOne
+                player.border.drawOne=function(p1,p2,layer,lastIndex)
                     layer=layer or 0
-                    if layer==3 then return end
-                    local xs,ys=self.x,self.y
+                    borderdrawOneRef(p1,p2)
+                    if layer==2 then return end
                     local border=player.border
                     for i=1,#border.points do
+                        if i==lastIndex then
+                            goto continue
+                        end
                         local x1,y1=border.points[i].x,border.points[i].y
                         local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
-                        local fakePlayer=playerReflection(self,x1,y1,x2,y2)
-                        player.draw(fakePlayer,layer+1)
+                        local xs1=p1.x
+                        local ys1=p1.y
+                        local xs2=p2.x
+                        local ys2=p2.y
+                        if xs1==x1 and ys1==y1 and xs2==x2 and ys2==y2 then
+                            goto continue
+                        end
+                        -- ugh 2 reflections here make it not able to use reflectFunctionalize :(
+                        local xr1,yr1=Shape.reflectByLine(xs1,ys1,x1,y1,x2,y2)
+                        local xr2,yr2=Shape.reflectByLine(xs2,ys2,x1,y1,x2,y2)
+                        player.border.drawOne({x=xr1,y=yr1},{x=xr2,y=yr2},layer+1,i)
+                        ::continue::
                     end
                 end
 
+                a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=10,bulletSpeed=50,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
+                    function(cir,args,self)
+                        reflectFunctionalize(cir,'drawSprite',2,function(self,layer)
+                            return true 
+                        end,function(reflectedSelf,self,x1,y1,x2,y2)
+                            reflectedSelf.radius=self.radius
+                            reflectedSelf.batch=self.batch
+                            reflectedSelf.direction=math.pi-self.direction+reflectedSelf.orientation
+                            reflectedSelf.orientation=0
+                        end)
+                        Event.LoopEvent{
+                            obj=cir,
+                            period=1,
+                            conditionFunc=function()
+                                return not player.border:inside(cir.x,cir.y)
+                            end,
+                            executeFunc=function()
+                                cir:remove()
+                            end
+                        }
+                    end
+                }}
 
                 Event.LoopEvent{
                     obj=en,

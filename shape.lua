@@ -141,6 +141,40 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     return {centerX+radius*x,Shape.axisY+radius*math.sqrt(1-x^2)}
 end
 
+--- reflect a point xc,yc by line [x1,y1 to x2,y2]. when drawing flipped object, besides using this function to calculate the new position, also need to horizontally flip the object.
+---@param xs number
+---@param ys number
+---@param x1 number
+---@param y1 number
+---@param x2 number
+---@param y2 number
+---@return number "x of reflected point"
+---@return number "y of reflected point"
+---@return number "delta orientation from reflection"
+function Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
+    local nearest=Shape.nearestToLine(xs,ys,x1,y1,x2,y2)
+    local x3,y3=nearest[1],nearest[2]
+    local x3toself=Shape.to(x3,y3,xs,ys)
+    local selftox3=Shape.to(xs,ys,x3,y3)
+    local distance=Shape.distance(xs,ys,x3,y3)
+    if distance<Shape.EPS then
+        local tangentAngle=Shape.to(xs,ys,x1,y1)
+        return xs,ys,tangentAngle*2+math.pi
+    end
+    local xReflection,yReflection=Shape.rThetaPos(x3,y3,distance,x3toself+math.pi)
+    --[[this is complex, lemme explain:
+       (xs,ys)\______(x3,y3)______/(xRe,yRe)     (Re is Reflection)
+        ↘selftox3  ←x3toself     ↙xRetox3
+    let the orientation of player be 0.
+    first calculate the orientation, when moving player from (xs,ys) to (x3,y3) along the straight line. The difference of orientation is x3toself-selftox3+pi. so the result, calling it ori1, is x3toself-selftox3+pi.
+    then calculate the reflection. after reflection, the orientation is 2*tangent direction at (x3,y3)-ori1+pi (a little tricky for this pi. it's from how we implement flip. horizontal flip adds 2*flip axis angle that is pi. if use vertical flip there won't be pi). we know that x3toself is perpendicular to tangent, so the result after reflection, calling it ori2, is 2*(x3toself+pi/2)-ori1+pi=x3toself+selftox3+pi.
+    finally move the reflection to (xRe,yRe). difference is xRetox3-x3toself. so the result, calling it ori3, is xRetox3-x3toself+ori2=xRetox3+selftox3+pi.
+    for the initial orientation, it's easy to know the reflection rotates in the opposite direction, so minus initial orientation.
+    ]]
+    local deltaOrientation=Shape.to(xReflection,yReflection,xs,ys)+Shape.to(xs,ys,x3,y3)+math.pi
+    return xReflection,yReflection,deltaOrientation
+end
+
 function Shape.drawSegment(x1,y1,x2,y2,segNum)
     if math.abs(x1-x2)<EPS then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)
@@ -174,6 +208,9 @@ function Shape.drawCircle(x,y,r,mode)
 end
 
 -- find the Euclidean x', y' and r' of hyperbolic circle with center (x,y) and radius r.
+---@param x number
+---@param y number
+---@param r number
 function Shape.getCircle(x,y,r)
     return x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature)
 end

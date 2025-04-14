@@ -402,6 +402,9 @@ G={
                             obj=player,
                             period=1,
                             executeFunc=function(self,executedTimes)
+                                if player.cancelVortex then
+                                    return
+                                end
                                 local x,y=player.x,player.y
                                 local theta=0.02*executedTimes
                                 local r=20
