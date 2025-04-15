@@ -55,6 +55,12 @@ end
 local Charge=Effect:extend()
 Effect.Charge=Charge
 function Charge:new(args)
+    if not args.x then
+        args.x=args.obj.x
+    end
+    if not args.y then
+        args.y=args.obj.y
+    end
     Charge.super.new(self, args)
     self.obj=args.obj or self
     self.sprite=args.sprite or Asset.shards.round

@@ -4218,7 +4218,7 @@ local levelData={
                         local naturalDirection=player.naturalDirection
                         dx2,dy2=dx*math.cos(naturalDirection)-dy*math.sin(naturalDirection),dx*math.sin(naturalDirection)+dy*math.cos(naturalDirection)
                         if t%(period)==0 or t%(period)==period/2 then
-                            SFX:play('graze',true,amplitude/0.05) -- mimic clock ticking
+                            SFX:play('graze',true,amplitude/0.05) -- mimic clock ticking sound
                         end
                         local hpLevel=en:getHPLevel()
                         if hpLevel>=2 then
@@ -5826,20 +5826,24 @@ local levelData={
                 Shape.removeDistance=100000
                 local a,b
                 local en
-                en=Enemy{x=500,y=300,mainEnemy=true,maxhp=96000000}
+                en=Enemy{x=5000,y=300,mainEnemy=true,maxhp=96000000}
                 en:addHPProtection(600,10)
                 local player=Player{x=400,y=600}
                 player.cancelVortex=true
                 player.shoot=function() end
                 player.moveMode=Player.moveModes.Natural
-                player.border:remove()
                 local _,r=backgroundPattern.calculateSideLength(4,5)
-                local poses={}
-                for i = 1, 4, 1 do
-                    local nx,ny=Shape.rThetaPos(400,300,r,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i)))
-                    table.insert(poses,{nx,ny})
+                local borderAngle=0
+                local function borderCreate()
+                    player.border:remove()
+                    local poses={}
+                    for i = 1, 4, 1 do
+                        local nx,ny=Shape.rThetaPos(400,300,r,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i))+borderAngle)
+                        table.insert(poses,{nx,ny})
+                    end
+                    player.border=PolyLine(poses)
                 end
-                player.border=PolyLine(poses)
+                borderCreate()
                 G.viewMode.mode=G.VIEW_MODES.FOLLOW
                 G.viewMode.object=player
 
@@ -5900,7 +5904,7 @@ local levelData={
                 end
 
                 reflectFunctionalize(player,'draw',2,function(self,layer)
-                    return layer>0 
+                    return layer>0 or en.frame<60
                 end,function(fakePlayer,self)
                     fakePlayer.drawRadius=self.drawRadius
                     fakePlayer.focusPointTransparency=self.focusPointTransparency
@@ -5908,54 +5912,93 @@ local levelData={
                     fakePlayer.horizontalFlip=not self.horizontalFlip
                 end)
 
+                local function reflectBorder()
+                    local borderdrawOneRef=player.border.drawOne
+                    player.border.drawOne=function(p1,p2,layer,lastIndex)
+                        layer=layer or 0
+                        borderdrawOneRef(p1,p2)
+                        if layer==2 then return end
+                        local border=player.border
+                        for i=1,#border.points do
+                            if i==lastIndex then
+                                goto continue
+                            end
+                            local x1,y1=border.points[i].x,border.points[i].y
+                            local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
+                            local xs1=p1.x
+                            local ys1=p1.y
+                            local xs2=p2.x
+                            local ys2=p2.y
+                            if xs1==x1 and ys1==y1 and xs2==x2 and ys2==y2 then
+                                goto continue
+                            end
+                            -- ugh 2 reflections here make it not able to use reflectFunctionalize :(
+                            local xr1,yr1=Shape.reflectByLine(xs1,ys1,x1,y1,x2,y2)
+                            local xr2,yr2=Shape.reflectByLine(xs2,ys2,x1,y1,x2,y2)
+                            player.border.drawOne({x=xr1,y=yr1},{x=xr2,y=yr2},layer+1,i)
+                            ::continue::
+                        end
+                    end
+                end
+                reflectBorder()
 
-                local borderdrawOneRef=player.border.drawOne
-                player.border.drawOne=function(p1,p2,layer,lastIndex)
-                    layer=layer or 0
-                    borderdrawOneRef(p1,p2)
-                    if layer==2 then return end
-                    local border=player.border
-                    for i=1,#border.points do
-                        if i==lastIndex then
-                            goto continue
+                local function bulletBase(cir)
+                    reflectFunctionalize(cir,'drawSprite',2,function(self,layer)
+                        return layer>0 or en.frame<3640
+                    end,function(reflectedSelf,self,x1,y1,x2,y2)
+                        reflectedSelf.radius=self.radius
+                        reflectedSelf.batch=self.batch
+                        reflectedSelf.direction=math.pi-self.direction+reflectedSelf.orientation
+                        reflectedSelf.orientation=0
+                    end)
+                    local ref=cir.drawSprite
+                    cir.drawSprite=function(self,...)
+                        if player.border:inside(cir.x,cir.y) then
+                            ref(self,...)
                         end
-                        local x1,y1=border.points[i].x,border.points[i].y
-                        local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
-                        local xs1=p1.x
-                        local ys1=p1.y
-                        local xs2=p2.x
-                        local ys2=p2.y
-                        if xs1==x1 and ys1==y1 and xs2==x2 and ys2==y2 then
-                            goto continue
-                        end
-                        -- ugh 2 reflections here make it not able to use reflectFunctionalize :(
-                        local xr1,yr1=Shape.reflectByLine(xs1,ys1,x1,y1,x2,y2)
-                        local xr2,yr2=Shape.reflectByLine(xs2,ys2,x1,y1,x2,y2)
-                        player.border.drawOne({x=xr1,y=yr1},{x=xr2,y=yr2},layer+1,i)
-                        ::continue::
                     end
                 end
 
-                a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=10,bulletSpeed=50,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
+                local basePos={x=400,y=300}
+
+                a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=40,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,bulletEvents={
                     function(cir,args,self)
-                        reflectFunctionalize(cir,'drawSprite',2,function(self,layer)
-                            return true 
-                        end,function(reflectedSelf,self,x1,y1,x2,y2)
-                            reflectedSelf.radius=self.radius
-                            reflectedSelf.batch=self.batch
-                            reflectedSelf.direction=math.pi-self.direction+reflectedSelf.orientation
-                            reflectedSelf.orientation=0
-                        end)
-                        Event.LoopEvent{
-                            obj=cir,
-                            period=1,
-                            conditionFunc=function()
-                                return not player.border:inside(cir.x,cir.y)
-                            end,
-                            executeFunc=function()
-                                cir:remove()
-                            end
-                        }
+                        bulletBase(cir)
+                        if args.index%2==1 then
+                            cir.speed=cir.speed+math.min(40,en.frame/60)
+                            cir:changeSpriteColor('red')
+                            Event.DelayEvent{
+                                obj=cir,
+                                delayFrame=30,
+                                executeFunc=function()
+                                    Event.EaseEvent{
+                                        obj=cir,
+                                        aimTable=cir,
+                                        aimKey='speed',
+                                        aimValue=0,
+                                        easeFrame=20,
+                                        afterFunc=function()
+                                            cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+math.eval('0+0.5')
+                                            Event.EaseEvent{
+                                                obj=cir,
+                                                aimTable=cir,
+                                                aimKey='speed',
+                                                aimValue=30,
+                                                easeFrame=20
+                                            }
+                                        end
+                                    }
+                                end
+                            }
+                        else
+                            Event.EaseEvent{
+                                obj=cir,
+                                aimTable=cir,
+                                aimKey='speed',
+                                aimValue=20+math.min(30,en.frame/120),
+                                easeFrame=20
+                            }
+                        end
                     end
                 }}
 
@@ -5963,6 +6006,56 @@ local levelData={
                     obj=en,
                     period=1,
                     executeFunc=function()
+                        G.viewOffset.x=(player.x-400)*0.1
+                        G.viewOffset.y=(player.y-300)*0.1
+                        local frame=en.frame
+                        local testing=0
+                        if frame==20 then
+                            SFX:play('enemyCharge',true)
+                            Effect.Charge{obj=player,particleSize=30,particleSpeed=0.5,color={0.3,0.3,0.3}}
+                        end
+                        if frame==60 then
+                            SFX:play('enemyPowerfulShot',true)
+                        end
+                        if frame==math.max(1200-testing,2) then
+                            SFX:play('enemyCharge',true)
+                            b=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed=15,bulletLifeFrame=3500,angle='player',range=math.pi/3,bulletSprite=BulletSprites.bigStar.blue,bulletEvents={
+                                function(cir,args,self)
+                                    if args.index==1 then
+                                        SFX:play('enemyPowerfulShot',true)
+                                    end
+                                    bulletBase(cir)
+                                    cir.x,cir.y=Shape.rThetaPos(cir.x,cir.y,80-10*2*math.abs(args.index/b.bulletNumber-0.5),cir.direction)
+                                    cir.direction=Shape.to(cir.x,cir.y,b.x,b.y)
+                                end
+                            }}
+                        end
+                        if frame==2400 then
+                            SFX:play('enemyCharge',true)
+                        end
+                        if frame>=2400 then
+                            Shape.moveTowards(basePos,player,0.1,true)
+                            a.x,a.y=basePos.x,basePos.y
+                            b.x,b.y=basePos.x,basePos.y
+                        end
+                        if frame==3600-testing then
+                            SFX:play('enemyCharge',true)
+                            Effect.Shockwave{x=a.x,y=a.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
+                            Effect.Charge{obj=a,particleSize=60,particleSpeed=2,color={0.3,0.3,0.3}}
+                            a.spawnEvent.frame=0
+                            a.spawnEvent.period=9999999
+                            b.spawnEvent.frame=180
+                        end
+                        if frame==4500-testing then
+                            SFX:play('enemyCharge',true)
+                            b.spawnEvent.frame=0
+                            b.spawnEvent.period=150
+                        end
+                        if frame>=4500-testing then
+                            borderAngle=borderAngle+math.pi/180*0.5
+                            borderCreate()
+                            reflectBorder()
+                        end
                     end
                 }
                 

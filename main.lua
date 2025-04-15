@@ -1,4 +1,4 @@
-VERSION="0.3.2.5"
+VERSION="0.3.2.6"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -9,6 +9,7 @@ require'misc'
 function love.load()
     Object = require "classic"
     Shape = require "shape"
+    require "shapeFunctions"
     Circle = require "circle"
     Laser=require"laser"
     PolyLine = require "polyline"
