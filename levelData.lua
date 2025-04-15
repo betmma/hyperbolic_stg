@@ -3486,6 +3486,7 @@ local levelData={
                                         obj=b,
                                         delayFrame=20,
                                         executeFunc=function()
+                                            if en:getHPLevel()~=1 then return end
                                             b.angle=b.angle-math.pi/12
                                             b:spawnBatchFunc()
                                             b.angle=math.eval('0+999')
@@ -3500,6 +3501,7 @@ local levelData={
                                         obj=b,
                                         delayFrame=10,
                                         executeFunc=function()
+                                            if en:getHPLevel()~=1 then return end
                                             squareSize=24
                                             b.angle=b.angle-math.pi/24*.75*sign
                                             b:spawnBatchFunc()
