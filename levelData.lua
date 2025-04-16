@@ -5821,6 +5821,7 @@ local levelData={
             user='?',
             spellName='?', 
             make=function()
+                -- after 60 seconds you can only get information from reflections. In this phase the key is to move in a circle, rotating with →↓←↑, instead of finding the direction, so that you don't get confused by the reflections.
                 G.levelRemainingFrame=7200
                 G.levelIsTimeoutSpellcard=true
                 Shape.removeDistance=100000
@@ -6042,8 +6043,7 @@ local levelData={
                             SFX:play('enemyCharge',true)
                             Effect.Shockwave{x=a.x,y=a.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
                             Effect.Charge{obj=a,particleSize=60,particleSpeed=2,color={0.3,0.3,0.3}}
-                            a.spawnEvent.frame=0
-                            a.spawnEvent.period=9999999
+                            a:remove()
                             b.spawnEvent.frame=180
                         end
                         if frame==4500-testing then
@@ -6055,6 +6055,14 @@ local levelData={
                             borderAngle=borderAngle+math.pi/180*0.5
                             borderCreate()
                             reflectBorder()
+                        end
+                        if frame==6000-testing then
+                            SFX:play('enemyCharge',true)
+                            a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=10,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,bulletEvents={
+                                function(cir,args,self)
+                                    bulletBase(cir)
+                                end
+                            }}
                         end
                     end
                 }
