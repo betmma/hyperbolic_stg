@@ -61,6 +61,9 @@ return {
                                 else
                                     cir:changeSpriteColor('red')
                                 end
+                                local distance=Shape.distance(cir.x,cir.y,player.x,player.y)
+                                local volume=math.max(0.5,1-distance/50)
+                                SFX:play('graze',true,volume)
                                 count=count+1
                             end
                         end

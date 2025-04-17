@@ -23,7 +23,10 @@ function AudioSystem:new(args)
     -- currentVolume is used for options, while volumeCoeff is unchangable to player
     self.currentVolume=args.currentVolume or 1
 end
--- play a specific audio. If restart is true, the audio will be played from the beginning, otherwise if the audio is already playing, it does nothing.
+--- play a specific audio. If [restart] is true, the audio will be played from the beginning, otherwise if the audio is already playing, it does nothing.
+---@param name string
+---@param restart boolean
+---@param overrideVolume number
 function AudioSystem:play(name,restart,overrideVolume)
     if self.unique==true and self.currentAudio and self.currentAudio~=name then
         love.audio.stop(self.data[self.currentAudio])
