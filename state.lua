@@ -1,5 +1,6 @@
+BulletSpawner=require"bulletSpawner"
+BackgroundPattern=require"backgroundPattern"
 local levelData=require"levelData"
-local backgroundPattern=require"backgroundPattern"
 local function keyBindValueCalc(self,addKey,subKey,valueName,valueMax)
     if isPressed(addKey)then
         self.currentUI[valueName]=self.currentUI[valueName]%valueMax+1
@@ -37,7 +38,7 @@ local G={
     },
 }
 G={
-    backgroundPattern=backgroundPattern.MainMenuTesselation(),
+    backgroundPattern=BackgroundPattern.MainMenuTesselation(),
     switchState=function(self,state)
         if not self.UIDEF[state] then
             error("State "..state.." not defined")
@@ -161,7 +162,7 @@ G={
             },
             chosen=1,
             enter=function(self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
+                self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 BGM:play('title')
             end,
             update=function(self,dt)
@@ -195,7 +196,7 @@ G={
         },
         OPTIONS={
             enter=function(self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
+                self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
             end,
             options={
                 {text='Master Volume',value='master_volume'},
@@ -283,7 +284,7 @@ G={
         },
         UPGRADES={
             enter=function(self)
-                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
+                self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
             end,
             upgrades={
                 -- Warning: real texts are in localization.lua. Following texts are for coding reference only.
@@ -749,7 +750,7 @@ G={
             enter=function(self,lastState)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
                 self.currentUI.enterFrame=self.frame
-                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
+                self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 BGM:play('title')
             end,
             chosenLevel=1,
@@ -895,7 +896,7 @@ G={
             enter=function(self,previousState)
                 -- transition animation caused this function to be called frames LATER than G.enterLevel (precisely, TRANSITION_IMAGE calls enter at half point of the transition). so I move G.enterLevel code and call replayManager's tweak code here.
                 if previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
-                    self:replaceBackgroundPatternIfIs(backgroundPattern.MainMenuTesselation,backgroundPattern.FollowingTesselation)
+                    self:replaceBackgroundPatternIfIs(BackgroundPattern.MainMenuTesselation,BackgroundPattern.FollowingTesselation)
                     BGM:play('level2')
                 end
                 -- if previousState==self.STATES.GAME_END then
@@ -1230,7 +1231,7 @@ G={
             pageMax=4,
             enter=function(self)
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
-                self:replaceBackgroundPatternIfNot(backgroundPattern.MainMenuTesselation)
+                self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 ReplayManager.loadAll()
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
                 self.currentUI.pageMax=ReplayManager.PAGES
