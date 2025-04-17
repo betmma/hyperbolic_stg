@@ -609,6 +609,16 @@ return {
                     zh_cn = '业缚剑「宿业断罪斩」',
                 },
             },
+            {
+                spellName = {
+                    en_us = 'Barrier "Flickering of the Real and Reflected"',
+                    zh_cn = '结界「物与像的明灭」',
+                },
+                quote = {
+                    en_us = 'Under barrier\'s interference, it\'s like trying to watch a corrupted feed.',
+                    zh_cn = '在结界的干扰下，就像试图观看损坏的信号。',
+                },
+            },
         }
     },
     ui = {

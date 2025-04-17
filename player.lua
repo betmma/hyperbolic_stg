@@ -418,7 +418,7 @@ function Player:draw()
         love.graphics.setColor(1,0,0)
     end
     -- Shape.drawCircle(self.x,self.y,self.drawRadius)
-    love.graphics.setColor(color[1],color[2],color[3])
+    love.graphics.setColor(color[1],color[2],color[3],color[4])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
     local orientation=self.orientation or 0
@@ -429,10 +429,11 @@ function Player:draw()
     
     --draw hit point
     local focusSizeFactor=0.4
-    Asset.playerFocusBatch:setColor(1,1,1,self.focusPointTransparency)
+    Asset.playerFocusBatch:setColor(1,1,1,(self.focusPointTransparency or 1)*color[4])
     Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,31,33)-- the image is 64*64 but the focus center seems slightly off
     local spriteSizeFactor=0.53
     if self.sprite then
+        Asset.playerBatch:setColor(1,1,1,color[4])
         Asset.playerBatch:add(self.sprite,x,y,orientation,r*spriteSizeFactor*(horizontalFlip and -1 or 1),r*spriteSizeFactor,Asset.player.width/2,Asset.player.height/2)
     end
 end

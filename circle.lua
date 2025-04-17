@@ -60,6 +60,7 @@ end
 
 -- this happens in draw.
 function Circle:drawSprite()
+    local color={love.graphics.getColor()}
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local data=SpriteData[self.sprite]
     if not data then
@@ -67,11 +68,11 @@ function Circle:drawSprite()
     end
     local scale=r/data.hitRadius*Circle.spriteSizeFactor
     if self.sprite then
+        local r,g,b
         if data.forcedColor then
-            self.batch:setColor(data.forcedColor[1],data.forcedColor[2],data.forcedColor[3],self.spriteTransparency)
-        else
-            self.batch:setColor(1,1,1,self.spriteTransparency)
+            r,g,b=data.forcedColor[1],data.forcedColor[2],data.forcedColor[3]
         end
+        self.batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 1)*color[4])
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.size/2,data.size/2)
     end
 end

@@ -1,7 +1,7 @@
 return {
     quote='?',
-    user='?',
-    spellName='?', 
+    user='yukari',
+    spellName='Barrier ""', 
     make=function()
         -- after 60 seconds you can only get information from reflections. In this phase the key is to move in a circle, rotating with →↓←↑, instead of finding the direction, so that you don't get confused by the reflections.
         G.levelRemainingFrame=7200
@@ -64,7 +64,11 @@ return {
                     table.insert(args,'inReflection')
                 end
                 if not drawConditionFunc or drawConditionFunc(self,layer) then
+                    if layer>0 then 
+                        love.graphics.setColor(1,1,1,0.6+0.4*math.sin((lastIndex or 0)+en.frame/600+Shape.distance(self.x,self.y,player.x,player.y)/10))
+                    end
                     originalFunc(self,...)
+                    love.graphics.setColor(1,1,1,1)
                 end
                 args[#args-2]=layer+1 -- layer+=1
                 if layer==exitLayer then return end

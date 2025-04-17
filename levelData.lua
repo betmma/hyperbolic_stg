@@ -46,6 +46,7 @@ local levelData={
 }
 levelData.needPass={3,6,9,12,16,20,25,30}
 local Text=require"text"
+-- some wrapping work for each scene
 for index, value in ipairs(levelData) do
     for index2, value2 in ipairs(value) do
         if value2.make then
