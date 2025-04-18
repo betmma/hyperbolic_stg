@@ -1,4 +1,12 @@
-
+---@class Event:Object
+---@field time number time (seconds) since the event was created
+---@field frame number frame since the event was created
+---@field times number max times the event will be executed
+---@field mode number Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple. I think I never used Event.modes.oneFrameMultiple?
+---@field executedTimes number times the event has been executed
+---@field obj Object the object that the event is attached to. If not provided, it defaults to self. If obj is removed, the event will be removed too.
+---@field conditionFunc fun(self: Object, ...):boolean Each frame, if it returns true, the event will be executed.
+---@field executeFunc fun(self: Object, executedTimes: number, totalTimes:number):nil What the event does. Note that executedTimes is 0-based, and at last execution it's times-1.
 local Event = Object:extend()
 Event.modes={
     oneFrameOnce=0,
@@ -45,8 +53,9 @@ function Event:update(dt)
     -- self.time=self.time+dt
 end
 
--- Event that checks condition for every [period] frames. Initially the time is set to [time]. (so if time==period it triggers upon creation)
--- conditionFunc, executeFunc, times, mode:Event.modes, time, period
+-- Event that checks condition for every [period] frames. 
+---@class LoopEvent:Event
+---@field period number period of the event in frames
 local LoopEvent = Event:extend()
 function LoopEvent:new(args)
     LoopEvent.super.new(self, args)
@@ -67,6 +76,8 @@ end
 Event.LoopEvent=LoopEvent
 
 -- Event that calls [executeFunc] after [delayFrame] (you can also use [period]) frames.
+---@class DelayEvent:LoopEvent
+---@field delayFrame number delay in frames
 local DelayEvent=LoopEvent:extend()
 function DelayEvent:new(args)
     args.times=1
@@ -82,6 +93,7 @@ Event.sineOProgressFunc=function(x)return math.sin(x*math.pi/2) end
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
 -- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be simultaneously changed by other sources, while 'hard' means the value is fixed by progressFunc.
 -- when EaseEvent ends, call [afterFunc].
+---@class EaseEvent:Event
 local EaseEvent = Event:extend()
 function EaseEvent:new(args)
     LoopEvent.super.new(self, args)

@@ -7,7 +7,13 @@
 -- the terms of the MIT license. See LICENSE for details.
 --
 
-
+---@class Object
+---@field public objects table<number, Object> List of instances created directly from this class. Note: `Object:updateAll` etc., iterate recursively.
+---@field public subclasses table<number, Object> List of direct subclasses created using `:extend()`. Note: `Object:updateAll` etc., iterate recursively.
+---@field public super table | nil The parent class this class was extended from.
+---@field removed? boolean Internal flag set when `remove()` is called on an instance.
+---@field nextObjects? Object[] Internal temporary table used during `updateAll`.
+---@field notRespondToDrawAll? boolean If true on an instance, it will be skipped by `drawAll`.
 local Object = {}
 Object.__index = Object
 
@@ -15,10 +21,14 @@ Object.objects = {}
 Object.subclasses = {}
 
 
-function Object:new()
+--- Constructor (called via ClassName(...))
+---@param ... any Arguments passed to the instance constructor
+function Object:new(...)
 end
 
 
+--- Creates a new class that inherits from this class (`self`).
+---@return table class An new class table that inherits from `self`. Use `---@class NewClassName : Object` in your code when using this.
 function Object:extend()
   local cls = {}
   for k, v in pairs(self) do
@@ -47,6 +57,9 @@ function Object:implement(...)
 end
 
 
+--- Checks if an object instance (`self`) is derived from a given class (`T`).
+---@param T table The class table to check against.
+---@return boolean True if `self` is an instance of `T` or one of its subclasses.
 function Object:is(T)
   local mt = getmetatable(self)
   while mt do
@@ -64,6 +77,10 @@ function Object:__tostring()
 end
 
 
+--- Metamethod called when a class table is called like a function `ClassName(...)`.
+--- Creates, initializes, and stores a new instance.
+---@param ... any Arguments to be passed to the instance's `:new()` method.
+---@return self 
 function Object:__call(...)
   local obj = setmetatable({}, self)
   obj:new(...)
@@ -71,7 +88,7 @@ function Object:__call(...)
   return obj
 end
 
--- Method to remove an object
+--- Marks an instance for removal during the next update cycle.
 function Object:remove()
   self.removed=true
   -- for i, obj in ipairs(self.objects) do
