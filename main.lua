@@ -1,4 +1,4 @@
-VERSION="0.3.3.2"
+VERSION="0.3.3.3"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -28,7 +28,7 @@ function love.load()
     ReplayManager=require"replayManager"
 end
 local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
-KeyboardPressed={up=false,down=false,left=false,right=false,escape=false,lctrl=false}
+KeyboardPressed={up=false,down=false,left=false,right=false,escape=false,lctrl=false,f3=false,f4=false}
 for i=1,#keyConstants do
     KeyboardPressed[keyConstants:sub(i,i)]=false
 end
@@ -42,11 +42,21 @@ end
 function isPressed(key)
     return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
 end
+
+local profi=pcall(require,"profi") -- lib that log functions call and time spent to optimize code
+local profiActivate=false
+
 local controlFPSmode=0
 local sleepTime=1/60
 local frameTime=1/60
 AccumulatedTime=0
 function love.update(dt)
+    if profi then
+        profiActivate=isPressed('f3')
+        if profiActivate then
+            profi:start('once')
+        end
+    end
     if controlFPSmode==0 then
         AccumulatedTime=AccumulatedTime+dt
         AccumulatedTime=math.min(AccumulatedTime,frameTime*5)
@@ -78,6 +88,10 @@ function love.update(dt)
     -- local fps=love.timer.getFPS()
     -- local newTime=sleepTime*fps/60
     -- sleepTime=0.995*(sleepTime-newTime)+newTime
+    if profi and love.keyboard.isDown('f4') then
+        profi:stop()
+        profi:writeReport( 'MyProfilingReport.txt' )
+    end
 end
 
 function love.draw()

@@ -1,4 +1,6 @@
 -- helper functions for hyperbolic geometry
+---@alias angle number
+---@alias coordinate number
 
 -- hyperbolic distance
 function Shape.distance(x1,y1,x2,y2)
@@ -7,8 +9,8 @@ function Shape.distance(x1,y1,x2,y2)
 end
 
 -- get X coordinate and radius of center point of line x1,y1 to x2,y2
----@return number 'X coordinate of center point'
----@return number '(Euclidean) radius of line'
+---@return coordinate centerX X coordinate of center point
+---@return number radius (Euclidean) radius of line
 function Shape.lineCenter(x1,y1,x2,y2)
     local x0=(x1+x2)/2
     local y0=(y1+y2)/2
@@ -41,7 +43,7 @@ function Shape.drawLine(x1,y1,x2,y2)
 end
 
 -- get direction from x1,y1 to x2,y2 (at x1,y1)
----@return number 'direction in [-pi/2,3pi/2]'
+---@return angle 'direction in [-pi/2,3pi/2]'
 function Shape.to(x1,y1,x2,y2)
     if math.abs(x1-x2)<Shape.EPS then -- vertical 
         return y1<y2 and math.pi/2 or -math.pi/2
@@ -130,15 +132,15 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
 end
 
 --- reflect a point xc,yc by line [x1,y1 to x2,y2]. when drawing flipped object, besides using this function to calculate the new position, also need to horizontally flip the object.
----@param xs number
----@param ys number
----@param x1 number
----@param y1 number
----@param x2 number
----@param y2 number
----@return number "x of reflected point"
----@return number "y of reflected point"
----@return number "delta orientation from reflection"
+---@param xs coordinate
+---@param ys coordinate
+---@param x1 coordinate
+---@param y1 coordinate
+---@param x2 coordinate
+---@param y2 coordinate
+---@return coordinate "x of reflected point"
+---@return coordinate "y of reflected point"
+---@return angle "delta orientation from reflection"
 function Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
     local nearest=Shape.nearestToLine(xs,ys,x1,y1,x2,y2)
     local x3,y3=nearest[1],nearest[2]
@@ -167,7 +169,7 @@ end
 --- @param movingObj table "object to be moved, has x and y attributes"
 --- @param aimObj table "object to be aimed at"
 --- @param step number "step distance"
---- @param stopAtReach boolean "if true, won't go past [aimObj] if [step] is larger than distance between them"
+--- @param stopAtReach? boolean "if true, won't go past [aimObj] if [step] is larger than distance between them"
 function Shape.moveTowards(movingObj,aimObj,step,stopAtReach)
     local angle=Shape.to(movingObj.x,movingObj.y,aimObj.x,aimObj.y)
     if stopAtReach then
@@ -191,16 +193,16 @@ function Shape.drawSegment(x1,y1,x2,y2,segNum)
 end
 
 -- draw hyperbolic arc.
----@param x number 'x of arc center'
----@param y number 'y of arc center'
----@param r any 'arc radius'
----@param s_ang any 'arc start angle'
----@param e_ang any 'arc end angle'
+---@param x coordinate 'x of arc center'
+---@param y coordinate 'y of arc center'
+---@param r number 'arc radius'
+---@param s_ang angle 'arc start angle'
+---@param e_ang angle 'arc end angle'
 ---@param numLines any 'how many lines are used'
 function Shape.drawArc(x, y, r, s_ang, e_ang, numLines)
     local x2,y2,r2=Shape.getCircle(x,y,r)
-    _,_,s_ang=Shape.rThetaPos(x,y,r,s_ang)
-    _,_,e_ang=Shape.rThetaPos(x,y,r,e_ang)
+    _,_,_,s_ang=Shape.rThetaPos(x,y,r,s_ang)
+    _,_,_,e_ang=Shape.rThetaPos(x,y,r,e_ang)
 	math.drawArc(x2,y2,r2,s_ang,e_ang,numLines)
 end
 
@@ -212,8 +214,8 @@ function Shape.drawCircle(x,y,r,mode)
 end
 
 -- find the Euclidean x', y' and r' of hyperbolic circle with center (x,y) and radius r.
----@param x number
----@param y number
+---@param x coordinate
+---@param y coordinate
 ---@param r number
 function Shape.getCircle(x,y,r)
     return x, (y-Shape.axisY)*math.cosh(r/Shape.curvature)+Shape.axisY, (y-Shape.axisY)*math.sinh(r/Shape.curvature)
@@ -222,25 +224,26 @@ end
 
 -- find the point that is (r,theta) to x,y in polar coordinates
 -- also means "from (x,y), aim at theta direction and go r unit forward, which point will you arrive"
----@param x number
----@param y number
+---@param x coordinate
+---@param y coordinate
 ---@param r number
----@param theta number
----@return number "x of new point"
----@return number "y of new point"
----@return number "Euclidean polar angle"
+---@param theta angle
+---@return coordinate newX "x of new point"
+---@return coordinate newY "y of new point"
+---@return angle newTheta "after moving the direction you are facing"
+---@return angle polarAngle "Euclidean polar angle. It's used in Shape.drawArc don't remove"
 function Shape.rThetaPos(x,y,r,theta)
     if r==0 then
-        return x,y,theta
+        return x,y,theta,theta
     end
     local div=math.floor(theta/(math.pi*2))
     theta=theta%(math.pi*2)
     local x2,y2,r2=Shape.getCircle(x,y,r)
     if theta%math.pi==math.pi/2 then --vertical
         if theta>math.pi then
-            return x2,y2-r2,theta+div*math.pi*2
+            return x2,y2-r2,theta,theta+div*math.pi*2
         end
-        return x2,y2+r2,theta+div*math.pi*2
+        return x2,y2+r2,theta,theta+div*math.pi*2
     end
     local xc=x+math.tan(theta)*(y-Shape.axisY)
     local rr=math.distance(xc,Shape.axisY,x2,y2)
@@ -266,5 +269,6 @@ function Shape.rThetaPos(x,y,r,theta)
     if finaltheta>math.pi*3/2 and theta<math.pi/2 then 
         div=div-1
     end
-    return x2+r2*math.cos(finaltheta),y2+r2*math.sin(finaltheta),finaltheta+div*math.pi*2
+    local retX,retY=x2+r2*math.cos(finaltheta),y2+r2*math.sin(finaltheta)
+    return retX,retY,Shape.to(retX,retY,x,y)+math.pi,finaltheta+div*math.pi*2
 end
