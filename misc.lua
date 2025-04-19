@@ -72,22 +72,49 @@ function math.modClamp(val,center,radius)
     return center+(val-center+radius)%(radius*2)-radius
 end
 
----@return number
--- input: a number or 'a+b', return that number or random number in [a-b,a+b]. Warning: it returns a float number for 'a+b'.
-function math.eval(str)
+---@param a number|string|table
+---@param b? number
+---@return number?
+-- this has some lore. I used a software called "Crazy Storm" to make spell cards years ago, and that software supports the "a+b" form, so I subconsciously use this form, but string could be inefficient. return random number in [a-b,a+b]. Warning: it always returns a float number.
+function math.eval(a,b)
+    if type(a)=='string' then -- old 'a+b' form
+        a=math._evalStr(a)
+    end
+    if type(a)=='table' then -- old 'a+b' form replaced by table
+        a,b=a[1],a[2]
+    end
+    if not b or b==0 then -- plain number or plain string number form
+        return tonumber(a)
+    end
+    local na = tonumber(a) -- new a, b form
+    local nb = tonumber(b)
+    return math.random()*nb*2+na-nb
+end
+
+-- input: 'a+b', return that number or random number in [a-b,a+b].
+function math._evalStr(str)
     -- Check if the string is in the format 'a+b' where a can be negative
     local a, b = string.match(str, "([%-]?%d+%.?%d*)%+(%d+%.?%d*)")
     
     if a and b then
-        -- Convert a and b to numbers
-        a = tonumber(a)
-        b = tonumber(b)
-        -- Return a random number in the range [a-b, a+b]
-        return math.random()*b*2+a-b
+        return math.eval(a, b)
     else
         -- Otherwise, assume the string is just a number
         return tonumber(str) or 0
     end
+end
+
+---@return table|number
+-- extract a and b from a+b string. used to replace string format with table format in bulletSpawner
+function math._extractABfromstr(str)
+    -- Check if the string is in the format 'a+b' where a can be negative
+    local a, b = string.match(str, "([%-]?%d+%.?%d*)%+(%d+%.?%d*)")
+    
+    if a and b then
+        return {tonumber(a), tonumber(b)}
+    end
+
+    return tonumber(str) or 0
 end
 
 -- randomly sample k elements from a table. If k is larger than the table size, k is considered as the table size.

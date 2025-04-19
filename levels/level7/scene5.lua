@@ -46,7 +46,7 @@ return {
             }
         end
 
-        a=BulletSpawner{x=400,y=400000,period=160,frame=100,lifeFrame=10000,bulletNumber=200,bulletSpeed=30,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.giant.yellow,bulletEvents={
+        a=BulletSpawner{x=400,y=400000,period=160,frame=100,lifeFrame=10000,bulletNumber=20,bulletSpeed=30,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.giant.yellow,bulletEvents={
             function(cir,args,self)
                 circleEffect(cir)
             end
@@ -57,7 +57,7 @@ return {
             period=240,
             frame=120,
             executeFunc=function()
-                local aimX,aimY=Shape.rThetaPos(player.x,player.y,math.eval('30+30'),math.eval('0+999'))
+                local aimX,aimY=Shape.rThetaPos(player.x,player.y,math.eval(30,30),math.eval(0,999))
                 SFX:play('enemyShot')
                 Event.LoopEvent{
                     obj=en,period=1,times=120,

@@ -1,4 +1,4 @@
-VERSION="0.3.3.3"
+VERSION="0.3.3.4"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -43,7 +43,11 @@ function isPressed(key)
     return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
 end
 
-local profi=pcall(require,"profi") -- lib that log functions call and time spent to optimize code
+local profiExists=pcall(require,"profi") -- lib that log functions call and time spent to optimize code
+local profi
+if profiExists then
+    profi=require"profi"
+end
 local profiActivate=false
 
 local controlFPSmode=0

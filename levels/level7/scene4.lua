@@ -165,7 +165,7 @@ return {
                                 aimValue=0,
                                 easeFrame=20,
                                 afterFunc=function()
-                                    cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+math.eval('0+0.5')
+                                    cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+math.eval(0,0.5)
                                     Event.EaseEvent{
                                         obj=cir,
                                         aimTable=cir,

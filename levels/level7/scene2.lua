@@ -75,7 +75,7 @@ return {
                             if math.abs(r-distance)<Shape.EPS then
                                 dir2=Shape.to(x3,y3,x1,y1)+math.pi
                             end
-                            local new=Circle{x=x3,y=y3,direction=dir2+math.eval('1.57+0.2'),speed=math.eval('0+10')-speed,sprite=BulletSprites.scale[Asset.colors[colorIndex or 1]],lifeFrame=1000}
+                            local new=Circle{x=x3,y=y3,direction=dir2+math.eval(1.57,0.2),speed=math.eval(0,10)-speed,sprite=BulletSprites.scale[Asset.colors[colorIndex or 1]],lifeFrame=1000}
                             Event.EaseEvent{
                                 obj=new,
                                 aimTable=new,
@@ -192,7 +192,7 @@ return {
             SFX:play('enemyCharge',true)
             local newAngle=en.arrowAngle
             while math.abs(math.modClamp(newAngle-en.arrowAngle,0,math.pi/2))<math.pi/4 do
-                newAngle=math.eval('0+999')
+                newAngle=math.eval(0,999)
             end
             en.arrowAngle=newAngle
             drawArrow()
@@ -237,7 +237,7 @@ return {
                         end
                         local x3,y3=Shape.rThetaPos(xp,yp,r,angle)
                         local dir2=Shape.to(x3,y3,xp,yp)
-                        local new=Circle{x=x3,y=y3,direction=dir2+math.eval('0+0.4'),speed=math.eval('-120+30'),sprite=BulletSprites.scale.orange,lifeFrame=600}
+                        local new=Circle{x=x3,y=y3,direction=dir2+math.eval(0,0.4),speed=math.eval(-120,30),sprite=BulletSprites.scale.orange,lifeFrame=600}
                         Event.EaseEvent{
                             obj=new,
                             aimTable=new,

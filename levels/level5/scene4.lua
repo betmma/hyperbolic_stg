@@ -23,7 +23,7 @@ return {
         local alpha=0
         local angle=0
         local a
-        a=BulletSpawner{x=400,y=300,period=5,frame=-50,lifeFrame=10000,bulletNumber=10,bulletSpeed=60,bulletLifeFrame=400,angle=math.eval('0+999'),range=math.pi*2,bulletSprite=BulletSprites.scale.blue,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=5,frame=-50,lifeFrame=10000,bulletNumber=10,bulletSpeed=60,bulletLifeFrame=400,angle=math.eval(0,999),range=math.pi*2,bulletSprite=BulletSprites.scale.blue,bulletEvents={
             function(cir,args,self)
                 local dir0=cir.direction
                 local speed=cir.speed

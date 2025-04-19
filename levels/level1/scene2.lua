@@ -14,7 +14,7 @@ return {
                     times=1,
                     conditionFunc=function(self)return b.flag end,
                     executeFunc=function(self)
-                        cir.direction=cir.direction+math.eval('0+999')
+                        cir.direction=cir.direction+math.eval(0,999)
                         Event.EaseEvent{
                             obj=cir,
                             easeFrame=60,

@@ -65,17 +65,17 @@ return {
         a=BulletSpawner{x=400,y=300,period=300,frame=290,lifeFrame=10000,bulletNumber=2,bulletSpeed=80,bulletLifeFrame=1200,angle='0',range=math.pi*2,spawnSFXVolume=0.5,bulletSprite=BulletSprites.bigRound.red,highlight=true,bulletSize=4,invincible=true,bulletEvents={
             function (cir,args,self)
                 bullets[args.index]=cir
-                cir.direction=math.eval('0+999')
+                cir.direction=math.eval(0,999)
                 if args.index==2 then
-                    cir.direction=bullets[1].direction+math.eval('1.57+1')
+                    cir.direction=bullets[1].direction+math.eval(1.57,1)
                     local bullet1=bullets[1]
-                    local ratio=math.eval('0.5+0.3')
+                    local ratio=math.eval(0.5,0.3)
                     bullet1.ratio=ratio
                     bullet1.radius=bullet1.radius*ratio
                     cir.ratio=1-ratio
                     cir.radius=cir.radius*(1-ratio)
                 end
-                cir.speed=math.eval('60+30')
+                cir.speed=math.eval(60,30)
                 local t=args.index<=2 and 160 or 80
                 Event.EaseEvent{
                     obj=cir,

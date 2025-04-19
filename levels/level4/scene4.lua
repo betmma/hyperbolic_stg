@@ -106,7 +106,7 @@ return {
             executeFunc=function()
                 local fr=en.frame%1200
                 if fr==2 then
-                    safeAngle=math.eval('0+3.14')
+                    safeAngle=math.eval(0,3.14)
                     Circle{x=400,y=300,direction=safeAngle,speed=30,sprite=BulletSprites.fog.blue,invincible=true,safe=true,lifeFrame=2000,}
                 end
                 if fr==1190 then

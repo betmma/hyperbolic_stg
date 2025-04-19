@@ -76,7 +76,7 @@ end
 
 function Charge:update(dt)
     self.frame=self.frame+1
-    local direction=math.eval('0+999')
+    local direction=math.eval(0,999)
     if self.frame+self.particleFrame<self.animationFrame then
         table.insert(self.particles,{frame=0,x=self.obj.x,y=self.obj.y,direction=direction,speed=self.particleSpeed})
     end

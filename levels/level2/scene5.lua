@@ -18,11 +18,11 @@ return {
                             local dis=Shape.distance(cir.x,cir.y,x0,y0)
                             if dis>60 then
                                 cir.flag=true
-                                cir.direction=math.eval('0+3.14')
-                                cir.speed=math.eval('20+5')
+                                cir.direction=math.eval(0,3.14)
+                                cir.speed=math.eval(20,5)
                             end
                             if cir.frame%20==0 then
-                                local rand= math.eval('0.0+1.0')
+                                local rand= math.eval(0.0,1.0)
                                 local angle=math.pi/3
                                 local prob=0.2
                                 if rand<prob and cir.turn~=1 then
@@ -86,7 +86,7 @@ return {
                             obj=value,
                             delayFrame=value.dis,
                             executeFunc=function()
-                                value.direction=dir--+math.eval('0+0.01')
+                                value.direction=dir--+math.eval(0,0.01)
                                 Event.EaseEvent{
                                     obj=value,
                                     easeFrame=200,

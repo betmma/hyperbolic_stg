@@ -73,9 +73,9 @@ return {
                                 dir2=Shape.to(x3,y3,x1,y1)+math.pi
                             end
                             local toPlayerAngle=Shape.to(x3,y3,player.x,player.y)
-                            local dir3=dir2+math.eval('1.57+0.2')
+                            local dir3=dir2+math.eval(1.57,0.2)
                             dir3=math.modClamp(dir3,toPlayerAngle,math.pi/2)
-                            local new=Circle{x=x3,y=y3,direction=dir3,speed=math.eval('0+10')-speed,sprite=BulletSprites.scale[Asset.colors[colorIndex or 1]],lifeFrame=1000}
+                            local new=Circle{x=x3,y=y3,direction=dir3,speed=math.eval(0,10)-speed,sprite=BulletSprites.scale[Asset.colors[colorIndex or 1]],lifeFrame=1000}
                             Event.EaseEvent{
                                 obj=new,
                                 aimTable=new,
@@ -246,7 +246,7 @@ return {
                         end
                         local x3,y3=Shape.rThetaPos(xp,yp,r,angle)
                         local dir2=Shape.to(x3,y3,xp,yp)
-                        local new=Circle{x=x3,y=y3,direction=dir2+math.eval('0+0.4'),speed=math.eval('-120+30'),sprite=BulletSprites.scale.orange,lifeFrame=600}
+                        local new=Circle{x=x3,y=y3,direction=dir2+math.eval(0,0.4),speed=math.eval(-120,30),sprite=BulletSprites.scale.orange,lifeFrame=600}
                         Event.EaseEvent{
                             obj=new,
                             aimTable=new,

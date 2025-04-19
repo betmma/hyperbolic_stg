@@ -32,7 +32,7 @@ return {
                     delayFrame=t,
                     executeFunc=function()
                         cir:remove()
-                        BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=10,bulletSpeed=40,bulletLifeFrame=150+index*2,angle=math.eval('0+999'),bulletSprite=BulletSprites.bigRound.yellow,highlight=true,bulletEvents={
+                        BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=10,bulletSpeed=40,bulletLifeFrame=150+index*2,angle=math.eval(0,999),bulletSprite=BulletSprites.bigRound.yellow,highlight=true,bulletEvents={
                             function(cir,args,self)
                                 cir:changeSpriteColor()
                                 local index2=args.index
@@ -45,7 +45,7 @@ return {
                                     delayFrame=t2,
                                     executeFunc=function()
                                         cir:remove()
-                                        local angle=m0~=0 and '0+999' or Shape.to(cir.x,cir.y,player.x,player.y)+math.pi/10*3+math.eval('0+0.1')--
+                                        local angle=m0~=0 and '0+999' or Shape.to(cir.x,cir.y,player.x,player.y)+math.pi/10*3+math.eval(0,0.1)--
                                         BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=10,bulletSpeed=index%4>=2 and 16 or 12,bulletLifeFrame=1800,angle=angle,bulletSprite=BulletSprites.scale.yellow,highlight=true,bulletEvents={
                                             function(cir,args,self)
                                                 cir:changeSpriteColor()

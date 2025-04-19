@@ -179,7 +179,7 @@ return {
                     end
                 elseif a.spawnEvent.frame==60 then
                     a.bulletSpeed=bulletSpeed
-                    a.angle=math.eval('0+999')
+                    a.angle=math.eval(0,999)
                 end
             end
         }

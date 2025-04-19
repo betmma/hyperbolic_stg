@@ -27,10 +27,10 @@ return {
         spawnBatchFunc= function(self)
             local num=math.eval(self.bulletNumber)
             local range=math.eval(self.range)
-            local angle=math.eval('-1.57+2')
+            local angle=math.eval(-1.57,2)
             local speed=math.eval(self.bulletSpeed)
             local size=math.eval(self.bulletSize)
-            local limit=math.eval('0.4+0.2')
+            local limit=math.eval(0.4,0.2)
             for i = 1, num, 1 do
                 local direction=range*(i-0.5-num/2)/num+angle
                 local nx,ny=Shape.rThetaPos(self.x,self.y,circRad*i/num,angle)
@@ -54,7 +54,7 @@ return {
             obj=a,
             period=1,
             executeFunc=function()
-                a.x=a.x+math.min(a.frame/100,3)*math.eval('1+0.1')
+                a.x=a.x+math.min(a.frame/100,3)*math.eval(1,0.1)
                 if a.x>650 then
                     a.x=a.x-500
                 end

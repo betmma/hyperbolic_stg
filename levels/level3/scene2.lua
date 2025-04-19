@@ -15,7 +15,7 @@ return {
                 local hpp=en.hp/en.maxhp
                 local t=(en.frame-100)%480
                 if t==0 then
-                    center={x=math.eval('400+50'),y=math.eval('300+50')}
+                    center={x=math.eval(400,50),y=math.eval(300,50)}
                     
                     Event.EaseEvent{
                         obj=en,
@@ -33,10 +33,10 @@ return {
                         easeFrame=60,
                         progressFunc=Event.sineIOProgressFunc
                     }
-                    radius=math.eval('50+10')
-                    thetas={math.eval('0+3')}
-                    table.insert(thetas,thetas[1]+math.pi*2/3+math.eval('0+0.5'))
-                    table.insert(thetas,thetas[2]+math.pi*2/3+math.eval('0+0.5'))
+                    radius=math.eval(50,10)
+                    thetas={math.eval(0,3)}
+                    table.insert(thetas,thetas[1]+math.pi*2/3+math.eval(0,0.5))
+                    table.insert(thetas,thetas[2]+math.pi*2/3+math.eval(0,0.5))
                     vertices={}
                     outvertices={}
                     for i = 1, 3 do
@@ -70,7 +70,7 @@ return {
                     end
                     outpolyline=PolyLine(outvertices,false)
                 elseif t==130 then
-                    local xoff=math.eval('0+0.1')
+                    local xoff=math.eval(0,0.1)
                     local count=0
                     local sfxplayed,sfxplayed2=false,false
                     for y0 = 0, 100, 2 do

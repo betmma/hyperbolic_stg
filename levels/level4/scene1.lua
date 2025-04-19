@@ -12,7 +12,7 @@ return {
                 local speedRef=cir.speed
                 if not a.flag then
                     local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
-                    local ind=math.floor(math.eval('5+4'))
+                    local ind=math.floor(math.eval(5,4))
                     cir.sprite=BulletSprites.rice[colors[ind]]
                     cir.speed=math.random(5,5)
                 end
@@ -41,12 +41,12 @@ return {
                 a.x,a.y=en.x,en.y
                 local frame=en.frame
                 if (frame+298)%300==0 then
-                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval('0+3.14'))
+                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval(0,3.14))
                     nx=math.clamp(nx,200,600)
                     nx=math.clamp(nx,en.x-100,en.x+100)
                     ny=math.clamp(ny,0,550)
                     ny=math.clamp(ny,en.y-100,en.y+100)
-                    local co={math.eval('0+3'),math.eval('0+3'),math.eval('0+3'),math.eval('0+3')}
+                    local co={math.eval(0,3),math.eval(0,3),math.eval(0,3),math.eval(0,3)}
                     a.flag=false
                     a.bulletSpeed=30
                     a.bulletNumber=9+math.ceil((1-hpp)*6)

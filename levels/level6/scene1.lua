@@ -112,14 +112,14 @@ return {
                     elseif t2==70 then
                         -- a.spawnEvent.frame=0
                         -- a.spawnEvent.period=10000
-                        a.angle=math.eval('0+999')
+                        a.angle=math.eval(0,999)
                     end
                 elseif hpLevel==2 then
                     a.bulletNumber=10
                     a.spawnEvent.period=10
                     a.bulletSpeed=60
                     if t2==298 then
-                        a.angle=math.eval('0+999')
+                        a.angle=math.eval(0,999)
                     end
                 else
                     a.bulletNumber=50

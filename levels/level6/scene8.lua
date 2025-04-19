@@ -59,7 +59,7 @@ return {
                 obj=backgroundPatt,
                 delayFrame=120,
                 executeFunc=function()
-                    backgroundPatt.angle=math.eval('0+999')
+                    backgroundPatt.angle=math.eval(0,999)
                     backgroundPatt.sideNum,backgroundPatt.angleNum=sideNum,angleNum
                     backgroundPatt:updateSides()
                     local centerPoint=backgroundPatt.centerPoint
@@ -83,7 +83,7 @@ return {
                     }
                 end
             }
-            local deltaAngle=math.eval('0+99999')
+            local deltaAngle=math.eval(0,99999)
             for key,side in pairs(sides) do
                 local x1,y1,x2,y2=side[1].x,side[1].y,side[2].x,side[2].y
                 local angle1=Shape.to(x1,y1,x2,y2)+deltaAngle

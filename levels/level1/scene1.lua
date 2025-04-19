@@ -33,7 +33,7 @@ return {
             end
         },
         spawnBatchFunc=function(self)
-            self.x=math.eval('400+10')
+            self.x=math.eval(400,10)
             local num=math.eval(self.bulletNumber)
             local angle=math.eval(self.angle)
             local speed=math.eval(self.bulletSpeed)

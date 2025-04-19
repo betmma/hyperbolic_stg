@@ -59,7 +59,7 @@ return {
                 obj=backgroundPatt,
                 delayFrame=120,
                 executeFunc=function()
-                    backgroundPatt.angle=math.eval('0+999')
+                    backgroundPatt.angle=math.eval(0,999)
                     backgroundPatt.sideNum,backgroundPatt.angleNum=sideNum,angleNum
                     backgroundPatt:updateSides()
                     local centerPoint=backgroundPatt.centerPoint

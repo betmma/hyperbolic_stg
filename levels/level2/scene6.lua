@@ -5,7 +5,7 @@ return {
     make=function()
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
-        local phi0=math.eval('0+999')
+        local phi0=math.eval(0,999)
         local a
         local tmpBullets={}
         a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.yellow,fogEffect=true,fogTime=20,bulletEvents={
@@ -42,13 +42,13 @@ return {
                                     end,
                                     executeFunc=function(self)
                                         if not cir.safe then
-                                            Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval('0+0.3'),speed=20,sprite=BulletSprites.dot.red}
+                                            Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval(0,0.3),speed=20,sprite=BulletSprites.dot.red}
                                         end
                                 end}
                             end
                         }}
                         cir.speed=0
-                        local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5*(cir.args.index%2==0 and -1 or 1)--math.eval('0+0.5')
+                        local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5*(cir.args.index%2==0 and -1 or 1)--math.eval(0,0.5)
                         Event.EaseEvent{
                             obj=laser,
                             aimTable=laser.args,

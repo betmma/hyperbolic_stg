@@ -53,9 +53,7 @@ local function drawSideLine(x1,y1,x2,y2,color)
     love.graphics.setColor(colorref[1],colorref[2],colorref[3])
 end
 
--- draw a face of a polygon. x1,y1,x2,y2: two points of the side. color: {r,g,b}. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point.
--- bad: since a polygon is drawn once for each side, bigger sideNum causes a polygon to be drawn redundant sideNum/2 times.
-local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
+local function getSideFacePolygonVertices(x1,y1,x2,y2,sideNum,angleNum)
     local vertices={}
     -- since love.graphics.polygon draws straight sides, need to insert vertices on each hyperbolic side to smooth the curve
     local function addVerticesOnSide(x1,y1,x2,y2,num)
@@ -71,11 +69,17 @@ local function drawSideFace(x1,y1,x2,y2,color,sideNum,angleNum)
     local sideLength=calculateSideLength(sideNum,angleNum)
     for sideIndex=1,sideNum do
         local alpha1=math.pi*2/angleNum+Shape.to(x2,y2,x1,y1)
-        local num=math.clamp(Shape.distance(x1,y1,x2,y2)/5,3,15)
+        local num=math.clamp(Shape.distance(x1,y1,x2,y2)/10,3,15)
         addVerticesOnSide(x1,y1,x2,y2,num)
         x1,y1=x2,y2
         x2,y2=Shape.rThetaPos(x2,y2,sideLength,alpha1)
     end
+    return vertices
+end
+
+-- draw a face of a polygon. x1,y1,x2,y2: two points of the side. color: {r,g,b}. sideNum: how many sides do each polygon have. angleNum: how many sides are connected to each point.
+-- bad: since a polygon is drawn once for each side, bigger sideNum causes a polygon to be drawn redundant sideNum/2 times. should be fixed with redundant removal in FixedTesselation (but not in MainMenuTesselation yet)
+local function drawSideFace(vertices,color)
     local colorref={love.graphics.getColor()}
     love.graphics.setColor(color[1],color[2],color[3])
     -- without triangulate love.graphics.polygon("fill",vertices) is buggy at some concave part
@@ -223,7 +227,8 @@ function MainMenuTesselation:draw()
         local index=sides[i].index
         -- local color={math.cos(index/100)*0.8+0.2,math.cos(index/70)*0.5+0.5,math.sin(centerX/centerY/10)*0.7+0.3}
         local color=index%2==0 and {0.4,0.3,0.1} or {0.1,0.4,0.3}
-        drawSideFace(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,color,self.sideNum,self.angleNum)
+        local vertices=getSideFacePolygonVertices(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
+        drawSideFace(vertices,color)
     end
     for i=1,#sides do
         drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.35,0.15,0.8})
@@ -296,14 +301,24 @@ function FixedTesselation:new(args)
     self.toDrawNum=args.toDrawNum or 40
     self.angle=args.angle or 0
     self.adjacentPoints,self.angles,self.sidesTable=tesselation(self.centerPoint,self.angle,self.sideNum,self.angleNum,0,nil,self.toDrawNum,nil,true) -- self.adjacentPoints and self.angles are not used in FixedTesselation but in FollowingTesselation so don't remove them
+    self.hashSet={}
+    self.redundantCount=0
     for i=1,#self.sidesTable do
         local centerPos={getCenterOfPolygonWithSide(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.sideNum,self.angleNum)}
-        local hashValue=Hash64(''..centerPos[1]..centerPos[2].."loool")
+        local hashValue=Hash64(''..(math.floor(centerPos[1])*8)..(math.floor(centerPos[2])*8).."loool")
         local color={hashValue[3]/256,hashValue[1]/256,hashValue[2]/256}
+        local hashValueInt=hashValue[1]+hashValue[2]*256+hashValue[3]*256*256+hashValue[4]*256*256*256
+        -- print(i,centerPos[1],centerPos[2],hashValueInt)
+        if self.hashSet[hashValueInt] then
+            self.sidesTable[i].redundantFace=true
+            self.redundantCount=self.redundantCount+1
+        end
+        self.hashSet[hashValueInt]=true
         self.sidesTable[i].color=color
         self.sidesTable[i][1]=copy_table(self.sidesTable[i][1]) -- without copying player's hyperbolic rotate can't retrieve the original position (i forgor why tho) and will crash after few frames
         self.sidesTable[i][2]=copy_table(self.sidesTable[i][2])
     end
+    -- print(self.redundantCount..' sides: '..#self.sidesTable)
     self.sideLength=calculateSideLength(self.sideNum,self.angleNum)
 end
 
@@ -320,10 +335,15 @@ function FixedTesselation:draw()
     local faceColorCoeff=self.faceColor
     if not self.dontDrawFaces then
         for i=1,#self.sidesTable do
+            if self.sidesTable[i].redundantFace then
+                goto continue
+            end
             local color=self.sidesTable[i].color
             color={color[1]*faceColorCoeff[1],color[2]*faceColorCoeff[2],color[3]*faceColorCoeff[3]}
             color={color[1]*overallColorScale,color[2]*overallColorScale,color[3]*overallColorScale}
-            drawSideFace(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,color,self.sideNum,self.angleNum)
+            local vertices=getSideFacePolygonVertices(self.sidesTable[i][1].x,self.sidesTable[i][1].y,self.sidesTable[i][2].x,self.sidesTable[i][2].y,self.sideNum,self.angleNum)
+            drawSideFace(vertices,color)
+            ::continue::
         end
     end
     local color=self.sideColor
@@ -370,7 +390,7 @@ end
 function FollowingTesselation:update(dt)
     local target=self.target
     if not target or target.removed or target:is(Player) and target~=Player.objects[1] then
-        -- look i really dont understand why after pressing r to restart or restart in game end screen, there is only one object in Player.objects, but the target is still the old one, and target.removed is nil. so i have to check if target is in Player.objects[1]
+        -- look i really dont understand why after pressing r to restart or restart in game end screen, there is only one object in Player.objects, but the target is still the old one, and target.removed is nil. so i have to check if target is Player.objects[1]
         if Player.objects[1] then
             self.target=Player.objects[1]
             target=Player.objects[1]

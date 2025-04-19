@@ -18,9 +18,9 @@ return {
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local function q(cir)
-            cir.speed=math.eval('50+50')
-            cir.x=cir.x+math.eval('0+20')
-            cir.y=cir.y+math.eval('0+20')
+            cir.speed=math.eval(50,50)
+            cir.x=cir.x+math.eval(0,20)
+            cir.y=cir.y+math.eval(0,20)
             Event.EaseEvent{
                 obj=cir,
                 aimTable=cir,
@@ -99,7 +99,7 @@ return {
                                         period=1,
                                         times=30,
                                         executeFunc=function()
-                                            cir.direction=cir.direction+(args.index%2*2-1)*0.04+math.eval('0+0.04')
+                                            cir.direction=cir.direction+(args.index%2*2-1)*0.04+math.eval(0,0.04)
                                         end
                                     }
                                 end

@@ -26,8 +26,8 @@ return {
             function(cir,args,self)
                 local t0=a.frame
                 cir.speed=math.eval(randSpeed)
-                cir.x=cir.x+math.eval('0+20')
-                cir.y=cir.y+math.eval('0+20')
+                cir.x=cir.x+math.eval(0,20)
+                cir.y=cir.y+math.eval(0,20)
                 Event.EaseEvent{
                     obj=cir,
                     aimTable=cir,

@@ -66,7 +66,7 @@ return {
                     a.period=40
                 end
                 if en.frame%300==0 then
-                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval('0+3.14'))
+                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval(0,3.14))
                     Event.EaseEvent{
                         obj=en,
                         aimTable=en,

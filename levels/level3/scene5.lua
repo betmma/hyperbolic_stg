@@ -25,7 +25,7 @@ return {
         local rs={}
         local layer=5
         for i = 1, layer, 1 do
-            table.insert(angles,math.eval('-1.57+1'))
+            table.insert(angles,math.eval(-1.57,1))
             local r=20*i+10
             table.insert(rs,r)
             table.insert(speeds,0.015/math.sinh((r+10)/100))

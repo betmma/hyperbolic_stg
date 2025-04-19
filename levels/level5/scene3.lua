@@ -38,7 +38,7 @@ return {
                         obj=en,
                         aimTable=en,
                         aimKey='theta',
-                        aimValue=math.eval('0+3.14'),
+                        aimValue=math.eval(0,3.14),
                         easeFrame=60,
                         progressFunc=Event.sineOProgressFunc
                     }
@@ -128,7 +128,7 @@ return {
 
                 for key, value in pairs(xys) do
                     if fr==releaseT then
-                        Circle{x=value[1],y=value[2],direction=math.eval('0+999'),speed=20,sprite=BulletSprites.scale.red,lifeFrame=1000}
+                        Circle{x=value[1],y=value[2],direction=math.eval(0,999),speed=20,sprite=BulletSprites.scale.red,lifeFrame=1000}
                     else
                         Circle{x=value[1],y=value[2],direction=value[3],speed=0,sprite=BulletSprites.scale.blue,invincible=true,lifeFrame=0}
                     end

@@ -65,7 +65,7 @@ return {
             local x1,y1=Shape.rThetaPos(400,300,100,math.pi/6*(index+.5))
             local direction0=Shape.to(x0,y0,x1,y1)
             local x,y=Shape.rThetaPos(x0,y0,self.dist%dis0,direction0)
-            local direction=Shape.to(x,y,player.x,player.y)+math.eval('0+0.2')
+            local direction=Shape.to(x,y,player.x,player.y)+math.eval(0,0.2)
             self.x,self.y=x,y
             local num=10
             for i = 1, num, 1 do

@@ -273,9 +273,15 @@ end
 function Player:testRotate(angle,restore)
     -- hyperbolic rotate all points by angle around player (actually change coordinates, not a visual effect, so it must be reverted later)
     -- restoring value is quicker and more accurate than calling (-angle)
-    local function rotate(v)
-        local r,theta,thetaRev=Shape.distance(self.x,self.y,v.x,v.y),Shape.to(self.x,self.y,v.x,v.y),Shape.to(v.x,v.y,self.x,self.y)
+    ---@param v table the object to be rotated. It must have x, y and direction (optional) attributes.
+    ---@param canOmit boolean? if true, the object will not be rotated if the distance between player and object is greater than 200. This is to avoid unnecessary calculation for objects that are far away from player to increase efficiency.
+    local function rotate(v,canOmit)
+        local r=Shape.distance(self.x,self.y,v.x,v.y)
         v.testRotateRef={v.x,v.y,v.direction}
+        if canOmit and r>200 then
+            return
+        end
+        local theta,thetaRev=Shape.to(self.x,self.y,v.x,v.y),Shape.to(v.x,v.y,self.x,self.y)
         v.x,v.y=Shape.rThetaPos(self.x,self.y,r,theta+angle)
         local thetaRev2=Shape.to(v.x,v.y,self.x,self.y)
         if v.direction then
@@ -287,12 +293,19 @@ function Player:testRotate(angle,restore)
             v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
         end
     end
-    local list={Circle,BulletSpawner,Enemy,Laser,Laser.LaserUnit,Effect.Larger,Effect.Shockwave} -- due to different implementation, PolyLine has to be handled separately. not ideal
+    local list={Circle,BulletSpawner,Enemy,Laser} -- due to different implementation, PolyLine has to be handled separately. not ideal
     for k,cls in pairs(list)do
+        for k2,obj in pairs(cls.objects)do
+            rotate(obj)--,true -- this doesn't seem speed things
+        end
+    end
+    local unomitableList={Laser.LaserUnit,Effect.Larger,Effect.Shockwave} -- Laser can be very long so shouldn't omit rotation
+    for k,cls in pairs(unomitableList)do
         for k2,obj in pairs(cls.objects)do
             rotate(obj)
         end
     end
+
     for k2,obj in pairs(PolyLine.objects)do
         for k,point in pairs(obj.points) do
             rotate(point)
@@ -482,7 +495,7 @@ function Player:grazeEffect(amount)
     amount=amount or 1
     SFX:play('graze')
     if self.version and isVersionSmaller(self.version,'0.2.0.1') then
-        Effect.Larger{x=self.x,y=self.y,speed=math.eval('50+30'),direction=math.eval('1+9999'),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
+        Effect.Larger{x=self.x,y=self.y,speed=math.eval(50,30),direction=math.eval(1,9999),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
     else -- non-random graze effect
         Effect.Larger{x=self.x,y=self.y,speed=50+30*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=7,growSpeed=1,animationFrame=20}
     end

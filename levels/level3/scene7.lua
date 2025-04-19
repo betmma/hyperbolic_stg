@@ -21,7 +21,7 @@ return {
         player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local theta=math.eval('0+999')
+        local theta=math.eval(0,999)
         Event.LoopEvent{
             period=500,
             frame=470,
@@ -42,7 +42,7 @@ return {
                     Event.DelayEvent{
                         delayFrame=20*(i<=removePointsNum and i or 12),
                         executeFunc=function()
-                            BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=2,bulletNumber=30,bulletSpeed=15,bulletLifeFrame=10000,angle=math.eval('0+999'),bulletSprite=BulletSprites.kunai.red,
+                            BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=2,bulletNumber=30,bulletSpeed=15,bulletLifeFrame=10000,angle=math.eval(0,999),bulletSprite=BulletSprites.kunai.red,
                             spawnBatchFunc=function(self)
                                 SFX:play('enemyShot',true,self.spawnSFXVolume)
                                 local num=math.eval(self.bulletNumber)
@@ -66,7 +66,7 @@ return {
                             Event.DelayEvent{
                                 delayFrame=60,
                                 executeFunc=function()
-                                    local angle=math.eval('0+999')
+                                    local angle=math.eval(0,999)
                                     local bulletEvent=function(cir)
                                         cir.safe=true
                                         cir.spriteTransparency=0

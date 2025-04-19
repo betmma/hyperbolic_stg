@@ -78,12 +78,12 @@ return {
                                 local num=hpp<0.4 and 150 or 90
                                 BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=2,bulletNumber=num,bulletSpeed=70,bulletLifeFrame=500,angle=angle,bulletSprite=BulletSprites.scale.yellow,highlight=true,bulletEvents={
                                     function(cir,args,self)
-                                        cir.x=cir.x*math.eval('1+0.04')
-                                        cir.y=cir.y*math.eval('1+0.04')
-                                        local rand=math.eval('0+1')
+                                        cir.x=cir.x*math.eval(1,0.04)
+                                        cir.y=cir.y*math.eval(1,0.04)
+                                        local rand=math.eval(0,1)
                                         local dang=rand^3*math.pi*(hpp<0.4 and 4 or 2)
                                         cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+dang
-                                        cir.speed=40+math.cos(rand*3)*30+math.eval('0+8')
+                                        cir.speed=40+math.cos(rand*3)*30+math.eval(0,8)
                                         if math.abs(dang)>math.pi*2 then
                                             cir.sprite=BulletSprites.scale.blue
                                             cir.speed=cir.speed+70

@@ -15,8 +15,8 @@ return {
                 centers[t0]=centers[t0] or {}
                 cir.index=#centers[t0]+1
                 centers[t0][#centers[t0]+1]=cir
-                cir.speed=math.eval('150+60')
-                local theta=math.eval('0+999')
+                cir.speed=math.eval(150,60)
+                local theta=math.eval(0,999)
                 cir.theta=theta
                 cir.r=5
                 local aim=Shape.to(cir.x,cir.y,player.x,player.y)
@@ -39,7 +39,7 @@ return {
                         }
                     end
                 }
-                cir.sign=math.eval('0+1')>0 and 1 or -1
+                cir.sign=math.eval(0,1)>0 and 1 or -1
                 Event.LoopEvent{
                     obj=cir,
                     period=1,

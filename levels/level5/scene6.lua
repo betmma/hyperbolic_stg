@@ -29,7 +29,7 @@ return {
         a=BulletSpawner{x=400,y=300,period=300,frame=200,lifeFrame=10000,bulletNumber=3,bulletSpeed=20,bulletLifeFrame=200,angle='1+999',range=math.pi*0,spawnCircleRadius=50,spawnCircleAngle='0+999',fogEffect=true,fogTime=30,bulletSprite=BulletSprites.bigStar.red,bulletEvents={
             function(cir,args,self)
                 bullet=cir
-                cir.direction=math.eval('0+999')
+                cir.direction=math.eval(0,999)
                 local count=0
                 local hpLevel=en:getHPLevel()
                 local range=hpLevel==1 and 30 or hpLevel==2 and 15 or 5
@@ -68,7 +68,7 @@ return {
                     cir.speed=cir.speed-1.5*math.abs(squareSize/2-ret)
                     cir.direction=cir.direction-math.clamp((ret-squareSize/4),0,squareSize/2)*math.pi/b.bulletNumber*4
                 else
-                    cir.speed=cir.speed*(1-math.eval('0.5+0.5')^2)
+                    cir.speed=cir.speed*(1-math.eval(0.5,0.5)^2)
                 end
                 if hpLevel<=2 then
                     Event.LoopEvent{
@@ -130,7 +130,7 @@ return {
                                     if en:getHPLevel()~=1 then return end
                                     b.angle=b.angle-math.pi/12
                                     b:spawnBatchFunc()
-                                    b.angle=math.eval('0+999')
+                                    b.angle=math.eval(0,999)
                                 end
                             }
                         else
@@ -146,7 +146,7 @@ return {
                                     squareSize=24
                                     b.angle=b.angle-math.pi/24*.75*sign
                                     b:spawnBatchFunc()
-                                    b.angle=math.eval('0+999')
+                                    b.angle=math.eval(0,999)
                                     squareSize=24
                                 end
                             }

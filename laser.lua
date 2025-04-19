@@ -88,14 +88,24 @@ function LaserUnit:extractCoordinates()
             ]]
             local xc1,yc1,xc2,yc2=0.5*(x1+x3),0.5*(y1+y3),0.5*(x2+x4),0.5*(y2+y4)
             local dis=Shape.distance(xc1,yc1,xc2,yc2)
-            local limit=10
-            if dis>limit then
+            local splitLength=10
+            local segMax=self.meshLimit or 10 -- at most self.meshLimit or 10 points
+            if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
+                local viewer=G.viewMode.object
+                local toViewerDistance=Shape.distance(xc1,yc1,viewer.x,viewer.y)
+                local toViewerDistance2=Shape.distance(xc2,yc2,viewer.x,viewer.y)
+                local minDistance=math.min(toViewerDistance,toViewerDistance2)
+                if minDistance>splitLength*segMax then
+                    splitLength=splitLength*segMax -- reduce not important points cuz it's away from player
+                end
+            end
+            if dis>splitLength then
                 local the=Shape.to(xc1,yc1,xc2,yc2)
                 local r1=Shape.distance(x1,y1,xc1,yc1)
                 local dtheta1=math.modClamp(Shape.to(xc1,yc1,x1,y1)-the)
                 local r2=Shape.distance(x2,y2,xc2,yc2) 
                 local dtheta2=math.modClamp(Shape.to(xc2,yc2,x2,y2)-Shape.to(xc2,yc2,xc1,yc1)+math.pi,math.pi/2,math.pi)
-                local num=math.min(math.ceil(dis/limit),self.meshLimit or 10) -- at most self.meshLimit or 10 points
+                local num=math.min(math.ceil(dis/splitLength),segMax)
                 for j=1,num-1 do
                     local nx,ny=Shape.rThetaPos(xc1,yc1,dis/num*j,the)
                     local the2=Shape.to(nx,ny,xc2,yc2)
@@ -193,7 +203,7 @@ function Laser:new(args)
             args.direction=math.eval(self.args.direction)
             args.speed=math.eval(self.args.speed)
             if self.enableWarningAndFading and G.replay and isVersionSmaller(G.replay.version,'0.2.8.7') then
-                args.speed=args.speed*math.eval('1+0.01')
+                args.speed=args.speed*math.eval(1,0.01)
             end
             if self.smooth then
                 args.radius=self.radius*sigmoid(self.frame/self.smoothFrame-1)*sigmoid((self.lifeFrame-self.frame)/self.smoothFrame-1)

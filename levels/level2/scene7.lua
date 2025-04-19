@@ -37,7 +37,7 @@ return {
                 r1=40+25*math.sin(frame/120)
                 r2=40-20*math.sin(frame/120)
                 if (frame+240)%300==0 then
-                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval('0+3.14'))
+                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval(0,3.14))
                     nx=math.clamp(nx,200,600)
                     nx=math.clamp(nx,en.x-100,en.x+100)
                     ny=math.clamp(ny,0,550)
@@ -64,19 +64,19 @@ return {
                         a.bulletNumber=3
                         a.spawnEvent.period=3
                         a.spawnEvent.frame=0
-                        a.angle=math.eval('0+999.01')
+                        a.angle=math.eval(0,999.01)
                     elseif mode==2 then
                         a.bulletSpeed=30
                         a.bulletNumber=15
                         a.spawnEvent.period=100
                         a.spawnEvent.frame=75
-                        a.angle=math.eval('0+999')
+                        a.angle=math.eval(0,999)
                     elseif mode==3 then
                         a.bulletSpeed=40
                         a.bulletNumber=1
                         a.spawnEvent.period=1
                         a.spawnEvent.frame=0
-                        a.angle=math.eval('0+999')
+                        a.angle=math.eval(0,999)
                         a.angleRef=a.angle
                     end
                 end
@@ -86,9 +86,9 @@ return {
                         a.spawnEvent.period=999
                     end
                 elseif mode==2 then
-                    a.angle=math.eval('0+999')
+                    a.angle=math.eval(0,999)
                 elseif mode==3 then
-                    a.angle=math.eval('0+0.5')+a.angleRef
+                    a.angle=math.eval(0,0.5)+a.angleRef
                 end
             end
         }

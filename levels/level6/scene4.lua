@@ -39,7 +39,7 @@ return {
         player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=448,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval('0+360'),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=448,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval(0,360),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
             function(cir,args,self)
                 local ns,nd=32,14
                 local hpLevel=en:getHPLevel()
@@ -99,7 +99,7 @@ return {
                 if a.spawnEvent.frame==a.spawnEvent.period-60 and hpLevel>=2 then
                     local sign=math.mod2Sign(a.spawnEvent.executedTimes)
                     local color=colors[hpLevel]
-                    a.angle=math.eval('0+360')
+                    a.angle=math.eval(0,360)
                     for i=1,10 do
                         Laser{x=a.x,y=a.y,direction=math.pi*2/5*i+a.angle,speed=800,sprite=BulletSprites.laser[color],lifeFrame=140,warningFrame=60,radius=hpLevel,canRemovedByBulletRemover=true,
                         bulletEvents={
@@ -128,7 +128,7 @@ return {
                         }
                     end
                 elseif a.spawnEvent.frame==a.spawnEvent.period-60 then
-                    a.angle=math.eval('0+360')
+                    a.angle=math.eval(0,360)
                 end
             end
         }

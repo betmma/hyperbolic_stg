@@ -22,12 +22,12 @@ return {
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local ax,ay=Shape.rThetaPos(400,300,240,0)
-        a=BulletSpawner{x=ax,y=ay,period=150000,frame=80,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval('0+360'),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow}
+        a=BulletSpawner{x=ax,y=ay,period=150000,frame=80,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval(0,360),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow}
         local bx,by=Shape.rThetaPos(400,300,240,math.pi)
-        b=BulletSpawner{x=bx,y=by,period=150000,frame=80,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval('0+360'),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow}
+        b=BulletSpawner{x=bx,y=by,period=150000,frame=80,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval(0,360),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow}
         
         local freq1,amp1,freq2,amp2=0.5,1,0.5,1
-        freq2=freq2+math.eval('0+0.04')
+        freq2=freq2+math.eval(0,0.04)
         local time=0
         local thereshold=1
         local colorMix={0.7,0,0}

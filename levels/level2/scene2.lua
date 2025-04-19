@@ -12,7 +12,7 @@ return {
         a={x=150,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=512,bulletSpeed='20',bulletLifeFrame=10000,angle=math.pi/2,range=math.pi*256*0,bulletSprite=BulletSprites.star.orange,bulletEvents={
             function(cir,args,self)
                 local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
-                local ind=math.floor(math.eval('5+4'))
+                local ind=math.floor(math.eval(5,4))
                 cir.sprite=BulletSprites.star[colors[ind]]
                 local ratio=(cir.args.index/self.bulletNumber)
                 Event.EaseEvent{
@@ -29,7 +29,7 @@ return {
                     obj=cir,
                     delayFrame=300,
                     executeFunc=function()
-                        cir.speed=cir.speed+math.eval('0+1')
+                        cir.speed=cir.speed+math.eval(0,1)
                     end
                 }
             end

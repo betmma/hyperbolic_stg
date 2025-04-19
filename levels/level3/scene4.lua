@@ -58,7 +58,7 @@ return {
                     b.spawnEvent.period=10
                 elseif t>=100*(1-0.6*hpPercent) then
                     b.spawnEvent.period=9999
-                    b.angle=b.angle+math.eval('0+0.3')
+                    b.angle=b.angle+math.eval(0,0.3)
                 end
                 if times%2==0 then
                     b.bulletSprite=BulletSprites.rice.red
@@ -75,7 +75,7 @@ return {
                     c.spawnEvent.period=10*(1.5+0.5*hpPercent)
                     c.bulletSpeed=50*(0.95-0.4*hpPercent)
                 end
-                c.angle=Shape.to(c.x,c.y,player.x,player.y)+math.eval('0+0.04')
+                c.angle=Shape.to(c.x,c.y,player.x,player.y)+math.eval(0,0.04)
             end
         }
         Event.LoopEvent{

@@ -127,8 +127,8 @@ return {
                         SFX:play('enemyCharge',true)
                         createCavity()
                     elseif hpLevel==2 then
-                        local newAngle=cavityAngle+math.eval('0+1.57')
-                        local newHalfAngle=math.pi*math.eval('0.03+0.01')
+                        local newAngle=cavityAngle+math.eval(0,1.57)
+                        local newHalfAngle=math.pi*math.eval(0.03,0.01)
                         local delta=newAngle-cavityAngle
                         local delta2=newHalfAngle-halfAngle
                         Event.LoopEvent{
@@ -197,7 +197,7 @@ return {
                 end
                 if a.spawnEvent.frame==a.spawnEvent.period-1 then
                     for i=1,5 do
-                        BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=1,bulletNumber=30,bulletSpeed=15+5*i,bulletLifeFrame=900,angle=math.eval('0+999'),range=math.pi*2,bulletSprite=BulletSprites.bill.purple,}
+                        BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=1,bulletNumber=30,bulletSpeed=15+5*i,bulletLifeFrame=900,angle=math.eval(0,999),range=math.pi*2,bulletSprite=BulletSprites.bill.purple,}
                     end
                 end
                 a.x,a.y=en.x,en.y

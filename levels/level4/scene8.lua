@@ -102,10 +102,10 @@ return {
                         }
                         cir.safe=false
                         cir:changeSprite(BulletSprites.bill.red)
-                        cir.speed=math.eval('7+2')
+                        cir.speed=math.eval(7,2)
                         if en.hp<en.maxhp*0.7 then
                             cir:changeSprite(BulletSprites.bill.orange)
-                            cir.direction=cir.direction+0.3*(math.eval('0+1')>0 and 1 or -1)
+                            cir.direction=cir.direction+0.3*(math.eval(0,1)>0 and 1 or -1)
                         end
                     end
                 }
@@ -133,7 +133,7 @@ return {
                 end
                 border=PolyLine(poses,false)
                 if border:inside(player.x,player.y) and en.frame%1==0 then
-                    Circle{x=en.x,y=en.y,direction=Shape.to(400,300,player.x,player.y)+math.eval('0+0.5'),speed=100,sprite=BulletSprites.giant.yellow,invincible=true,lifeFrame=2000}
+                    Circle{x=en.x,y=en.y,direction=Shape.to(400,300,player.x,player.y)+math.eval(0,0.5),speed=100,sprite=BulletSprites.giant.yellow,invincible=true,lifeFrame=2000}
                 end
                 local hpp=en.hp/en.maxhp
                 if hpp<0.5 and not f.set then
