@@ -16,7 +16,7 @@ function BulletSpawner:new(args)
     self.frame=args.frame or 0
     self.realFrame=0
     self.bulletNumber=args.bulletNumber and math._extractABfromstr(args.bulletNumber) or 10
-    self.angle=args.angle and math._extractABfromstr(args.angle) or 0
+    self.angle=args.angle and (args.angle=='player' and args.angle or math._extractABfromstr(args.angle)) or 0
     self.range=args.range and math._extractABfromstr(args.range) or math.pi*2
     self.spawnCircleRadius=args.spawnCircleRadius or 0
     self.spawnCircleAngle=args.spawnCircleAngle and math._extractABfromstr(args.spawnCircleAngle) or 0

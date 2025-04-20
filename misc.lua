@@ -74,7 +74,7 @@ end
 
 ---@param a number|string|table
 ---@param b? number
----@return number?
+---@return number
 -- this has some lore. I used a software called "Crazy Storm" to make spell cards years ago, and that software supports the "a+b" form, so I subconsciously use this form, but string could be inefficient. return random number in [a-b,a+b]. Warning: it always returns a float number.
 function math.eval(a,b)
     if type(a)=='string' then -- old 'a+b' form
@@ -84,7 +84,7 @@ function math.eval(a,b)
         a,b=a[1],a[2]
     end
     if not b or b==0 then -- plain number or plain string number form
-        return tonumber(a)
+        return tonumber(a) or 0
     end
     local na = tonumber(a) -- new a, b form
     local nb = tonumber(b)

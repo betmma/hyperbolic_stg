@@ -47,7 +47,7 @@ return {
         -- wrap obj.functionName to achieve calling the original function on every reflection object.
         -- functionName should be "atomic" function that doesn't call other obj methods (so only love draw)
         -- using copy_table on reflected object above is clearly a heavy load and causes fps drop, so you need to copy needed attributes from self to reflectedSelf
-        local function reflectFunctionalize(obj,functionName,exitLayer,drawConditionFunc,modificationToReflectionFunc)
+        local function reflectFunctionalize(obj,functionName,exitLayer,drawConditionFunc,modificationToReflectionFunc,extraNote)
             local originalFunc=obj[functionName]
             obj[functionName]=function(self,...) -- add layer, lastIndex and inReflection parameter
                 local paramLength=select('#',...)
@@ -64,9 +64,18 @@ return {
                     table.insert(args,'inReflection')
                 end
                 if not drawConditionFunc or drawConditionFunc(self,layer) then
-                    if layer>0 then 
-                        love.graphics.setColor(1,1,1,0.6+0.4*math.sin((lastIndex or 0)+en.frame/600+Shape.distance(self.x,self.y,player.x,player.y)/10))
+                    local div=math.ceil(en.frame/30)%5+1
+                    local decrease=0
+                    if extraNote=='bullet' then
+                        local frame=en.frame
+                        if frame<3600 and layer==0 then
+                            decrease=en.frame/7200
+                        elseif frame>3600 and lastIndex==div then
+                            decrease=(frame-3600)/7200
+                        end
                     end
+                    local base=0.6+0.4*math.cos(((lastIndex==div or layer==0) and 1 or 0)*(en.frame%30/30)^0.3*6.28)
+                    love.graphics.setColor(1,1,1,base-decrease)
                     originalFunc(self,...)
                     love.graphics.setColor(1,1,1,1)
                 end
@@ -137,7 +146,7 @@ return {
                 reflectedSelf.batch=self.batch
                 reflectedSelf.direction=math.pi-self.direction+reflectedSelf.orientation
                 reflectedSelf.orientation=0
-            end)
+            end,'bullet')
             local ref=cir.drawSprite
             cir.drawSprite=function(self,...)
                 if player.border:inside(cir.x,cir.y) then
