@@ -2,7 +2,7 @@ extern float progress; // The progress of the transition (0.0 to 1.0)
 
 // Simple hash function for randomness
 float hash(float n) {
-    return fract(sin(n) * 43758.5453 + sin(n * (n + 9898)) * 16931.161);
+    return fract(sin(n) * 8.5453 + sin(n * (n + 9898)) * 31.161);
 }
 
 // Function to check if point is inside a triangle
@@ -76,7 +76,7 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
         float angle = 3.14159 - 0.02 - (float(i) / float(NUM_SPIKES - 1)) * 1.1;
         
         // Calculate spike length with variation
-        float length = progress * 0.95 * (0.7 + hash(float(i + 100) * 173.31) * 3.6);
+        float length = progress * 0.95 * (0.7 + hash(float(i + 15) * 13.31) * 3.6);
         
         // Make spikes longer at the top
         length *= 1.0 + (1.0 - uv.y) * 0.7;
