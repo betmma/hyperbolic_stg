@@ -1113,6 +1113,7 @@ G={
             update=function(self,dt)
                 keyBindValueCalc(self,'down','up','chosen',self.currentUI.chosenMax)
                 keyBindValueCalc(self,'right','left','page',self.currentUI.pageMax)
+                self.UIDEF.LOAD_REPLAY.digitUpdate(self)
                 if isPressed('z') then
                     local slot=self.currentUI.chosen+self.currentUI.page*25-25
                     self.currentUI.slot=slot
@@ -1236,23 +1237,7 @@ G={
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
                 self.currentUI.pageMax=ReplayManager.PAGES
             end,
-            update=function(self,dt)
-                self.backgroundPattern:update(dt)
-                keyBindValueCalc(self,'down','up','chosen',self.currentUI.chosenMax)
-                keyBindValueCalc(self,'right','left','page',self.currentUI.pageMax)
-                if isPressed('z') then
-                    local index=self.currentUI.chosen+self.currentUI.page*25-25
-                    self.currentUI.slot=index
-                    local replay=ReplayManager.replays[index]
-                    if replay then
-                        self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene=replay.level,replay.scene
-                    end
-                    ReplayManager.runReplay(index)
-                    SFX:play('select')
-                elseif isPressed('x') or isPressed('escape')then
-                    SFX:play('select')
-                    self:switchState(self.STATES.MAIN_MENU)
-                end
+            digitUpdate=function(self) -- use numpad to jump to replay number
                 local digits='0123456789'
                 for i=1,#digits do
                     if isPressed(digits:sub(i,i)) or isPressed('kp'..digits:sub(i,i)) then
@@ -1266,9 +1251,28 @@ G={
                             self.currentUI.firstDigit=nil
                         end
                         if slot==0 then slot=100 end
-                        self.currentUI.page=math.ceil((slot-1)/25)
+                        self.currentUI.page=math.floor((slot+24)/25)
                         self.currentUI.chosen=(slot-1)%25+1
                     end
+                end
+            end,
+            update=function(self,dt)
+                self.backgroundPattern:update(dt)
+                keyBindValueCalc(self,'down','up','chosen',self.currentUI.chosenMax)
+                keyBindValueCalc(self,'right','left','page',self.currentUI.pageMax)
+                self.currentUI.digitUpdate(self)
+                if isPressed('z') then
+                    local index=self.currentUI.chosen+self.currentUI.page*25-25
+                    self.currentUI.slot=index
+                    local replay=ReplayManager.replays[index]
+                    if replay then
+                        self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene=replay.level,replay.scene
+                    end
+                    ReplayManager.runReplay(index)
+                    SFX:play('select')
+                elseif isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self:switchState(self.STATES.MAIN_MENU)
                 end
             end,
             draw=function(self)
