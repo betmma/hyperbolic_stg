@@ -27,7 +27,7 @@ function Circle:new(args)
     self.spriteTransparency=args.spriteTransparency or 1
 
     self.spriteExtraDirection=0
-    self.spriteRotationSpeed=0
+    self.spriteRotationSpeed=0 -- used for nuke bullet
 
     if self.sprite==Asset.nuke then
         self.invincible=true
@@ -69,8 +69,8 @@ function Circle:drawSprite()
     local scale=r/data.hitRadius*Circle.spriteSizeFactor
     if self.sprite then
         local r,g,b
-        if data.forcedColor then
-            r,g,b=data.forcedColor[1],data.forcedColor[2],data.forcedColor[3]
+        if self.spriteColor then
+            r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
         end
         self.batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 1)*color[4])
         self.batch:add(self.sprite,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.size/2,data.size/2)
