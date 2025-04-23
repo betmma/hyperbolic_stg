@@ -30,10 +30,10 @@ end
 function Larger:draw()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local scale=r/30.3333*(self.scale or 1)
-    local size=Asset.SpriteData[self.sprite].size
+    local size=self.sprite.data.size
     local direction=self.direction or 0
     Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
-    Asset.effectBatch:add(self.sprite,x,y,direction,scale,scale,size/2,size/2)
+    Asset.effectBatch:add(self.sprite.quad,x,y,direction,scale,scale,size/2,size/2)
 end
 
 -- A growing shockwave, that removes touched bullets and activate their :removeEffect
@@ -93,7 +93,7 @@ function Charge:update(dt)
 end
 
 function Charge:draw(dt)
-    local size=Asset.SpriteData[self.sprite].size
+    local size=self.sprite.data.size
     for k,particle in pairs(self.particles) do
         if particle.frame>=self.particleFrame then
             goto continue
@@ -102,7 +102,7 @@ function Charge:draw(dt)
         particle.x,particle.y=Shape.rThetaPos(self.obj.x,self.obj.y,particle.speed*(-particle.frame+self.particleFrame),particle.direction)
         local x,y=particle.x,particle.y
         Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-0.3*particle.frame/self.particleFrame)
-        Asset.effectBatch:add(self.sprite,x,y,0,scale,scale,size/2,size/2)
+        Asset.effectBatch:add(self.sprite.quad,x,y,0,scale,scale,size/2,size/2)
         ::continue::
     end
 end

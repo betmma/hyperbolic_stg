@@ -50,7 +50,7 @@ function LaserUnit:extractCoordinates()
     local unit = self
     while unit and not unit.removed do
         local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
-        r1 = SpriteData[self.sprite].size / 2 * r1 / SpriteData[self.sprite].hitRadius
+        r1 = self.sprite.data.size / 2 * r1 / self.sprite.data.hitRadius
         local the=unit.direction+math.pi/2+(unit.deltaOrientation or 0)
         table.insert(poses, {x1+r1*math.cos(the),y1+r1*math.sin(the)})
         table.insert(poses, {x1-r1*math.cos(the),y1-r1*math.sin(the)})
@@ -61,7 +61,7 @@ function LaserUnit:extractCoordinates()
         poses={}
         unit=self
         local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
-        r1 = SpriteData[self.sprite].size / 2 * r1 / SpriteData[self.sprite].hitRadius
+        r1 = self.sprite.data.size / 2 * r1 / self.sprite.data.hitRadius
         r1 = r1 * 2^0.5
         local the=unit.direction+math.pi/4
         for i=1,4 do
@@ -126,7 +126,7 @@ end
 function LaserUnit:drawMesh(poses)
     poses=poses or self:extractCoordinates()
     local vertices={}
-    local x,y,w,h=self.sprite:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
     local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
     x,y,w,h=x/W,y/H,w/W,h/H
     for i=1,#poses,2 do
@@ -178,7 +178,7 @@ end
 
 -- Note that warningFrame and fadingFrame is binded to Laser object's existence and lifeFrame, so for fast lasers these two parameters could be used, while for slow (usually curly and not long enough to go through screen) lasers shouldn't be set to nonzero, otherwise before actual laser reaches player it's warningFrame ends, and soon the Laser object is removed and actual laser will fade out.
 -- Laser is actually a special bulletSpawner but it doesn't inherit bulletSpawner class yet (maybe I'll change). When creating its args are like normal bullets so args.direction and speed are actually for LaserUnits, so directly inheriting bulletSpawner (or shape) will cause it to move. [LaserEvents] are Laser object's events, while [bulletEvents] are LaserUnit's events.
--- To prevent unintended safe spot inside the laser, when enableWarningAndFading is true the speed of LaserUnits is added 1% of randomness. (this is before I added line segment check for player hit, so now it's not needed, but to not break replays I keep it)
+-- To prevent unintended safe spot inside the laser, when enableWarningAndFading is true the speed of LaserUnits is added 1% of randomness. (this is before I added line segment check for player hit, so now it's not needed, for old replays I still keep it)
 function Laser:new(args)
     Laser.super.new(self,args)
     self.radius=args.radius or 1

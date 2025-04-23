@@ -10,9 +10,17 @@ Circle.restore()
 function Circle:new(args)
     Circle.super.new(self, args)
     self.radius = args.radius or 1
+    ---@type Sprite
     self.sprite=args.sprite
     if self.sprite then
-        local data=SpriteData[self.sprite]
+        local data=self.sprite.data
+        if not data then
+            error('Circle:new: self.sprite.data is nil')
+        end
+        if data.isGif then
+            self.sprite=copy_table(self.sprite)
+            self.sprite:randomizeCurrentFrame()
+        end
         self.radius=self.radius/Circle.sizeFactor*data.hitRadius
     end
     self.extraUpdate={}
@@ -56,25 +64,29 @@ function Circle:update(dt)
     self:checkFlashBombRemove()
     self:checkHitPlayer()
     self.spriteExtraDirection=self.spriteExtraDirection+self.spriteRotationSpeed*Shape.timeSpeed
+    if self.sprite then
+        local data=self.sprite.data
+        if data.isGif then
+            self.sprite:countDown()
+        end
+    end
 end
 
 -- this happens in draw.
 function Circle:drawSprite()
+    if not self.sprite then
+        return
+    end
     local color={love.graphics.getColor()}
-    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local data=SpriteData[self.sprite]
-    if not data then
-        error('Circle:drawSprite: self.sprite not found in SpriteData')
+    local x,y,radius=Shape.getCircle(self.x,self.y,self.radius)
+    local data=self.sprite.data
+    local scale=radius/data.hitRadius*Circle.spriteSizeFactor
+    local r,g,b
+    if self.spriteColor then
+        r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
     end
-    local scale=r/data.hitRadius*Circle.spriteSizeFactor
-    if self.sprite then
-        local r,g,b
-        if self.spriteColor then
-            r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
-        end
-        self.batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 1)*color[4])
-        self.batch:add(self.sprite,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.size/2,data.size/2)
-    end
+    self.batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 1)*color[4])
+    self.batch:add(self.sprite.quad,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.size/2,data.size/2)
 end
 function Circle:checkShockwaveRemove()
     if #Effect.Shockwave.objects==0 then return end
@@ -121,18 +133,21 @@ end
 
 function Circle:changeSpriteColor(color)
     if not color then
-        local colors=Asset.SpriteData[self.sprite].possibleColors
+        local colors=self.sprite.data.possibleColors
+        if not colors then
+            return
+        end
         local ind=math.floor(math.random(1,#colors+0.999999))
         color=colors[ind]
     end
-    self.sprite=Asset.SpriteData[self.sprite].super[color] or self.sprite
+    self.sprite=BulletSprites[self.sprite.data.key][color] or self.sprite
 end
 
 function Circle:changeSprite(sprite)
-    local data=SpriteData[self.sprite]
+    local data=self.sprite.data
     self.radius=self.radius/data.hitRadius
     self.sprite=sprite
-    data=SpriteData[self.sprite]
+    data=self.sprite.data
     self.radius=self.radius*data.hitRadius
 end
 
