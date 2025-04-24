@@ -46,8 +46,10 @@ function GifSprite:countDown()
     end
 end
 
+local randomSeed=0
 function GifSprite:randomizeCurrentFrame()
-    self.currentFrame=math.floor(math.random(1,#self.quads))
+    self.currentFrame=math.ceil(math.pseudoRandom(randomSeed)*#self.quads)
+    randomSeed=(randomSeed+1)%99999
     self.quad=self.quads[self.currentFrame]
 end
 

@@ -1,6 +1,6 @@
 return {
-    user="?",
-    spellName="?",
+    user="yukari",
+    spellName="Instant Pierce Barrier - Impregnable Fortress",
     make=function()
         G.levelRemainingFrame=10800
         Shape.removeDistance=1e100
@@ -58,18 +58,16 @@ return {
         G.viewMode.object=player
         local shoot=player.shootDirStraight
         player.shootDirStraight=function(self,pos,damage,sprite,theta)
-            self.canHitFamiliar=false
+            -- self.canHitFamiliar=false
             local cir=shoot(self,pos,damage,sprite,theta)
-            if Shape.distance(cir.x,cir.y,en.x,en.y)>en.r1 then
-                Event.LoopEvent{
-                    obj=cir,
-                    period=1,
-                    conditionFunc=function(self)return Shape.distance(cir.x,cir.y,en.x,en.y)<en.r1 end,
-                    executeFunc=function(self)
-                        cir:remove()
-                    end
-                }
-            end
+            Event.LoopEvent{
+                obj=cir,
+                period=1,times=1,
+                conditionFunc=function(self)return Shape.distance(cir.x,cir.y,player.x,player.y)>en.r2 end,
+                executeFunc=function(self)
+                    cir.speed=0
+                end
+            }
             return cir
         end
         local hitEffectRef=player.hitEffect
@@ -131,7 +129,7 @@ return {
             local dir=Shape.to(from.x,from.y,to.x,to.y)
             for i=0,distance,gap do
                 local nx,ny,newTheta=Shape.rThetaPos(from.x,from.y,i,dir)
-                local cir=Circle{x=nx,y=ny,direction=newTheta+math.pi/2,speed=0,sprite=Asset.bulletSprites.bigRound.red,lifeFrame=life or 6000,radius=2.47,invincible=true}
+                local cir=Circle{x=nx,y=ny,direction=newTheta+math.pi/2,speed=0,sprite=Asset.bulletSprites.bigRound.red,lifeFrame=life or 19000,radius=2.47,invincible=true}
                 if trigger then
                     Event.LoopEvent{
                         obj=cir,
@@ -182,7 +180,7 @@ return {
                                 Event.LoopEvent{
                                     obj=cir,period=3,executeFunc=function ()
                                         cir.direction=cir.direction+math.mod2Sign(index)*0.1
-                                        local cir2=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=Asset.bulletSprites.scale.yellow,lifeFrame=2000}
+                                        local cir2=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=Asset.bulletSprites.scale.yellow,lifeFrame=12000}
                                         circleEffect(cir2)
                                         cir2.invincible=true
                                     end
@@ -203,7 +201,7 @@ return {
                                 Event.LoopEvent{
                                     obj=cir,period=5,executeFunc=function ()
                                         cir.direction=cir.direction+math.mod2Sign(index)*0.1
-                                        local cir2=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=Asset.bulletSprites.scale.yellow,lifeFrame=2000}
+                                        local cir2=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=Asset.bulletSprites.scale.yellow,lifeFrame=12000}
                                         circleEffect(cir2)
                                         cir2.invincible=true
                                     end
@@ -223,7 +221,7 @@ return {
                             executeFunc=function()
                                 Event.LoopEvent{
                                     obj=cir,period=3,executeFunc=function (self,executedTimes)
-                                        local cir2=Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi/3,speed=index%12*3,sprite=Asset.bulletSprites.scale.blue,lifeFrame=2000}
+                                        local cir2=Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi/3,speed=index%12*3,sprite=Asset.bulletSprites.scale.blue,lifeFrame=12000}
                                         Event.EaseEvent{
                                             obj=cir2,
                                             easeFrame=60,
@@ -239,12 +237,21 @@ return {
                         }
                     end
                 }}
+                local staticCircle=function(cir,radius,number,angle,size,life)
+                    BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=life or 6000,angle=angle,bulletSprite=BulletSprites.scale.green,bulletSize=size or 1,
+                    -- fogEffect=true,fogTime=120,
+                    spawnCircleRadius=radius,bulletEvents={
+                        function(cir2,args)
+                            cir2.invincible=true
+                            circleEffect(cir2)
+                        end}}
+                end
                 Event.DelayEvent{
                     obj=en,delayFrame=30,
                     executeFunc=function()
                         SFX:play('enemyPowerfulShot',true)
-                        rotatingCircle(en,90,50,50)
-                        rotatingCircle(en,80,50,50,true)
+                        staticCircle(en,90,50,math.pi/2-0.3)
+                        staticCircle(en,80,50,-math.pi/2+0.3)
                     end
                 }
             end,
@@ -259,7 +266,7 @@ return {
                         function(cir,args,self)
                             rotatingCircle(cir,5,60)
                             cir.invincible=true
-                            BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=1,bulletNumber=20,bulletSpeed=30,bulletLifeFrame=3000,angle=Shape.to(cir.x,cir.y,en.x,en.y),range=range,bulletSprite=BulletSprites.knife.green,
+                            BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=1,bulletNumber=20,bulletSpeed=30,bulletLifeFrame=13000,angle=Shape.to(cir.x,cir.y,en.x,en.y),range=range,bulletSprite=BulletSprites.knife.green,
                             -- fogEffect=true,fogTime=120,
                             spawnCircleRadius=0,bulletEvents={
                                 function(cir2,args)
@@ -297,7 +304,7 @@ return {
                 local function generate(number,radius,angle,shoot)
                     local last
                     local first
-                    BulletSpawner{x=en.x,y=en.y,period=40,frame=20,lifeFrame=50,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=9990,spawnCircleRadius=radius,bulletSize=2,spawnCircleAngle=angle or '0+999',angle=1.57,range=math.pi*2,bulletSprite=BulletSprites.giant.red,bulletEvents={
+                    BulletSpawner{x=en.x,y=en.y,period=40,frame=20,lifeFrame=50,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=19990,spawnCircleRadius=radius,bulletSize=2,spawnCircleAngle=angle or '0+999',angle=1.57,range=math.pi*2,bulletSprite=BulletSprites.giant.red,bulletEvents={
                         function(cir,args,self)
                             cir.invincible=true
                             local reachOut={Shape.rThetaPos(cir.x,cir.y,49,Shape.to(cir.x,cir.y,en.x,en.y)+math.pi)}
@@ -306,7 +313,7 @@ return {
                                 local type=math.random(1,4) -- 4 types of sentries
                                 local color
                                 if type==1 then
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=30,frame=0,lifeFrame=5000,bulletNumber=5,bulletSpeed=90,bulletLifeFrame=300,angle='player',range=math.pi/2,bulletSprite=BulletSprites.ellipse.yellow,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=30,frame=0,lifeFrame=15000,bulletNumber=4,bulletSpeed=90,bulletLifeFrame=300,angle='player',range=math.pi/2,bulletSprite=BulletSprites.ellipse.yellow,bulletEvents={
                                         function(cir,args,self)
                                             local index=args.index
                                             local delta=math.eval(0,0.2)
@@ -318,7 +325,7 @@ return {
                                     injectBulletSpawnDistance(bs)
                                     color='yellow'
                                 elseif type==2 then
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=5,frame=0,lifeFrame=5000,bulletNumber=2,bulletSpeed=90,bulletLifeFrame=60,angle='player',range=math.pi/2,bulletSprite=BulletSprites.ellipse.blue,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=5,frame=0,lifeFrame=15000,bulletNumber=2,bulletSpeed=90,bulletLifeFrame=60,angle='player',range=math.pi/2,bulletSprite=BulletSprites.ellipse.blue,bulletEvents={
                                         function(cir2,args,self)
                                             local index=args.index
                                             local delta=math.mod2Sign(index)*(cir.frame%60)*0.01
@@ -330,7 +337,7 @@ return {
                                     injectBulletSpawnDistance(bs)
                                     color='blue'
                                 elseif type==3 then
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=120,frame=0,lifeFrame=5000,bulletNumber=3,bulletSpeed=360,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.green,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=120,frame=0,lifeFrame=15000,bulletNumber=3,bulletSpeed=360,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.green,bulletEvents={
                                         function(cir2,args,self)
                                             local delay=math.eval('5+5')
                                             Event.DelayEvent{
@@ -355,7 +362,7 @@ return {
                                     injectBulletSpawnDistance(bs)
                                     color='green'
                                 else
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=120,frame=0,lifeFrame=5000,bulletNumber=3,bulletSpeed=180,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.red,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=120,frame=0,lifeFrame=15000,bulletNumber=3,bulletSpeed=180,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.red,bulletEvents={
                                         function(cir2,args,self)
                                             local delay=math.eval('3+3')
                                             Event.DelayEvent{
@@ -375,7 +382,7 @@ return {
                                     injectBulletSpawnDistance(bs)
                                     color='red'
                                 end
-                                Circle{x=reachOut.x,y=reachOut.y,direction=0,speed=0,sprite=Asset.bulletSprites.giant[color],lifeFrame=6000,radius=2,invincible=true}
+                                Circle{x=reachOut.x,y=reachOut.y,direction=0,speed=0,sprite=Asset.bulletSprites.giant[color],lifeFrame=16000,radius=2,invincible=true}
                                 bulletLine(cir,reachOut,10,true)
                             end
                             if not last then
@@ -462,7 +469,6 @@ return {
                 
             end,
         }
-        en.r1=25
         local beginLevel=1
         en.r2=10*math.min(beginLevel,2)
         phases[beginLevel]()
@@ -479,7 +485,7 @@ return {
                     love.graphics.setColor(0,1,0,0.5)
                     Shape.drawCircle(player.x,player.y,en.r2,'fill')
                     love.graphics.setColor(1,0,0,0.5)
-                    Shape.drawCircle(en.x,en.y,en.r1,'fill')
+                    -- Shape.drawCircle(en.x,en.y,en.r1,'fill') --  "player's bullet disappears when entering area around enemy from outside" is simplified to "player's bullet don't move when exiting player's area"
                     love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
                     drawRef(self)
                 end

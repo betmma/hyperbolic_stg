@@ -619,6 +619,26 @@ return {
                     zh_cn = '在结界的干扰下，就像试图观看损坏的信号。',
                 },
             },
+            {
+                spellName = {
+                    en_us = '"Instant Pierce Barrier - Impregnable Fortress"',
+                    zh_cn = '「隧穿结界　-金城铁壁-」'
+                },
+                quote = {
+                    en_us = 'Stationary bullets can warp through the space around me, and that\'s the way to penetrate inside. The final fortress is too large, though.',
+                    zh_cn = '静止的子弹可以穿越我周围的空间，这就是穿透到内部的方式。不过最终的堡垒太大了。',
+                },
+            },
+            {
+                spellName = {
+                    en_us = 'Conjuring "Pendulum of Illusory Speed"',
+                    zh_cn = '奇术「幻速的振子」',
+                },
+                quote = {
+                    en_us = 'To get close, to circle around, or to get away?',
+                    zh_cn = '要靠近，要绕圈，还是要远离？',
+                }
+            }
         }
     },
     ui = {
