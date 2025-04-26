@@ -13,6 +13,7 @@ local Larger=Effect:extend()
 Effect.Larger=Larger
 function Larger:new(args)
     Larger.super.new(self, args)
+    ---@type Sprite
     self.sprite=args.sprite
     self.radius = args.radius or 1
     self.growSpeed=args.growSpeed or 1.2
@@ -29,8 +30,8 @@ end
 
 function Larger:draw()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local scale=r/30.3333*(self.scale or 1)
     local size=self.sprite.data.size
+    local scale=r/size*2*(self.drawScale or 1)
     local direction=self.direction or 0
     Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
     Asset.effectBatch:add(self.sprite.quad,x,y,direction,scale,scale,size/2,size/2)

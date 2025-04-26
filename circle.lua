@@ -23,7 +23,7 @@ function Circle:new(args)
         end
         self.radius=self.radius/Circle.sizeFactor*data.hitRadius
     end
-    self.extraUpdate={}
+    self.extraUpdate=args.extraUpdate or {}
     -- safe means won't hit player 
     self.safe=args.safe or false
     -- fromPlayer means can hit enemy
@@ -128,7 +128,7 @@ function Circle:checkHitPlayer()
 end
 
 function Circle:removeEffect()
-    Effect.Larger{x=self.x,y=self.y,sprite=Asset.shards.round,radius=5,growSpeed=1.1,animationFrame=20}
+    Effect.Larger{x=self.x,y=self.y,sprite=Asset.shards.round,radius=2.5,growSpeed=1.1,animationFrame=20}
 end
 
 function Circle:changeSpriteColor(color)
@@ -143,12 +143,17 @@ function Circle:changeSpriteColor(color)
     self.sprite=BulletSprites[self.sprite.data.key][color] or self.sprite
 end
 
+-- you shouldn't directly change self.sprite, cuz radius won't update (same as how Kanako's 神穀 spellcard has larger hitbox)
 function Circle:changeSprite(sprite)
     local data=self.sprite.data
     self.radius=self.radius/data.hitRadius
     self.sprite=sprite
     data=self.sprite.data
     self.radius=self.radius*data.hitRadius
+    if data.isGif then
+        self.sprite=copy_table(self.sprite)
+        self.sprite:randomizeCurrentFrame()
+    end
 end
 
 return Circle
