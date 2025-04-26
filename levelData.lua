@@ -42,7 +42,7 @@ local levelData={
     loadLevels(4,{'1','2','3','4','5','6','7','8'}),
     loadLevels(5,{'1','2','3','4','5','6','7','8'}),
     loadLevels(6,{'1','2','3','4','5','6','7','8'}),
-    loadLevels(7,{'1','2','3','4','5','6'}),
+    loadLevels(7,{'1','2','3','4','5','6','7'}),
 }
 levelData.needPass={3,6,9,12,16,20,25,30}
 local Text=require"text"

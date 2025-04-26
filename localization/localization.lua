@@ -638,7 +638,17 @@ return {
                     en_us = 'To get close, to circle around, or to get away?',
                     zh_cn = '要靠近，要绕圈，还是要远离？',
                 }
-            }
+            },
+            {
+                spellName = {
+                    en_us = 'Fire Sign "Hephaestus Pyrotechnics"',
+                    zh_cn = '火符「赫淮斯托斯的烟火」',
+                },
+                quote = {
+                    en_us = 'Pyrotechnics, huh? It\'s like a fireworks show where every single spark suddenly decides it really hates me.',
+                    zh_cn = '烟火吗？好似烟花表演，但每一颗火星都真的讨厌我。',
+                },
+            },
         }
     },
     ui = {
