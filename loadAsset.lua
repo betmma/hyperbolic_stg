@@ -156,7 +156,7 @@ loadBulletSprites(types,colors,16,function(j,i)
 end)
 types={'darkdot','dot'}
 loadBulletSprites(types,colors,8,function(j,i)
-    return 2*((j-1)%4),2*i-2+(j>4 and 1 or 0)
+    return 2*((j-1)%4),18+6*i+(j>4 and 1 or 0)
 end)
 types={'bigStar','bigRound','butterfly','knife','ellipse','fog',}
 loadBulletSprites(types,colors,32,function(j,i)
