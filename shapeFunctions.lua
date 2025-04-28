@@ -166,8 +166,8 @@ function Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
 end
 
 -- move [movingObj] towards [aimObj] with [step] distance. if [stopAtReach] is true, won't go past [aimObj] if [step] is larger than distance between them. This function directly modifies [movingObj]'s x and y.
---- @param movingObj table "object to be moved, has x and y attributes"
---- @param aimObj table "object to be aimed at"
+--- @param movingObj {x: number, y:number} "object to be moved, has x and y attributes"
+--- @param aimObj {x: number, y:number} "object to be aimed at"
 --- @param step number "step distance"
 --- @param stopAtReach? boolean "if true, won't go past [aimObj] if [step] is larger than distance between them"
 function Shape.moveTowards(movingObj,aimObj,step,stopAtReach)

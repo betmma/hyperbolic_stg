@@ -1677,13 +1677,13 @@ G._drawBatches=function(self)
 end
 -- transform the coordinate system to make the player in the center of the screen. If [getParams] is true, return the translation and scaling parameters instead of applying them. (for shader use)
 G.followModeTransform=function(self, getParams)
-    local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local screenWidth, screenHeight = love.graphics.getDimensions()
     local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
     if G.viewOffset then
         wantedX=wantedX+G.viewOffset.x
         wantedY=wantedY+G.viewOffset.y
     end
+    local scale=(wantedY-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local translateX,translateY=wantedX-G.viewMode.object.x*scale,wantedY-G.viewMode.object.y*scale
     if getParams then
         return translateX,translateY,scale

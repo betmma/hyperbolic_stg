@@ -3,7 +3,7 @@
 ---@field size number sprite size in pixels
 ---@field hitRadius number?
 ---@field color color?
----@field key string -- key in Asset.bulletSprites like "round"
+---@field key string key in Asset.bulletSprites like "round"
 ---@field isLaser boolean? if the sprite is laser (needs different drawing method) 
 ---@field isGif boolean? if the sprite is gif (circle.lua will copy table, randomize initial frame and call update for it)
 ---@field possibleColors color[]?
@@ -11,7 +11,7 @@
 ---@class love.Quad
 
 ---@class Sprite:Object
----@field quad love.Quad
+---@field quad love.Quad when drawing, use like love.graphics.draw(sprite.quad, ...)
 ---@field data spriteData
 local Sprite=Object:extend()
 

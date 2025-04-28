@@ -72,4 +72,13 @@ end
 --     end
 -- end
 
+---@class Shape:Object
+---@field x number
+---@field y number
+---@field speed number
+---@field direction number
+---@field lifeFrame number after which the object will be removed
+---@field time number deprecated
+---@field frame number number of frames since the object was created. It's just an incrementer, so you can modify it freely.
+---@field removeDistance number distance from the screen after which the object will be removed (roughly)
 return Shape

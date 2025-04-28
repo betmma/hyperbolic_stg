@@ -2,6 +2,7 @@
 local Shape = require "shape"
 local Circle=require"circle"
 local PolyLine=require"polyline"
+---@class Effect:Shape
 local Effect = Shape:extend()
 
 function Effect:new(args)
@@ -9,6 +10,7 @@ function Effect:new(args)
 end
 
 -- something keep growing and reducing opacity
+---@class Larger:Effect
 local Larger=Effect:extend()
 Effect.Larger=Larger
 function Larger:new(args)
@@ -17,6 +19,7 @@ function Larger:new(args)
     self.sprite=args.sprite
     self.radius = args.radius or 1
     self.growSpeed=args.growSpeed or 1.2
+    self.drawScale=args.drawScale or 1
     self.animationFrame=args.animationFrame or 30
 end
 
