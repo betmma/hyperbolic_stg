@@ -1,4 +1,5 @@
 return {
+    ID=27,
     quote='??',
     user='yukari',
     spellName='Barrier "Boundary of Monad and Dyad"', -- this spell card should be remade later to add more interesting patterns. like laser

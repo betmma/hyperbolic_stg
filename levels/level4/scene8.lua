@@ -1,4 +1,5 @@
 return {
+    ID=48,
     quote='?',
     user='patchouli',
     spellName='Sun Metal Sign "Solar Alloy"',

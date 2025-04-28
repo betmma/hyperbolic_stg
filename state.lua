@@ -1,6 +1,5 @@
 BulletSpawner=require"bulletSpawner"
 BackgroundPattern=require"backgroundPattern"
-local levelData=require"levelData"
 local function keyBindValueCalc(self,addKey,subKey,valueName,valueMax)
     if isPressed(addKey)then
         self.currentUI[valueName]=self.currentUI[valueName]%valueMax+1
@@ -759,11 +758,11 @@ G={
                 self.backgroundPattern:update(dt)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
-                local levelNum=#levelData
-                local sceneNum=#levelData[level]
+                local levelNum=#LevelData
+                local sceneNum=#LevelData[level]
                 local passedSceneCount=self:countPassedSceneNum()
                 for i=1,levelNum do
-                    if passedSceneCount<levelData.needPass[i] then
+                    if passedSceneCount<LevelData.needPass[i] then
                         levelNum=i
                         break
                     end
@@ -778,12 +777,12 @@ G={
                     G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('right') then
                     self.currentUI.chosenLevel=self.currentUI.chosenLevel%levelNum+1
-                    self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#levelData[self.currentUI.chosenLevel])
+                    self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#LevelData[self.currentUI.chosenLevel])
                     SFX:play('select')
                     G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('left') then
                     self.currentUI.chosenLevel=(self.currentUI.chosenLevel-2)%levelNum+1
-                    self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#levelData[self.currentUI.chosenLevel])
+                    self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#LevelData[self.currentUI.chosenLevel])
                     SFX:play('select')
                     G.UIDEF.CHOOSE_LEVELS.transparency=0
                 elseif isPressed('z') then
@@ -824,7 +823,7 @@ G={
                 SetFont(36)
                 love.graphics.print(Localize{'ui','level',level=level},100,50,0,1,1)
                 SetFont(30)
-                for index, value in ipairs(levelData[level]) do
+                for index, value in ipairs(LevelData[level]) do
                     love.graphics.setColor(.7,.6,.6)
                     if self.save.levelData[level][index].passed==1 then
                         love.graphics.setColor(.7,1,.7)
@@ -860,7 +859,7 @@ G={
                 local text=Localize{'levelData','defaultQuote'}--levelData.defaultQuote
                 local save=self.save.levelData[level][scene]
                 if save.passed>=1 then
-                    text=Localize{'levelData',level,scene,'quote'}--levelData[level][scene].quote or ''
+                    text=Localize{'levelData','spellcards',LevelData[level][scene].ID,'quote'}--levelData[level][scene].quote or ''
                 end
                 SetFont(18)
                 love.graphics.printf(text,330,510,380,"left",0,1,1)
@@ -875,7 +874,7 @@ G={
 
                 -- show number of passed levels needed for next level
                 local passedSceneCount,allSceneCount=self:countPassedSceneNum()
-                local needSceneCount=levelData.needPass[level]
+                local needSceneCount=LevelData.needPass[level]
                 SetFont(14)
                 love.graphics.printf(Localize{'ui','passedScenes',passed=passedSceneCount,all=allSceneCount},710,5,90,'left')
                 love.graphics.printf(Localize{'ui','needSceneToUnlockNextLevel',need=needSceneCount},710,50,90,'left')
@@ -916,7 +915,7 @@ G={
                 self.levelRemainingFrameMax=nil
                 self.levelIsTimeoutSpellcard=false
                 self.foregroundTransparency=1
-                levelData[level][scene].make()
+                LevelData[level][scene].make()
                 self.levelRemainingFrame=self.levelRemainingFrame or 3600
                 self.levelRemainingFrameMax=self.levelRemainingFrame
                 if self.replay then
@@ -1479,7 +1478,7 @@ G.loadData=function(self)
         self.save.levelData={}
     end
     -- add data for each level (passed, tryCount, firstPass, firstPerfect)
-    for k,value in ipairs(levelData) do
+    for k,value in ipairs(LevelData) do
         if not self.save.levelData[k] then
             self.save.levelData[k]={}
         end
@@ -1557,7 +1556,7 @@ G.language=G.save.options.language--'zh_cn'--'en_us'--
 ---@return integer "number of all scenes"
 G.countPassedSceneNum=function(self)
     local allSceneCount,passedSceneCount=0,0
-    for i,value in ipairs(levelData)do
+    for i,value in ipairs(LevelData)do
         for j,level in ipairs(value)do
             allSceneCount=allSceneCount+1
             if self.save.levelData[i][j].passed>0 then
@@ -1607,8 +1606,8 @@ G.leaveLevel=function(self)
     self:_incrementTryCount()
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    if levelData[level][scene].leave then
-        levelData[level][scene].leave()
+    if LevelData[level][scene].leave then
+        LevelData[level][scene].leave()
     end
 end
 G._incrementTryCount=function(self)

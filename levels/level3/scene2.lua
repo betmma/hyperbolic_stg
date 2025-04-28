@@ -1,4 +1,5 @@
 return {
+    ID=32,
     quote='Yuugi\'s classic three steps become unpredictable here. She is truly drunken.',
     user='yuugi',
     spellName='Big Four Arcanum "Knock Out In Three Sides"',

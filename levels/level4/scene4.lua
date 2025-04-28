@@ -1,4 +1,5 @@
 return {
+    ID=44,
     quote='Her ancient memory about leaving somewhere to find mysterious ingredient.',
     user='eirin',
     spellName='Mind of God "Distant Memory"',

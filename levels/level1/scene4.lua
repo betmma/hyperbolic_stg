@@ -1,4 +1,5 @@
 return {
+    ID=14,
     quote='Moving through this "square" grid is so difficult.',
     user='sakuya',
     spellName='Illusion Trap "Killing Grid"',

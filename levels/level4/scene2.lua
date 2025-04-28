@@ -1,4 +1,5 @@
 return {
+    ID=42,
     quote='?',
     user='patchouli',
     spellName='Moon Wood Sign "Celestial Thread"',

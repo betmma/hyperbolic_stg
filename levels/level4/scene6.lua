@@ -1,4 +1,5 @@
 return {
+    ID=46,
     quote='?',
     user='hina',
     spellName='Misfortune Sign "Scar of Calamity"',

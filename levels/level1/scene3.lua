@@ -1,4 +1,5 @@
 return {
+    ID=13,
     quote='I wonder where is the best place to induce these bullets.',
     user='reimu',
     spellName='Spirit Sign "Fantasy Seal -Focus-"',

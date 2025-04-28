@@ -1,4 +1,5 @@
 return {
+    ID=76,
     user='sakuya',
     spellName='Conjuring "Pendulum of Illusory Speed"',
     make=function()

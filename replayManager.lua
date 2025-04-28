@@ -1,7 +1,19 @@
+---@class replayData
+---@field keyRecord table<number,number> The key record of the replay.
+---@field seed number The seed used for RNG.
+---@field ID number The ID of the scene
+---@field level number The level of the replay. It's looked up from LevelData.ID2LevelScene, so the value in replay file is ignored.
+---@field scene number The scene of the replay. Same as above
+---@field upgrades table The upgrades bought
+---@field name string The name user typed in save replay menu
+---@field time string The time when the run started.
+---@field version string game version of the run.
+
 local lume=require"lume"
 local bit=require"bit"
 local levelData = require "levelData"
 local player    = require "player"
+
 local replayManager={}
 replayManager.REPLAY_NUM_PER_PAGE=25
 replayManager.PAGES=4
@@ -10,6 +22,15 @@ local dir='replay'
 love.filesystem.createDirectory(dir)
 local function savePath(slot)
     return dir..'/'..string.format('%03d',slot)..'.rpy'
+end
+
+local function getLevelScene(replayData)
+    local levelAndScene=LevelData.ID2LevelScene[replayData.ID]
+    if not levelAndScene then
+        levelAndScene={level='?',scene='?'}
+    end
+    replayData.level=levelAndScene.level
+    replayData.scene=levelAndScene.scene
 end
 
 function Hash64(input)
@@ -42,22 +63,26 @@ function Hash64(input)
     return hash_table
 end
 
+--- get the replay data to be saved
+--- @param slot number The slot number of the replay.
+--- @param name string The user name inputted in the save replay menu.
+--- @return replayData replayData The replay data to be saved.
 replayManager.getReplayData=function(slot,name)
     local keyRecord=copy_table(Player.objects[1].keyRecord)
     local seed=G.randomseed
     local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+    local ID=LevelData[level][scene].ID
     local upgrades=G.save.upgrades
     local time=Player.objects[1].realCreatedTime
-    local hash=Hash64(time..name..seed..level..scene)
+    local hash=Hash64(time..name..seed..ID)
     for i = 1, #hash do
         table.insert(keyRecord,hash[i])
     end
     local data={
         keyRecord=keyRecord,
         seed=seed,
-        level=level,
-        scene=scene,
+        ID=ID,
         upgrades=upgrades,
         name=name,
         time=time,
@@ -65,6 +90,7 @@ replayManager.getReplayData=function(slot,name)
     }
     return data
 end
+
 replayManager.saveReplay=function(slot,name)
     local data=replayManager.getReplayData(slot,name)
 	local serialized = lume.serialize(data)
@@ -72,21 +98,49 @@ replayManager.saveReplay=function(slot,name)
     replayManager.replays[slot]=replayManager.loadReplay(slot)
 end
 
+--- replace old replay (use level and scene to determine spellcard) with new replay data (use ID to determine spellcard)
+--- @param slot number The slot number of the replay.
+replayManager.replaceOldReplay=function(slot)
+    local path=savePath(slot)
+    local file=love.filesystem.read(path)
+    local data = lume.deserialize(file)
+    data.ID=LevelData[data.level][data.scene].ID
+    data.hash=Hash64(data.time..data.name..data.seed..data.ID)
+    local len=#data.keyRecord
+    for i=0,#data.hash-1 do
+        data.keyRecord[len-i]=data.hash[#data.hash-i]
+    end
+    local serialized = lume.serialize(data)
+    love.filesystem.write(savePath(slot), serialized)
+    return data
+end
+
+--- @package
+--- @return replayData|nil replayData The replay data loaded from the file, or nil if no replay on this slot or is invalid.
 replayManager.loadReplay=function(slot)
     local path=savePath(slot)
     local file=love.filesystem.read(path)
     if not file then
-        return false
+        return
     end
     local data = lume.deserialize(file)
-    local hash=Hash64(data.time..data.name..data.seed..data.level..data.scene)
+    if not data.ID then
+        data=replayManager.replaceOldReplay(slot)
+    end
+
+    -- check if the replay is valid
+    local hash=Hash64(data.time..data.name..data.seed..data.ID)
     local len=#data.keyRecord
     for i=0,#hash-1 do
         if data.keyRecord[len-i]~=hash[#hash-i]then
-            return false
+            return
         end
         table.remove(data.keyRecord,len-i)
     end
+
+    -- get level and scene from ID, for convenience
+    getLevelScene(data)
+
     return data
 end
 
@@ -103,6 +157,7 @@ replayManager.runReplay=function(slot)
     -- seed restoring is in levelData
 end
 
+-- set the player to replay mode, and do compat things
 replayManager.replayTweak=function(replay)
     local player=Player.objects[1]
     player:setReplaying()
@@ -134,7 +189,7 @@ replayManager.replayTweak=function(replay)
     end
 end
 
--- note that replay param is used for pending (not saved yet) replay like when entering name. Other situations no need to input replay.
+-- 2 uses, 1 is in save replay menu where player is entering their name, the other is in load replay menu. note that [replay] param is used for first situation, where data isn't saved in replayManager.replays yet, so needs to be passed in.
 replayManager.getDescriptionString=function(slot,replay)
     local slotWidth = 6  -- "No.012" (includes "No." prefix)
     local nameWidth = 20 -- Reserve space for the name
@@ -146,8 +201,10 @@ replayManager.getDescriptionString=function(slot,replay)
         replay=replayManager.replays[slot]
     end
     if not replay then
-        return string.format("No.%03d", slot)..' '..string.rep('-',overallWidth-slotWidth-1)
+        return string.format("No.%03d", slot)..' '..string.rep('-',overallWidth-slotWidth-1) -- empty
     end
+
+    getLevelScene(replay)
 
     -- Format each component
     local slotStr = string.format("No.%03d", slot)

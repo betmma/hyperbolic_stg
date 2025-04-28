@@ -1,4 +1,5 @@
 return {
+    ID=77,
     user='patchouli',
     spellName='Fire Sign "Hephaestus Pyrotechnics"',
     make=function()

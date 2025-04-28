@@ -1,4 +1,5 @@
 return {
+    ID=75,
     user="yukari",
     spellName="Instant Pierce Barrier - Impregnable Fortress",
     make=function()

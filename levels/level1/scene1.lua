@@ -1,4 +1,5 @@
 return {
+    ID=11,
     quote="In this world things appear smaller when closer to top.",
     user='marisa',
     spellName='Magic Sign "Otherworld Star Dust"',

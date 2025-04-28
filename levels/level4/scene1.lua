@@ -1,4 +1,5 @@
 return {
+    ID=41,
     quote='Random jump kicks, and a powerful strike. Sometimes she almost leaves the screen.',
     user='meiling',
     spellName='Strike Sign "Drunken Fist"',

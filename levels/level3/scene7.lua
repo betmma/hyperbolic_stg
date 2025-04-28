@@ -1,4 +1,5 @@
 return {
+    ID=37,
     quote='A creative use of her absolute power to destroy everything...',
     user='flandre',
     spellName='Forbidden Barrage "Border break"',

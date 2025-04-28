@@ -1,4 +1,5 @@
 return {
+    ID=71,
     quote='?',
     user='youmu',
     spellName='Soul-Body Sword "Slash of Echoing Ghost Blade"', 

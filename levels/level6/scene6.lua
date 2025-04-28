@@ -1,4 +1,5 @@
 return {
+    ID=66,
     quote='?',
     user='renko',
     spellName='Interference "Wavefront Mandala"', 

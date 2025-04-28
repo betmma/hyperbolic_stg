@@ -1,4 +1,5 @@
 return {
+    ID=73,
     quote='?',
     user='youmu',
     spellName='Karmic Binding Sword "Karmic Retribution Slash"', 

@@ -1,4 +1,5 @@
 return {
+    ID=33,
     quote='Oh no, I can\'t find the direction home! Can compass work in this world?',
     user='seija',
     spellName='Turnabout "Change Orientation"',

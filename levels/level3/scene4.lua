@@ -1,4 +1,5 @@
 return {
+    ID=34,
     quote='What is she doing? I don\'t think my orientation has changed, but the world is still spinning...',
     user='seija',
     spellName='Turnabout "Change Projection"',

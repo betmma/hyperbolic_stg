@@ -1,4 +1,5 @@
 return {
+    ID=72,
     quote='?',
     user='youmu',
     spellName='Instant Sword "Fleeting Crossing Slash"', 

@@ -1,4 +1,5 @@
 return {
+    ID=15,
     quote='Heptagrams are more mysterious than pentagrams.',
     user='sanae',
     spellName='Preparation "Suwa Daimyōjin Invocation"',

@@ -1,4 +1,5 @@
 return {
+    ID=26,
     quote='??',
     user='satori',
     spellName='"Eye of Horus"',

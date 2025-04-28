@@ -1,4 +1,5 @@
 return {
+    ID=52,
     quote='?',
     user='utsuho',
     spellName='Atomic Fire "Nuclear Experiment Expansion"', 

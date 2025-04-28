@@ -1,4 +1,5 @@
 return {
+    ID=54,
     quote='?',
     user='aya',
     spellName='Wind God "Frenzied Wind"', 

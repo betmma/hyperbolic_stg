@@ -1,4 +1,5 @@
 return {
+    ID=51,
     quote='?',
     user='utsuho',
     spellName='Explosion Sign "Critical Mass"', -- a pun on nuclear critical mass and the "critical" bullet player needs to identify

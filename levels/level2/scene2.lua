@@ -1,4 +1,5 @@
 return {
+    ID=22,
     quote='Are there hidden black holes twisting the path of stars?',
     user='marisa',
     spellName='Black Magic "Gamma-ray Burst"',

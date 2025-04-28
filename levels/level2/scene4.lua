@@ -1,4 +1,5 @@
 return {
+    ID=24,
     quote='not come up yet',
     user='cirno',
     spellName='Freeze Sign "Rime Ice"',

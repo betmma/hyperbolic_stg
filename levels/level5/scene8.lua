@@ -1,4 +1,5 @@
 return {
+    ID=58,
     quote='?',
     user='shou',
     spellName='Light Sign "Light of Purification"', 

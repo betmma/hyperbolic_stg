@@ -1,4 +1,5 @@
 return {
+    ID=47,
     quote='?',
     user='alice',
     spellName='Magic Sign "Explosive Marionette"',

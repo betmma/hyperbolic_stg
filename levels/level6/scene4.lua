@@ -1,4 +1,5 @@
 return {
+    ID=64,
     quote='?',
     user='junko',
     spellName='"Sterile Flowers of Murderous Intent"', 

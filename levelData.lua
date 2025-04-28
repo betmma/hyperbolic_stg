@@ -1,4 +1,6 @@
 ---@class LevelData
+---@field ID number unique ID of this level. It's to make a map between ID and level-scene, which is used to look up replay level-scene and localizations. Will raise an error if not assigned or not unique.
+-- (further elaboration: the relationship between level-scene and ID is calculated after loading all levels in the definition of levelData below)
 ---@field user string the character of this scene. Is used to look up name in localization file.
 ---@field make fun():nil
 ---@field leave fun():nil | nil do things when leaving the level.
@@ -6,12 +8,131 @@
 ---@field spellName string | nil Same as above
 
 
+local Text=require"text"
+
+-- some wrapping work for each scene
+---@param levelData LevelData
+local function wrapLevelMake(levelData)
+    local makeLevelRef=levelData.make
+    levelData.make=function()
+        local replay=G.replay or {}
+        local seed = replay.seed or math.floor(os.time()+os.clock()*1337)
+        math.randomseed(seed)
+        G.randomseed=seed
+        Shape.timeSpeed=1
+        G.viewMode.mode=G.VIEW_MODES.NORMAL
+        G.viewOffset={x=0,y=0}
+        -- show spellcard name
+        do
+            if not levelData.spellName then
+                levelData.spellName=''
+            end
+            local name=Localize{'levelData','spellcards',levelData.ID,'spellName'}
+            local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=name,fontSize=18,color={1,1,1,0},align='center'}
+            G.spellNameText=txt
+            Event.EaseEvent{
+                obj=txt,
+                easeFrame=120,
+                aimTable=txt,
+                aimKey='y',
+                aimValue=10,
+                progressFunc=Event.sineOProgressFunc
+            }
+            Event.EaseEvent{
+                obj=txt,
+                easeFrame=120,
+                aimTable=txt.color,
+                aimKey=4,
+                aimValue=1,
+                progressFunc=Event.sineOProgressFunc
+            }
+        end
+        -- show user name
+        do
+            local name=Localize{'levelData','names',levelData.user}
+            local fontSize=72
+            if string.len(name)>20 then -- ensure the name fits in the screen
+                fontSize=math.floor(72*20/string.len(name))
+            end
+            local name=Text{x=300,y=200,width=500,height=100,bordered=false,text=name,fontSize=fontSize-8,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
+            Event.EaseEvent{
+                obj=name,
+                easeFrame=60,
+                aimTable=name,
+                aimKey='x',
+                aimValue=500,
+                easeMode='hard',
+                progressFunc=function(x)return (2*x-1)^3*0.5+0.5 end
+            }
+            Event.EaseEvent{
+                obj=name,
+                easeFrame=60,
+                aimTable=name,
+                aimKey='fontSize',
+                aimValue=fontSize,
+                progressFunc=function(x)return math.sin(x*math.pi) end
+            }
+            Event.EaseEvent{
+                obj=name,
+                easeFrame=60,
+                aimTable=name.color,
+                aimKey=4,
+                aimValue=0.5,
+                progressFunc=function(x)return math.sin(x*math.pi) end
+            }
+        end
+        makeLevelRef()
+        -- show timeout spellcard text
+        do
+            if G.levelIsTimeoutSpellcard then
+                local txt=Text{x=300,y=400,width=600,height=100,bordered=false,text=Localize{'ui','timeout'},fontSize=72,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
+                Event.EaseEvent{
+                    obj=txt,
+                    easeFrame=60,
+                    aimTable=txt,
+                    aimKey='x',
+                    aimValue=500,
+                    easeMode='hard',
+                    progressFunc=function(x)return (2*x-1)^3*0.5+0.5 end
+                }
+                Event.EaseEvent{
+                    obj=txt,
+                    easeFrame=60,
+                    aimTable=txt.color,
+                    aimKey=4,
+                    aimValue=0.3,
+                    progressFunc=function(x)return math.sin(x*math.pi) end
+                }
+            end
+        end
+
+        -- apply upgrades
+        local options=G.UIDEF.UPGRADES.options
+        for k,value in ipairs(options) do
+            for i,option in pairs(value) do
+                if option.upgrade and G.save.upgrades[i] and G.save.upgrades[i][k] and G.save.upgrades[i][k].bought==true then
+                    G.UIDEF.UPGRADES.upgrades[option.upgrade].executeFunc()
+                end
+            end
+        end
+    end
+end
+
 --- load level data at /levels/level[levelStr]/scene[sceneStr].lua
 ---@param levelStr string|number
 ---@param sceneStr string|number
 ---@return LevelData
 local function loadLevel(levelStr,sceneStr)
-    return require("levels.level"..levelStr..".scene"..sceneStr)
+    ---@type LevelData
+    local levelData=require("levels.level"..levelStr..".scene"..sceneStr)
+    if not levelData.make then
+        error("make function is not defined in level "..levelStr..", scene "..sceneStr)
+    end
+    if not levelData.ID then
+        error("ID is not defined in level "..levelStr..", scene "..sceneStr)
+    end
+    wrapLevelMake(levelData)
+    return levelData
 end
 
 
@@ -44,117 +165,22 @@ local levelData={
     loadLevels(6,{'1','2','3','4','5','6','7','8'}),
     loadLevels(7,{'1','2','3','4','5','6','7'}),
 }
-levelData.needPass={3,6,9,12,16,20,25,30}
-local Text=require"text"
--- some wrapping work for each scene
-for index, value in ipairs(levelData) do
-    for index2, value2 in ipairs(value) do
-        if value2.make then
-            local makeLevelRef=value2.make
-            value2.make=function()
-                local replay=G.replay or {}
-                local seed = replay.seed or math.floor(os.time()+os.clock()*1337)
-                math.randomseed(seed)
-                G.randomseed=seed
-                Shape.timeSpeed=1
-                G.viewMode.mode=G.VIEW_MODES.NORMAL
-                G.viewOffset={x=0,y=0}
-                -- show spellcard name
-                do
-                    if not value2.spellName then
-                        value2.spellName=''
-                    end
-                    local name=Localize{'levelData',index,index2,'spellName'}
-                    local txt=Text{x=200,y=500,width=400,height=100,bordered=false,text=name,fontSize=18,color={1,1,1,0},align='center'}
-                    G.spellNameText=txt
-                    Event.EaseEvent{
-                        obj=txt,
-                        easeFrame=120,
-                        aimTable=txt,
-                        aimKey='y',
-                        aimValue=10,
-                        progressFunc=Event.sineOProgressFunc
-                    }
-                    Event.EaseEvent{
-                        obj=txt,
-                        easeFrame=120,
-                        aimTable=txt.color,
-                        aimKey=4,
-                        aimValue=1,
-                        progressFunc=Event.sineOProgressFunc
-                    }
-                end
-                -- show user name
-                do
-                    local name=Localize{'levelData','names',value2.user}
-                    local fontSize=72
-                    if string.len(name)>20 then -- ensure the name fits in the screen
-                        fontSize=math.floor(72*20/string.len(name))
-                    end
-                    local name=Text{x=300,y=200,width=500,height=100,bordered=false,text=name,fontSize=fontSize-8,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
-                    Event.EaseEvent{
-                        obj=name,
-                        easeFrame=60,
-                        aimTable=name,
-                        aimKey='x',
-                        aimValue=500,
-                        easeMode='hard',
-                        progressFunc=function(x)return (2*x-1)^3*0.5+0.5 end
-                    }
-                    Event.EaseEvent{
-                        obj=name,
-                        easeFrame=60,
-                        aimTable=name,
-                        aimKey='fontSize',
-                        aimValue=fontSize,
-                        progressFunc=function(x)return math.sin(x*math.pi) end
-                    }
-                    Event.EaseEvent{
-                        obj=name,
-                        easeFrame=60,
-                        aimTable=name.color,
-                        aimKey=4,
-                        aimValue=0.5,
-                        progressFunc=function(x)return math.sin(x*math.pi) end
-                    }
-                end
-                makeLevelRef()
-                -- show timeout spellcard text
-                do
-                    if G.levelIsTimeoutSpellcard then
-                        local txt=Text{x=300,y=400,width=600,height=100,bordered=false,text=Localize{'ui','timeout'},fontSize=72,color={1,1,1,0},align='center',anchor='c',lifeFrame=60}
-                        Event.EaseEvent{
-                            obj=txt,
-                            easeFrame=60,
-                            aimTable=txt,
-                            aimKey='x',
-                            aimValue=500,
-                            easeMode='hard',
-                            progressFunc=function(x)return (2*x-1)^3*0.5+0.5 end
-                        }
-                        Event.EaseEvent{
-                            obj=txt,
-                            easeFrame=60,
-                            aimTable=txt.color,
-                            aimKey=4,
-                            aimValue=0.3,
-                            progressFunc=function(x)return math.sin(x*math.pi) end
-                        }
-                    end
-                end
 
-                -- apply upgrades
-                local options=G.UIDEF.UPGRADES.options
-                for k,value in ipairs(options) do
-                    for i,option in pairs(value) do
-                        if option.upgrade and G.save.upgrades[i] and G.save.upgrades[i][k] and G.save.upgrades[i][k].bought==true then
-                            G.UIDEF.UPGRADES.upgrades[option.upgrade].executeFunc()
-                        end
-                    end
-                end
+local ID2LevelScene={}
+for i,level in ipairs(levelData) do
+    for j,scene in ipairs(level) do
+        if scene.ID then
+            if ID2LevelScene[scene.ID] then
+                error("ID "..scene.ID.." is not unique! It is assigned in level "..ID2LevelScene[scene.ID].level..", scene "..ID2LevelScene[scene.ID].scene.." and level "..i..", scene "..j)
             end
+            ID2LevelScene[scene.ID]={level=i,scene=j}
+        else
+            error("ID is not assigned in level "..i..", scene "..j) -- though, above code has already checked this
         end
     end
 end
+levelData.ID2LevelScene=ID2LevelScene
+
+levelData.needPass={3,6,9,12,16,20,25,30}
 levelData.defaultQuote='What will happen here?'
 return levelData
