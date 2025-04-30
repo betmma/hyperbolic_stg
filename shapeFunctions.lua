@@ -145,7 +145,7 @@ function Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
     local nearest=Shape.nearestToLine(xs,ys,x1,y1,x2,y2)
     local x3,y3=nearest[1],nearest[2]
     local x3toself=Shape.to(x3,y3,xs,ys)
-    local selftox3=Shape.to(xs,ys,x3,y3)
+    -- local selftox3=Shape.to(xs,ys,x3,y3)
     local distance=Shape.distance(xs,ys,x3,y3)
     if distance<Shape.EPS then
         local tangentAngle=Shape.to(xs,ys,x1,y1)

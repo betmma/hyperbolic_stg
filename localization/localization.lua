@@ -125,6 +125,10 @@ return {
                 en_us = 'Youmu Konpaku',
                 zh_cn = '魂魄妖梦',
             },
+            mystia = {
+                en_us = 'Mystia Lorelei',
+                zh_cn = '米斯蒂娅·萝蕾拉',
+            }
         },
         spellcards = {
             -- level 1
@@ -649,7 +653,16 @@ return {
                     zh_cn = '烟火吗？好似烟花表演，但每一颗火星都真的讨厌我。',
                 },
             },
-
+            [78] = {
+                spellName = {
+                    en_us = 'Night-Blindness "Bioluminescent Night"',
+                    zh_cn = '夜盲「生物荧光之夜」',
+                },
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn = '还没想好 :P',
+                },
+            }
         },
     },
     ui = {
@@ -901,8 +914,8 @@ return {
                 zh_cn = '透视',
             },
             description = {
-                en_us = 'Widen your vision, somewhat',
-                zh_cn = '略微扩大视野',
+                en_us = 'The background on both sides is slightly transparent',
+                zh_cn = '两侧背景略微透明',
             },
         },
         diagonalMover = {

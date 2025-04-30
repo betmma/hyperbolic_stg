@@ -98,6 +98,7 @@ function BulletSpawner:new(args)
             self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch}
         end
     end
+    ---@type LoopEvent
     self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,frame=self.frame,executeFunc=function(event,dt)
         self:spawnBatchFunc()
     end}
