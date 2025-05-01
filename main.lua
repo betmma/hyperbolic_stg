@@ -1,4 +1,4 @@
-VERSION="0.4.1"
+VERSION="0.4.1.1"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -6,6 +6,8 @@ end
 io.stdout:setvbuf("no")
 love.window.setTitle('Hyperbolic STG')
 require'misc'
+
+local input = require "input"
 function love.load()
     Object = require "classic"
     Shape = require "shape"
@@ -28,21 +30,11 @@ function love.load()
     ScreenshotManager=require"screenshotManager"
     ReplayManager=require"replayManager"
 end
-local keyConstants='1234567890-=qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`'
-KeyboardPressed={up=false,down=false,left=false,right=false,escape=false,lctrl=false,f3=false,f4=false}
-for i=1,#keyConstants do
-    KeyboardPressed[keyConstants:sub(i,i)]=false
-end
-for i=0,9 do
-    KeyboardPressed['kp'..i]=false
-end
-function love.keyreleased(key)
-    KeyboardPressed[key]=false
+function love.keypressed(key, scancode, isrepeat)
+    input.keypressed(key, scancode, isrepeat)
 end
 -- return true if current frame is the first frame that key be pressed down
-function isPressed(key)
-    return love.keyboard.isDown(key)and (KeyboardPressed[key]==false)-- or KeyboardPressed[key]==nil)
-end
+isPressed=input.isKeyJustPressed
 
 local profiExists=pcall(require,"profi") -- lib that log functions call and time spent to optimize code
 local profi
@@ -56,6 +48,7 @@ local sleepTime=1/60
 local frameTime=1/60
 AccumulatedTime=0
 function love.update(dt)
+    input.update()
     if profi then
         profiActivate=isPressed('f3')
         if profiActivate then
@@ -69,11 +62,6 @@ function love.update(dt)
             AccumulatedTime=AccumulatedTime-frameTime
             dt=1/60
             G:update(dt)
-            for key, value in pairs(KeyboardPressed) do
-                if love.keyboard.isDown(key) then
-                    KeyboardPressed[key]=true
-                end
-            end
         end
     elseif controlFPSmode==1 then
         love.timer.sleep(sleepTime-dt)
@@ -82,12 +70,6 @@ function love.update(dt)
         sleepTime=0.995*(sleepTime-newTime)+newTime
         dt=1/60
         G:update(dt)
-        for key, value in pairs(KeyboardPressed) do
-            if love.keyboard.isDown(key) then
-                KeyboardPressed[key]=true
-            end
-        end
-    
     end
     -- love.timer.sleep(sleepTime-dt)
     -- local fps=love.timer.getFPS()

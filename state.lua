@@ -1689,6 +1689,10 @@ G.followModeTransform=function(self, getParams)
     end
     love.graphics.translate(translateX,translateY)
     love.graphics.scale(scale)
+    -- calculate screen rectangle position, to test view port culling (doesn't improve performance so commented out)
+    -- local edgeLength=30
+    -- local screenRect={xmin=(-translateX-edgeLength)/scale,ymin=(-translateY-edgeLength)/scale,xmax=(-translateX+screenWidth+edgeLength)/scale,ymax=(-translateY+screenHeight+edgeLength)/scale}
+    -- G.screenRect=screenRect
 end
 G.antiFollowModeTransform=function(self)
     local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)

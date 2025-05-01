@@ -45,6 +45,11 @@ function Circle:new(args)
 end
 
 function Circle:draw()
+    -- if G.screenRect.xmin<self.x and self.x<G.screenRect.xmax and G.screenRect.ymin<self.y and self.y<G.screenRect.ymax then -- view port cull test, but doesn't improve performance (and large bullets are wrongly culled)
+    --     if self.sprite then
+    --         self:drawSprite()
+    --     end
+    -- end
     self:drawSprite()
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
     -- Shape.drawCircle(self.x,self.y,self.radius)
