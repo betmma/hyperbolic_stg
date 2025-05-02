@@ -53,16 +53,13 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     // Normalize the total light contribution to avoid overflow
     totalLightContribution = clamp(totalLightContribution, 0.0, 1.0); // Ensure values are between 0 and 1
 
-    // Apply the light: Multiply original color by total light (or use additive blending)
-    // Option 1: Modulate (dark areas stay dark)
-    vec3 finalColor = originalColor.rgb * totalLightContribution;
-
-    // Option 2: Additive (can brighten dark areas, might look blown out)
-    // vec3 finalColor = originalColor.rgb + totalLightContribution; 
-    
-    // Ensure ambient light (so unlit areas aren't pitch black)
+    // ambient light 
     vec3 ambientLight = vec3(backgroundLightIntensity, backgroundLightIntensity, backgroundLightIntensity); // Small ambient light
-    finalColor = max(finalColor, originalColor.rgb * ambientLight); // Ensure minimum brightness
+
+    vec3 colorCoeff = max(totalLightContribution, ambientLight);
+
+    // Apply the light: Multiply original color by total light (or use additive blending)
+    vec3 finalColor = originalColor.rgb * colorCoeff;
 
     // Apply setColor to the final color
     vec4 finalColorv4 = vec4(finalColor, originalColor.a) * color; // Apply the color multiplier

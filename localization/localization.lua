@@ -659,10 +659,20 @@ return {
                     zh_cn = '夜盲「生物荧光之夜」',
                 },
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'Fireflies are providing dim light. Be careful not to kill them accidentally.',
+                    zh_cn = '萤火虫提供微弱的光线。小心不要意外地杀死它们。',
                 },
-            }
+            },
+            [79] = {
+                spellName = {
+                    en_us = 'Night Sparrow "Staccato Melody"',
+                    zh_cn = '夜雀「断奏的旋律」',
+                },
+                quote = {
+                    en_us = 'A music kind of night blindness. Take fitful steps, or sometimes sprint into deep darkness.',
+                    zh_cn = '一种音乐般的夜盲症。走走停停，或者有时冲进深邃的黑暗。',
+                },
+            },
         },
     },
     ui = {
