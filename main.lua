@@ -1,4 +1,4 @@
-VERSION="0.4.1.3"
+VERSION="0.4.1.4"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -48,7 +48,6 @@ local sleepTime=1/60
 local frameTime=1/60
 AccumulatedTime=0
 function love.update(dt)
-    input.update()
     if profi then
         profiActivate=isPressed('f3')
         if profiActivate then
@@ -61,6 +60,7 @@ function love.update(dt)
         if AccumulatedTime>=frameTime then
             AccumulatedTime=AccumulatedTime-frameTime
             dt=1/60
+            input.update()
             G:update(dt)
         end
     elseif controlFPSmode==1 then
@@ -69,6 +69,7 @@ function love.update(dt)
         local newTime=sleepTime*fps/60
         sleepTime=0.995*(sleepTime-newTime)+newTime
         dt=1/60
+        input.update()
         G:update(dt)
     end
     -- love.timer.sleep(sleepTime-dt)
