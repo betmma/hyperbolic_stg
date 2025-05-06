@@ -938,5 +938,15 @@ return {
                 zh_cn = '斜向移动时速度更快',
             },
         },
+        homingShotII = {
+            name = {
+                en_us = 'Homing Shot II',
+                zh_cn = '追尾射击II',
+            },
+            description = {
+                en_us = '2 more rows of your shot become homing, but homing effect is reduced',
+                zh_cn = '自机再多2排子弹具有追踪效果，但是追踪效果减弱',
+            },
+        }
     }
 }

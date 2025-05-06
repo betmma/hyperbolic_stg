@@ -188,7 +188,20 @@ local upgradesData = {
             player.diagonalSpeedAddition=true
         end,
         spritePos={x=5,y=1}
-    }
+    },
+    homingShotII={
+        name='Homing Shot II',
+        description='2 more rows of your shot become homing, but homing effect is reduced',
+        cost=50,
+        executeFunc=function()
+            local player=Player.objects[1]
+            player.shootRows.front.straight.num=player.shootRows.front.straight.num-2
+            player.shootRows.front.homing.num=player.shootRows.front.homing.num+2
+            player.homingMode='portion'
+            player.homingArg=0.07
+        end,
+        spritePos={x=6,y=1}
+    },
 }
 upgrades.upgradesData=upgradesData
 
@@ -219,7 +232,8 @@ local upgradesTree={
             upgrade='vortex',
             connect={left=true},
             need={{4,1}}
-        }
+        },
+        {}
     },
     {
         {
@@ -231,6 +245,7 @@ local upgradesTree={
             connect={up=true,},
             need={{2,1}}
         },
+        {},
         {},
         {},
         {}
@@ -252,10 +267,18 @@ local upgradesTree={
         },
         {
             upgrade='familiarShot',
-            connect={left=true,down=true},
+            connect={left=true,down=true,right=true},
             need={{3,3},{3,4}}
         },
-        {}
+        {
+            connect={down=true,left=true,right=true},
+            need={{4,3}}
+        },
+        {
+            upgrade='homingShotII',
+            connect={left=true},
+            need={{4,3}}
+        }
     },
     {
         {
@@ -274,6 +297,10 @@ local upgradesTree={
         {
             connect={up=true,left=true},
             need={{3,4}}
+        },
+        {
+            connect={up=true,down=true,right=true},
+            need={{4,3}}
         },
         {}
     },
@@ -294,6 +321,10 @@ local upgradesTree={
             need={{2,5}}
         },
         {},
+        {
+            connect={up=true,right=true},
+            need={{4,3}}
+        },
         {}
     },
     {
@@ -303,6 +334,7 @@ local upgradesTree={
             connect={up=true},
             need={{2,5}}
         },
+        {},
         {},
         {},
         {}

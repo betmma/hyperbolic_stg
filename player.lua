@@ -376,10 +376,15 @@ end
 -- let [cir] trace the closest enemy.
 -- [mode] determines how direction changes.
 -- 'abrupt': directly set to the aim direction.
--- 'portion': 0.9*cir.direction+0.1*aimDirection.
--- 'clamp': math.clamp(aimDirection,cir.direction-0.01,cir.direction+0.01)
-local function addHoming(cir,mode)
+-- 'portion': (1-arg)*cir.direction+arg*aimDirection. arg defaults to 0.1.
+-- 'clamp': math.clamp(aimDirection,cir.direction-arg,cir.direction+arg). defaults to 0.1.
+local function addHoming(cir,mode,arg)
     mode=mode or 'abrupt'
+    if mode=='portion' then
+        arg=arg or 0.1
+    elseif mode=='clamp' then
+        arg=arg or 0.1
+    end
     cir.homing=true
     Event.LoopEvent{
         obj=cir,
@@ -398,19 +403,13 @@ local function addHoming(cir,mode)
                 end
             end
             if closestEnemy then
-                local aim=Shape.to(cir.x,cir.y,closestEnemy.x,closestEnemy.y)
-                if aim>cir.direction+math.pi then
-                    aim=aim-math.pi*2
-                end
-                if aim<cir.direction-math.pi then
-                    aim=aim+math.pi*2
-                end
+                local aim=math.modClamp(Shape.to(cir.x,cir.y,closestEnemy.x,closestEnemy.y),cir.direction)
                 if mode=='abrupt'then
                     cir.direction=aim
                 elseif mode=='portion'then
-                    cir.direction=.9*cir.direction+.1*aim
+                    cir.direction=(1-arg)*cir.direction+arg*aim
                 elseif mode=='clamp'then
-                    local da=0.1
+                    local da=arg
                     cir.direction=math.clamp(aim,cir.direction-da,cir.direction+da)
                 end
             end
@@ -420,7 +419,7 @@ end
 
 function Player:shootFrontHoming(pos,damage,sprite)
     local cir=self:shootFrontStraight(pos,damage,sprite)
-    addHoming(cir)
+    addHoming(cir,self.homingMode,self.homingArg)
 end
 
 function Player:draw()
