@@ -24,7 +24,7 @@ function BulletSpawner:new(args)
     self.bulletSize=args.bulletSize and math._extractABfromstr(args.bulletSize) or 1
     self.bulletLifeFrame=args.bulletLifeFrame or 2000
     self.bulletEvents=args.bulletEvents or {}
-    self.bulletExtraUpdate=args.bulletExtraUpdate or {}
+    self.bulletExtraUpdate=args.bulletExtraUpdate
     self.bulletSprite=args.bulletSprite
     self.bulletBatch=args.bulletBatch or (args.highlight and Asset.bulletHighlightBatch or BulletBatch)
     -- when spawning bullets, spawn a fog that turns into bullet sometime later
@@ -55,7 +55,7 @@ function BulletSpawner:new(args)
             local cir=Laser(args)
             return
         end
-        args.extraUpdate=self.bulletExtraUpdate
+        args.extraUpdate=self.bulletExtraUpdate or {}
         local cir=Circle(args)
         -- table.insert(ret,cir)
         for key, func in pairs(self.bulletEvents) do
