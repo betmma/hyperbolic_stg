@@ -947,6 +947,26 @@ return {
                 en_us = '2 more rows of your shot become homing, but homing effect is reduced',
                 zh_cn = '自机再多2排子弹具有追踪效果，但是追踪效果减弱',
             },
-        }
+        },
+        sideShotII = {
+            name = {
+                en_us = 'Side Shot II',
+                zh_cn = '侧翼射击II',
+            },
+            description = {
+                en_us = 'Increase side shot damage by 50%, but they spread more',
+                zh_cn = '侧边子弹伤害增加50%，但是角度扩散',
+            },
+        },
+        backShotII = {
+            name = {
+                en_us = 'Back Shot II',
+                zh_cn = '后方射击II',
+            },
+            description = {
+                en_us = 'Increase back shot damage by 50%, but they do less damage if you are close to enemy',
+                zh_cn = '后方子弹伤害增加50%，但离敌人较近时伤害降低',
+            },
+        },
     }
 }

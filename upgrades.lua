@@ -96,8 +96,10 @@ local upgradesData = {
         cost=50,
         executeFunc=function()
             local player=Player.objects[1]
-            player.shootRows.front.straight.num=player.shootRows.front.straight.num-2
-            player.shootRows.front.homing.num=player.shootRows.front.homing.num+2
+            local frontStraight=player:findShootType('front','straight')
+            frontStraight.num=frontStraight.num-2
+            local frontHoming=player:findShootType('front','homing')
+            frontHoming.num=frontHoming.num+2
         end,
         spritePos={x=6,y=0}
     },
@@ -107,7 +109,8 @@ local upgradesData = {
         cost=30,
         executeFunc=function()
             local player=Player.objects[1]
-            player.shootRows.side.straight.num=player.shootRows.side.straight.num+4
+            local sideStraight=player:findShootType('side','straight')
+            sideStraight.num=sideStraight.num+4
         end,
         spritePos={x=7,y=0}
     },
@@ -117,7 +120,8 @@ local upgradesData = {
         cost=50,
         executeFunc=function()
             local player=Player.objects[1]
-            player.shootRows.back.straight.num=player.shootRows.back.straight.num+4
+            local backStraight=player:findShootType('back','straight')
+            backStraight.num=backStraight.num+4
         end,
         spritePos={x=0,y=1}
     },
@@ -195,13 +199,39 @@ local upgradesData = {
         cost=50,
         executeFunc=function()
             local player=Player.objects[1]
-            player.shootRows.front.straight.num=player.shootRows.front.straight.num-2
-            player.shootRows.front.homing.num=player.shootRows.front.homing.num+2
+            local frontStraight=player:findShootType('front','straight')
+            frontStraight.num=frontStraight.num-2
+            local frontHoming=player:findShootType('front','homing')
+            frontHoming.num=frontHoming.num+2
             player.homingMode='portion'
             player.homingArg=0.07
         end,
         spritePos={x=6,y=1}
     },
+    sideShotII={
+        name='Side Shot II',
+        description='Increase side shot damage by 50%, but they spread more',
+        cost=50,
+        executeFunc=function()
+            local player=Player.objects[1]
+            local sideStraight=player:findShootType('side','straight')
+            sideStraight.damage=sideStraight.damage*1.5
+            sideStraight.spread=sideStraight.spread+0.1
+        end,
+        spritePos={x=7,y=1}
+    },
+    backShotII={
+        name='Back Shot II',
+        description='Increase back shot damage by 50%, but they do less damage if you are close to enemy',
+        cost=50,
+        executeFunc=function()
+            local player=Player.objects[1]
+            local backStraight=player:findShootType('back','straight')
+            backStraight.damage=backStraight.damage*1.5
+            backStraight.readyFrame=30
+        end,
+        spritePos={x=0,y=2}
+    }
 }
 upgrades.upgradesData=upgradesData
 
@@ -302,7 +332,11 @@ local upgradesTree={
             connect={up=true,down=true,right=true},
             need={{4,3}}
         },
-        {}
+        {
+            upgrade='sideShotII',
+            connect={left=true},
+            need={{4,3}}
+        }
     },
     {
         {
@@ -325,7 +359,11 @@ local upgradesTree={
             connect={up=true,right=true},
             need={{4,3}}
         },
-        {}
+        {
+            upgrade='backShotII',
+            connect={left=true},
+            need={{4,3}}
+        }
     },
     {
         {},

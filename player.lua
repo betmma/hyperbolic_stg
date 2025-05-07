@@ -21,37 +21,56 @@ Player.moveModes={
 
     Natural='Natural'
 }
+
+---@class ShootType
+---@field direction string front, side, back
+---@field mode string straight, homing
+---@field num number number of bullets
+---@field damage number damage of each bullet
+---@field sprite Sprite sprite of each bullet
+---@field spread number spread of each bullet (angle between bullets)
+---@field readyFrame number? if nil, the damage is [damage] from the beginning. if not, damage begins with 0 and increases to [damage] in [readyFrame]. 
+
+---@type ShootType[]
+--- the order does matter, because for each direction, each bullet is arranged from center to edge (front and back) or from up to down (side). so changing order will change the order of bullets, like if 2 front straights before 2 front homings, 4 rows will be H S S H, but if 2 front homings before 2 front straights, they are S H H S.
 Player.shootRows={
-    front={
-        straight={
-            num=4,
-            damage=3,
-            sprite=BulletSprites.darkdot.cyan
-        },
-        homing={
-            num=0,
-            damage=3,
-            sprite=BulletSprites.darkdot.red
-        }
+    {
+        direction='front',
+        mode='straight',
+        num=4,
+        damage=3,
+        sprite=BulletSprites.darkdot.cyan,
+        spread=0
     },
-    side={
-        straight={
-            num=0,
-            damage=3,
-            sprite=BulletSprites.darkdot.blue
-        }
+    {
+        direction='front',
+        mode='homing',
+        num=0,
+        damage=3,
+        sprite=BulletSprites.darkdot.red,
+        spread=0
     },
-    back={
-        straight={
-            num=0,
-            damage=6,
-            sprite=BulletSprites.darkdot.purple
-        }
+    {
+        direction='side',
+        mode='straight',
+        num=0,
+        damage=3,
+        sprite=BulletSprites.darkdot.blue,
+        spread=0
+    },
+    {
+        direction='back',
+        mode='straight',
+        num=0,
+        damage=6,
+        sprite=BulletSprites.darkdot.purple,
+        spread=0
     }
 }
 function Player:new(args)
     Player.super.new(self, {x=args.x, y=args.y})
     self.direction=0
+    -- in natural move mode, the direction of the right-hand-side. initially it's 0, means without moving, the right to player is the same as the right to the screen. (it's not the "up" direction where player's sprite faces.)
     self.naturalDirection=0
     self.lifeFrame=9999999
     self.speed=0
@@ -319,57 +338,38 @@ function Player:testRotate(angle,restore)
         end
     end
 end
-
-function Player:shoot()
-    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local front=self.shootRows.front
-    local frontRows=0
-    for j=1,front.straight.num do
-        frontRows=frontRows+1
-        self:shootFrontStraight(math.ceil(frontRows/2)*(-1)^frontRows,front.straight.damage,front.straight.sprite)
-    end
-    for j=1,front.homing.num do
-        frontRows=frontRows+1
-        self:shootFrontHoming(math.ceil(frontRows/2)*(-1)^frontRows,front.homing.damage,front.homing.sprite)
-    end
-    local side=self.shootRows.side
-    local sideRows=0
-    for j=1,side.straight.num do
-        sideRows=sideRows+1
-        self:shootSideStraight(math.ceil(sideRows/2)*(-1)^sideRows,side.straight.damage,side.straight.sprite)
-    end
-    local back=self.shootRows.back
-    local backRows=0
-    for j=1,back.straight.num do
-        backRows=backRows+1
-        self:shootBackStraight(math.ceil(backRows/2)*(-1)^backRows,back.straight.damage,back.straight.sprite)
-    end
-end
-
 -- pos is like: -3, -2, -1, 1, 2, 3
-function Player:shootDirStraight(pos,damage,sprite,theta)
+function Player:shootDirStraight(pos,shootType,theta)
+    local damage,sprite=shootType.damage,shootType.sprite or BulletSprites.darkdot.cyan
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local dx,dy=r*2,r*(math.abs(pos)*2-1)*(pos<0 and -1 or 1)
-    local cir=Circle({x=self.x+dx*math.cos(theta)-dy*math.sin(theta), y=self.y+dx*math.sin(theta)+dy*math.cos(theta), radius=self.shootRadius, lifeFrame=60, sprite=sprite or BulletSprites.darkdot.cyan, batch=Asset.playerBulletBatch, spriteTransparency=self.shootTransparency})
+    local cir=Circle({x=self.x+dx*math.cos(theta)-dy*math.sin(theta), y=self.y+dx*math.sin(theta)+dy*math.cos(theta), radius=self.shootRadius, lifeFrame=60, sprite=sprite, batch=Asset.playerBulletBatch, spriteTransparency=self.shootTransparency})
     cir.fromPlayer=true
     cir.safe=true
-    cir.direction=theta
+    cir.direction=theta+shootType.spread*pos
     cir.speed=200
-    cir.damage=damage
+    if shootType.readyFrame then
+        cir.damage=0
+        Event.EaseEvent{
+            obj=cir,easeFrame=shootType.readyFrame,aimTable=cir,aimKey='damage',aimValue=damage,
+        }
+    else
+        cir.damage=damage
+    end
     return cir
 end
 
-function Player:shootFrontStraight(pos,damage,sprite)
-    return self:shootDirStraight(pos,damage,sprite,-math.pi/2+self.naturalDirection)
+function Player:shootFrontStraight(pos,shootType)
+    return self:shootDirStraight(pos,shootType,-math.pi/2+self.naturalDirection)
 end
-function Player:shootBackStraight(pos,damage,sprite)
-    return self:shootDirStraight(pos,damage,sprite,math.pi/2+self.naturalDirection)
+function Player:shootBackStraight(pos,shootType)
+    return self:shootDirStraight(pos,shootType,math.pi/2+self.naturalDirection)
 end
 
 -- note that this shoots 2 bullets, 1 on each side
-function Player:shootSideStraight(pos,damage,sprite)
+function Player:shootSideStraight(pos,shootType)
     for side=0,1 do
-        self:shootDirStraight(pos,damage,sprite,math.pi*side+self.naturalDirection)
+        self:shootDirStraight(pos,shootType,math.pi*side+self.naturalDirection)
     end
 end
 
@@ -417,9 +417,41 @@ local function addHoming(cir,mode,arg)
     }
 end
 
-function Player:shootFrontHoming(pos,damage,sprite)
-    local cir=self:shootFrontStraight(pos,damage,sprite)
+function Player:shootFrontHoming(pos,shootType)
+    local cir=self:shootFrontStraight(pos,shootType)
     addHoming(cir,self.homingMode,self.homingArg)
+end
+
+local directionMode2ShootFunc={
+    front={straight=Player.shootFrontStraight,homing=Player.shootFrontHoming},
+    side={straight=Player.shootSideStraight,homing=Player.shootSideStraight},
+    back={straight=Player.shootBackStraight,homing=Player.shootBackStraight}
+}
+function Player:shoot()
+    -- local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
+    local rows={front=0,side=0,back=0}
+    for k,shootType in pairs(self.shootRows) do
+        local direction=shootType.direction
+        local mode=shootType.mode
+        local shootFunc=directionMode2ShootFunc[direction][mode]
+        if not shootFunc then
+            error('Invalid shoot type: '..direction..' '..mode)
+        end
+        local num=shootType.num
+        for i=1,num do
+            rows[direction]=rows[direction]+1
+            local pos=math.ceil(rows[direction]/2)*(-1)^rows[direction]
+            shootFunc(self,pos,shootType)
+        end
+    end
+end
+
+function Player:findShootType(direction,mode)
+    for k,shootType in pairs(self.shootRows) do
+        if shootType.direction==direction and shootType.mode==mode then
+            return shootType
+        end
+    end
 end
 
 function Player:draw()
