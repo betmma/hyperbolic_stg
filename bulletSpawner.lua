@@ -66,19 +66,9 @@ function BulletSpawner:new(args)
     if self.fogEffect then
         self.spawnBulletFuncRef=self.spawnBulletFunc
         self.spawnBulletFunc=function(self,args)
-            local color=Asset.SpriteData[self.bulletSprite].color
-            local fog=Circle({x=args.x or self.x, y=args.y or self.y, radius=args.radius, lifeFrame=self.fogTime, sprite=Asset.bulletSprites.fog[color],safe=true})
-            Event.EaseEvent{
-                obj=fog,
-                easeFrame=self.fogTime,
-                aimTable=fog,
-                aimKey='spriteTransparency',
-                aimValue=0,
-                -- period=self.fogTime,
-                afterFunc=function()
-                    self.spawnBulletFuncRef(self,args)
-                end
-            }
+            self.wrapFogEffect(args,function()
+                        self.spawnBulletFuncRef(self,args)
+                    end)
         end
     end
     self.spawnBatchFunc=args.spawnBatchFunc or function(self)
@@ -95,7 +85,7 @@ function BulletSpawner:new(args)
             if self.spawnCircleRadius~=0 then
                 direction=Shape.to(x,y,self.x,self.y)+math.pi+angle
             end
-            self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch}
+            self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=self.fogTime}
         end
     end
     ---@type LoopEvent
@@ -123,6 +113,39 @@ function BulletSpawner:draw()
     love.graphics.setColor(1,0,1)
     Shape.drawCircle(self.x,self.y,self.radius)
     love.graphics.setColor(color[1],color[2],color[3])
+end
+
+---@class fogArgs
+---@field fogTime number frames before fog disappears and calls func
+---@field sprite Sprite
+---@field color string|nil defaults to args.sprite.data.color
+---@field x number 
+---@field y number 
+---@field radius number|nil defaults to 1
+
+---@param args fogArgs
+---@param func function to be called after fog disappears. usually Circle
+---@param wrapping boolean|nil if true, will call func(args), otherwise only func() (so you need to wrap it to send args)
+function BulletSpawner.wrapFogEffect(args, func, wrapping)
+    local color=args.color or (args.sprite and args.sprite.data.color) or 'red'
+    local fogTime=args.fogTime or 60
+    local x=args.x
+    local y=args.y
+    local radius=args.radius or args.radius or 1
+    local fog=Circle({x=x, y=y, radius=radius, lifeFrame=fogTime, sprite=Asset.bulletSprites.fog[color],safe=true})
+    local easeFunc=func
+    if wrapping then
+        easeFunc=function()func(args)end
+    end
+    Event.EaseEvent{
+        obj=fog,
+        easeFrame=fogTime,
+        aimTable=fog,
+        aimKey='spriteTransparency',
+        aimValue=0,
+        -- period=self.fogTime,
+        afterFunc=easeFunc
+    }
 end
 
 return BulletSpawner
