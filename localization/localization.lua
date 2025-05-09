@@ -128,7 +128,11 @@ return {
             mystia = {
                 en_us = 'Mystia Lorelei',
                 zh_cn = '米斯蒂娅·萝蕾拉',
-            }
+            },
+            okina = {
+                en_us = 'Okina Matara',
+                zh_cn = '摩多罗隐岐奈',
+            },
         },
         spellcards = {
             -- level 1
@@ -671,6 +675,16 @@ return {
                 quote = {
                     en_us = 'A music kind of night blindness. Take fitful steps, or sometimes sprint into deep darkness.',
                     zh_cn = '一种音乐般的夜盲症。走走停停，或者有时冲进深邃的黑暗。',
+                },
+            },
+            [81] = {
+                spellName = {
+                    en_us = 'Secret Ceremony "Dark Butoh of the Back Door"',
+                    zh_cn = '秘仪「后户的暗黑舞踏」',
+                },
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn = '还没想好 :P',
                 },
             },
         },
