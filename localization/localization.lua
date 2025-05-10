@@ -683,8 +683,18 @@ return {
                     zh_cn = '秘仪「后户的暗黑舞踏」',
                 },
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'She is moving so frantically, and the danmaku is chaotic too. Should\'t Butoh be more elegant?',
+                    zh_cn = '她的动作如此疯狂，弹幕也很混乱。舞踏不应该更优雅吗？',
+                },
+            },
+            [82] = {
+                spellName = {
+                    en_us = 'Secret Ceremony "the Ninefold Heaven Gates"',
+                    zh_cn = '秘仪「阊阖九重天门」',
+                },
+                quote = {
+                    en_us = 'Nine heaven gates look solemn and majestic, but hesitate too much before them will leave no time to do damage.',
+                    zh_cn = '九扇天门看起来庄严而宏伟，但在它们面前犹豫太久，就没有时间打伤害了。',
                 },
             },
         },

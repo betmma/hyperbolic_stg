@@ -343,7 +343,7 @@ function Player:shootDirStraight(pos,shootType,theta)
     local damage,sprite=shootType.damage,shootType.sprite or BulletSprites.darkdot.cyan
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local dx,dy=r*2,r*(math.abs(pos)*2-1)*(pos<0 and -1 or 1)
-    local cir=Circle({x=self.x+dx*math.cos(theta)-dy*math.sin(theta), y=self.y+dx*math.sin(theta)+dy*math.cos(theta), radius=self.shootRadius, lifeFrame=60, sprite=sprite, batch=Asset.playerBulletBatch, spriteTransparency=self.shootTransparency})
+    local cir=Circle({x=self.x+dx*math.cos(theta)-dy*math.sin(theta), y=self.y+dx*math.sin(theta)+dy*math.cos(theta), radius=self.shootRadius, lifeFrame=shootType.lifeFrame or 60, sprite=sprite, batch=Asset.playerBulletBatch, spriteTransparency=self.shootTransparency})
     cir.fromPlayer=true
     cir.safe=true
     cir.direction=theta+shootType.spread*pos

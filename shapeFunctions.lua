@@ -236,6 +236,10 @@ function Shape.rThetaPos(x,y,r,theta)
     if r==0 then
         return x,y,theta,theta
     end
+    if r<0 then
+        r=-r
+        theta=theta+math.pi
+    end
     local div=math.floor(theta/(math.pi*2))
     theta=theta%(math.pi*2)
     local x2,y2,r2=Shape.getCircle(x,y,r)

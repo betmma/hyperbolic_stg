@@ -20,6 +20,7 @@ function BulletSpawner:new(args)
     self.range=args.range and math._extractABfromstr(args.range) or math.pi*2
     self.spawnCircleRadius=args.spawnCircleRadius or 0
     self.spawnCircleAngle=args.spawnCircleAngle and math._extractABfromstr(args.spawnCircleAngle) or 0
+    self.spawnCircleRange=args.spawnCircleRange and math._extractABfromstr(args.spawnCircleRange) or math.pi*2
     self.bulletSpeed=args.bulletSpeed and math._extractABfromstr(args.bulletSpeed) or 20
     self.bulletSize=args.bulletSize and math._extractABfromstr(args.bulletSize) or 1
     self.bulletLifeFrame=args.bulletLifeFrame or 2000
@@ -77,11 +78,12 @@ function BulletSpawner:new(args)
         local range=math.eval(self.range)
         local angle=self.angle=='player' and Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y) or math.eval(self.angle)
         local spawnCircleAngle=math.eval(self.spawnCircleAngle)
+        local spawnCircleRange=math.eval(self.spawnCircleRange)
         local speed=math.eval(self.bulletSpeed)
         local size=math.eval(self.bulletSize)
         for i = 1, num, 1 do
             local direction=range*(i-0.5-num/2)/num+angle
-            local x,y=Shape.rThetaPos(self.x,self.y,self.spawnCircleRadius,math.pi*2*(i-0.5-num/2)/num+spawnCircleAngle)
+            local x,y=Shape.rThetaPos(self.x,self.y,self.spawnCircleRadius,spawnCircleRange*(i-0.5-num/2)/num+spawnCircleAngle)
             if self.spawnCircleRadius~=0 then
                 direction=Shape.to(x,y,self.x,self.y)+math.pi+angle
             end

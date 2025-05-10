@@ -6,6 +6,7 @@ function math.atanh(x)
     return 0.5*math.log((1+x)/(1-x))
 end
 
+-- return 1 if x>0, -1 if x<0, 0 if x=0
 function math.sign(x)
     return x>0 and 1 or x<0 and -1 or 0
 end
