@@ -98,6 +98,7 @@ G={
     STATES={
         MAIN_MENU='MAIN_MENU',
         OPTIONS='OPTIONS',
+        MUSIC_ROOM='MUSIC_ROOM',
         UPGRADES='UPGRADES',
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
@@ -120,11 +121,19 @@ G={
             },
             OPTIONS={
                 slideDirection='right'
-            }
+            },
+            MUSIC_ROOM={
+                slideDirection='down'
+            },
         },
         OPTIONS={
             MAIN_MENU={
                 slideDirection='left'
+            }
+        },
+        MUSIC_ROOM={
+            MAIN_MENU={
+                slideDirection='up'
             }
         },
         UPGRADES={
@@ -154,10 +163,11 @@ G={
     },
     UIDEF={
         MAIN_MENU={
-            options={
+            options={ -- actual text is in localization file
                 {text='Start',value='START'},
                 {text='Replay',value='REPLAY'},
                 {text='Options',value='OPTIONS'},
+                {text='Music Room',value='MUSIC_ROOM'},
                 {text='Exit',value='EXIT'},
             },
             chosen=1,
@@ -169,6 +179,7 @@ G={
                 self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
+                MUSIC_ROOM=function(self)self:switchState(self.STATES.MUSIC_ROOM)end,
                 OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
                 Asset.titleBatch:clear()
                 Asset.titleBatch:add(Asset.title,70,0,0,0.5,0.5,0,0)
@@ -182,14 +193,15 @@ G={
                 local color={love.graphics.getColor()}
                 SetFont(36)
                 love.graphics.setColor(1,1,1,0.6)
-                love.graphics.printf("Hyperbolic STG",200,270,400,'center')
+                love.graphics.printf("Hyperbolic Domain",200,270,400,'center')
+                local optionBaseY=275
                 SetFont(36)
                 love.graphics.setColor(1,1,1,1)
                 for index, value in ipairs(self.currentUI.options) do
                     local name=Localize{'ui',value.value}
-                    love.graphics.print(name,300,300+index*50,0,1,1)
+                    love.graphics.print(name,300,optionBaseY+index*50,0,1,1)
                 end
-                love.graphics.rectangle("line",300,300+self.currentUI.chosen*50,200,50)
+                love.graphics.rectangle("line",300,optionBaseY+self.currentUI.chosen*50,200,40)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end
@@ -281,6 +293,57 @@ G={
                 love.graphics.rectangle("line",100,self.currentUI.chosen<#self.currentUI.options and 100+self.currentUI.chosen*50 or 500,600,50)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
             end
+        },
+        MUSIC_ROOM={
+            enter=function(self)
+                self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
+                self.UIDEF.MUSIC_ROOM.options={}
+                for i,v in ipairs(BGM.fileNames) do
+                    table.insert(self.UIDEF.MUSIC_ROOM.options,{value=v})
+                end
+            end,
+            chosen=1,
+            update=function(self,dt)
+                self.backgroundPattern:update(dt)
+                optionsCalc(self,{})
+                if isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self:switchState(self.STATES.MAIN_MENU)
+                end
+                if isPressed('z') then
+                    SFX:play('select')
+                    local chosen=self.currentUI.chosen
+                    local musicName=self.currentUI.options[chosen].value
+                    BGM:play(musicName)
+                end
+            end,
+            options={},
+            draw=function(self)
+            end,
+            drawText=function(self)
+                SetFont(48)
+                love.graphics.print(Localize{'ui',"MUSIC_ROOM"}, 100, 60)
+                local edge=5
+                local width=600
+                local optionBaseX=100
+                local optionBaseY=100
+                SetFont(24)
+                love.graphics.setColor(1,1,1,1)
+                for index, value in ipairs(self.currentUI.options) do
+                    local name=Localize{'musicData',value.value,'name'}
+                    local prefix=''..index..'. '
+                    love.graphics.print(prefix..name,optionBaseX+edge,optionBaseY+edge+index*50,0,1,1)
+                end
+                love.graphics.rectangle("line",optionBaseX,optionBaseY+self.currentUI.chosen*50,width,30)
+                local option=self.currentUI.options[self.currentUI.chosen]
+                local description=Localize{'musicData',option.value,'description'}
+
+                local bottomY=400
+                love.graphics.printf(description,optionBaseX+edge,bottomY+edge,width-edge*2,'left')
+                love.graphics.rectangle("line",optionBaseX,bottomY,width,180)
+                -- SetFont(36)
+                -- love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+            end,
         },
         UPGRADES={
             enter=function(self)

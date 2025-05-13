@@ -4,7 +4,7 @@ if arg[2] == "debug" then
     require("lldebugger").start()
 end
 io.stdout:setvbuf("no")
-love.window.setTitle('Hyperbolic STG')
+love.window.setTitle('Hyperbolic Domain'..' '..VERSION)
 require'misc'
 
 local input = require "input"

@@ -4,6 +4,7 @@
 ---@field looping boolean if true, the audio will loop
 ---@field unique boolean if true, only one audio in this system can be played at a time
 ---@field defaultAudio string if the audio is not found, this audio will be played instead
+---@field fileNames string[] list of audio file names in the folder
 ---@field data table<string,love.Source> table that stores audio sources
 ---@field audioVolumes table<string,number> table that stores audio volumes of each audio
 ---@field private volumeCoeff number unchangable base volume coefficient of this audio system, default is 1
@@ -18,6 +19,7 @@ function AudioSystem:new(args)
     self.defaultAudio=args.defaultAudio
     self.data={}
     self.audioVolumes={}
+    self.fileNames=args.fileNames
     for k,v in pairs(args.fileNames)do
         local path='assets/'..self.folder..'/'..v..self.fileSuffix
         if not love.filesystem.getInfo(path)then
@@ -34,7 +36,7 @@ function AudioSystem:new(args)
     -- currentVolume is used for options, while volumeCoeff is unchangable to player
     self.currentVolume=args.currentVolume or 1
 end
---- play a specific audio. If the audio is already playing, if [restart] is true, the audio will be replayed from the beginning, otherwise it does nothing.
+--- play a specific audio. When the audio is already playing, if [restart] is true, the audio will be replayed from the beginning, if false it does nothing.
 ---@param name string
 ---@param restart? boolean
 ---@param overrideVolume? number
@@ -78,8 +80,8 @@ sfx:setAudioVolume('enemyShot',0.3)
 sfx:setAudioVolume('enemyCharge',0.6)
 sfx:setAudioVolume('enemyPowerfulShot',0.6)
 ---@type AudioSystem
-local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title'}
-bgm:setAudioVolume('level1',0.8)
+local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title'}
+bgm:setAudioVolume('title',0.7)
 bgm:setAudioVolume('level2',1)
 --- @type {sfx:AudioSystem,bgm:AudioSystem}
 local Audio={

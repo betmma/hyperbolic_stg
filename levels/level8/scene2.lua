@@ -94,6 +94,9 @@ return {
                 if newhp<hp and t>300 and t<a.spawnEvent.period-10 then
                     a.spawnEvent.frame=a.spawnEvent.frame+1
                 end
+                if t<a.spawnEvent.period-60 and t>a.spawnEvent.period-63 then
+                    SFX:play('enemyCharge')
+                end
                 if t>=300 then
                     return
                 end

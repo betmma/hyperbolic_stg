@@ -712,6 +712,10 @@ return {
             en_us = 'Options',
             zh_cn = '设置',
         },
+        MUSIC_ROOM = {
+            en_us = 'Music Room',
+            zh_cn = '音乐室',
+        },
         EXIT = {
             en_us = 'Exit',
             zh_cn = '退出',
@@ -819,6 +823,28 @@ return {
         replaying = {
             en_us = 'Replaying',
             zh_cn = '回放中',
+        }
+    },
+    musicData = {
+        title = {
+            name = {
+                en_us = 'Hyperbolic Domain ~ Exponential Existence',
+                zh_cn = '双曲域 ~ Exponential Existence',
+            },
+            description = {
+                en_us = 'This is the title screen theme.\nHyperbolic geometry means exponential growth, so I used Fibonacci sequence time signature.\nSounds a little bit 8-bit retro?\nI can look at the infinitely zooming background for a long time.',
+                zh_cn = '标题画面的主题曲。\n双曲几何意味着指数增长，所以我用了斐波那契数列的拍号。\n听起来有点8位复古？\n我可以看着无限放大的背景很久呢。',
+            },
+        },
+        level2 = {
+            name = {
+                en_us = 'not decided (^^;',
+                zh_cn = '还没想好 (^^;',
+            },
+            description = {
+                en_us = 'This is (currently) all level\'s theme.\nIt feels energetic and uplifting.\nThe intro used to give me an overwhelming feeling of celebrating Spring Festival that I had to tweak it (^^;',
+                zh_cn = '这是（目前）所有关卡的主题曲。\n听起来充满活力和积极。\n它的前奏曾经让我有一种过度强烈的庆祝春节的感觉，我不得不稍微调整它(^^;',
+            },
         }
     },
     upgrades = {
