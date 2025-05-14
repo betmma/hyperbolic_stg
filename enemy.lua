@@ -27,6 +27,7 @@ function Enemy:new(args)
     table.sort(self.hpSegments,function (a,b) return a>b end) -- we want it decreasing
     self.hpSegmentsFunc=args.hpSegmentsFunc or function(self,hpLevel)end 
     self.damageResistance=1
+    self._hpLevel=self:getHPLevel()
 end
 
 function Enemy:update(dt)
@@ -38,10 +39,11 @@ function Enemy:update(dt)
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
     end
     Circle.checkHitPlayer(self)
-    local hpLevel=self:getHPLevel()
     self:checkHitByPlayer()
-    if self:getHPLevel()~=hpLevel then
-        self.hpSegmentsFunc(self,hpLevel)
+    local hpLevel=self:getHPLevel()
+    if self._hpLevel~=hpLevel then
+        self.hpSegmentsFunc(self,self._hpLevel)
+        self._hpLevel=hpLevel
     end
 end
 
