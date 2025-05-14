@@ -164,7 +164,7 @@ local levelData={
     loadLevels(5,{'1','2','3','4','5','6','7','8'}),
     loadLevels(6,{'1','2','3','4','5','6','7','8'}),
     loadLevels(7,{'1','2','3','4','5','6','7','8','9'}),
-    loadLevels(8,{'1','2'}),
+    loadLevels(8,{'1','2','3'}),
 }
 
 local ID2LevelScene={}

@@ -697,6 +697,16 @@ return {
                     zh_cn = '九扇天门看起来庄严而宏伟，但在它们面前犹豫太久，就没有时间打伤害了。',
                 },
             },
+            [83] = {
+                spellName = {
+                    en_us = 'Secret Ceremony "One Eyed Bat"',
+                    zh_cn = '秘仪「独眼蝙蝠」',
+                },
+                quote = {
+                    en_us = 'Huge bats are flying around, their wings shrouding me.',
+                    zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。',
+                },
+            }
         },
     },
     ui = {
@@ -842,8 +852,8 @@ return {
                 zh_cn = '还没想好 (^^;',
             },
             description = {
-                en_us = 'This is (currently) all level\'s theme.\nIt feels energetic and uplifting.\nThe intro used to give me an overwhelming feeling of celebrating Spring Festival that I had to tweak it (^^;',
-                zh_cn = '这是（目前）所有关卡的主题曲。\n听起来充满活力和积极。\n它的前奏曾经让我有一种过度强烈的庆祝春节的感觉，我不得不稍微调整它(^^;',
+                en_us = 'This is (currently) all level\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;',
+                zh_cn = '这是（目前）所有关卡的主题曲。\n听起来充满活力和积极。\n前奏有一种强烈的庆祝春节的感觉(^^;',
             },
         }
     },
