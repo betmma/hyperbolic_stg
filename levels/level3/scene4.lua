@@ -77,6 +77,7 @@ return {
                     c.bulletSpeed=50*(0.95-0.4*hpPercent)
                 end
                 c.angle=Shape.to(c.x,c.y,player.x,player.y)+math.eval(0,0.04)
+                player.orientation=-player.naturalDirectionSpecial
             end
         }
         Event.LoopEvent{
