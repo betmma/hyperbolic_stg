@@ -133,6 +133,10 @@ return {
                 en_us = 'Okina Matara',
                 zh_cn = '摩多罗隐岐奈',
             },
+            ubame = {
+                en_us = 'Ubame Chirizuka',
+                zh_cn = '尘塚姥芽',
+            }
         },
         spellcards = {
             -- level 1
@@ -703,9 +707,19 @@ return {
                     zh_cn = '秘仪「独眼蝙蝠」',
                 },
                 quote = {
-                    en_us = 'Huge bats are flying around, their wings shrouding me.',
-                    zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。',
+                    en_us = 'Huge bats are flying around, their wings shrouding me. But the big eyes detached from the body seems more irritating.',
+                    zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
                 },
+            },
+            [84] = {
+                spellName = {
+                    en_us = 'Dust Sign "Myriad Motes Accumulation"',
+                    zh_cn = '尘符「万尘集积」',
+                },
+                quote = {
+                    en_us = 'She is sweeping the dust away, but it only creates more dust. What a bad janitor.',
+                    zh_cn = '她在扫除灰尘，但这只会让更多的灰尘出现。真是个糟糕的清洁工。',
+                }
             }
         },
     },

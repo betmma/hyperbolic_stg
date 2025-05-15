@@ -276,3 +276,21 @@ function Shape.rThetaPos(x,y,r,theta)
     local retX,retY=x2+r2*math.cos(finaltheta),y2+r2*math.sin(finaltheta)
     return retX,retY,Shape.to(retX,retY,x,y)+math.pi,finaltheta+div*math.pi*2
 end
+
+-- calculate the coordinates of a regular polygon with center (x,y), radius r, number of vertices n and rotation angle theta
+---@param x coordinate
+---@param y coordinate
+---@param r number
+---@param n number
+---@param theta angle|nil
+---@return table[] points table of coordinates of the vertices. {{x1,y1},{x2,y2},...}
+function Shape.regularPolygonCoordinates(x,y,r,n,theta)
+    theta=theta or 0
+    local points={}
+    for i=1,n do
+        local angle=math.pi*2/n*(i-0.5)+theta
+        local x2,y2=Shape.rThetaPos(x,y,r,angle)
+        points[i]={x2,y2}
+    end
+    return points
+end
