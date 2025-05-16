@@ -718,7 +718,17 @@ return {
                 },
                 quote = {
                     en_us = 'She is sweeping the dust away, but it only creates more dust. What a bad janitor.',
-                    zh_cn = '她在扫除灰尘，但这只会让更多的灰尘出现。真是个糟糕的清洁工。',
+                    zh_cn = '她在扫除灰尘，却让更多的灰尘出现。真是个糟糕的清洁工。',
+                }
+            },
+            [85] = {
+                spellName = {
+                    en_us = 'Chest Sign "Karabitsu\'s Opened Hoard"',
+                    zh_cn = '柜符「唐柜的宝藏」',
+                },
+                quote = {
+                    en_us = 'Searching here and there, found nothing but random items. What is she looking for?',
+                    zh_cn = '到处寻找，找到的全是杂物。她在找什么呢？',
                 }
             }
         },

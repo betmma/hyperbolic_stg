@@ -167,13 +167,26 @@ end
 
 -- move [movingObj] towards [aimObj] with [step] distance. if [stopAtReach] is true, won't go past [aimObj] if [step] is larger than distance between them. This function directly modifies [movingObj]'s x and y.
 --- @param movingObj {x: number, y:number} "object to be moved, has x and y attributes"
---- @param aimObj {x: number, y:number} "object to be aimed at"
+--- @param aimObj {x: number, y:number}|angle "object to be aimed at, or direction (under this case, [stopAtReach] is ignored)"
 --- @param step number "step distance"
 --- @param stopAtReach? boolean "if true, won't go past [aimObj] if [step] is larger than distance between them"
 function Shape.moveTowards(movingObj,aimObj,step,stopAtReach)
-    local angle=Shape.to(movingObj.x,movingObj.y,aimObj.x,aimObj.y)
+    local angle,aimX,aimY
+    if type(aimObj)=='number' then
+        angle=aimObj
+        stopAtReach=false
+    elseif type(aimObj)=='table' then
+        aimX=aimObj.x
+        aimY=aimObj.y
+        if not aimX or not aimY then
+            error('aimObj.x or aimObj.y is nil. Got aimObj.x='..tostring(aimObj.x)..' aimObj.y='..tostring(aimObj.y))
+        end
+        angle=Shape.to(movingObj.x,movingObj.y,aimX,aimY)
+    else
+        error('aimObj must be a number or a table with x and y attributes. Got: '..type(aimObj))
+    end
     if stopAtReach then
-        local distance=Shape.distance(movingObj.x,movingObj.y,aimObj.x,aimObj.y)
+        local distance=Shape.distance(movingObj.x,movingObj.y,aimX,aimY)
         step=math.min(step,distance)
     end
     local x,y=Shape.rThetaPos(movingObj.x,movingObj.y,step,angle)
