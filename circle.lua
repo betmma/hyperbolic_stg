@@ -17,7 +17,7 @@ function Circle:new(args)
         if not data then
             error('Circle:new: self.sprite.data is nil')
         end
-        if data.isGif then
+        if data.isGIF then
             self.sprite=copy_table(self.sprite)
             self.sprite:randomizeCurrentFrame()
         end
@@ -71,7 +71,7 @@ function Circle:update(dt)
     self.spriteExtraDirection=self.spriteExtraDirection+self.spriteRotationSpeed*Shape.timeSpeed
     if self.sprite then
         local data=self.sprite.data
-        if data.isGif then
+        if data.isGIF then
             self.sprite:countDown()
         end
     end
@@ -91,7 +91,7 @@ function Circle:drawSprite()
         r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
     end
     self.batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 1)*color[4])
-    self.batch:add(self.sprite.quad,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.size/2,data.size/2)
+    self.batch:add(self.sprite.quad,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.centerX,data.centerY)
 end
 function Circle:checkShockwaveRemove()
     if #Effect.Shockwave.objects==0 then return end
@@ -133,7 +133,7 @@ function Circle:checkHitPlayer()
 end
 
 function Circle:removeEffect()
-    Effect.Larger{x=self.x,y=self.y,sprite=Asset.shards.round,radius=2.5,growSpeed=1.1,animationFrame=20}
+    Effect.Larger{x=self.x,y=self.y,sprite=Asset.shards.dot,radius=1,growSpeed=1.05,animationFrame=20}
 end
 
 function Circle:changeSpriteColor(color)
@@ -155,7 +155,7 @@ function Circle:changeSprite(sprite)
     self.sprite=sprite
     data=self.sprite.data
     self.radius=self.radius*data.hitRadius
-    if data.isGif then
+    if data.isGIF then
         self.sprite=copy_table(self.sprite)
         self.sprite:randomizeCurrentFrame()
     end

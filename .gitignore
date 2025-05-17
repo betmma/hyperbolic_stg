@@ -4,4 +4,5 @@ make_all.toml
 unusedCode.lua
 profi.lua
 assets/bgm/title_.mp3
+assets/old/*
 *.txt

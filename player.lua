@@ -472,9 +472,9 @@ function Player:draw()
     local x,y,r=Shape.getCircle(self.x,self.y,self.drawRadius)
     
     --draw hit point
-    local focusSizeFactor=0.4
+    local focusSizeFactor=0.5
     Asset.playerFocusBatch:setColor(1,1,1,(self.focusPointTransparency or 1)*color[4])
-    Asset.playerFocusBatch:add(Asset.playerFocus,x,y,self.time/5+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,31,33)-- the image is 64*64 but the focus center seems slightly off
+    Asset.playerFocusBatch:add(BulletSprites.playerFocus.quad,x,y,self.time+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,32,32)-- the image is 64*64 but the focus center seems slightly off
     local spriteSizeFactor=0.53
     if self.sprite then
         Asset.playerBatch:setColor(1,1,1,color[4])
@@ -526,9 +526,9 @@ function Player:grazeEffect(amount)
     amount=amount or 1
     SFX:play('graze')
     if self.version and isVersionSmaller(self.version,'0.2.0.1') then
-        Effect.Larger{x=self.x,y=self.y,speed=math.eval(50,30),direction=math.eval(1,9999),sprite=Asset.shards.dot,radius=3.5,growSpeed=1,animationFrame=20}
+        Effect.Larger{x=self.x,y=self.y,speed=math.eval(50,30),direction=math.eval(1,9999),sprite=Asset.shards.dot,radius=1.25,growSpeed=1,animationFrame=20}
     else -- non-random graze effect
-        Effect.Larger{x=self.x,y=self.y,speed=50+30*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=3.5,growSpeed=1,animationFrame=20}
+        Effect.Larger{x=self.x,y=self.y,speed=50+30*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=1.25,growSpeed=1,animationFrame=20}
     end
     self.grazeCountThisFrame=(self.grazeCountThisFrame or 0)+amount
     if self.grazeCountThisFrame>20 then

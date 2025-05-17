@@ -1,4 +1,4 @@
-VERSION="0.4.3.3"
+VERSION="0.4.4"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -10,6 +10,7 @@ require'misc'
 local input = require "input"
 function love.load()
     Object = require "classic"
+    GameObject = Object.GameObject
     Shape = require "shape"
     require "shapeFunctions"
     Circle = require "circle"

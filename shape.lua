@@ -1,5 +1,5 @@
 --! file: shape.lua
-local Shape = Object:extend()
+local Shape = GameObject:extend()
 Shape.curvature=100
 Shape.removeDistance=100
 Shape.timeSpeed=1
@@ -54,16 +54,12 @@ function Shape:updateMove(dt)
     self.direction=self.direction-moveDistance/self.moveRadius
 end
 
+local ShapeDrawAllRef=Shape.drawAll
 function Shape:drawAll()
-    love.graphics.line(0,Shape.axisY,love.graphics.getWidth(),Shape.axisY) -- draw the axis
-    for key, obj in pairs(self.objects) do
-      if not obj.removed then
-        obj:draw()
-      end
+    if self==Shape then
+        love.graphics.line(0,Shape.axisY,love.graphics.getWidth(),Shape.axisY) -- draw the axis
     end
-    for key, cls in pairs(self.subclasses) do
-        cls:drawAll()
-    end
+    ShapeDrawAllRef(self)
 end
 -- function Shape:updateAll(dt)
 --     -- Shape.axisY=Shape.axisY+dt*10

@@ -45,7 +45,7 @@ return {
                         if not border:inside(cir.x,cir.y) then
                             border:reflection(cir)
                             SFX:play('enemyShot',true,0.5)
-                            local color=Asset.SpriteData[cir.sprite].color
+                            local color=cir.sprite.data.color
                             local direction
                             if color=='red' then
                                 direction=cir.direction

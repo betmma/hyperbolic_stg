@@ -17,6 +17,12 @@ function Larger:new(args)
     Larger.super.new(self, args)
     ---@type Sprite
     self.sprite=args.sprite
+    if not self.sprite then
+        error('Larger.new: self.sprite is nil. args='..TableToString(args))
+    end
+    if not self.sprite.data then
+        error('Larger.new: self.sprite.data is nil. sprite='..TableToString(self.sprite))
+    end
     self.radius = args.radius or 1
     self.growSpeed=args.growSpeed or 1.2
     self.drawScale=args.drawScale or 1
@@ -33,20 +39,21 @@ end
 
 function Larger:draw()
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local size=self.sprite.data.size
+    local data=self.sprite.data
+    local size=self.sprite.data.sizeX
     local scale=r/size*2*(self.drawScale or 1)
     local direction=self.direction or 0
     Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
-    Asset.effectBatch:add(self.sprite.quad,x,y,direction,scale,scale,size/2,size/2)
+    Asset.effectBatch:add(self.sprite.quad,x,y,direction,scale,scale,data.centerX,data.centerY)
 end
 
 -- A growing shockwave, that removes touched bullets and activate their :removeEffect
 local Shockwave=Larger:extend()
 Effect.Shockwave=Shockwave
 function Shockwave:new(args)
-    Shockwave.super.new(self, args)
     self.color=args.color or 'red'
-    self.sprite=Asset.shockwave[self.color]
+    args.sprite=Asset.bulletSprites.explosion[self.color] or Asset.bulletSprites.explosion.red
+    Shockwave.super.new(self, args)
     self.canRemove=args.canRemove or {bullet=true,invincible=false,safe=true}
 end
 
@@ -97,7 +104,8 @@ function Charge:update(dt)
 end
 
 function Charge:draw(dt)
-    local size=self.sprite.data.size
+    local data=self.sprite.data
+    local size=self.sprite.data.sizeX
     for k,particle in pairs(self.particles) do
         if particle.frame>=self.particleFrame then
             goto continue
@@ -106,7 +114,7 @@ function Charge:draw(dt)
         particle.x,particle.y=Shape.rThetaPos(self.obj.x,self.obj.y,particle.speed*(-particle.frame+self.particleFrame),particle.direction)
         local x,y=particle.x,particle.y
         Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-0.3*particle.frame/self.particleFrame)
-        Asset.effectBatch:add(self.sprite.quad,x,y,0,scale,scale,size/2,size/2)
+        Asset.effectBatch:add(self.sprite.quad,x,y,0,scale,scale,data.centerX,data.centerY)
         ::continue::
     end
 end

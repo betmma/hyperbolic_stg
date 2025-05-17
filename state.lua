@@ -24,13 +24,13 @@ end
 local G={
     CONSTANTS={
         DRAW=function(self)
-            Object:drawShaderAll()
+            GameObject:drawShaderAll()
             Asset:clearBatches()
             local colorRef={love.graphics.getColor()}
             Asset.foregroundBatch:setColor(colorRef[1],colorRef[2],colorRef[3],self.foregroundTransparency)
             Asset.foregroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
             Asset.foregroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
-            Object:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
+            GameObject:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
             Asset:flushBatches()
             Asset:drawBatches()
             love.graphics.setShader()
@@ -710,7 +710,7 @@ G={
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
-                Object:updateAll(dt)
+                GameObject:updateAll(dt)
                 if isPressed('escape') then
                     SFX:play('select')
                     -- self:removeAll()
@@ -759,7 +759,7 @@ G={
             end,
             draw=G.CONSTANTS.DRAW,
             drawText=function(self)
-                Object:drawTextAll()
+                GameObject:drawTextAll()
                 SetFont(18)
                 love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.print("Circle: "..#Circle.objects, 10, 50)
@@ -820,7 +820,7 @@ G={
             end,
             draw=G.CONSTANTS.DRAW,
             drawText=function(self)
-                Object:drawTextAll()
+                GameObject:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -867,7 +867,7 @@ G={
             draw=G.CONSTANTS.DRAW,
             drawText=function(self)
                 local transparency=self.currentUI.transparency or 1
-                Object:drawTextAll()
+                GameObject:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5*transparency)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -912,7 +912,7 @@ G={
             end,
             draw=G.CONSTANTS.DRAW,
             drawText=function(self)
-                Object:drawTextAll()
+                GameObject:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -984,7 +984,7 @@ G={
             end,
             draw=G.CONSTANTS.DRAW,
             drawText=function(self)
-                Object:drawTextAll()
+                GameObject:drawTextAll()
                 local color={love.graphics.getColor()}
                 love.graphics.setColor(1,1,1,0.5)
                 love.graphics.rectangle("fill",0,0,9999,9999) -- half transparent effect
@@ -1495,7 +1495,7 @@ end
 -- remove all objects in the scene
 G.removeAll=function(self)
     Asset:clearBatches()
-    Object:removeAll()
+    GameObject:removeAll()
     if self.spellNameText and not self.spellNameText.removed then
         self.spellNameText:remove()
     end

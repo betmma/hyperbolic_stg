@@ -7,13 +7,26 @@
 -- the terms of the MIT license. See LICENSE for details.
 --
 
+--[[
+  This module provides a simple classical inheritance system.
+
+  - 'Object' is the root base class. It provides the fundamental mechanisms for
+    class creation (:extend), instantiation (Class()), type checking (:is),
+    and interface implementation (:implement). It is a general-purpose class
+    and does not inherently know about game loops, updating, or drawing.
+    Think of it as the blueprint for making blueprints.
+
+  - 'GameObject' extends 'Object'. It is specifically designed for entities
+    that need to be updated each frame (move, animate),
+    and drawn on screen. It introduces methods like :update, :draw, :remove
+    and their collective counterparts (:updateAll, :drawAll).
+--]]
+
 ---@class Object
----@field public objects table<number, Object> List of instances created directly from this class. Note: `Object:updateAll` etc., iterate recursively.
----@field public subclasses table<number, Object> List of direct subclasses created using `:extend()`. Note: `Object:updateAll` etc., iterate recursively.
+---@description The fundamental base class for creating other classes.
+---@field public objects table<number, Object> List of instances created directly from this class.
+---@field public subclasses table<number, Object> List of direct subclasses created using `:extend()`.
 ---@field public super table | nil The parent class this class was extended from.
----@field removed? boolean Internal flag set when `remove()` is called on an instance.
----@field nextObjects? Object[] Internal temporary table used during `updateAll`.
----@field notRespondToDrawAll? boolean If true on an instance, it will be skipped by `drawAll`.
 local Object = {}
 Object.__index = Object
 
@@ -28,7 +41,9 @@ end
 
 
 --- Creates a new class that inherits from this class (`self`).
----@return table class An new class table that inherits from `self`. Use `---@class NewClassName : Object` in your code when using this.
+---@generic Class:Object
+---@param self Class
+---@return table Class An new class table that inherits from `self`. Use `---@class NewClassName : Object` in your code when using this.
 function Object:extend()
   local cls = {}
   for k, v in pairs(self) do
@@ -79,8 +94,11 @@ end
 
 --- Metamethod called when a class table is called like a function `ClassName(...)`.
 --- Creates, initializes, and stores a new instance.
+--- Constructor (called via ClassName(...))
+---@generic Class:Object
+---@param self Class
 ---@param ... any Arguments to be passed to the instance's `:new()` method.
----@return self 
+---@return Class
 function Object:__call(...)
   local obj = setmetatable({}, self)
   obj:new(...)
@@ -88,18 +106,22 @@ function Object:__call(...)
   return obj
 end
 
+---@class GameObject : Object things need to be updated and drawn like Shape, Bullet, Player, Enemy. Static things like Sprite, AudioSystem are not GameObject.
+---@field objects GameObject[] 
+---@field subclasses GameObject[] 
+---@field removed boolean|nil Internal flag set when `remove()` is called on an instance.
+---@field notRespondToDrawAll boolean|nil If true on an instance, it will be skipped by `drawAll`.
+local GameObject=Object:extend()
+
 --- Marks an instance for removal during the next update cycle.
-function Object:remove()
+function GameObject:remove()
   self.removed=true
-  -- for i, obj in ipairs(self.objects) do
-  --   if obj == self then
-  --     table.remove(self.objects, i)
-  --     return
-  --   end
-  -- end
 end
 
-function Object:removeAll()
+--- Removes all instances of this specific GameObject class and recursively
+--- calls removeAll on its subclasses. Usually used to clear all objects
+--- when entering/leaving a level.
+function GameObject:removeAll()
   for i =#self.objects,1,-1 do
     table.remove(self.objects, i)
   end
@@ -108,10 +130,10 @@ function Object:removeAll()
   end
 end
 
-function Object:update(dt)
+function GameObject:update(dt)
 end
 
-function Object:updateAll(dt) 
+function GameObject:updateAll(dt) 
   -- why Object:updateAll can't update all things
   -- it's because I overrode Shape:updateAll so cls call didn't get to Circle, Player, etc. fixed
   for key, obj in pairs(self.objects) do
@@ -122,19 +144,19 @@ function Object:updateAll(dt)
   for key, cls in pairs(self.subclasses) do
       cls:updateAll(dt)
   end
-  self.nextObjects={}
+  local nextObjects={}
   for i, obj in ipairs(self.objects) do
     if not obj.removed then
-      table.insert(self.nextObjects,obj)
+      table.insert(nextObjects,obj)
     end
   end
-  self.objects=self.nextObjects
+  self.objects=nextObjects
 end
 
-function Object:draw()
+function GameObject:draw()
 end
 
-function Object:drawAll()
+function GameObject:drawAll()
   for key, obj in pairs(self.objects) do
     if not obj.removed and not obj.notRespondToDrawAll then
       obj:draw()
@@ -146,10 +168,10 @@ function Object:drawAll()
 end
 
 
-function Object:drawText()
+function GameObject:drawText()
 end
 
-function Object:drawTextAll()
+function GameObject:drawTextAll()
   for key, obj in pairs(self.objects) do
     if not obj.removed then
       obj:drawText()
@@ -160,10 +182,10 @@ function Object:drawTextAll()
   end
 end
 
-function Object:drawShader()
+function GameObject:drawShader()
 end
 
-function Object:drawShaderAll()
+function GameObject:drawShaderAll()
   for key, obj in pairs(self.objects) do
     if not obj.removed then
       obj:drawShader()
@@ -174,4 +196,5 @@ function Object:drawShaderAll()
   end
 end
 
+Object.GameObject=GameObject
 return Object

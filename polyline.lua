@@ -15,7 +15,7 @@ function Point:draw()
 end
 
 -- Warning: points must form a convex polygon
-local PolyLine=Object:extend()
+local PolyLine=GameObject:extend()
 function PolyLine:new(points,draw)
     self.doDraw=draw==nil and true or draw
     self.points={}

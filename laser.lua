@@ -50,7 +50,7 @@ function LaserUnit:extractCoordinates()
     local unit = self
     while unit and not unit.removed do
         local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
-        r1 = self.sprite.data.size / 2 * r1 / self.sprite.data.hitRadius
+        r1 = self.sprite.data.sizeX / 2 * r1 / self.sprite.data.hitRadius
         local the=unit.direction+math.pi/2+(unit.deltaOrientation or 0)
         table.insert(poses, {x1+r1*math.cos(the),y1+r1*math.sin(the)})
         table.insert(poses, {x1-r1*math.cos(the),y1-r1*math.sin(the)})
@@ -61,7 +61,7 @@ function LaserUnit:extractCoordinates()
         poses={}
         unit=self
         local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
-        r1 = self.sprite.data.size / 2 * r1 / self.sprite.data.hitRadius
+        r1 = self.sprite.data.sizeX / 2 * r1 / self.sprite.data.hitRadius
         r1 = r1 * 2^0.5
         local the=unit.direction+math.pi/4
         for i=1,4 do

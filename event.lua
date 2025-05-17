@@ -7,7 +7,7 @@
 ---@field obj Object the object that the event is attached to. If not provided, it defaults to self. If obj is removed, the event will be removed too.
 ---@field conditionFunc fun(self: Object, ...):boolean Each frame, if it returns true, the event will be executed.
 ---@field executeFunc fun(self: Object, executedTimes: number, totalTimes:number):nil What the event does. Note that executedTimes is 0-based, and at last execution it's times-1.
-local Event = Object:extend()
+local Event = GameObject:extend()
 Event.modes={
     oneFrameOnce=0,
     oneFrameMultiple=1

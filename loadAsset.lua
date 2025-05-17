@@ -1,11 +1,16 @@
+local Asset={}
 ---@alias color string
 ---@class spriteData
----@field size number sprite size in pixels
+---@field size number|nil if size is defined, sizeX and sizeY will be set to this value
+---@field sizeX number sprite size in pixels
+---@field sizeY number
+---@field centerX number (hitbox) center x of the sprite. defaulted to sizeX/2
+---@field centerY number center y of the sprite
 ---@field hitRadius number?
 ---@field color color?
 ---@field key string key in Asset.bulletSprites like "round"
 ---@field isLaser boolean? if the sprite is laser (needs different drawing method) 
----@field isGif boolean? if the sprite is gif (circle.lua will copy table, randomize initial frame and call update for it)
+---@field isGIF boolean? if the sprite is gif (circle.lua will copy table, randomize initial frame and call update for it)
 ---@field possibleColors color[]?
 
 ---@class love.Quad
@@ -14,32 +19,42 @@
 ---@field quad love.Quad when drawing, use like love.graphics.draw(sprite.quad, ...)
 ---@field data spriteData
 local Sprite=Object:extend()
+Asset.Sprite=Sprite
 
+---@param quad love.Quad
+---@param data spriteData
 function Sprite:new(quad,data)
+    data.sizeX=data.size or data.sizeX
+    data.sizeY=data.size or data.sizeY
+    data.centerX=data.centerX or data.sizeX/2
+    data.centerY=data.centerY or data.sizeY/2
     self.quad=quad
     self.data=data
 end
 
----@class GifSprite:Sprite
+---@class GIFSprite:Sprite
 ---@field private quads love.Quad[]
 ---@field private currentFrame number
----@field private switchPeriod number 
+---@field private frameTime number 
 ---@field private switchCountin number 
-local GifSprite=Sprite:extend()
+local GIFSprite=Sprite:extend()
+Asset.GIFSprite=GIFSprite
 
-function GifSprite:new(quads,data)
-    data.isGif=true
-    self.currentFrame=data.currentFrame or 4
-    GifSprite.super.new(self,quads[self.currentFrame],data)
+--- @param quads love.Quad[] array of quads, each quad is a frame of the gif
+--- @param data spriteData
+function GIFSprite:new(quads,data)
+    data.isGIF=true
+    self.currentFrame=data.currentFrame or 1
+    GIFSprite.super.new(self,quads[self.currentFrame],data)
     self.quads=quads
-    self.switchPeriod=data.switchPeriod or 1
+    self.frameTime=data.frameTime or 1
     self.switchCounting=0
 end
 
---- Important reason of why don't naming it update: Such object inheriting Object is removed in G.removeAll which calls Object:removeAll when entering or exiting level, so Object.updateAll won't find this object and won't call it automatically. To avoid confusion, we name it countDown instead of update. It's called in circle.lua.
-function GifSprite:countDown()
+--- Important reason of why don't naming it update: Such object inheriting Object is removed in G.removeAll which calls Object:removeAll when entering or exiting level (remove an object only removes it from Class.objects. :remove is not a garbage collector lol so the object is still usable), so Object.updateAll won't find this object and won't call it automatically. To avoid confusion, we name it countDown instead of update. It's called in circle.lua.
+function GIFSprite:countDown()
     self.switchCounting=self.switchCounting+1
-    if self.switchCounting>=self.switchPeriod then
+    if self.switchCounting>=self.frameTime then
         self.switchCounting=0
         self.currentFrame=self.currentFrame%#self.quads+1
         self.quad=self.quads[self.currentFrame]
@@ -47,158 +62,20 @@ function GifSprite:countDown()
 end
 
 local randomSeed=0
-function GifSprite:randomizeCurrentFrame()
+function GIFSprite:randomizeCurrentFrame()
     self.currentFrame=math.ceil(math.pseudoRandom(randomSeed)*#self.quads)
     randomSeed=(randomSeed+1)%99999
     self.quad=self.quads[self.currentFrame]
 end
 
 
-local Asset={}
 local bulletImage = love.graphics.newImage( "assets/bullets.png" )
 Asset.bulletImage=bulletImage
 bulletImage:setFilter("nearest", "linear") -- this "linear filter" removes some artifacts if we were to scale the tiles
 
-local tileSize = 8
-local function quad(x,y,width,height)
-    local ret= love.graphics.newQuad(x*tileSize+5,y*tileSize+6,width*tileSize,height*tileSize,bulletImage:getWidth(),bulletImage:getHeight())
-    return ret
-end
-local template={
-    gray=...,red=...,purple=...,blue=...,cyan=...,green=...,yellow=...,orange=...,
-}
-Asset.playerFocus=quad(34,2,8,8)
-local shockwaveData={size=64}
-Asset.shockwave={
-    red     =Sprite(quad(50,2,8,8), shockwaveData),
-    blue    =Sprite(quad(58,2,8,8), shockwaveData),
-    yellow  =Sprite(quad(34,10,8,8), shockwaveData),
-    green   =Sprite(quad(42,10,8,8), shockwaveData),
-}
-local miscData={size=32,hitRadius=6}
-Asset.misc={
-    leaf            =Sprite(quad(34,28,4,4),miscData),
-    leafRed         =Sprite(quad(38,28,4,4),miscData),
-    smallShockwave  =Sprite(quad(42,28,4,4),miscData),
-    vortex          =Sprite(quad(46,28,4,4),miscData),
-    furBall         =Sprite(quad(50,28,4,4),miscData),
-}
-local shardsData={size=8}
-Asset.shards={
-    leaf =Sprite(quad(63.625,49.25,1,1),shardsData),
-    drop =Sprite(quad(64.625,49.25,1,1),shardsData),
-    round=Sprite(quad(65.625,49.25,1,1),shardsData),
-    dot  =Sprite(quad(66.625,49.25,1,1),shardsData),
-}
-local nukeData={size=256,hitRadius=96}
-Asset.nuke=Sprite(love.graphics.newQuad(306,547,256,256,bulletImage:getWidth(),bulletImage:getHeight()),nukeData)
-Asset.bulletSprites={
-    nuke=Asset.nuke,
-    laser=template,
-    scale=template,
-    rim=template,
-    round=template,
-    rice=template,
-    kunai=template,
-    crystal=template,
-    bill=template,
-    bullet=template,
-    blackrice=template,
-    star=template,
-    darkdot=template,
-    dot=template,
-    bigStar=template,
-    bigRound=template,
-    butterfly=template,
-    knife=template,
-    ellipse=template,
-    fog=template,
-    heart=template,
-    flame={red=...,blue=...,},
-    giant={
-        red=...,blue=...,green=...,yellow=...,
-    },
-    hollow={
-        grey=...,red=...,blue=...,green=...,yellow=...,
-    }
-}
----@type spriteData[]
-Asset.SpriteData={
-}
-Asset.SpriteData[Asset.nuke]=nukeData
-for k,wave in pairs(Asset.shockwave) do
-    Asset.SpriteData[wave]=shockwaveData
-end
-for k,misc in pairs(Asset.misc) do
-    Asset.SpriteData[misc]=miscData
-end
-for k,shard in pairs(Asset.shards) do
-    Asset.SpriteData[shard]=shardsData
-end
-local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14,hollow=2.4,flame=6}
-local function loadBulletSprites(types,colors,size,positionFunc)
-    local gap=size/tileSize
-    for i, value in ipairs(types) do
-        Asset.bulletSprites[value]={}
-        for j,color in ipairs(colors) do
-            local spriteData={size=size,hitRadius=hitRadius[value],color=color,key=value,isLaser=value=='laser',possibleColors=colors}
-            local x,y=positionFunc(j,i)
-            Asset.bulletSprites[value][color]=Sprite(quad(x,y,gap,gap),spriteData)
-            Asset.SpriteData[Asset.bulletSprites[value][color]]=spriteData
-        end
-    end
-end
-local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
-Asset.colors=colors
-local types={'laser','scale','rim','round','rice','kunai','crystal','bill','bullet','blackrice','star'}
-loadBulletSprites(types,colors,16,function(j,i)
-    return 4*j-4,2*i-2
-end)
-types={'darkdot','dot'}
-loadBulletSprites(types,colors,8,function(j,i)
-    return 2*((j-1)%4),18+6*i+(j>4 and 1 or 0)
-end)
-types={'bigStar','bigRound','butterfly','knife','ellipse','fog',}
-loadBulletSprites(types,colors,32,function(j,i)
-    return 4*j-4,29+4*i+0.5
-end)
-types={'heart'}
-loadBulletSprites(types,colors,32,function(j,i)
-    return 30+4*j,29+4*i+0.5
-end)
-types={'giant'}
-local colors2={'red','blue','green','yellow'}
-loadBulletSprites(types,colors2,64,function(j,i)
-    return 8*j-8,49+8*i+0.5
-end)
-types={'hollow'}
-colors2={'grey','red','blue','green','yellow'}
-loadBulletSprites(types,colors2,16,function(j,i)
-    return 2*j+16,28+2*i
-end)
-
--- load gif (switch subsprite every frame) bullet sprites
-types={'flame'}
-colors2={'red','blue'}
-local size=32
-local frameCount=4
-local positionFunc=function(j,i,t)
-    return 30+4*t,14+4*j
-end
-for i, value in ipairs(types) do
-    Asset.bulletSprites[value]={}
-    for j,color in ipairs(colors2) do
-        local spriteData={size=size,hitRadius=hitRadius[value],color=color,key=value,laser=value=='laser',possibleColors=colors2,switchPeriod=10}
-        local quads={}
-        for t=1,frameCount do
-            local x,y=positionFunc(j,i,t)
-            quads[t]=quad(x,y,size/tileSize,size/tileSize)
-        end
-        Asset.bulletSprites[value][color]=GifSprite(quads,spriteData)
-        Asset.SpriteData[Asset.bulletSprites[value][color]]=spriteData
-    end
-end
-
+local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14,hollow=2.4,flame=6,orb=6,moon=60}
+Asset.hitRadius=hitRadius
+loadfile('loadBulletSprites.lua')(Asset)
 
 local bgImage = love.graphics.newImage( "assets/bg.png" )
 Asset.backgroundImage=bgImage

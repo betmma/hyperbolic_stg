@@ -71,7 +71,7 @@ return {
                             if cir.safe then
                                 cir.safe=false
                                 cir.spriteTransparency=1
-                                cir.sprite=BulletSprites.rice[SpriteData[cir.sprite].color]
+                                cir.sprite=BulletSprites.rice[cir.sprite.data.color]
                                 -- cir.speed=80
                             end
                             reflectionCount=reflectionCount+1

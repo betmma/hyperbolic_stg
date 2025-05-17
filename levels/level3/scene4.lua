@@ -22,7 +22,7 @@ return {
         G.viewMode.object=player
         local b=BulletSpawner{x=400,y=300,period=10,frame=0,lifeFrame=6001,bulletNumber=72,bulletSpeed=60,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.rice.red,bulletEvents={
             function(cir)
-                local color=SpriteData[cir.sprite].color
+                local color=cir.sprite.data.color
                 Event.DelayEvent{
                     obj=cir,
                     delayFrame=30+10*(1-en.hp/en.maxhp),

@@ -156,7 +156,7 @@ local upgradesData = {
                     local vortex=Effect.Shockwave{x=nx,y=ny,radius=2,canRemove={bullet=true,invincible=false,safe=false},animationFrame=1}
                     vortex.scale=2
                     vortex.direction=theta*5
-                    vortex.sprite=Asset.misc.vortex
+                    vortex.sprite=Asset.bulletSprites.orb.red
                 end
             }
         end,

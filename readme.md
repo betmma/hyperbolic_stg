@@ -22,16 +22,17 @@ Completed scenes display as green and give 10 XP each.
 Perfectly completed (without being harmed) scenes display as golden and give 12 XP each.
 
 ##### Todo:
-1. ~~Win / Lose level logic (bind to death of an enemy / death of player)~~
-2. ~~Hit effect (like remove a range of bullets and fancy remove effect)~~
-3. ~~Save~~
-4. ~~Background (hyperbolic patterns)~~
-5. ~~Fog effect when generating bullet~~
-6. ~~Graze effect~~
-7. ~~Music~~
-8. ~~SFX~~
-9. ~~Upgrade system~~
-10. ~~Replay system~~
+1. use shader to draw hyperbolic polygon in background. i suppose this will hugely improve efficiency
+
+
+### Acknowledgements
+
+#### Graphics
+
+Bullet sprites and Reimu sprites used in this project were shared on Discord by **Seija.Real/TryantSatanachia**. Thank you for making them available! <3
+(I rearranged some sprites and drew additional sprites directly onto it)
+
+#### Audio
 
 Music is made by myself.
-SFX are from th6 and bullet sprites are from th11.
+SFX are from th6.

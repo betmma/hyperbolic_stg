@@ -9,7 +9,7 @@ return {
         local player=Player{x=400,y=600}
         local moveFunc=function(cir,args,self)
             local color2ratio={green=0.3,blue=0.5,purple=0.8,red=1}
-            local color=SpriteData[cir.sprite].color
+            local color=cir.sprite.data.color
             local moveRatio=color2ratio[color]
             local ratio=(cir.args.index/self.bulletNumber)
             if color=='purple'or color=='red'then

@@ -1,5 +1,4 @@
-local Object=require 'classic'
-local BackgroundPattern=Object:extend()
+local BackgroundPattern=GameObject:extend()
 
 -- BackgroundPattern is an abstract class that needs implementation of:
 -- 1. new(args): initialize the background pattern.
