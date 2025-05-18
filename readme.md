@@ -12,6 +12,11 @@ Escape to pause.
 Arrow keys to move between options.
 Z to choose an option.
 Escape/X to go back.
+###### In Choose Level Menu:
+1-9 (above qwerty) to choose that level.
+numpad 1-9 to choose that scene in current level.
+###### In Load Replay Menu:
+enter two digits (you can use both set of number keys) to choose that replay number.
 ##### In Replay:
 LShift to slow down by 0.5x.
 LCtrl to speed up by 1x.
