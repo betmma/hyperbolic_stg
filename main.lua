@@ -1,4 +1,4 @@
-VERSION="0.4.4.1"
+VERSION="0.4.5"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -9,8 +9,7 @@ require'misc'
 
 local input = require "input"
 function love.load()
-    Object = require "classic"
-    GameObject = Object.GameObject
+    Object,GameObject = unpack(require "classic")
     Shape = require "shape"
     require "shapeFunctions"
     Circle = require "circle"
@@ -30,6 +29,7 @@ function love.load()
     BGM:play('title')
     ScreenshotManager=require"screenshotManager"
     ReplayManager=require"replayManager"
+    Complex,Mobius=unpack(require"mobius")
 end
 function love.keypressed(key, scancode, isrepeat)
     input.keypressed(key, scancode, isrepeat)

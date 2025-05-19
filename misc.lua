@@ -279,17 +279,23 @@ function DirectionName2Dxy(direction)
     error('Invalid direction: '..tostring(direction))
 end
 
-function TableToString(t)
+function pprint(t)
+    if type(t) ~= "table" then
+        return tostring(t)
+    end
     local result = "{"
     for k, v in pairs(t) do
         if type(k) == "string" then
             result = result .. k .. ": "
         end
         if type(v) == "table" then
-            result = result .. TableToString(v) .. ", "
+            result = result .. pprint(v) .. ", "
         else
             result = result .. tostring(v) .. ", "
         end
+    end
+    if result:len()==1 then
+        return "{}"
     end
     result = result:sub(1, -3) -- Remove the last comma and space
     return result .. "}"

@@ -196,5 +196,4 @@ function GameObject:drawShaderAll()
   end
 end
 
-Object.GameObject=GameObject
-return Object
+return {Object,GameObject}

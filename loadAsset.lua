@@ -167,6 +167,15 @@ Asset.flushBatches=function(self)
 end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
+        -- use hyperbolicRotateShader from playerBulletBatch to effectBatch. Note that some levels have their own shader, levels need to set G.UseHypRotShader to false to prevent being overridden
+        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.playerBulletBatch and G.UseHypRotShader then
+            love.graphics.setShader(G.hyperbolicRotateShader)
+            local object=G.viewMode.object
+            G.hyperbolicRotateShader:send("player_pos", {object.x, object.y})
+            G.hyperbolicRotateShader:send("rotation_angle",-object.naturalDirection)
+            G.hyperbolicRotateShader:send("shape_axis_y", Shape.axisY)
+            -- G.hyperbolicRotateShader:send("shape_curvature", Shape.curvature)
+        end
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.push()
             love.graphics.origin()
@@ -182,6 +191,9 @@ Asset.drawBatches=function(self)
             love.graphics.draw(batch)
         end
         love.graphics.setBlendMode('alpha') -- default mode
+        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.effectBatch and G.UseHypRotShader then
+            love.graphics.setShader()
+        end
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.pop()
         end

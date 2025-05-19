@@ -18,10 +18,10 @@ function Larger:new(args)
     ---@type Sprite
     self.sprite=args.sprite
     if not self.sprite then
-        error('Larger.new: self.sprite is nil. args='..TableToString(args))
+        error('Larger.new: self.sprite is nil. args='..pprint(args))
     end
     if not self.sprite.data then
-        error('Larger.new: self.sprite.data is nil. sprite='..TableToString(self.sprite))
+        error('Larger.new: self.sprite.data is nil. sprite='..pprint(self.sprite))
     end
     self.radius = args.radius or 1
     self.growSpeed=args.growSpeed or 1.2

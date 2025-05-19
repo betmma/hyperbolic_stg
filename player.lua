@@ -80,7 +80,7 @@ function Player:new(args)
     self.centerX=400
     self.radius = 0.5
     self.drawRadius=0.5
-    -- orientation determines extra rotation of player sprite and focus sprite. since player sprite faces up, orientation is normally 0. It's not 0 in some cases, like when calculating mirrored player sprite.
+    -- orientation determines extra rotation of player sprite and focus sprite. since player sprite faces up, orientation is normally 0. It's not 0 in rare cases, like when calculating mirrored player sprite in 7-4.
     self.orientation=0
     local minx=150
     local maxx=650
@@ -227,10 +227,10 @@ function Player:update(dt)
         self.direction=Shape.to(xref,yref,self.x,self.y)
         local dtheta=-moveDistance/self:getMoveRadius()
         -- rightDir=rightDir-moveDistance/self.moveRadius
-        self.naturalDirection=self.naturalDirection+dtheta
+        self.naturalDirection=(self.naturalDirection+dtheta)%(math.pi*2)
         -- self:testRotate(self.naturalDirection)
-        
     end
+
 
     self:calculateMovingTransitionSprite()
     self:calculateFocusPointTransparency()
@@ -289,9 +289,11 @@ function Player:calculateFocusPointTransparency()
     end
 end
 
+-- hyperbolic rotate all points by angle around player (actually change coordinates, not a visual effect, so it must be reverted later)
+-- restoring value is quicker and more accurate than calling (-angle)
+-- G.hyperbolicRotateShader can be used to rotate quad vertices, so player:testRotate doesn't need to loop through circle, laser (and anything with sprite). shader cannot be used on nonsprites (like polyline) and i don't know why. upon test, when followModeTransform is identity matrix nonsprites works correctly, from there i can't make further progress on debugging. moreover for nonsprites draw i set different line width based on y, and when using shader this cannot be properly done. but whatever nonsprites are of small number (and expected to be replaced eventually) so it won't be a big problem on efficiency. main reason on not recommending shader is glsl only uses float so precision problem will cause frequent flickering sprites, and the improvement seems around 10%. (see rep42-103.00-100.00s-noshader.txt and rep42-103.00-100.00s-withshader.txt)
+-- change shader implementation to mobius transform eliminates flickering and seems faster.
 function Player:testRotate(angle,restore)
-    -- hyperbolic rotate all points by angle around player (actually change coordinates, not a visual effect, so it must be reverted later)
-    -- restoring value is quicker and more accurate than calling (-angle)
     ---@param v table the object to be rotated. It must have x, y and direction (optional) attributes.
     ---@param canOmit boolean? if true, the object will not be rotated if the distance between player and object is greater than 200. This is to avoid unnecessary calculation for objects that are far away from player to increase efficiency.
     local function rotate(v,canOmit)
@@ -307,18 +309,40 @@ function Player:testRotate(angle,restore)
             v.direction=v.direction+thetaRev2-thetaRev -- not using +angle is because the uninterchangeability of direction at both point of a straight line (in hyperbolic plane).
         end
     end
+    --[[
+    (T(z)-p)/(T(z)-q)=re^(iθ)(z-p)/(z-q)
+    for this rotation, p is self.x+i*self.y, q is self.x+i*(2*Shape.axisY-self.y), re^(iθ) is cos(angle)+i*sin(angle)
+    reference: https://math.libretexts.org/Bookshelves/Geometry/Geometry_with_an_Introduction_to_Cosmic_Topology_(Hitchman)/03%3A_Transformations/3.05%3A_Mobius_Transformations%3A_A_Closer_Look
+    ]]
+    
+    -- local S=Mobius(1,Complex(-self.x,-self.y),1,Complex(-self.x,self.y-2*Shape.axisY))
+    -- local U=Mobius(Complex(math.cos(angle),math.sin(angle)),0,0,1)
+    -- local Sinv=S:inverse()
+    -- local T=Sinv:compose(U):compose(S)
+    -- local function rotate(v)
+    --     v.testRotateRef={v.x,v.y,v.direction}
+    --     local z=Complex(v.x,v.y)
+    --     local z2=T:apply(z)
+    --     v.x,v.y=z2.re,z2.im -- can't deal with direction change
+    -- end
     if restore then
         rotate=function(v)
             v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
         end
     end
-    local list={Circle,BulletSpawner,Enemy,Laser} -- due to different implementation, PolyLine has to be handled separately. not ideal
+    local list={BulletSpawner,Enemy,Circle,Laser} -- due to different implementation, PolyLine has to be handled separately. not ideal
+    if G.UseHypRotShader then
+        list={BulletSpawner,Enemy} -- sprites don't need to be rotated
+    end
     for k,cls in pairs(list)do
         for k2,obj in pairs(cls.objects)do
             rotate(obj)--,true -- this doesn't seem speed things
         end
     end
     local unomitableList={Laser.LaserUnit,Effect.Larger,Effect.Shockwave} -- Laser can be very long so shouldn't omit rotation
+    if G.UseHypRotShader then
+        unomitableList={} -- sprites don't need to be rotated
+    end
     for k,cls in pairs(unomitableList)do
         for k2,obj in pairs(cls.objects)do
             rotate(obj)

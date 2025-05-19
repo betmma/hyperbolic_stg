@@ -1,8 +1,9 @@
 return {
     ID=78,
     user='mystia',
-    spellName='?',
+    spellName='Night-Blindness "Bioluminescent Night"',
     make=function()
+        G.UseHypRotShader=false
         G.levelRemainingFrame=7200
         G.backgroundPattern:remove()
         G.backgroundPattern=BackgroundPattern.Empty()

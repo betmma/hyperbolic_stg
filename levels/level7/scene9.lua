@@ -1,8 +1,9 @@
 return {
     ID=79,
     user='mystia',
-    spellName='?',
+    spellName='Night Sparrow "Staccato Melody"',
     make=function()
+        G.UseHypRotShader=false
         G.levelRemainingFrame=7200
         G.backgroundPattern:remove()
         G.backgroundPattern=BackgroundPattern.Empty()

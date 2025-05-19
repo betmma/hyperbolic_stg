@@ -136,7 +136,15 @@ return {
             ubame = {
                 en_us = 'Ubame Chirizuka',
                 zh_cn = '尘塚姥芽',
-            }
+            },
+            chimi = {
+                en_us = 'Chimi Houjuu',
+                zh_cn = '封兽魑魅',
+            },
+            nareko = {
+                en_us = 'Nareko Michigami',
+                zh_cn = '道神驯子',
+            },
         },
         spellcards = {
             -- level 1
@@ -192,8 +200,8 @@ return {
             },
             [16] = {
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'These manacles are not even a closed loop, how could that can\'t be taken off?',
+                    zh_cn = '这些铐子甚至不是一个封闭的环，怎么会不能脱掉？',
                 },
                 spellName = {
                     en_us = 'Manacles Sign "Manacles a Criminal Can\'t Take Off"',
@@ -233,8 +241,8 @@ return {
             },
             [24] = {
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'Running around and casting freezing magic, she is playfully teasing me.',
+                    zh_cn = '到处跑着施放冰冻魔法，和做游戏一样。',
                 },
                 spellName = {
                     en_us = 'Freeze Sign "Rime Ice"',
@@ -462,8 +470,8 @@ return {
                     zh_cn = '风神「天狗疾风」',
                 },
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'Looks like wind is pushing me and her bullets, but actually it\'s she moving with the border.',
+                    zh_cn = '看起来是风在推动我和她的子弹，但实际上是她在和边界一起移动。',
                 },
             },
             [55] = {
@@ -478,12 +486,12 @@ return {
             },
             [56] = {
                 spellName = {
-                    en_us = '??',
-                    zh_cn = '??',
+                    en_us = 'Hell Sign "Exotic Meteor"',
+                    zh_cn = '狱符「异域流星」',
                 },
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'Earth would be destroyed if these meteors are real.',
+                    zh_cn = '如果这些流星是真的，地球就会被毁灭的。',
                 },
             },
             [57] = {
@@ -693,7 +701,7 @@ return {
             },
             [82] = {
                 spellName = {
-                    en_us = 'Secret Ceremony "the Ninefold Heaven Gates"',
+                    en_us = 'Secret Ceremony "The Ninefold Heaven Gates"',
                     zh_cn = '秘仪「阊阖九重天门」',
                 },
                 quote = {

@@ -5,4 +5,7 @@ unusedCode.lua
 profi.lua
 assets/bgm/title_.mp3
 assets/old/*
+shaders/hyperbolicRotate.glsl
 *.txt
+profi
+*sceneTest.lua

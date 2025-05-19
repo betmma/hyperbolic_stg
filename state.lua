@@ -712,6 +712,7 @@ G={
                 self.levelRemainingFrame=nil
                 self.levelRemainingFrameMax=nil
                 self.levelIsTimeoutSpellcard=false
+                self.useHypRotShader=true
                 self.foregroundTransparency=1
                 LevelData[level][scene].make()
                 self.levelRemainingFrame=self.levelRemainingFrame or 3600
@@ -721,6 +722,9 @@ G={
                 end
             end,
             update=function(self,dt)
+                if isPressed('v') then
+                    G.UseHypRotShader=not G.UseHypRotShader
+                end
                 self.backgroundPattern:update(dt)
                 GameObject:updateAll(dt)
                 if isPressed('escape') then
@@ -1441,6 +1445,7 @@ G.update=function(self,dt)
     self.save.playTimeTable.playTimeOverall=self.save.playTimeTable.playTimeOverall+dt
 
 end
+G.hyperbolicRotateShader=love.graphics.newShader("shaders/hyperbolicRotateM.glsl")
 G.draw=function(self)
     self.currentUI=self.UIDEF[self.STATE]
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
@@ -1450,18 +1455,18 @@ G.draw=function(self)
         if not G.viewMode.object then
             G.viewMode.object=Player.objects[1]
         end
+        local object=G.viewMode.object
         if self.backgroundPattern.noZoom then
             self.backgroundPattern:draw()
         end
         love.graphics.push()
         self:followModeTransform()
-        if G.viewMode.object.moveMode==Player.moveModes.Natural then
-            G.viewMode.object:testRotate(-G.viewMode.object.naturalDirection) -- rotate all objects to make player face up. Note that due to love2d limitation, it *changes* objects' coordinates to achieve hyperbolic rotation.
+        if object.moveMode==Player.moveModes.Natural then
+            object:testRotate(-object.naturalDirection) -- rotate non-sprite objects to make player face up. Note that due to love2d limitation, it *changes* objects' coordinates to achieve hyperbolic rotation. sprite objects are rotated by hyperbolicRotateShader.
         end
         self:_drawBatches()
-        if G.viewMode.object.moveMode==Player.moveModes.Natural then
-            G.viewMode.object:testRotate(0,true) -- "true" means restore objects' coordinates
-        end
+        love.graphics.setShader()
+        object:testRotate(0,true) -- "true" means restore objects' coordinates
         love.graphics.pop()
         self.currentUI.drawText(self)
     end

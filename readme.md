@@ -8,6 +8,7 @@ Arrow keys to move.
 Shift to focus (move slower).
 Z to shoot.
 Escape to pause.
+W/R to restart current scene.
 ##### In Menu:
 Arrow keys to move between options.
 Z to choose an option.
@@ -16,11 +17,14 @@ Escape/X to go back.
 1-9 (above qwerty) to choose that level.
 numpad 1-9 to choose that scene in current level.
 ###### In Load Replay Menu:
-enter two digits (you can use both set of number keys) to choose that replay number.
+Enter two digits (you can use both set of number keys) to choose that replay number.
 ##### In Replay:
 LShift to slow down by 0.5x.
 LCtrl to speed up by 1x.
 LAlt to speed up by 2x.
+
+##### Dev Controls
+In level: Q to switch following view or fixed view. V to switch using shader or testRotate to calculate sprites' hyperbolic rotation. (defaulted to shader and more efficient)
 
 #### Misc:
 Player gains 1 second of invincible time when hit by bullet.
@@ -29,7 +33,7 @@ Perfectly completed (without being harmed) scenes display as golden and give 12 
 
 ##### Todo:
 1. Use shader to draw hyperbolic polygon in background.
-2. Use shader to perform Player:testRotate (hyperbolic rotate).
+2. ~~Use shader to perform Player:testRotate (hyperbolic rotate)~~.
 (I suppose these two will hugely improve efficiency)
 
 
