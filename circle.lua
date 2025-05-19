@@ -37,7 +37,7 @@ function Circle:new(args)
     self.spriteExtraDirection=0
     self.spriteRotationSpeed=0 -- used for nuke bullet
 
-    if self.sprite==Asset.nuke then
+    if self.sprite==BulletSprites.nuke then
         self.invincible=true
         self.batch=Asset.bulletHighlightBatch
         self.spriteRotationSpeed=0.01

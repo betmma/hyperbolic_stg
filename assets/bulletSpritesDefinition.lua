@@ -128,12 +128,16 @@ single{
     baseX=16*24+32*12+128,baseY=64*12,
 }:addToAsset()
 single{
+    sizeX=256,sizeY=256,name='nuke',
+    baseX=1280,baseY=768,
+}:addToAsset()
+single{
     sizeX=64,sizeY=64,name='playerFocus',
     baseX=0,baseY=496,
 }:addToAsset()
 
 -- some old names mapping
 Asset.shards={dot=Asset.bulletSprites.dot.white,round=Asset.bulletSprites.fog.white}
-Asset.bulletSprites.nuke=Asset.bulletSprites.moon
+-- Asset.bulletSprites.nuke=Asset.bulletSprites.moon
 
 -- still need: nuke, vortex. shockwave and misc.smallShockwave should be remapped to shockwave
