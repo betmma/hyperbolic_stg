@@ -1,4 +1,4 @@
-VERSION="0.4.5.2"
+VERSION="0.4.5.3"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -22,6 +22,7 @@ function love.load()
     Audio=require"audio"
     SFX=Audio.sfx;BGM=Audio.bgm
     Effect=require"effect"
+    ---@type AssetBulletSpritesCollection
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     Player = require "player"
     LevelData = require "levelData"

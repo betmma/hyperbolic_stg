@@ -689,6 +689,7 @@ return {
                     zh_cn = '一种音乐般的夜盲症。走走停停，或者有时冲进深邃的黑暗。',
                 },
             },
+            -- level 8
             [81] = {
                 spellName = {
                     en_us = 'Secret Ceremony "Dark Butoh of the Back Door"',
@@ -737,6 +738,16 @@ return {
                 quote = {
                     en_us = 'Searching here and there, found nothing but random items. What is she looking for?',
                     zh_cn = '到处寻找，找到的全是杂物。她在找什么呢？',
+                }
+            },
+            [86] = {
+                spellName = {
+                    en_us = 'Bewitching Sign "Qi of an Impenetrable Thicket"',
+                    zh_cn = '魅符「致密灌木之气」',
+                },
+                quote = {
+                    en_us = 'This thicket is almost a primary forest. Seems a environment protection yokai.',
+                    zh_cn = '这个灌木丛几乎像是原始森林了。看起来是个环境保护妖怪。',
                 }
             }
         },
