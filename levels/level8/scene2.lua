@@ -57,7 +57,7 @@ return {
                 local div2=math.ceil(index/2)
                 local rDown=15+15*div2
                 local newDir
-                cir.x,cir.y,newDir=Shape.rThetaPos(player.x,player.y,rDown,player.naturalDirection+math.pi/2)
+                cir.x,cir.y,newDir=Shape.rThetaPosT(player.x,player.y,rDown,player.naturalDirection+math.pi/2)
                 newDir=newDir+(math.pi/2)*sign*math.sign(rDown)
                 cir.direction=newDir
                 local hpLevel=en:getHPLevel()

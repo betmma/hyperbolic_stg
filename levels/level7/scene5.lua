@@ -90,7 +90,7 @@ return {
                         times=times+1
                         cir:updateMove(1/60)
                         local nx,ny=cir.x,cir.y
-                        -- local nx,ny,newDir=Shape.rThetaPos(cir.x,cir.y,1,cir.direction)
+                        -- local nx,ny,newDir=Shape.rThetaPosT(cir.x,cir.y,1,cir.direction)
                         -- cir.x=nx
                         -- cir.y=ny
                         -- cir.direction=newDir
@@ -129,7 +129,7 @@ return {
             local distance=Shape.distance(from.x,from.y,to.x,to.y)
             local dir=Shape.to(from.x,from.y,to.x,to.y)
             for i=0,distance,gap do
-                local nx,ny,newTheta=Shape.rThetaPos(from.x,from.y,i,dir)
+                local nx,ny,newTheta=Shape.rThetaPosT(from.x,from.y,i,dir)
                 local cir=Circle{x=nx,y=ny,direction=newTheta+math.pi/2,speed=0,sprite=Asset.bulletSprites.bigRound.red,lifeFrame=life or 19000,radius=2.47,invincible=true}
                 if trigger then
                     Event.LoopEvent{
@@ -308,7 +308,7 @@ return {
                     BulletSpawner{x=en.x,y=en.y,period=40,frame=20,lifeFrame=50,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=19990,spawnCircleRadius=radius,bulletSize=2,spawnCircleAngle=angle or '0+999',angle=1.57,range=math.pi*2,bulletSprite=BulletSprites.giant.red,bulletEvents={
                         function(cir,args,self)
                             cir.invincible=true
-                            local reachOut={Shape.rThetaPos(cir.x,cir.y,49,Shape.to(cir.x,cir.y,en.x,en.y)+math.pi)}
+                            local reachOut={Shape.rThetaPosT(cir.x,cir.y,49,Shape.to(cir.x,cir.y,en.x,en.y)+math.pi)}
                             reachOut={x=reachOut[1],y=reachOut[2],theta=reachOut[3]}
                             if shoot then
                                 local type=math.random(1,4) -- 4 types of sentries

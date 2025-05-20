@@ -40,7 +40,7 @@ return {
                 rDown=rDown+10*(adding and 1 or -1)
                 cir.speed=cir.speed-rDown*1.5
                 local newDir
-                cir.x,cir.y,newDir=Shape.rThetaPos(player.x,player.y,rDown,player.naturalDirection+math.pi/2)
+                cir.x,cir.y,newDir=Shape.rThetaPosT(player.x,player.y,rDown,player.naturalDirection+math.pi/2)
                 newDir=newDir+math.pi/2*sign
                 cir.direction=newDir
                 local spreadRatio=enemyToAimDistance/10+1

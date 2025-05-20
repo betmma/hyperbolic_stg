@@ -292,7 +292,7 @@ end
 -- hyperbolic rotate all points by angle around player (actually change coordinates, not a visual effect, so it must be reverted later)
 -- restoring value is quicker and more accurate than calling (-angle)
 -- G.hyperbolicRotateShader can be used to rotate quad vertices, so player:testRotate doesn't need to loop through circle, laser (and anything with sprite). shader cannot be used on nonsprites (like polyline) and i don't know why. upon test, when followModeTransform is identity matrix nonsprites works correctly, from there i can't make further progress on debugging. moreover for nonsprites draw i set different line width based on y, and when using shader this cannot be properly done. but whatever nonsprites are of small number (and expected to be replaced eventually) so it won't be a big problem on efficiency. main reason on not recommending shader is glsl only uses float so precision problem will cause frequent flickering sprites, and the improvement seems around 10%. (see rep42-103.00-100.00s-noshader.txt and rep42-103.00-100.00s-withshader.txt)
--- change shader implementation to mobius transform eliminates flickering and seems faster.
+-- change shader implementation to mobius transform eliminates flickering and seems faster.  mobius transform can't directly calculate direction change so can't be used in player:testRotate (in shader a quad's four vertices after transformation automatically changes direction, though with little shear)
 function Player:testRotate(angle,restore)
     ---@param v table the object to be rotated. It must have x, y and direction (optional) attributes.
     ---@param canOmit boolean? if true, the object will not be rotated if the distance between player and object is greater than 200. This is to avoid unnecessary calculation for objects that are far away from player to increase efficiency.
@@ -323,7 +323,7 @@ function Player:testRotate(angle,restore)
     --     v.testRotateRef={v.x,v.y,v.direction}
     --     local z=Complex(v.x,v.y)
     --     local z2=T:apply(z)
-    --     v.x,v.y=z2.re,z2.im -- can't deal with direction change
+    --     v.x,v.y=z2.re,z2.im
     -- end
     if restore then
         rotate=function(v)
