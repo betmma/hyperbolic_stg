@@ -749,7 +749,17 @@ return {
                     en_us = 'This thicket is almost a primary forest. Seems a environment protection yokai.',
                     zh_cn = '这个灌木丛几乎像是原始森林了。看起来是个环境保护妖怪。',
                 }
-            }
+            },
+            [87] = {
+                spellName = {
+                    en_us = 'Mountain Spirit Sign "Qi of a Drainage Divide"',
+                    zh_cn = '魑符「分水山岭之气」',
+                },
+                quote = {
+                    en_us = 'How the water flows in opposite directions on both sides of the watershed?',
+                    zh_cn = '分水岭两侧的水流为什么是相反方向的？',
+                }
+            },
         },
     },
     ui = {

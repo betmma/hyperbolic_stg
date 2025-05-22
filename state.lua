@@ -635,7 +635,7 @@ G={
                 love.graphics.rectangle("line",100,100+scene*40,200,40)
 
                 love.graphics.translate(leftOffset+rightOffset,0) -- right part begins
-                -- add smooth transition when switching scenes or levels (setting the transparency of screenshot and qupte)
+                -- add smooth transition when switching scenes or levels (setting the transparency of screenshot and quote)
                 local transparency=G.UIDEF.CHOOSE_LEVELS.transparency or 1
                 love.graphics.setColor(color[1],color[2],color[3],transparency)
 

@@ -39,8 +39,8 @@ function Event:update(dt)
     local first=true
     while first==true or self.mode==Event.modes.oneFrameMultiple do
         first=false
-        local ret
-        if self:conditionFunc(dt) and self.executedTimes<self.times then
+        local condition=self:conditionFunc(dt)
+        if condition and self.executedTimes<self.times then
             self:executeFunc(self.executedTimes,self.times)
             self.executedTimes=self.executedTimes+1
         end
@@ -48,6 +48,9 @@ function Event:update(dt)
             -- print(self.frame,self.obj.frame)
             self:remove()
             return
+        end
+        if not condition then
+            break
         end
     end
     -- self.time=self.time+dt
