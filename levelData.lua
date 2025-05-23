@@ -135,7 +135,7 @@ local function loadLevel(levelStr,sceneStr)
     return levelData
 end
 
-
+---@return LevelData[]
 local function loadLevels(levelStr,sceneStrList)
     local levels={}
     for i,sceneStr in ipairs(sceneStrList) do
@@ -168,6 +168,7 @@ local levelData={
     loadLevels(8,{'1','2','3','4','5','6','7'}),
 }
 
+---@type {id:{level:number,scene:number}}
 local ID2LevelScene={}
 for i,level in ipairs(levelData) do
     for j,scene in ipairs(level) do

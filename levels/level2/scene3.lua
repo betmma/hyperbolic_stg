@@ -97,7 +97,7 @@ return {
     end,
     leave=function()
         if G.levelRemainingFrame<=0 then
-            G.save.levelData[2].extraUnlock=true
+            G.save.extraUnlock[2]=true
         end
     end
 }

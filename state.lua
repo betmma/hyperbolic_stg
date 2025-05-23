@@ -367,14 +367,12 @@ G={
             end,
             calculateRestXP=function(self)
                 local xp=0
-                for k,value in ipairs(self.save.levelData) do
-                    for i=1,#value do
-                        local pass=self.save.levelData[k][i].passed
-                        if pass==1 then
-                            xp=xp+10
-                        elseif pass==2 then
-                            xp=xp+12
-                        end
+                for id,value in pairs(LevelData.ID2LevelScene) do
+                    local pass=self.save.levelData[id].passed
+                    if pass==1 then
+                        xp=xp+10
+                    elseif pass==2 then
+                        xp=xp+12
                     end
                 end
                 local options=self.currentUI.options
@@ -546,6 +544,7 @@ G={
                 local scene=self.currentUI.chosenScene
                 local levelNum=#LevelData
                 local sceneNum=#LevelData[level]
+                local levelID=LevelData[level][scene].ID
                 local passedSceneCount=self:countPassedSceneNum()
                 for i=1,levelNum do
                     if passedSceneCount<LevelData.needPass[i] then
@@ -582,10 +581,10 @@ G={
                     self:switchState(self.STATES.MAIN_MENU)
                 elseif isPressed('[') then
                     SFX:play('select')
-                    self.save.levelData[level][scene].passed=math.max(self.save.levelData[level][scene].passed-1,0)
+                    self.save.levelData[levelID].passed=math.max(self.save.levelData[levelID].passed-1,0)
                 elseif isPressed(']') then
                     SFX:play('select')
-                    self.save.levelData[level][scene].passed=math.min(self.save.levelData[level][scene].passed+1,2)
+                    self.save.levelData[levelID].passed=math.min(self.save.levelData[levelID].passed+1,2)
                 end
                 local digits={'1','2','3','4','5','6','7','8','9'}
                 for i=1,#digits do
@@ -609,6 +608,7 @@ G={
                 -- self.updateDynamicPatternData(self.patternData)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
+                local levelID=LevelData[level][scene].ID
 
                 local color={love.graphics.getColor()}
 
@@ -622,10 +622,11 @@ G={
                 love.graphics.print(Localize{'ui','level',level=level},100,50,0,1,1)
                 SetFont(30)
                 for index, value in ipairs(LevelData[level]) do
+                    local levelID=LevelData[level][index].ID
                     love.graphics.setColor(.7,.6,.6)
-                    if self.save.levelData[level][index].passed==1 then
+                    if self.save.levelData[levelID].passed==1 then
                         love.graphics.setColor(.7,1,.7)
-                    elseif self.save.levelData[level][index].passed==2 then
+                    elseif self.save.levelData[levelID].passed==2 then
                         love.graphics.setColor(1,1,0.5)
                     end
                     love.graphics.print(level.."-"..index,100,100+index*40,0,1,1)
@@ -655,7 +656,7 @@ G={
                 -- show quote
                 love.graphics.rectangle("line",325,500,400,80)
                 local text=Localize{'levelData','defaultQuote'}--levelData.defaultQuote
-                local save=self.save.levelData[level][scene]
+                local save=self.save.levelData[levelID]
                 if save.passed>=1 then
                     text=Localize{'levelData','spellcards',LevelData[level][scene].ID,'quote'}--levelData[level][scene].quote or ''
                 end
@@ -1259,8 +1260,9 @@ G.saveData=function(self)
   	love.filesystem.write("savedata.txt", serialized)
 end
 -- an example of its structure
+---@type {levelData: {[integer]: {passed: integer, tryCount: integer, firstPass: integer, firstPerfect: integer}}, options: {master_volume: integer, music_volume: integer, sfx_volume: integer}, upgrades: {[integer]: {[integer]: {bought: boolean}}}, defaultName: string, playTimeTable: {playTimeOverall: number, playTimeInLevel: number}}
 G.save={
-    levelData={{{passed=0,tryCount=0,firstPass=0,firstPerfect=0}}},
+    levelData={[1]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}},
     options={master_volume=100,},
     upgrades={{{bought=true}}},
     defaultName='',-- the default name when saving replay
@@ -1268,6 +1270,7 @@ G.save={
         playTimeOverall=0,
         playTimeInLevel=0,
     },
+    extraUnlock={} -- secret level unlocks, format not decided
 }
 G.loadData=function(self)
 	local file = love.filesystem.read("savedata.txt")
@@ -1279,17 +1282,18 @@ G.loadData=function(self)
     if not self.save.levelData then
         self.save.levelData={}
     end
-    -- add data for each level (passed, tryCount, firstPass, firstPerfect)
-    for k,value in ipairs(LevelData) do
-        if not self.save.levelData[k] then
-            self.save.levelData[k]={}
-        end
-        for i=1,#value do
-            if not self.save.levelData[k][i] then
-                self.save.levelData[k][i]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}
-            elseif type(self.save.levelData[k][i])=='number'then --compatible with old save
-                self.save.levelData[k][i]={passed=self.save.levelData[k][i],tryCount=0,firstPass=0,firstPerfect=0}
+    -- add data for each level (ID to passed, tryCount, firstPass, firstPerfect)
+    for id,value in pairs(LevelData.ID2LevelScene) do
+        local level,scene=value.level,value.scene
+        if not self.save.levelData[id] then
+            if self.save.levelData[level] and self.save.levelData[level][scene] then -- transfer old save data
+                self.save.levelData[id]=self.save.levelData[level][scene]
+            else
+                self.save.levelData[id]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}
             end
+        end
+        if self.save.levelData[level] and self.save.levelData[level][scene] then
+            self.save.levelData[level][scene]=nil
         end
     end
     -- add options data
@@ -1347,6 +1351,10 @@ G.loadData=function(self)
         end
     end
 
+    if not self.save.extraUnlock then
+        self.save.extraUnlock={}
+    end
+
     self:saveData()
 end
 G:loadData()
@@ -1358,12 +1366,10 @@ G.language=G.save.options.language--'zh_cn'--'en_us'--
 ---@return integer "number of all scenes"
 G.countPassedSceneNum=function(self)
     local allSceneCount,passedSceneCount=0,0
-    for i,value in ipairs(LevelData)do
-        for j,level in ipairs(value)do
-            allSceneCount=allSceneCount+1
-            if self.save.levelData[i][j].passed>0 then
-                passedSceneCount=passedSceneCount+1
-            end
+    for id,value in pairs(LevelData.ID2LevelScene) do
+        allSceneCount=allSceneCount+1
+        if self.save.levelData[id].passed>0 then
+            passedSceneCount=passedSceneCount+1
         end
     end
     return passedSceneCount,allSceneCount
@@ -1378,12 +1384,14 @@ G.win=function(self)
     end
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    self.save.levelData[level][scene].passed=math.max(self.save.levelData[level][scene].passed,winLevel)
-    if self.save.levelData[level][scene].firstPass==0 then
-        self.save.levelData[level][scene].firstPass=self.save.levelData[level][scene].tryCount
+    local levelID=LevelData[level][scene].ID
+    local saveData=self.save.levelData[levelID]
+    saveData.passed=math.max(saveData.passed,winLevel)
+    if saveData.firstPass==0 then
+        saveData.firstPass=saveData.tryCount
     end
-    if self.save.levelData[level][scene].firstPerfect==0 and winLevel==2 then
-        self.save.levelData[level][scene].firstPerfect=self.save.levelData[level][scene].tryCount
+    if saveData.firstPerfect==0 and winLevel==2 then
+        saveData.firstPerfect=saveData.tryCount
     end
     self:saveData()
 end
@@ -1415,7 +1423,9 @@ end
 G._incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    self.save.levelData[level][scene].tryCount=self.save.levelData[level][scene].tryCount+1
+    local levelID=LevelData[level][scene].ID
+    local saveData=self.save.levelData[levelID]
+    saveData.tryCount=saveData.tryCount+1
     self:saveData()
 end
 G.update=function(self,dt)
