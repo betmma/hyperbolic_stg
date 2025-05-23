@@ -2,8 +2,8 @@
 ---@field ID number unique ID of this level. It's to make a map between ID and level-scene, which is used to look up replay level-scene and localizations. Will raise an error if not assigned or not unique.
 -- (further elaboration: the relationship between level-scene and ID is calculated after loading all levels in the definition of levelData below)
 ---@field user string the character of this scene. Is used to look up name in localization file.
----@field make fun():nil
----@field leave fun():nil | nil do things when leaving the level.
+---@field make fun():nil core of level
+---@field leave fun():nil | nil do things when leaving the level, like recover modified global things, or secret unlocks
 ---@field quote string | nil After implementation of localization, this field is not used in game. It's only for coding reference.
 ---@field spellName string | nil Same as above
 

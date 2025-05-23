@@ -545,6 +545,7 @@ G={
                 local levelNum=#LevelData
                 local sceneNum=#LevelData[level]
                 local levelID=LevelData[level][scene].ID
+                self.currentUI.levelID=levelID
                 local passedSceneCount=self:countPassedSceneNum()
                 for i=1,levelNum do
                     if passedSceneCount<LevelData.needPass[i] then
@@ -641,11 +642,11 @@ G={
                 love.graphics.setColor(color[1],color[2],color[3],transparency)
 
                 -- show screenshot
-                if ScreenshotManager.data[level][scene].batch then
+                if ScreenshotManager.data[levelID].batch then
                     local x0,y0=325,25
                     local ratio=0.75
                     local width,height=500,600
-                    local data=ScreenshotManager.data[level][scene]
+                    local data=ScreenshotManager.data[levelID]
                     data.batch:clear()
                     data.batch:add(data.quad,x0,y0,0,ratio,ratio,0,0)
                     data.batch:flush()
@@ -758,15 +759,14 @@ G={
                 if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
                     SFX:play('timeout',true,2)
                 end
-                local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
-                local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+                local levelID=G.UIDEF.CHOOSE_LEVELS.levelID
                 if self.levelIsTimeoutSpellcard and not G.replay and self.levelRemainingFrame==60 then -- for normal levels it's done by enemy:dieEffect
-                    ScreenshotManager.preSave(level,scene)
+                    ScreenshotManager.preSave(levelID)
                 end
                 if self.levelRemainingFrame==0 then
                     if self.levelIsTimeoutSpellcard then
                         if not G.replay then 
-                            ScreenshotManager.save(level,scene)
+                            ScreenshotManager.save(levelID)
                         end
                         self:win()
                     else
@@ -1260,7 +1260,14 @@ G.saveData=function(self)
   	love.filesystem.write("savedata.txt", serialized)
 end
 -- an example of its structure
----@type {levelData: {[integer]: {passed: integer, tryCount: integer, firstPass: integer, firstPerfect: integer}}, options: {master_volume: integer, music_volume: integer, sfx_volume: integer}, upgrades: {[integer]: {[integer]: {bought: boolean}}}, defaultName: string, playTimeTable: {playTimeOverall: number, playTimeInLevel: number}}
+---@class Save
+---@field levelData {[integer]: {passed: integer, tryCount: integer, firstPass: integer, firstPerfect: integer}}
+---@field options {master_volume: integer, music_volume: integer, sfx_volume: integer, language: string}
+---@field upgrades {[integer]: {[integer]: {bought: boolean}}}
+---@field defaultName string
+---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
+---@field extraUnlock {[integer]: boolean} -- secret level unlocks, format not decided
+---@type Save
 G.save={
     levelData={[1]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}},
     options={master_volume=100,},
@@ -1293,7 +1300,7 @@ G.loadData=function(self)
             end
         end
         if self.save.levelData[level] and self.save.levelData[level][scene] then
-            self.save.levelData[level][scene]=nil
+            self.save.levelData[level][scene]=nil -- remove old save data
         end
     end
     -- add options data

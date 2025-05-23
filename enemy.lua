@@ -107,20 +107,18 @@ function Enemy:dieEffect()
     SFX:play('kill')
     self:remove()
     if self.mainEnemy then
-        local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
-        local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+        local levelID=G.UIDEF.CHOOSE_LEVELS.levelID
         if not G.replay then
-            ScreenshotManager.preSave(level,scene)
+            ScreenshotManager.preSave(levelID)
         end
         Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
         Event.LoopEvent{
             times=1,
             period=60,
             executeFunc=function(x)
-                local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
-                local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+                local levelID=G.UIDEF.CHOOSE_LEVELS.levelID
                 if not G.replay then
-                    ScreenshotManager.save(level,scene)
+                    ScreenshotManager.save(levelID)
                 end
                 G:win()
             end
