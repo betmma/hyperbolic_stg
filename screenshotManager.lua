@@ -33,10 +33,13 @@ for id,value in pairs(levelData.ID2LevelScene) do
             data.image=love.graphics.newImage(oldPath)
             love.filesystem.write(path, love.filesystem.read(oldPath))
             love.filesystem.remove(oldPath)
+        else
+            goto continue
         end
     end
     data.quad=love.graphics.newQuad(150,0,500,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
     data.batch=love.graphics.newSpriteBatch(data.image,5,'stream')
+    ::continue::
 end
 function screenshotManager.preSave(levelID)
     -- when player is about to win, make a screenshot

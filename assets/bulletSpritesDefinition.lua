@@ -39,8 +39,8 @@ local Asset=...
 Asset.bulletSprites={}
 
 local loaders=Asset.bulletSpriteLoaders
-local single,gifSingle,spectrum,matrix,simpleOffsetFunc=loaders.single,loaders.gifSingle,loaders.spectrum,loaders.matrix,loaders.simpleOffsetFunc
-local names16x16={'laser','round','rim','rice','bill','kunai','scale','bullet','bulletFog','crystal','star','rain','diamond','coin','cross','crossDark','crossLight'}
+local single,gifSingle,spectrum,matrix,simpleOffsetFunc,setCenterPosition=loaders.single,loaders.gifSingle,loaders.spectrum,loaders.matrix,loaders.simpleOffsetFunc,loaders.setCenterPosition
+local names16x16={'laser','round','rim','rice','bill','kunai','scale','bullet','bulletFog','crystal','star','rain','coin','cross','crossDark','crossRim','crossDarkRim'}
 local colors={'white','gray','red','orange','yellow','green','teal','cyan','blue','purple','magenta','black'}
 Asset.colors=colors
 matrix{
@@ -66,6 +66,7 @@ matrix{
     colorOffsetFunc=simpleOffsetFunc(16,0),
     baseX=0,baseY=16*17,
 }:addToAsset()
+setCenterPosition('arrow',8,6)
 local names8x8={'dot','darkdot'}
 matrix{
     unit=single{sizeX=8,sizeY=8},
@@ -107,6 +108,8 @@ matrix{
     colorOffsetFunc=simpleOffsetFunc(32,0),
     baseX=16*24,baseY=32*7,
 }:addToAsset()
+setCenterPosition('flame',16,12)
+setCenterPosition('note',16,25)
 spectrum{
     unit=single{sizeX=32,sizeY=32,name='rest'},
     colors=colors,

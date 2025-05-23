@@ -163,12 +163,34 @@ local function simpleOffsetFunc(dx,dy)
     end
 end
 
+-- center position not at geometry center is rare, so write a function to set it
+--- @param name string name of the sprite
+--- @param centerX number x of the center position
+--- @param centerY number y of the center position
+--- @return nil
+local function setCenterPosition(name,centerX,centerY)
+    local sprite=Asset.bulletSprites[name]
+    if not sprite then 
+        error('setCenterPosition: no sprite found for name '..name)
+    end
+    if type(sprite)=='table' then
+        for _,s in pairs(sprite) do
+            s.data.centerX=centerX
+            s.data.centerY=centerY
+        end
+    else
+        sprite.data.centerX=centerX
+        sprite.data.centerY=centerY
+    end
+end
+
 Asset.bulletSpriteLoaders={
     single=BulletSpriteSingle,
     gifSingle=BulletSpriteGIFSingle,
     spectrum=BulletSpriteSpectrum,
     matrix=BulletSpriteMatrix,
     simpleOffsetFunc=simpleOffsetFunc,
+    setCenterPosition=setCenterPosition,
 }
 
 loadfile('assets/bulletSpritesDefinition.lua')(Asset)
