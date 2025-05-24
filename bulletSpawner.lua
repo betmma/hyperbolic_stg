@@ -88,7 +88,7 @@ function BulletSpawner:new(args)
             if spawnCircleRadius~=0 then
                 direction=Shape.to(x,y,self.x,self.y)+math.pi+angle
             end
-            self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=self.fogTime}
+            self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=self.fogTime,sprite=self.bulletSprite}
         end
     end
     ---@type LoopEvent

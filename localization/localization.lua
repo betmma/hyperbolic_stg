@@ -760,6 +760,16 @@ return {
                     zh_cn = '分水岭两侧的水流为什么是相反方向的？',
                 }
             },
+            [88] = {
+                spellName = {
+                    en_us = 'Riddle Sign "Pseudo Hexagonal Labyrinth"',
+                    zh_cn = '谜符「伪六角迷宫」',
+                },
+                quote = {
+                    en_us = 'Due to the geometry, 6 way shots don\'t form regular cells and it gets more complicated.',
+                    zh_cn = '由于几何关系，6路弹幕并没有形成规则的单元格，而是更加复杂。',
+                }
+            },
         },
     },
     ui = {
