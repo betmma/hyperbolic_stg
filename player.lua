@@ -543,6 +543,10 @@ function Player:drawText()
         love.graphics.rectangle("fill",x0,y0,100*(self.grazeCount%self.grazeCountForFlashbomb)/self.grazeCountForFlashbomb,10)
         love.graphics.setColor(color[1],color[2],color[3])
     end
+    if G.UseHypRotShader then
+        SetFont(12)
+        love.graphics.print('Using rotation shader',700,580)
+    end
 end
 
 -- spawn a white dot to show the graze effect. Actually this random speed and direction particle has broken old replays sooooo many times each time I tweak bullet size or graze range :(

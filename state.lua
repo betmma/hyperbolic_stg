@@ -714,7 +714,7 @@ G={
                 self.levelRemainingFrame=nil
                 self.levelRemainingFrameMax=nil
                 self.levelIsTimeoutSpellcard=false
-                self.useHypRotShader=true
+                self.UseHypRotShader=true
                 self.foregroundTransparency=1
                 LevelData[level][scene].make()
                 self.levelRemainingFrame=self.levelRemainingFrame or 3600
@@ -1483,7 +1483,9 @@ G.draw=function(self)
         end
         self:_drawBatches()
         love.graphics.setShader()
-        object:testRotate(0,true) -- "true" means restore objects' coordinates
+        if object.moveMode==Player.moveModes.Natural then
+            object:testRotate(0,true) -- "true" means restore objects' coordinates
+        end
         love.graphics.pop()
         self.currentUI.drawText(self)
     end

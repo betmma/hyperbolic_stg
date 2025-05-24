@@ -770,6 +770,16 @@ return {
                     zh_cn = '由于几何关系，6路弹幕并没有形成规则的单元格，而是更加复杂。',
                 }
             },
+            [89] = {
+                spellName = {
+                    en_us = 'Path Sign "Escher\'s Walkway"',
+                    zh_cn = '道符「埃舍尔的走道」',
+                },
+                quote = {
+                    en_us = 'Seemingly infinite space filled with bullets quickly. All paths are dangerous now.',
+                    zh_cn = '看似无限的空间迅速被子弹填满。所有的道路现在都很危险。',
+                }
+            },
         },
     },
     ui = {
