@@ -91,6 +91,18 @@ return {
             drawWrapper(cir,1)
             cir.extraUpdate[1]=teleportUpdate
         end
+        local function fadeIn(cir)
+            Event.EaseEvent{
+                obj=cir,
+                easeFrame=60,
+                aimTable=cir,
+                aimKey='spriteTransparency',
+                aimValue=1,
+                afterFunc=function()
+                    cir.safe=false
+                end
+            }
+        end
         
         -- local function generate()
             local direction=math.eval(0,999)
@@ -125,9 +137,10 @@ return {
             executeFunc=function()
                 for i=1,20 do
                     local x,y=Shape.rThetaPos(900,500,i*3+7,math.pi/2)
-                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.blue,lifeFrame=20000,fogTime=60,direction=0,speed=(i<11 and -1 or 1)*5,batch=Asset.bulletHighlightBatch}
+                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.blue,lifeFrame=20000,fogTime=60,direction=0,speed=(i<11 and -1 or 1)*5,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,safe=true}
                     cir.extraUpdate={
                         function(cir)
+                            fadeIn(cir)
                             cir.updateMove=function (self)
                                 self.x=self.x+self.speed
                             end
@@ -146,9 +159,10 @@ return {
             executeFunc=function()
                 for i=1,20 do
                     local x,y=400+(i-10.5)*50,800
-                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.red,lifeFrame=20000,fogTime=60,direction=(i<11 and -math.pi/2 or math.pi/2),speed=36,batch=Asset.bulletHighlightBatch}
+                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.red,lifeFrame=20000,fogTime=60,direction=(i<11 and -math.pi/2 or math.pi/2),speed=36,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,safe=true}
                     cir.extraUpdate={
                         function(cir)
+                            fadeIn(cir)
                             cir.invincible=true
                             bulletBase(cir)
                         end,
@@ -166,8 +180,22 @@ return {
             period=30,
             frame=-60,
             executeFunc=function()
-                local circle={x=player.x,y=player.y,sprite=BulletSprites.giant.blue,lifeFrame=300,fogTime=30,direction=math.eval(0,999),speed=0,batch=Asset.bulletHighlightBatch,extraUpdate={
+                local circle={x=player.x,y=player.y,sprite=BulletSprites.giant.blue,lifeFrame=330,fogTime=30,direction=math.eval(0,999),speed=0,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,extraUpdate={
                     function(cir)
+                        fadeIn(cir)
+                        Event.DelayEvent{
+                            obj=en,
+                            delayFrame=300,
+                            executeFunc=function()
+                                Event.EaseEvent{
+                                    obj=cir,
+                                    easeFrame=30,
+                                    aimTable=cir,
+                                    aimKey='spriteTransparency',
+                                    aimValue=0.2
+                                }
+                            end
+                        }
                         bulletBase(cir) -- will replace extraUpdate[1] so that it won't be called again
                     end
                 }}
