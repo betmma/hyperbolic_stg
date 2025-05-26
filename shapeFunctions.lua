@@ -371,3 +371,75 @@ function Shape.rThetaPosPolarAngle(x,y,r,theta)
     end
     return finaltheta+div*math.pi*2
 end
+
+
+--- Calculates the coordinates of the vertices of a Schwarz triangle (p,q,r)
+--- in the Upper Half-Plane model.
+---@param p integer Reciprocal of the angle at vertex v0 (angle = pi/p).
+---@param q integer Reciprocal of the angle at vertex v1 (angle = pi/q).
+---@param r integer Reciprocal of the angle at vertex v2 (angle = pi/r).
+---@param v0_coord table Coordinates of the first vertex, e.g., {x=0, y=1} or {0,1}.
+---                     It's assumed y-coordinate is > Shape.axisY.
+---@param dir_v0v1_angle number Hyperbolic angle (in radians) of the side v0-v1 at v0,
+---                             as expected by Shape.rThetaPos.
+---@return table v0_out {x, y} coordinates of the first vertex.
+---@return table v1_out {x, y} coordinates of the second vertex.
+---@return table v2_out {x, y} coordinates of the third vertex.
+function Shape.schwarzTriangleVertices(p, q, r, v0_coord, dir_v0v1_angle)
+    -- 1. Extract v0 coordinates
+    local v0x = v0_coord.x or v0_coord[1]
+    local v0y = v0_coord.y or v0_coord[2]
+  
+    if v0x == nil or v0y == nil then
+      error("v0_coord must contain recognizable x and y parts (e.g., {x=val, y=val} or {val1,val2}).")
+    end
+    if v0y <= Shape.axisY then
+      error(string.format("The y-coordinate of v0_coord (%.2f) must be greater than Shape.axisY (%.2f) in the Upper Half-Plane model.", v0y, Shape.axisY))
+    end
+    
+    local v0_out = {v0x, v0y}
+  
+    -- 2. Calculate internal angles of the triangle (A at v0, B at v1, C at v2)
+    local angle_A = math.pi / p
+    local angle_B = math.pi / q
+    local angle_C = math.pi / r
+  
+    -- 3. Calculate model-scaled hyperbolic side lengths
+    --    The hyperbolic law of cosines gives d_intrinsic = acosh(...).
+    --    The distance used by Shape.rThetaPos should be d_model = Shape.curvature * d_intrinsic.
+    local cos_A = math.cos(angle_A)
+    local cos_B = math.cos(angle_B)
+    local cos_C = math.cos(angle_C)
+    local sin_A = math.sin(angle_A)
+    local sin_B = math.sin(angle_B)
+    local sin_C = math.sin(angle_C) -- Used for side b
+  
+    -- Check for valid denominators to prevent division by zero or issues with acosh input
+    local den_c = sin_A * sin_B
+    if math.abs(den_c) < 1e-9 then 
+      error("Degenerate triangle geometry for side c (p or q too large, or invalid). sin(A) or sin(B) is near zero.")
+    end
+    local cosh_c_val = (cos_A * cos_B + cos_C) / den_c
+    local dist_v0v1_intrinsic = math.acosh(cosh_c_val) -- math.acosh is assumed to be defined
+    local dist_v0v1_model = Shape.curvature * dist_v0v1_intrinsic
+  
+    local den_b = sin_A * sin_C
+    if math.abs(den_b) < 1e-9 then
+      error("Degenerate triangle geometry for side b (p or r too large, or invalid). sin(A) or sin(C) is near zero.")
+    end
+    local cosh_b_val = (cos_A * cos_C + cos_B) / den_b
+    local dist_v0v2_intrinsic = math.acosh(cosh_b_val)
+    local dist_v0v2_model = Shape.curvature * dist_v0v2_intrinsic
+  
+    -- 4. Calculate v1 using Shape.rThetaPos
+    local v1x, v1y = Shape.rThetaPos(v0x, v0y, dist_v0v1_model, dir_v0v1_angle)
+    local v1_out = {v1x, v1y}
+  
+    -- 5. Calculate v2 using Shape.rThetaPos
+    --    Angle at v0 is angle_A. For CCW order (v0,v1,v2), turn from v0v1 to v0v2 is -angle_A.
+    local dir_v0v2_angle = dir_v0v1_angle - angle_A 
+    local v2x, v2y = Shape.rThetaPos(v0x, v0y, dist_v0v2_model, dir_v0v2_angle)
+    local v2_out = {v2x, v2y}
+  
+    return v0_out, v1_out, v2_out
+end

@@ -175,6 +175,8 @@ local function randomSideNumAndAngleNum()
     end
     return sideNum,angleNum
 end
+-- local shader=love.graphics.newShader('shaders/triangleTextureDrawerVertex.glsl','shaders/triangleTextureDrawer.glsl')
+local shader=love.graphics.newShader('shaders/flipTessellation.glsl')
 
 -- a tesselation that moves and rotates. It's used in main menu.
 local MainMenuTesselation=BackgroundPattern:extend()
@@ -182,74 +184,67 @@ function MainMenuTesselation:new(args)
     MainMenuTesselation.super.new(self,args)
     -- self.name='Tesselation'
     args=args or {}
-    self.point=args.point or {x=400,y=150}
-    self.limit=args.limit or {xmin=300,xmax=500,ymin=100,ymax=600}
-    self.angle=args.angle or math.pi/3
-    self.dangle=args.dangle or (0.004*math.randomSign())
-    self.speed=args.speed or (0.0045*math.randomSign())
-    self.sideNum=args.sideNum
-    self.angleNum=args.angleNum
-    self.toDrawNum=args.toDrawNum or 380
-    self.mesh=love.graphics.newMesh(6*self.toDrawNum, 'triangles', 'stream') -- mesh for drawing sides. each side is drawn with 2 triangles (1 for each side), so 2*3=6 *toDrawNum vertices
-    self.mesh:setTexture(Asset.backgroundImage)
-    self.uvPoses={{265/800,376/600},{536/800,376/600},{399/800,139/600}}
-    if not self.sideNum or not self.angleNum then
-        self.sideNum,self.angleNum=4,5--randomSideNumAndAngleNum()
-    end
+    self.p=args.p or 2
+    self.q=args.q or 5
+    self.r=args.r or 5
+    self.shader=shader
+    self.uvPoses={{265/800,376/600},{534/800,376/600},{399/800,140/600}}
+    -- self.uvPoses={{0.5-3^0.5/4,1},{0.5+3^0.5/4,1},{0.5,0}}
+    self.frame=0
 end
 
 function MainMenuTesselation:update(dt)
-    local newpoint,newAngle=self.newPoints or {self.point},self.newAngles or {self.angle}
-    -- if the current point is too far from the center, find the closest point to the center and use it as the new point
-    local centerExpected={x=400,y=300}
-    local currentMinimumDistance=Shape.distance(self.point.x,self.point.y,centerExpected.x,centerExpected.y)
-    if currentMinimumDistance>math.min(calculateSideLength(self.sideNum,self.angleNum)/2,100) then
-        for i=1,#newpoint do
-            local distance=Shape.distance(newpoint[i].x,newpoint[i].y,centerExpected.x,centerExpected.y)
-            if distance<currentMinimumDistance then
-                self.point=newpoint[i]
-                self.angle=newAngle[i]
-                currentMinimumDistance=distance
-            end
-        end
-    end
-
-    self.point={x=self.point.x-(self.point.x-400)*self.speed,y=self.point.y-(self.point.y-Shape.axisY)*self.speed} -- move current point
-    self.angle=self.angle+self.dangle
+    self.frame=self.frame+1
 end
 
+function MainMenuTesselation:randomize()
+    local rand=math.random(1,3)
+    self.uvPoses[rand],self.uvPoses[rand%3+1]=self.uvPoses[rand%3+1],self.uvPoses[rand] -- swap 2 random uvPoses
+    local tried=0
+    while tried<20 do
+        local p=math.random(3,14)/2
+        local q=math.random(3,14)/2
+        local r=math.random(3,14)/2
+        if 1/p+1/q+1/r<1 then
+            self.p=p
+            self.q=q
+            self.r=r
+            return
+        end
+        tried=tried+1
+    end
+end
+
+local testImage = love.graphics.newImage( "assets/test.png" )
+testImage:setWrap("repeat", "repeat") -- set texture to repeat so that it can be used in shader
 function MainMenuTesselation:draw()
     local ay=Shape.axisY
-    Shape.axisY=-10
+    Shape.axisY=-2
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)
-    local sides
-    self.newPoints,self.newAngles,sides=tesselation(self.point,self.angle,self.sideNum,self.angleNum,0,nil,self.toDrawNum) -- tesselation call and drawing should be with same Shape.axisY, so I doesn't move it to update
+    love.graphics.setShader(self.shader)
     local uvPoses=self.uvPoses
-    for i=1,#sides do
-        -- local centerX,centerY=(sides[i][2].x+sides[i][1].x)/2,(sides[i][2].y+sides[i][1].y)/2
-        -- local index=sides[i].index
-        -- local color={math.cos(index/100)*0.8+0.2,math.cos(index/70)*0.5+0.5,math.sin(centerX/centerY/10)*0.7+0.3}
-        -- local color=i%2==0 and {0.4,0.3,0.1} or {0.1,0.4,0.3}
-        local centerX,centerY=getCenterOfPolygonWithSide(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
-        self.mesh:setVertex(i*6-5, sides[i][1].x, sides[i][1].y, uvPoses[1][1], uvPoses[1][2])
-        self.mesh:setVertex(i*6-4, sides[i][2].x, sides[i][2].y, uvPoses[2][1], uvPoses[2][2])
-        self.mesh:setVertex(i*6-3, centerX, centerY, uvPoses[3][1], uvPoses[3][2])
-        centerX,centerY=getCenterOfPolygonWithSide(sides[i][2].x,sides[i][2].y,sides[i][1].x,sides[i][1].y,self.sideNum,self.angleNum)
-        self.mesh:setVertex(i*6-2, sides[i][2].x, sides[i][2].y, uvPoses[2][1], uvPoses[2][2])
-        self.mesh:setVertex(i*6-1, sides[i][1].x, sides[i][1].y, uvPoses[1][1], uvPoses[1][2])
-        self.mesh:setVertex(i*6, centerX, centerY, uvPoses[3][1], uvPoses[3][2])
-        -- local vertices=getSideFacePolygonVertices(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
-        -- drawSideFace(vertices,color)
-    end
-    love.graphics.draw(self.mesh)
-    -- for i=1,#sides do
-    --     drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.35,0.15,0.8})
-    -- end
+    local t=self.frame/151
+    local x,y=400+50*math.sin(t),300+250*math.cos(t)
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},self.frame/131)
+    -- local V0 = {400, 300}
+    -- local V1 = {500, 300}
+    -- local V2 = {400, 400}
+    shader:send("V0", V0)
+    shader:send("V1", V1)
+    shader:send("V2", V2)
+    shader:send("tex_uv_V0", uvPoses[1])
+    shader:send("tex_uv_V1", uvPoses[2])
+    shader:send("tex_uv_V2", uvPoses[3])
+    shader:send("shape_axis_y", Shape.axisY)
+    love.graphics.draw(Asset.backgroundImage, 0,0)
+    love.graphics.setShader()
+    -- love.graphics.circle("fill",V0[1],V0[2],25)
+    -- love.graphics.circle("fill",V1[1],V1[2],25)
+    -- love.graphics.circle("fill",V2[1],V2[2],25)
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
 end
-
 BackgroundPattern.MainMenuTesselation=MainMenuTesselation
 
 local Square=BackgroundPattern:extend()

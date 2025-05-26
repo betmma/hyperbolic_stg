@@ -176,6 +176,10 @@ G={
                 BGM:play('title')
             end,
             update=function(self,dt)
+                if isPressed('f3') then
+                    SFX:play('cancel',true)
+                    self.backgroundPattern:randomize()
+                end
                 self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
@@ -187,6 +191,9 @@ G={
             draw=function(self)
             end,
             drawText=function(self)
+                if love.keyboard.isDown('f2') then
+                    return
+                end
                 Asset.titleBatch:flush()
                 love.graphics.draw(Asset.titleBatch)
                 -- -- self.updateDynamicPatternData(self.patternData)
