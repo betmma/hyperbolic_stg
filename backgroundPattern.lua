@@ -82,7 +82,15 @@ local function drawSideFace(vertices,color)
     local colorref={love.graphics.getColor()}
     love.graphics.setColor(color[1],color[2],color[3])
     -- without triangulate love.graphics.polygon("fill",vertices) is buggy at some concave part
-    local triangles = love.math.triangulate(vertices)
+    local ok, triangles = pcall(love.math.triangulate,vertices)
+    if not ok then
+        local stringVertices = ""
+        for i = 1, #vertices, 2 do
+            stringVertices = stringVertices .. "(" .. string.format("%.2f", vertices[i]) .. ", " .. string.format("%.2f", vertices[i + 1]) .. ") "
+        end
+        error("Error triangulating vertices: "..stringVertices..'\n'..triangles)
+        return
+    end
     for i, triangle in ipairs(triangles) do
         love.graphics.polygon("fill", triangle)
     end
@@ -125,7 +133,11 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
             goto continue
         end
         adjacentPoints[#adjacentPoints+1]=newpoint
-        sidesTable[#sidesTable+1]={point,newpoint,index=drawedPointsNum*angleNum+i}
+        local len=#sidesTable
+        sidesTable[len+1]={point,newpoint,index=len+1}
+        if len+1>=toDrawNum then
+            break
+        end
         ::continue::
     end
     -- if leftMost and iteCount>2 then
@@ -143,7 +155,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         pointsQueue[#pointsQueue+1]={newpoint,newangle,iteCount}
         -- tesselation(newpoint,newangle,sideNum,angleNum,iteCount,color,i==1,centerPoint)
     end
-    if drawedPointsNum<toDrawNum/angleNum and pointsQueue[drawedPointsNum]then 
+    if #sidesTable<toDrawNum and pointsQueue[drawedPointsNum]then 
         tesselation(pointsQueue[drawedPointsNum][1],pointsQueue[drawedPointsNum][2],sideNum,angleNum,pointsQueue[drawedPointsNum][3],centerPoint,toDrawNum,sidesTable, skipInRangeLimit)
     else
         pointsQueue={}
@@ -177,6 +189,10 @@ function MainMenuTesselation:new(args)
     self.speed=args.speed or (0.0045*math.randomSign())
     self.sideNum=args.sideNum
     self.angleNum=args.angleNum
+    self.toDrawNum=args.toDrawNum or 380
+    self.mesh=love.graphics.newMesh(6*self.toDrawNum, 'triangles', 'stream') -- mesh for drawing sides. each side is drawn with 2 triangles (1 for each side), so 2*3=6 *toDrawNum vertices
+    self.mesh:setTexture(Asset.backgroundImage)
+    self.uvPoses={{265/800,376/600},{536/800,376/600},{399/800,139/600}}
     if not self.sideNum or not self.angleNum then
         self.sideNum,self.angleNum=4,5--randomSideNumAndAngleNum()
     end
@@ -184,15 +200,7 @@ end
 
 function MainMenuTesselation:update(dt)
     local newpoint,newAngle=self.newPoints or {self.point},self.newAngles or {self.angle}
-    -- if the current point is out of limit, find a new point from the drawn points (so that it seems like an infinite pattern)
-    -- if not math.inRange(self.point.x,self.point.y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax)  then
-    --     for i=1,#newpoint do
-    --         if math.inRange(newpoint[i].x,newpoint[i].y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax) then
-    --             self.point=newpoint[i]
-    --             self.angle=newAngle[i]
-    --         end
-    --     end
-    -- end
+    -- if the current point is too far from the center, find the closest point to the center and use it as the new point
     local centerExpected={x=400,y=300}
     local currentMinimumDistance=Shape.distance(self.point.x,self.point.y,centerExpected.x,centerExpected.y)
     if currentMinimumDistance>math.min(calculateSideLength(self.sideNum,self.angleNum)/2,100) then
@@ -206,32 +214,38 @@ function MainMenuTesselation:update(dt)
         end
     end
 
-    self.point={x=self.point.x-(self.point.x-400)*self.speed,y=self.point.y-(self.point.y-Shape.axisY)*self.speed}
+    self.point={x=self.point.x-(self.point.x-400)*self.speed,y=self.point.y-(self.point.y-Shape.axisY)*self.speed} -- move current point
     self.angle=self.angle+self.dangle
 end
 
 function MainMenuTesselation:draw()
     local ay=Shape.axisY
     Shape.axisY=-10
-    -- tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)
     local sides
-    self.newPoints,self.newAngles,sides=tesselation(self.point,self.angle,self.sideNum,self.angleNum,0,nil,380)
-    -- table.sort(sides,function(a,b)
-    --     return a[1].y+a[2].y>b[1].y+b[2].y
-    -- end)
+    self.newPoints,self.newAngles,sides=tesselation(self.point,self.angle,self.sideNum,self.angleNum,0,nil,self.toDrawNum) -- tesselation call and drawing should be with same Shape.axisY, so I doesn't move it to update
+    local uvPoses=self.uvPoses
     for i=1,#sides do
-        local centerX,centerY=(sides[i][2].x+sides[i][1].x)/2,(sides[i][2].y+sides[i][1].y)/2
-        local index=sides[i].index
+        -- local centerX,centerY=(sides[i][2].x+sides[i][1].x)/2,(sides[i][2].y+sides[i][1].y)/2
+        -- local index=sides[i].index
         -- local color={math.cos(index/100)*0.8+0.2,math.cos(index/70)*0.5+0.5,math.sin(centerX/centerY/10)*0.7+0.3}
-        local color=index%2==0 and {0.4,0.3,0.1} or {0.1,0.4,0.3}
-        local vertices=getSideFacePolygonVertices(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
-        drawSideFace(vertices,color)
+        -- local color=i%2==0 and {0.4,0.3,0.1} or {0.1,0.4,0.3}
+        local centerX,centerY=getCenterOfPolygonWithSide(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
+        self.mesh:setVertex(i*6-5, sides[i][1].x, sides[i][1].y, uvPoses[1][1], uvPoses[1][2])
+        self.mesh:setVertex(i*6-4, sides[i][2].x, sides[i][2].y, uvPoses[2][1], uvPoses[2][2])
+        self.mesh:setVertex(i*6-3, centerX, centerY, uvPoses[3][1], uvPoses[3][2])
+        centerX,centerY=getCenterOfPolygonWithSide(sides[i][2].x,sides[i][2].y,sides[i][1].x,sides[i][1].y,self.sideNum,self.angleNum)
+        self.mesh:setVertex(i*6-2, sides[i][2].x, sides[i][2].y, uvPoses[2][1], uvPoses[2][2])
+        self.mesh:setVertex(i*6-1, sides[i][1].x, sides[i][1].y, uvPoses[1][1], uvPoses[1][2])
+        self.mesh:setVertex(i*6, centerX, centerY, uvPoses[3][1], uvPoses[3][2])
+        -- local vertices=getSideFacePolygonVertices(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
+        -- drawSideFace(vertices,color)
     end
-    for i=1,#sides do
-        drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.35,0.15,0.8})
-    end
+    love.graphics.draw(self.mesh)
+    -- for i=1,#sides do
+    --     drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.35,0.15,0.8})
+    -- end
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
 end
