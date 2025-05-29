@@ -279,6 +279,6 @@ vec4 effect(vec4 pixel_color, Image input_texture, vec2 texture_coords, vec2 pix
                             bary_coords.z * tex_uv_V2;
 
     // 6. Sample the input texture
-    return Texel(input_texture, final_texture_uv);
+    return Texel(input_texture, final_texture_uv) * pixel_color;
 }
 

@@ -225,7 +225,7 @@ function MainMenuTesselation:draw()
     love.graphics.setShader(self.shader)
     local uvPoses=self.uvPoses
     local t=self.frame/151
-    local x,y=400+50*math.sin(t),300+250*math.cos(t)
+    local x,y=400+50*math.sin(t),300+220*math.cos(t)
     local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},self.frame/131)
     -- local V0 = {400, 300}
     -- local V1 = {500, 300}
@@ -237,6 +237,7 @@ function MainMenuTesselation:draw()
     shader:send("tex_uv_V1", uvPoses[2])
     shader:send("tex_uv_V2", uvPoses[3])
     shader:send("shape_axis_y", Shape.axisY)
+    -- love.graphics.draw(testImage, 0,0)
     love.graphics.draw(Asset.backgroundImage, 0,0)
     love.graphics.setShader()
     -- love.graphics.circle("fill",V0[1],V0[2],25)
@@ -500,5 +501,104 @@ function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an
 end
 
 BackgroundPattern.Pendulum=Pendulum
+
+-- love2d draws a white rectangle then shader draws pattern.
+local Shader=BackgroundPattern:extend()
+---@class ShaderBackground
+---@class love.Shader
+---@class ShaderBackgroundArgs
+---@field shader love.Shader the shader to use for drawing the background
+---@field paramSendFunction fun(self:ShaderBackground,shader:love.Shader):nil a function to send parameters to the shader, called in Shader:draw()
+
+---@param args ShaderBackgroundArgs
+function Shader:new(args)
+    Shader.super.new(self,args)
+    args=args or {}
+    self.shader=args.shader
+    self.frame=0
+    self.paramSendFunction=args.paramSendFunction or function(self,shader) end
+end
+function Shader:update(dt)
+    self.frame=self.frame+1
+end
+function Shader:draw()
+    local colorref={love.graphics.getColor()}
+    love.graphics.setColor(1,1,1)
+    -- love.graphics.rectangle('fill',0,0,800,600)
+    love.graphics.setShader(self.shader)
+    self:paramSendFunction(self.shader) -- send parameters to shader
+    local translateX,translateY,scale=G:followModeTransform(true)
+    love.graphics.rectangle('fill',-translateX/scale,-translateY/scale,800/scale,600/scale)
+    love.graphics.setShader()
+    love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
+end
+
+BackgroundPattern.Shader=Shader
+
+local plasmaGlobe=Shader:extend()
+function plasmaGlobe:new(args)
+    plasmaGlobe.super.new(self,args)
+    args=args or {}
+    self.shader=love.graphics.newShader('shaders/backgrounds/plasmaGlobe.glsl')
+    -- Create iChannel0 (noise texture)
+    local noiseSize = 256
+    local imageData = love.image.newImageData(noiseSize, noiseSize)
+
+    -- The shader samples .x and .yx from iChannel0, so we need at least two noise channels (R and G)
+    imageData:mapPixel(function(x, y, r, g, b, a)
+        local val1 = math.random() -- For .x component
+        local val2 = math.random() -- For .y component (used in .yx)
+        return val1, val2, 0, 1 -- Store in R and G channels
+    end)
+    local iChannel0 = love.graphics.newImage(imageData)
+    iChannel0:setFilter("linear", "linear") -- ShaderToy textures usually have linear filtering
+    iChannel0:setWrap("repeat", "repeat")   -- Important for noise sampling
+    self.cameraAngleX = math.pi/4 -- Corresponds to yaw (left/right)
+    self.cameraAngleY = 0.0 -- Corresponds to pitch (up/down)
+    self.rotationSpeed = math.pi / 1.5 -- Radians per second, adjust for sensitivity
+    self.paramSendFunction=function(self,shader)
+        shader:send("iTime", love.timer.getTime())
+        shader:send("iResolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+        
+        shader:send("u_camAngleX", self.cameraAngleX)
+        shader:send("u_camAngleY", self.cameraAngleY)
+
+        shader:send("iChannel0", iChannel0)
+    end
+end
+plasmaGlobe.update=function(self,dt)
+    -- dt=0.005
+    self.frame=self.frame+1
+    -- if love.keyboard.isDown("left") then
+    --     self.cameraAngleX = self.cameraAngleX - self.rotationSpeed * dt
+    -- end
+    -- if love.keyboard.isDown("right") then
+    --     self.cameraAngleX = self.cameraAngleX + self.rotationSpeed * dt
+    -- end
+    -- if love.keyboard.isDown("up") then
+    --     self.cameraAngleY = self.cameraAngleY + self.rotationSpeed * dt
+    -- end
+    -- if love.keyboard.isDown("down") then
+    --     self.cameraAngleY = self.cameraAngleY - self.rotationSpeed * dt
+    -- end
+end
+-- testShader.draw=function(self)
+--     Shader.draw(self)
+--     love.graphics.print(''..self.cameraAngleX..', '..self.cameraAngleY, 310, 100)
+-- end
+BackgroundPattern.PlasmaGlobe=plasmaGlobe
+
+local Fractal=Shader:extend()
+function Fractal:new(args)
+    Fractal.super.new(self,args)
+    args=args or {}
+    self.shader=love.graphics.newShader('shaders/backgrounds/fractal.glsl')
+    local randomOffset=math.random(0,1000)
+    self.paramSendFunction=function(self,shader)
+        shader:send("iTime", love.timer.getTime()/3+randomOffset)
+        shader:send("iResolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+    end
+end
+BackgroundPattern.Fractal=Fractal
 
 return BackgroundPattern
