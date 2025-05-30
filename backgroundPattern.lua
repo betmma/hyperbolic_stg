@@ -601,4 +601,34 @@ function Fractal:new(args)
 end
 BackgroundPattern.Fractal=Fractal
 
+local H3Terrain=Shader:extend()
+function H3Terrain:new()
+    H3Terrain.super.new(self)
+    self.shader=love.graphics.newShader('shaders/backgrounds/h3Terrain2.glsl')
+    self.cam_height=1
+    self.cam_pitch=-0.3
+    self.paramSendFunction=function(self,shader)
+        shader:send("time", self.frame/60*3)
+        shader:send("cam_height", self.cam_height or 1)
+        shader:send("cam_pitch", self.cam_pitch or 0)
+    end
+end
+H3Terrain.update=function(self,dt)
+    -- dt=0.005
+    self.frame=self.frame+1
+    if love.keyboard.isDown("left") then
+        self.cam_pitch = self.cam_pitch - dt
+    end
+    if love.keyboard.isDown("right") then
+        self.cam_pitch = self.cam_pitch + dt
+    end
+    if love.keyboard.isDown("up") then
+        self.cam_height = self.cam_height + dt
+    end
+    if love.keyboard.isDown("down") then
+        self.cam_height = self.cam_height - dt
+    end
+end
+BackgroundPattern.H3Terrain=H3Terrain
+
 return BackgroundPattern
