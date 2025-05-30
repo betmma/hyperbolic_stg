@@ -1,20 +1,8 @@
+#include "shaders/math.glsl"
+
 uniform float time;
 uniform float cam_height=1.0;
 uniform float cam_pitch=0.0; // Camera pitch angle in radians, negative to look down
-
-// Helper functions for hyperbolic math (GLSL ES 100 doesn't have them)
-float cosh_custom(float x) {
-    return (exp(x) + exp(-x)) / 2.0;
-}
-
-float sinh_custom(float x) {
-    return (exp(x) - exp(-x)) / 2.0;
-}
-
-float acosh_custom(float x) { // Assumes x >= 1
-    // Clamp x to prevent sqrt of negative for precision errors near 1.0
-    return log(x + sqrt(max(0.0, x*x - 1.0)));
-}
 
 // Minkowski metric g(A,B) = A.w*B.w - A.x*B.x - A.y*B.y - A.z*B.z
 // For the hyperboloid model with R=1: w^2 - x^2 - y^2 - z^2 = 1
@@ -93,7 +81,7 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
     const float MAX_DIST_HYPERBOLIC = 30.0; // Max hyperbolic distance
 
     for (int i = 0; i < MAX_STEPS; i++) {
-        vec4 current_pos_H = cam_pos_H * cosh_custom(t) + ray_dir_H * sinh_custom(t);
+        vec4 current_pos_H = cam_pos_H * cosh(t) + ray_dir_H * sinh(t);
 
         if (current_pos_H.w <= 0.001) {
             break; 
@@ -126,7 +114,7 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
 
             // View direction calculation
             // Tangent vector of the geodesic ray at the hit point current_pos_H
-            vec4 ray_tangent_at_hit_H = cam_pos_H * sinh_custom(t) + ray_dir_H * cosh_custom(t);
+            vec4 ray_tangent_at_hit_H = cam_pos_H * sinh(t) + ray_dir_H * cosh(t);
             // View direction is opposite to the ray's propagation direction (spatial part)
             vec3 view_dir_emb = -normalize(ray_tangent_at_hit_H.xyz);
 
@@ -210,16 +198,16 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     // 3. Apply boost transformation (hyperbolic translation along Z_embedding axis)
     // This moves the camera "up" and transforms the pitched ray direction.
     float b_cam_translation = cam_hyperbolic_height;
-    float ch_b = cosh_custom(b_cam_translation);
-    float sh_b = sinh_custom(b_cam_translation);
+    float ch_b = cosh(b_cam_translation);
+    float sh_b = sinh(b_cam_translation);
 
     // Calculate final camera position on the hyperboloid
     vec4 final_cam_pos_H;
     final_cam_pos_H.x = cam_pos_H0.x; // Stays 0
     final_cam_pos_H.y = cam_pos_H0.y; // Stays 0
-    final_cam_pos_H.z = cam_pos_H0.z * ch_b + cam_pos_H0.w * sh_b; // Becomes sinh_custom(b_cam_translation)
-    final_cam_pos_H.w = cam_pos_H0.z * sh_b + cam_pos_H0.w * ch_b; // Becomes cosh_custom(b_cam_translation)
-    // So, final_cam_pos_H = (0.0, 0.0, sinh_custom(b_cam_translation), cosh_custom(b_cam_translation))
+    final_cam_pos_H.z = cam_pos_H0.z * ch_b + cam_pos_H0.w * sh_b; // Becomes sinh(b_cam_translation)
+    final_cam_pos_H.w = cam_pos_H0.z * sh_b + cam_pos_H0.w * ch_b; // Becomes cosh(b_cam_translation)
+    // So, final_cam_pos_H = (0.0, 0.0, sinh(b_cam_translation), cosh(b_cam_translation))
 
     // Transform the pitched ray direction vector to be tangent at final_cam_pos_H
     vec4 final_ray_dir_H;

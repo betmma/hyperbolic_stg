@@ -176,7 +176,7 @@ local function randomSideNumAndAngleNum()
     return sideNum,angleNum
 end
 -- local shader=love.graphics.newShader('shaders/triangleTextureDrawerVertex.glsl','shaders/triangleTextureDrawer.glsl')
-local shader=love.graphics.newShader('shaders/flipTessellation.glsl')
+local shader=ShaderScan:load_shader('shaders/flipTessellation.glsl')
 
 -- a tesselation that moves and rotates. It's used in main menu.
 local MainMenuTesselation=BackgroundPattern:extend()
@@ -604,7 +604,7 @@ BackgroundPattern.Fractal=Fractal
 local H3Terrain=Shader:extend()
 function H3Terrain:new()
     H3Terrain.super.new(self)
-    self.shader=love.graphics.newShader('shaders/backgrounds/h3Terrain2.glsl')
+    self.shader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
     self.cam_height=1
     self.cam_pitch=-0.3
     self.paramSendFunction=function(self,shader)
