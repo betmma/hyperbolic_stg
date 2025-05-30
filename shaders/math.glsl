@@ -196,3 +196,42 @@ vec3 get_hyperbolic_barycentric_coords(vec2 P, vec2 V0, vec2 V1, vec2 V2) {
     // for the final bary_coords, which will handle any minor deviations.
     return vec3(w0, w1, w2);
 }
+
+vec2 hyperboloid_to_uhp(vec2 pos_xy_embedding) {
+    float x_H = pos_xy_embedding.x;
+    float y_H = pos_xy_embedding.y;
+
+    // 1. Calculate w_H0 for the point (x_H, y_H) on the z_H=0 sheet
+    // w_H0^2 - x_H^2 - y_H^2 = 1  => w_H0 = sqrt(1 + x_H^2 + y_H^2)
+    float w_H0 = sqrt(1.0 + x_H*x_H + y_H*y_H);
+
+    // 2. Convert to Poincaré disk coordinates (x_d, y_d)
+    // (1.0 + w_H0) is always >= 2.0 since w_H0 >= 1.0, so no division by zero.
+    float inv_denom_disk = 1.0 / (1.0 + w_H0);
+    float x_d = x_H * inv_denom_disk;
+    float y_d = y_H * inv_denom_disk;
+
+    // 3. Convert from Poincaré disk (x_d, y_d) to UHP (u,v)
+    // Denominator for UHP mapping: D_uhp = (1-x_d)^2 + y_d^2
+    float D_uhp_denom = (1.0-x_d)*(1.0-x_d) + y_d*y_d;
+
+    float u, v;
+    if (D_uhp_denom < EPSILON) {
+        // This case corresponds to x_d approx 1 and y_d approx 0 (rightmost point of disk boundary),
+        // which maps to complex infinity.
+        // Handle this by returning a point far away or a default value.
+        // For terrain, this might mean an "undefined" or very distant UHP coordinate.
+        // A large v value could work if your tessellation handles distant points gracefully.
+        u = 0.0; // Arbitrary, as v will dominate
+        v = 1.0 / EPSILON; // Very large v
+    } else {
+        u = -2.0 * y_d / D_uhp_denom;
+        v = (1.0 - x_d*x_d - y_d*y_d) / D_uhp_denom;
+    }
+
+    // Ensure v is strictly positive for UHP, clamping if it's too close to zero
+    // (e.g., due to floating point inaccuracies for points near the disk boundary).
+    v = max(v, EPSILON);
+
+    return vec2(u, v);
+}

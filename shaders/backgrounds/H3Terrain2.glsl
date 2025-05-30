@@ -1,8 +1,16 @@
 #include "shaders/math.glsl"
 
+uniform vec2 V0; 
+uniform vec2 V1;
+uniform vec2 V2;
 uniform float time;
 uniform float cam_height=1.0;
 uniform float cam_pitch=0.0; // Camera pitch angle in radians, negative to look down
+
+UHPGeodesic G01 = make_geodesic_segment(V0, V1);
+UHPGeodesic G12 = make_geodesic_segment(V1, V2);
+UHPGeodesic G20 = make_geodesic_segment(V2, V0);
+const int MAX_REFLECTIONS = 40; 
 
 // Minkowski metric g(A,B) = A.w*B.w - A.x*B.x - A.y*B.y - A.z*B.z
 // For the hyperboloid model with R=1: w^2 - x^2 - y^2 - z^2 = 1
@@ -29,13 +37,56 @@ float fbm(vec2 st) {
 
 vec2 shift_pos(vec2 pos, float time) {
     // Shift coordinates based on time for movement
-    return pos + vec2(time * 0.0 + 0.001, -time * 0.2);
+    return pos + vec2(time * 0.0 + 0.001, -time * 0.0);
+}
+
+vec4 colorFunc(vec2 pos_xy_embedding, float time) {
+    vec2 p_in_fundamental= hyperboloid_to_uhp(pos_xy_embedding);
+    int flipCount;
+    for (int i = 0; i < MAX_REFLECTIONS; ++i) {
+        bool reflected_in_iter = false;
+        if (!is_on_correct_side_of_edge(p_in_fundamental, G01, V2)) {
+            p_in_fundamental = reflect_point(p_in_fundamental, G01);
+            reflected_in_iter = true;
+            flipCount++;
+        }
+        if (!is_on_correct_side_of_edge(p_in_fundamental, G12, V0)) {
+            p_in_fundamental = reflect_point(p_in_fundamental, G12);
+            reflected_in_iter = true;
+            // flipCount++;
+        }
+        if (!is_on_correct_side_of_edge(p_in_fundamental, G20, V1)) {
+            p_in_fundamental = reflect_point(p_in_fundamental, G20);
+            reflected_in_iter = true;
+            flipCount++;
+        }
+
+        if (p_in_fundamental.y <= EPSILON * 0.1) { // Point escaped far below
+             return vec4(0.0, 0.0, 0.0, 1.0); 
+        }
+        if (p_in_fundamental.y <= EPSILON && p_in_fundamental.y > EPSILON * 0.1) { // Point very close to boundary
+             p_in_fundamental.y = EPSILON; // clamp it
+        }
+        
+        if (!reflected_in_iter) {
+            break; 
+        }
+        if (i == MAX_REFLECTIONS - 1) { 
+            return vec4(1.0, 0.0, 1.0, 1.0); // Magenta for non-convergence
+        }
+    }
+    if (mod(flipCount,2)==0) { 
+        return vec4(1.0, 0.0, 0.0, 1.0);
+    }
+    return vec4(0.0, 0.0, 1.0, 1.0);
 }
 
 // Terrain height function
 // Input: pos_xy_embedding are x,y coordinates in the Minkowski embedding space.
 // Output: z-coordinate in the Minkowski embedding space for the terrain surface.
 float terrainFunc(vec2 pos_xy_embedding, float time) {
+    return -0.6;
+
     // Shift coordinates based on time for movement
     vec2 shifted_pos = shift_pos(pos_xy_embedding, time);
     
@@ -100,6 +151,8 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
             
             vec2 shifted_pos_tex = shift_pos(current_pos_H.xy, time); // Use a different name for clarity
             terrain_color_base *= (0.9 + 0.1 * sin(shifted_pos_tex.x*5.0 + shifted_pos_tex.y*3.0));
+
+            terrain_color_base=colorFunc(shifted_pos_tex, time).rgb; // Use the colorFunc to get the terrain color
 
             // --- Enhanced Lighting Calculation ---
             float normal_calc_eps = 0.001; // Epsilon for normal calculation finite differences

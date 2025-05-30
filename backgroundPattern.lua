@@ -607,14 +607,39 @@ function H3Terrain:new()
     self.shader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
     self.cam_height=1
     self.cam_pitch=-0.3
+    self.p,self.q,self.r=3,6,6
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
+    local length=Shape.distance(V0[1],V0[2],V1[1],V1[2])
+    self.direction=0
     self.paramSendFunction=function(self,shader)
-        shader:send("time", self.frame/60*3)
+        local x,y,dir=Shape.rThetaPosT(0,-99,-(self.frame)%(length*2),0)
+        local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
+        local axisY=Shape.axisY
+        V0[2]=V0[2]-axisY
+        V1[2]=V1[2]-axisY
+        V2[2]=V2[2]-axisY
+        shader:send("V0", V0)
+        shader:send("V1", V1)
+        shader:send("V2", V2)
+        -- shader:send("time", self.frame/60*3)
         shader:send("cam_height", self.cam_height or 1)
         shader:send("cam_pitch", self.cam_pitch or 0)
     end
 end
 H3Terrain.update=function(self,dt)
-    -- dt=0.005
+    -- local t=self.frame%500
+    -- if t<=200 then
+    --     local x,y,dir=Shape.rThetaPosT(0,-99,math.sin(self.frame/200*math.pi/2)*400,0)
+    --     self.x,self.y,self.direction=x,y,dir
+    -- elseif t<=250 then
+    --     self.direction=self.direction+math.pi/50
+    -- elseif t<=450 then
+    --     local x,y,dir=Shape.rThetaPosT(0,-99,math.sin((self.frame-250)/200*math.pi/2)*-400,0)
+    --     self.x,self.y,self.direction=x,y,dir
+    -- elseif t<=500 then
+    --     self.direction=self.direction+math.pi/50
+    -- end
+
     self.frame=self.frame+1
     if love.keyboard.isDown("left") then
         self.cam_pitch = self.cam_pitch - dt
