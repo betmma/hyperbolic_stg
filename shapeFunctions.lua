@@ -146,14 +146,18 @@ end
 function Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
     local nearest=Shape.nearestToLine(xs,ys,x1,y1,x2,y2)
     local x3,y3=nearest[1],nearest[2]
-    local x3toself=Shape.to(x3,y3,xs,ys)
+    -- local x3toself=Shape.to(x3,y3,xs,ys)
     -- local selftox3=Shape.to(xs,ys,x3,y3)
     local distance=Shape.distance(xs,ys,x3,y3)
     if distance<Shape.EPS then
         local tangentAngle=Shape.to(xs,ys,x1,y1)
         return xs,ys,tangentAngle*2+math.pi
     end
-    local xReflection,yReflection=Shape.rThetaPos(x3,y3,distance,x3toself+math.pi)
+    local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
+    local xsd,ysd=xs-centerX,ys-Shape.axisY
+    local disSSquared=xsd*xsd+ysd*ysd
+    local ratio=radius*radius/disSSquared
+    local xReflection,yReflection=centerX+xsd*ratio,Shape.axisY+ysd*ratio -- this is the reflection point
     --[[this is complex, lemme explain:
        (xs,ys)\______(x3,y3)______/(xRe,yRe)     (Re is Reflection)
         ↘selftox3  ←x3toself     ↙xRetox3
