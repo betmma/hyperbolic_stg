@@ -1,23 +1,103 @@
-#include "shaders/math.glsl"
+#include "shaders/H2math.glsl"
+#include "shaders/H3math.glsl"
 
+uniform bool flat_=false; // if true, terrainFunc returns 0 and drastically increases performance
 uniform vec2 V0; 
 uniform vec2 V1;
 uniform vec2 V2;
-uniform float time;
-uniform float cam_height=1.0;
-uniform float cam_pitch=0.0; // Camera pitch angle in radians, negative to look down
+uniform float time=0.0;
+
+uniform vec3 cam_rotation_axis1 = vec3(1.0, 0.0, 0.0); // Default: X-axis for pitch
+uniform float cam_pitch = 0.0;              // Default: No pitch
+uniform vec3 cam_rotation_axis2 = vec3(0.0, 1.0, 0.0); // Default: Y-axis for yaw
+uniform float cam_yaw = 0.0;              // Default: No yaw
+uniform vec3 cam_rotation_axis3 = vec3(0.0, 0.0, 1.0); // Optional: Z-axis for roll
+uniform float cam_roll = 0.0;              // Optional: No roll
+
+uniform vec3 cam_translation = vec3(0.0, 0.0, 1.0); // Default: Boost along Z-axis
 
 UHPGeodesic G01 = make_geodesic_segment(V0, V1);
 UHPGeodesic G12 = make_geodesic_segment(V1, V2);
 UHPGeodesic G20 = make_geodesic_segment(V2, V0);
-const int MAX_REFLECTIONS = 40; 
+const int MAX_REFLECTIONS = 10; 
 
-// Minkowski metric g(A,B) = A.w*B.w - A.x*B.x - A.y*B.y - A.z*B.z
-// For the hyperboloid model with R=1: w^2 - x^2 - y^2 - z^2 = 1
-float minkowski_dot(vec4 a, vec4 b) {
-    return a.w*b.w - dot(a.xyz, b.xyz);
+
+vec2 shift_pos(vec2 pos, float time) {
+    // Shift coordinates based on time for movement. this is in embedding space so not actually hyperbolic
+    return pos + vec2(cos(time) * 0.0+0.001, -time * 0.0);
 }
 
+struct flipData {
+    vec2 p_in_fundamental;
+    int flipCount;
+};
+flipData flip(vec2 pos_xy_embedding) {
+    vec2 p_in_fundamental= hyperboloid_to_uhp(pos_xy_embedding);
+    int flipCount=0;
+    for (int i = 0; i < MAX_REFLECTIONS; ++i) {
+        bool reflected_in_iter = false;
+        if (!is_on_correct_side_of_edge(p_in_fundamental, G01, V2)) {
+            p_in_fundamental = reflect_point(p_in_fundamental, G01);
+            reflected_in_iter = true;
+            flipCount++;
+        }
+        if (!is_on_correct_side_of_edge(p_in_fundamental, G12, V0)) {
+            p_in_fundamental = reflect_point(p_in_fundamental, G12);
+            reflected_in_iter = true;
+            // flipCount++; // intended to make colored shape become quadrilateral
+        }
+        if (!is_on_correct_side_of_edge(p_in_fundamental, G20, V1)) {
+            p_in_fundamental = reflect_point(p_in_fundamental, G20);
+            reflected_in_iter = true;
+            flipCount++;
+        }
+
+        if (p_in_fundamental.y <= EPSILON * 0.1) { // Point escaped far below
+             return flipData(vec2(0.0, 0.0), -1);
+        }
+        if (p_in_fundamental.y <= EPSILON && p_in_fundamental.y > EPSILON * 0.1) { // Point very close to boundary
+             p_in_fundamental.y = EPSILON; // clamp it
+        }
+        
+        if (!reflected_in_iter) {
+            break; 
+        }
+        if (i == MAX_REFLECTIONS - 1) { 
+            return flipData(vec2(0.0, 0.0), -1); // Indicate non-convergence
+        }
+    }
+    return flipData(p_in_fundamental, flipCount);
+}
+
+vec4 colorFunc(vec2 pos_xy_embedding, float time) {
+    flipData fd = flip(pos_xy_embedding);
+    int flipCount = fd.flipCount;
+    if (flipCount < 0) { 
+        return vec4(1.0, 0.0, 1.0, 1.0); // Magenta for non-convergence
+    }
+    if (mod(flipCount,2)==0) { 
+        return vec4(1.0, 0.0, 0.0, 1.0);
+    }
+    return vec4(0.0, 0.0, 1.0, 1.0);
+}
+
+// returns embedding z. not perfectly hyperbolic, so value should be close to 0 and small 
+float terrainFunc(vec2 pos_xy_embedding, float time) {
+    if (flat_) {
+        return 0.0; // If flat_, return 0 for performance
+    }
+    vec2 shifted_pos = shift_pos(pos_xy_embedding, time);
+    flipData fd = flip(shifted_pos);
+    if (fd.flipCount < 0) { 
+        return 0.0; // Indicate non-convergence
+    }
+    vec2 p_in_fundamental = fd.p_in_fundamental;
+    vec3 bary_coords = get_hyperbolic_barycentric_coords(p_in_fundamental, V0, V1, V2);
+    float bx= bary_coords.x;
+    return (bx*bx*bx) * 0.6; 
+}
+
+// deprecated
 float random(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123); }
 float noise2D(vec2 st) { vec2 i=floor(st); vec2 f=fract(st); float a=random(i); float b=random(i+vec2(1,0)); float c=random(i+vec2(0,1)); float d=random(i+vec2(1,1)); vec2 u=f*f*(3.0-2.0*f); return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.y*u.x; }
 // Fractional Brownian Motion (fBm) for more natural terrain
@@ -35,57 +115,8 @@ float fbm(vec2 st) {
     return value;
 }
 
-vec2 shift_pos(vec2 pos, float time) {
-    // Shift coordinates based on time for movement
-    return pos + vec2(time * 0.0 + 0.001, -time * 0.0);
-}
-
-vec4 colorFunc(vec2 pos_xy_embedding, float time) {
-    vec2 p_in_fundamental= hyperboloid_to_uhp(pos_xy_embedding);
-    int flipCount;
-    for (int i = 0; i < MAX_REFLECTIONS; ++i) {
-        bool reflected_in_iter = false;
-        if (!is_on_correct_side_of_edge(p_in_fundamental, G01, V2)) {
-            p_in_fundamental = reflect_point(p_in_fundamental, G01);
-            reflected_in_iter = true;
-            flipCount++;
-        }
-        if (!is_on_correct_side_of_edge(p_in_fundamental, G12, V0)) {
-            p_in_fundamental = reflect_point(p_in_fundamental, G12);
-            reflected_in_iter = true;
-            // flipCount++;
-        }
-        if (!is_on_correct_side_of_edge(p_in_fundamental, G20, V1)) {
-            p_in_fundamental = reflect_point(p_in_fundamental, G20);
-            reflected_in_iter = true;
-            flipCount++;
-        }
-
-        if (p_in_fundamental.y <= EPSILON * 0.1) { // Point escaped far below
-             return vec4(0.0, 0.0, 0.0, 1.0); 
-        }
-        if (p_in_fundamental.y <= EPSILON && p_in_fundamental.y > EPSILON * 0.1) { // Point very close to boundary
-             p_in_fundamental.y = EPSILON; // clamp it
-        }
-        
-        if (!reflected_in_iter) {
-            break; 
-        }
-        if (i == MAX_REFLECTIONS - 1) { 
-            return vec4(1.0, 0.0, 1.0, 1.0); // Magenta for non-convergence
-        }
-    }
-    if (mod(flipCount,2)==0) { 
-        return vec4(1.0, 0.0, 0.0, 1.0);
-    }
-    return vec4(0.0, 0.0, 1.0, 1.0);
-}
-
-// Terrain height function
-// Input: pos_xy_embedding are x,y coordinates in the Minkowski embedding space.
-// Output: z-coordinate in the Minkowski embedding space for the terrain surface.
-float terrainFunc(vec2 pos_xy_embedding, float time) {
-    return -0.6;
+float terrainFunc_(vec2 pos_xy_embedding, float time) {
+    return 0;
 
     // Shift coordinates based on time for movement
     vec2 shifted_pos = shift_pos(pos_xy_embedding, time);
@@ -128,13 +159,14 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
     hit_terrain = false;
     vec3 sky_color = vec3(0.35, 0.55, 0.85); // Sky color
 
-    const int MAX_STEPS = 128;
+    const int MAX_STEPS = 64;
     const float MAX_DIST_HYPERBOLIC = 30.0; // Max hyperbolic distance
+    float step_coeff=0.6;
 
     for (int i = 0; i < MAX_STEPS; i++) {
         vec4 current_pos_H = cam_pos_H * cosh(t) + ray_dir_H * sinh(t);
 
-        if (current_pos_H.w <= 0.001) {
+        if (current_pos_H.w <= 0.005) {
             break; 
         }
 
@@ -197,7 +229,8 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
             return mix(sky_color, lit_terrain_color, fog_factor);
         }
 
-        float dt = abs(dist_to_surface_approx) * 0.6 / max(1.0, current_pos_H.w);
+        float dt = abs(dist_to_surface_approx) * step_coeff / max(1.0, current_pos_H.w);
+        step_coeff=step_coeff*1.06; // for far away terrain, increase step size to let ray reach further
         dt = max(0.005, dt); 
         
         t += dt;
@@ -208,6 +241,7 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
     }
     return sky_color;
 }
+
 
 
 // Main fragment shader function for Love2D
@@ -223,54 +257,42 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     uv.x *= love_ScreenSize.x / love_ScreenSize.y;   // Correct for aspect ratio
 
     // --- Camera Setup ---
-    float cam_hyperbolic_height = cam_height; // Hyperbolic distance for camera "up" translation from origin (0,0,0,1)
-    float cam_pitch_angle = cam_pitch;     // Radians, negative to look down towards terrain
-    float field_of_view_factor = -1.3; // Determines FOV; smaller magnitude = wider FOV
+    float field_of_view_factor = -1.3; 
 
-    // 1. Initial camera state at H^3 origin (embedding: (0,0,0,1))
-    vec4 cam_pos_H0 = vec4(0.0, 0.0, 0.0, 1.0); // (x,y,z,w)
+    // 1. Initial camera state at H^3 origin
+    vec4 cam_pos_H0 = vec4(0.0, 0.0, 0.0, 1.0); 
+    vec3 ray_dir_on_screen = normalize(vec3(uv.x, uv.y, field_of_view_factor));
+    vec4 rd_T0 = vec4(ray_dir_on_screen, 0.0); // Tangent vector at origin
+
+    // 2. Build combined rotation matrix
+    // Order of multiplication matters: M_new = M_next_op * M_current_op
+    // To apply Rot1 then Rot2: M_combined_rot = Rot2 * Rot1
+    mat4 M_rotation_component = mat4(1.0);
+    // Example: Apply first rotation (e.g. pitch), then second rotation (e.g. yaw)
+    // The axes are in the initial, unrotated frame.
+    M_rotation_component = create_rotation_lorentz_matrix(cam_rotation_axis2, cam_yaw) * M_rotation_component; // e.g., Yaw
+    M_rotation_component = create_rotation_lorentz_matrix(cam_rotation_axis1, cam_pitch) * M_rotation_component; // e.g., Pitch
+    M_rotation_component = create_rotation_lorentz_matrix(cam_rotation_axis3, cam_roll) * M_rotation_component; // e.g., Roll
+
+    // 3. Build boost matrix
+    mat4 M_boost_component = create_boost_lorentz_matrix(vec3(1,0,0), cam_translation.x)
+        * create_boost_lorentz_matrix(vec3(0,1,0), cam_translation.y)
+        * create_boost_lorentz_matrix(vec3(0,0,1), cam_translation.z);
+
+    // 4. Combine transformations: Rotations first (orient at origin), then boost (translate)
+    // M_total transforms from the canonical camera frame to the world frame.
+    mat4 M_total = M_boost_component * M_rotation_component;
+
+    // 5. Apply total transformation to canonical camera position and ray direction
+    vec4 final_cam_pos_H = M_total * cam_pos_H0;
+    vec4 final_ray_dir_H = M_total * rd_T0;
     
-    // Initial ray direction in the tangent space of cam_pos_H0.
-    // This is a normalized space-like vector (g(V,V) = -1).
-    // Its w-component is 0 because cam_pos_H0.xyz is (0,0,0).
-    vec3 ray_dir_on_screen = normalize(vec3(uv.x, uv.y, field_of_view_factor)); 
-    vec4 rd_T0 = vec4(ray_dir_on_screen, 0.0);
+    // Ensure ray direction is properly normalized in Minkowski sense if necessary,
+    // though Lorentz transforms should preserve it if rd_T0 was correct.
+    // minkowski_dot(rd_T0, rd_T0) is -1.
+    // minkowski_dot(final_ray_dir_H, final_ray_dir_H) should also be -1.
+    // minkowski_dot(final_cam_pos_H, final_ray_dir_H) should be 0.
 
-    // 2. Apply pitch rotation to the ray direction (rotation around X-axis of embedding space)
-    // This affects the YZ components of rd_T0.
-    float cos_p = cos(cam_pitch_angle);
-    float sin_p = sin(cam_pitch_angle);
-    // Standard 2D rotation matrix for (y,z) components
-    vec2 yz_original = rd_T0.yz;
-    vec2 yz_rotated = vec2(
-        yz_original.x * cos_p - yz_original.y * sin_p,
-        yz_original.x * sin_p + yz_original.y * cos_p
-    );
-    vec4 rd_T_pitched = vec4(rd_T0.x, yz_rotated.x, yz_rotated.y, rd_T0.w); // rd_T0.w is still 0
-
-    // 3. Apply boost transformation (hyperbolic translation along Z_embedding axis)
-    // This moves the camera "up" and transforms the pitched ray direction.
-    float b_cam_translation = cam_hyperbolic_height;
-    float ch_b = cosh(b_cam_translation);
-    float sh_b = sinh(b_cam_translation);
-
-    // Calculate final camera position on the hyperboloid
-    vec4 final_cam_pos_H;
-    final_cam_pos_H.x = cam_pos_H0.x; // Stays 0
-    final_cam_pos_H.y = cam_pos_H0.y; // Stays 0
-    final_cam_pos_H.z = cam_pos_H0.z * ch_b + cam_pos_H0.w * sh_b; // Becomes sinh(b_cam_translation)
-    final_cam_pos_H.w = cam_pos_H0.z * sh_b + cam_pos_H0.w * ch_b; // Becomes cosh(b_cam_translation)
-    // So, final_cam_pos_H = (0.0, 0.0, sinh(b_cam_translation), cosh(b_cam_translation))
-
-    // Transform the pitched ray direction vector to be tangent at final_cam_pos_H
-    vec4 final_ray_dir_H;
-    final_ray_dir_H.x = rd_T_pitched.x;
-    final_ray_dir_H.y = rd_T_pitched.y;
-    // Z and W components are transformed by the boost
-    final_ray_dir_H.z = rd_T_pitched.z * ch_b + rd_T_pitched.w * sh_b; // rd_T_pitched.w is 0
-    final_ray_dir_H.w = rd_T_pitched.z * sh_b + rd_T_pitched.w * ch_b; // rd_T_pitched.w is 0, so final_ray_dir_H.w = rd_T_pitched.z * sh_b
-    // This transformation ensures final_ray_dir_H is tangent to final_cam_pos_H and g(final_ray_dir_H, final_ray_dir_H) = -1.
-    
     bool terrain_was_hit;
     vec3 fragment_color = rayMarch(final_cam_pos_H, final_ray_dir_H, time, terrain_was_hit);
 

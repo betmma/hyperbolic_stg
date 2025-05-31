@@ -588,11 +588,12 @@ end
 -- end
 BackgroundPattern.PlasmaGlobe=plasmaGlobe
 
+local fractalShader=love.graphics.newShader('shaders/backgrounds/fractal.glsl')
 local Fractal=Shader:extend()
 function Fractal:new(args)
     Fractal.super.new(self,args)
     args=args or {}
-    self.shader=love.graphics.newShader('shaders/backgrounds/fractal.glsl')
+    self.shader=fractalShader
     local randomOffset=math.random(0,1000)
     self.paramSendFunction=function(self,shader)
         shader:send("iTime", love.timer.getTime()/3+randomOffset)
@@ -601,18 +602,25 @@ function Fractal:new(args)
 end
 BackgroundPattern.Fractal=Fractal
 
+-- tessellation on H^2 is calculated similar to main menu tessellation: calculate schwarz triangle vertices and send this fundamental triangle to shader. after flip, flip count and barycenter coordinates are used to calculate color and height.
+local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
 local H3Terrain=Shader:extend()
 function H3Terrain:new()
     H3Terrain.super.new(self)
-    self.shader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
-    self.cam_height=1
+    self.shader=H3TerrainShader
+    self.cam_translation={0,0,1}
     self.cam_pitch=-0.3
+    self.cam_yaw=0
+    self.cam_roll=0
     self.p,self.q,self.r=3,6,6
     local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
     local length=Shape.distance(V0[1],V0[2],V1[1],V1[2])
-    self.direction=0
+    self.length=length
+    self.moveLength=0.01
     self.paramSendFunction=function(self,shader)
-        local x,y,dir=Shape.rThetaPosT(0,-99,-(self.frame)%(length*2),0)
+        local l=length-self.moveLength
+        local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
+        dir=dir+(l>0 and math.pi or 0)
         local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
         local axisY=Shape.axisY
         V0[2]=V0[2]-axisY
@@ -622,36 +630,53 @@ function H3Terrain:new()
         shader:send("V1", V1)
         shader:send("V2", V2)
         -- shader:send("time", self.frame/60*3)
-        shader:send("cam_height", self.cam_height or 1)
+        shader:send("cam_translation", self.cam_translation or {0,0,0})
         shader:send("cam_pitch", self.cam_pitch or 0)
+        shader:send("cam_yaw", self.cam_yaw or 0)
+        shader:send("cam_roll", self.cam_roll or 0)
+        shader:send("flat_", false)
     end
 end
 H3Terrain.update=function(self,dt)
-    -- local t=self.frame%500
-    -- if t<=200 then
-    --     local x,y,dir=Shape.rThetaPosT(0,-99,math.sin(self.frame/200*math.pi/2)*400,0)
-    --     self.x,self.y,self.direction=x,y,dir
-    -- elseif t<=250 then
-    --     self.direction=self.direction+math.pi/50
-    -- elseif t<=450 then
-    --     local x,y,dir=Shape.rThetaPosT(0,-99,math.sin((self.frame-250)/200*math.pi/2)*-400,0)
-    --     self.x,self.y,self.direction=x,y,dir
-    -- elseif t<=500 then
-    --     self.direction=self.direction+math.pi/50
-    -- end
-
+    local xyRange=1.5
+    local xyStep=0.5*dt
+    self.moveLength=(self.moveLength+0.3/(1+self.cam_translation[1]^2))%(self.length*2)
     self.frame=self.frame+1
-    if love.keyboard.isDown("left") then
+    if love.keyboard.isDown("n") then
         self.cam_pitch = self.cam_pitch - dt
     end
-    if love.keyboard.isDown("right") then
+    if love.keyboard.isDown("m") then
         self.cam_pitch = self.cam_pitch + dt
     end
+    if love.keyboard.isDown("h") then
+        self.cam_yaw = self.cam_yaw - dt
+    end
+    if love.keyboard.isDown("j") then
+        self.cam_yaw = self.cam_yaw + dt
+    end
+    if love.keyboard.isDown("y") then
+        self.cam_roll = self.cam_roll - dt
+    end
+    if love.keyboard.isDown("u") then
+        self.cam_roll = self.cam_roll + dt
+    end
+    if love.keyboard.isDown("right") then
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] + xyStep,-xyRange,xyRange)
+    end
+    if love.keyboard.isDown("left") then
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] - xyStep,-xyRange,xyRange)
+    end
     if love.keyboard.isDown("up") then
-        self.cam_height = self.cam_height + dt
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] - xyStep,-xyRange,xyRange)
     end
     if love.keyboard.isDown("down") then
-        self.cam_height = self.cam_height - dt
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] + xyStep,-xyRange,xyRange)
+    end
+    if love.keyboard.isDown("i") then
+        self.cam_translation[3] = self.cam_translation[3] + dt
+    end
+    if love.keyboard.isDown("k") then
+        self.cam_translation[3] = self.cam_translation[3] - dt
     end
 end
 BackgroundPattern.H3Terrain=H3Terrain
