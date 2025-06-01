@@ -90,8 +90,12 @@ end
 
 Event.DelayEvent=DelayEvent
 
+-- smooth both start and stop (sin((x-0.5)*pi)*0.5+0.5)
 Event.sineIOProgressFunc=function(x)return math.sin((x-0.5)*math.pi)*0.5+0.5 end
+-- smooth start (sin(x*pi/2))
 Event.sineOProgressFunc=function(x)return math.sin(x*math.pi/2) end
+-- go back to initial (sin(x*pi))
+Event.sineBackProgressFunc=function(x)return math.sin(x*math.pi) end
 -- Event that changes [aimTable].[key] to [aimValue] in [easeFrame] frames. It can't modify plain variables. If [aimTable] is not provided, it defaults to [obj].
 -- [progressFunc] can be used to make smooth start or stop. e.g. sin(x*pi/2)
 -- [easeMode]='soft'|'hard'. 'soft' means [aimTable].[key] is added by d(progressFunc()) each frame and can be simultaneously changed by other sources, while 'hard' means the value is fixed by progressFunc.
@@ -144,5 +148,31 @@ function EaseEvent:update(dt)
 end
 
 Event.EaseEvent=EaseEvent
+
+---@class EaseEventBatchArgs
+---@field obj Object
+---@field aimTable table
+---@field aimKeys string[]
+---@field aimValues number[]
+---@field easeFrames number[]
+---@field progressFunc function|nil
+
+--- shorthand for changing multiple values of a table (no need to write multiple EaseEvents)
+---@param args EaseEventBatchArgs
+local EaseEventBatch=function(args)
+    local keys=args.aimKeys
+    local values=args.aimValues
+    local frames=args.easeFrames
+    local events={}
+    for i=1,#args.aimKeys do
+        args.aimKey=keys[i]
+        args.aimValue=values[i]
+        args.easeFrame=frames[i]
+        local event=EaseEvent(args)
+        table.insert(events,event)
+    end
+    return events
+end
+Event.EaseEventBatch=EaseEventBatch
 
 return Event
