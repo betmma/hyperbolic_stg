@@ -569,16 +569,16 @@ end
 plasmaGlobe.update=function(self,dt)
     -- dt=0.005
     self.frame=self.frame+1
-    -- if love.keyboard.isDown("left") then
+    -- if isDown("left") then
     --     self.cameraAngleX = self.cameraAngleX - self.rotationSpeed * dt
     -- end
-    -- if love.keyboard.isDown("right") then
+    -- if isDown("right") then
     --     self.cameraAngleX = self.cameraAngleX + self.rotationSpeed * dt
     -- end
-    -- if love.keyboard.isDown("up") then
+    -- if isDown("up") then
     --     self.cameraAngleY = self.cameraAngleY + self.rotationSpeed * dt
     -- end
-    -- if love.keyboard.isDown("down") then
+    -- if isDown("down") then
     --     self.cameraAngleY = self.cameraAngleY - self.rotationSpeed * dt
     -- end
 end
@@ -617,6 +617,7 @@ function H3Terrain:new()
     local length=Shape.distance(V0[1],V0[2],V1[1],V1[2])
     self.length=length
     self.moveLength=0.01
+    local autoMove=true
     self.paramSendFunction=function(self,shader)
         local l=length-self.moveLength
         local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
@@ -630,53 +631,66 @@ function H3Terrain:new()
         shader:send("V1", V1)
         shader:send("V2", V2)
         -- shader:send("time", self.frame/60*3)
-        shader:send("cam_translation", self.cam_translation or {0,0,0})
-        shader:send("cam_pitch", self.cam_pitch or 0)
+        local trans=self.cam_translation or {0,0,0}
+        if autoMove then
+            trans[3]=math.cos(self.frame/200)*-0.5+1.5
+        end
+        shader:send("cam_translation", trans)
+        local pitch=self.cam_pitch or 0
+        if autoMove then
+            pitch=math.cos(self.frame/200)*-0.3-0.3
+        end
+        shader:send("cam_pitch", pitch)
         shader:send("cam_yaw", self.cam_yaw or 0)
-        shader:send("cam_roll", self.cam_roll or 0)
-        shader:send("flat_", false)
+        local roll=self.cam_roll or 0
+        shader:send("cam_roll", roll)
+        shader:send("flat_", true)
     end
 end
 H3Terrain.update=function(self,dt)
     local xyRange=1.5
-    local xyStep=0.5*dt
+    local xyStep=0.9*dt
     self.moveLength=(self.moveLength+0.3/(1+self.cam_translation[1]^2))%(self.length*2)
     self.frame=self.frame+1
-    if love.keyboard.isDown("n") then
+    local keyIsDown=love.keyboard.isDown
+    if keyIsDown("n") then
         self.cam_pitch = self.cam_pitch - dt
     end
-    if love.keyboard.isDown("m") then
+    if keyIsDown("m") then
         self.cam_pitch = self.cam_pitch + dt
     end
-    if love.keyboard.isDown("h") then
+    if keyIsDown("h") then
         self.cam_yaw = self.cam_yaw - dt
     end
-    if love.keyboard.isDown("j") then
+    if keyIsDown("j") then
         self.cam_yaw = self.cam_yaw + dt
     end
-    if love.keyboard.isDown("y") then
+    if keyIsDown("y") then
         self.cam_roll = self.cam_roll - dt
     end
-    if love.keyboard.isDown("u") then
+    if keyIsDown("u") then
         self.cam_roll = self.cam_roll + dt
     end
-    if love.keyboard.isDown("right") then
-        self.cam_translation[1] = math.clamp(self.cam_translation[1] + xyStep,-xyRange,xyRange)
-    end
-    if love.keyboard.isDown("left") then
-        self.cam_translation[1] = math.clamp(self.cam_translation[1] - xyStep,-xyRange,xyRange)
-    end
-    if love.keyboard.isDown("up") then
-        self.cam_translation[2] = math.clamp(self.cam_translation[2] - xyStep,-xyRange,xyRange)
-    end
-    if love.keyboard.isDown("down") then
-        self.cam_translation[2] = math.clamp(self.cam_translation[2] + xyStep,-xyRange,xyRange)
-    end
-    if love.keyboard.isDown("i") then
+    if keyIsDown("i") then
         self.cam_translation[3] = self.cam_translation[3] + dt
     end
-    if love.keyboard.isDown("k") then
+    if keyIsDown("k") then
         self.cam_translation[3] = self.cam_translation[3] - dt
+    end
+    if Player.objects[1] then
+        keyIsDown=Player.objects[1].keyIsDown -- nmhjyu aren't recorded in player, so these keys use love.keyboard.isDown. arrow keys use player to restore in replay
+    end
+    if keyIsDown("right") then
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] + xyStep,-xyRange,xyRange)
+    end
+    if keyIsDown("left") then
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] - xyStep,-xyRange,xyRange)
+    end
+    if keyIsDown("up") then
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] - xyStep,-xyRange,xyRange)
+    end
+    if keyIsDown("down") then
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] + xyStep,-xyRange,xyRange)
     end
 end
 BackgroundPattern.H3Terrain=H3Terrain

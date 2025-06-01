@@ -76,9 +76,9 @@ vec4 colorFunc(vec2 pos_xy_embedding, float time) {
         return vec4(1.0, 0.0, 1.0, 1.0); // Magenta for non-convergence
     }
     if (mod(flipCount,2)==0) { 
-        return vec4(1.0, 0.0, 0.0, 1.0);
+        return vec4(0.8, 0.2, 0.2, 1.0);
     }
-    return vec4(0.0, 0.0, 1.0, 1.0);
+    return vec4(0.2, 0.2, 0.8, 1.0);
 }
 
 // returns embedding z. not perfectly hyperbolic, so value should be close to 0 and small 
