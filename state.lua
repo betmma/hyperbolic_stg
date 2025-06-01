@@ -176,17 +176,24 @@ G={
                 BGM:play('title')
             end,
             update=function(self,dt)
+                if isPressed('f3') then
+                    SFX:play('cancel',true)
+                    self.backgroundPattern:randomize()
+                end
                 self.backgroundPattern:update(dt)
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
                 MUSIC_ROOM=function(self)self:switchState(self.STATES.MUSIC_ROOM)end,
                 OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
                 Asset.titleBatch:clear()
-                Asset.titleBatch:add(Asset.title,70,0,0,0.5,0.5,0,0)
+                Asset.titleBatch:add(Asset.title,70,-30,0,0.5,0.5,0,0)
             end,
             draw=function(self)
             end,
             drawText=function(self)
+                if love.keyboard.isDown('f2') then
+                    return
+                end
                 Asset.titleBatch:flush()
                 love.graphics.draw(Asset.titleBatch)
                 -- -- self.updateDynamicPatternData(self.patternData)
@@ -202,7 +209,7 @@ G={
                     love.graphics.print(name,300,optionBaseY+index*50,0,1,1)
                 end
                 love.graphics.rectangle("line",300,optionBaseY+self.currentUI.chosen*50,200,40)
-                love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                -- love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end
         },
@@ -1498,6 +1505,9 @@ G._drawBatches=function(self)
 end
 -- transform the coordinate system to make the player in the center of the screen. If [getParams] is true, return the translation and scaling parameters instead of applying them. (for shader use)
 G.followModeTransform=function(self, getParams)
+    if G.viewMode.mode~=G.VIEW_MODES.FOLLOW then
+        return 0,0,1
+    end
     local screenWidth, screenHeight = love.graphics.getDimensions()
     local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
     if G.viewOffset then

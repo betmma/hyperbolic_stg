@@ -7,6 +7,7 @@ return {
         -- after 60 seconds you can only get information from reflections. In this phase the key is to move in a circle, rotating with →↓←↑, instead of finding the direction, so that you don't get confused by the reflections.
         G.levelRemainingFrame=7200
         G.levelIsTimeoutSpellcard=true
+        G.UseHypRotShader=false
         Shape.removeDistance=100000
         local a,b
         local en

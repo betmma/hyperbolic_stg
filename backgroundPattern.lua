@@ -82,7 +82,15 @@ local function drawSideFace(vertices,color)
     local colorref={love.graphics.getColor()}
     love.graphics.setColor(color[1],color[2],color[3])
     -- without triangulate love.graphics.polygon("fill",vertices) is buggy at some concave part
-    local triangles = love.math.triangulate(vertices)
+    local ok, triangles = pcall(love.math.triangulate,vertices)
+    if not ok then
+        local stringVertices = ""
+        for i = 1, #vertices, 2 do
+            stringVertices = stringVertices .. "(" .. string.format("%.2f", vertices[i]) .. ", " .. string.format("%.2f", vertices[i + 1]) .. ") "
+        end
+        error("Error triangulating vertices: "..stringVertices..'\n'..triangles)
+        return
+    end
     for i, triangle in ipairs(triangles) do
         love.graphics.polygon("fill", triangle)
     end
@@ -125,7 +133,11 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
             goto continue
         end
         adjacentPoints[#adjacentPoints+1]=newpoint
-        sidesTable[#sidesTable+1]={point,newpoint,index=drawedPointsNum*angleNum+i}
+        local len=#sidesTable
+        sidesTable[len+1]={point,newpoint,index=len+1}
+        if len+1>=toDrawNum then
+            break
+        end
         ::continue::
     end
     -- if leftMost and iteCount>2 then
@@ -143,7 +155,7 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         pointsQueue[#pointsQueue+1]={newpoint,newangle,iteCount}
         -- tesselation(newpoint,newangle,sideNum,angleNum,iteCount,color,i==1,centerPoint)
     end
-    if drawedPointsNum<toDrawNum/angleNum and pointsQueue[drawedPointsNum]then 
+    if #sidesTable<toDrawNum and pointsQueue[drawedPointsNum]then 
         tesselation(pointsQueue[drawedPointsNum][1],pointsQueue[drawedPointsNum][2],sideNum,angleNum,pointsQueue[drawedPointsNum][3],centerPoint,toDrawNum,sidesTable, skipInRangeLimit)
     else
         pointsQueue={}
@@ -163,6 +175,8 @@ local function randomSideNumAndAngleNum()
     end
     return sideNum,angleNum
 end
+-- local shader=love.graphics.newShader('shaders/triangleTextureDrawerVertex.glsl','shaders/triangleTextureDrawer.glsl')
+local shader=ShaderScan:load_shader('shaders/flipTessellation.glsl')
 
 -- a tesselation that moves and rotates. It's used in main menu.
 local MainMenuTesselation=BackgroundPattern:extend()
@@ -170,72 +184,68 @@ function MainMenuTesselation:new(args)
     MainMenuTesselation.super.new(self,args)
     -- self.name='Tesselation'
     args=args or {}
-    self.point=args.point or {x=400,y=150}
-    self.limit=args.limit or {xmin=300,xmax=500,ymin=100,ymax=600}
-    self.angle=args.angle or math.pi/3
-    self.dangle=args.dangle or (0.004*math.randomSign())
-    self.speed=args.speed or (0.0045*math.randomSign())
-    self.sideNum=args.sideNum
-    self.angleNum=args.angleNum
-    if not self.sideNum or not self.angleNum then
-        self.sideNum,self.angleNum=4,5--randomSideNumAndAngleNum()
-    end
+    self.p=args.p or 2
+    self.q=args.q or 5
+    self.r=args.r or 5
+    self.shader=shader
+    self.uvPoses={{265/800,376/600},{534/800,376/600},{399/800,140/600}}
+    -- self.uvPoses={{0.5-3^0.5/4,1},{0.5+3^0.5/4,1},{0.5,0}}
+    self.frame=0
 end
 
 function MainMenuTesselation:update(dt)
-    local newpoint,newAngle=self.newPoints or {self.point},self.newAngles or {self.angle}
-    -- if the current point is out of limit, find a new point from the drawn points (so that it seems like an infinite pattern)
-    -- if not math.inRange(self.point.x,self.point.y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax)  then
-    --     for i=1,#newpoint do
-    --         if math.inRange(newpoint[i].x,newpoint[i].y,self.limit.xmin,self.limit.xmax,self.limit.ymin,self.limit.ymax) then
-    --             self.point=newpoint[i]
-    --             self.angle=newAngle[i]
-    --         end
-    --     end
-    -- end
-    local centerExpected={x=400,y=300}
-    local currentMinimumDistance=Shape.distance(self.point.x,self.point.y,centerExpected.x,centerExpected.y)
-    if currentMinimumDistance>math.min(calculateSideLength(self.sideNum,self.angleNum)/2,100) then
-        for i=1,#newpoint do
-            local distance=Shape.distance(newpoint[i].x,newpoint[i].y,centerExpected.x,centerExpected.y)
-            if distance<currentMinimumDistance then
-                self.point=newpoint[i]
-                self.angle=newAngle[i]
-                currentMinimumDistance=distance
-            end
-        end
-    end
-
-    self.point={x=self.point.x-(self.point.x-400)*self.speed,y=self.point.y-(self.point.y-Shape.axisY)*self.speed}
-    self.angle=self.angle+self.dangle
+    self.frame=self.frame+1
 end
 
+function MainMenuTesselation:randomize()
+    local rand=math.random(1,3)
+    self.uvPoses[rand],self.uvPoses[rand%3+1]=self.uvPoses[rand%3+1],self.uvPoses[rand] -- swap 2 random uvPoses
+    local tried=0
+    while tried<20 do
+        local p=math.random(3,14)/2
+        local q=math.random(3,14)/2
+        local r=math.random(3,14)/2
+        if 1/p+1/q+1/r<1 then
+            self.p=p
+            self.q=q
+            self.r=r
+            return
+        end
+        tried=tried+1
+    end
+end
+
+local testImage = love.graphics.newImage( "assets/test.png" )
+testImage:setWrap("repeat", "repeat") -- set texture to repeat so that it can be used in shader
 function MainMenuTesselation:draw()
     local ay=Shape.axisY
-    Shape.axisY=-10
-    -- tesselation({x=self.point.x+1,y=self.point.y+1},self.angle,5,5,0,126.2,{},{0.35,0.15,0.8})
+    Shape.axisY=-2
     local width=love.graphics.getLineWidth()
     love.graphics.setLineWidth(10)
-    local sides
-    self.newPoints,self.newAngles,sides=tesselation(self.point,self.angle,self.sideNum,self.angleNum,0,nil,380)
-    -- table.sort(sides,function(a,b)
-    --     return a[1].y+a[2].y>b[1].y+b[2].y
-    -- end)
-    for i=1,#sides do
-        local centerX,centerY=(sides[i][2].x+sides[i][1].x)/2,(sides[i][2].y+sides[i][1].y)/2
-        local index=sides[i].index
-        -- local color={math.cos(index/100)*0.8+0.2,math.cos(index/70)*0.5+0.5,math.sin(centerX/centerY/10)*0.7+0.3}
-        local color=index%2==0 and {0.4,0.3,0.1} or {0.1,0.4,0.3}
-        local vertices=getSideFacePolygonVertices(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,self.sideNum,self.angleNum)
-        drawSideFace(vertices,color)
-    end
-    for i=1,#sides do
-        drawSideLine(sides[i][1].x,sides[i][1].y,sides[i][2].x,sides[i][2].y,{0.35,0.15,0.8})
-    end
+    love.graphics.setShader(self.shader)
+    local uvPoses=self.uvPoses
+    local t=self.frame/151
+    local x,y=400+50*math.sin(t),300+220*math.cos(t)
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},self.frame/131)
+    -- local V0 = {400, 300}
+    -- local V1 = {500, 300}
+    -- local V2 = {400, 400}
+    shader:send("V0", V0)
+    shader:send("V1", V1)
+    shader:send("V2", V2)
+    shader:send("tex_uv_V0", uvPoses[1])
+    shader:send("tex_uv_V1", uvPoses[2])
+    shader:send("tex_uv_V2", uvPoses[3])
+    shader:send("shape_axis_y", Shape.axisY)
+    -- love.graphics.draw(testImage, 0,0)
+    love.graphics.draw(Asset.backgroundImage, 0,0)
+    love.graphics.setShader()
+    -- love.graphics.circle("fill",V0[1],V0[2],25)
+    -- love.graphics.circle("fill",V1[1],V1[2],25)
+    -- love.graphics.circle("fill",V2[1],V2[2],25)
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
 end
-
 BackgroundPattern.MainMenuTesselation=MainMenuTesselation
 
 local Square=BackgroundPattern:extend()
@@ -491,5 +501,198 @@ function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an
 end
 
 BackgroundPattern.Pendulum=Pendulum
+
+-- love2d draws a white rectangle then shader draws pattern.
+local Shader=BackgroundPattern:extend()
+---@class ShaderBackground
+---@class love.Shader
+---@class ShaderBackgroundArgs
+---@field shader love.Shader the shader to use for drawing the background
+---@field paramSendFunction fun(self:ShaderBackground,shader:love.Shader):nil a function to send parameters to the shader, called in Shader:draw()
+
+---@param args ShaderBackgroundArgs
+function Shader:new(args)
+    Shader.super.new(self,args)
+    args=args or {}
+    self.shader=args.shader
+    self.frame=0
+    self.paramSendFunction=args.paramSendFunction or function(self,shader) end
+end
+function Shader:update(dt)
+    self.frame=self.frame+1
+end
+function Shader:draw()
+    local colorref={love.graphics.getColor()}
+    love.graphics.setColor(1,1,1)
+    -- love.graphics.rectangle('fill',0,0,800,600)
+    love.graphics.setShader(self.shader)
+    self:paramSendFunction(self.shader) -- send parameters to shader
+    local translateX,translateY,scale=G:followModeTransform(true)
+    love.graphics.rectangle('fill',-translateX/scale,-translateY/scale,800/scale,600/scale)
+    love.graphics.setShader()
+    love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4])
+end
+
+BackgroundPattern.Shader=Shader
+
+local plasmaGlobe=Shader:extend()
+function plasmaGlobe:new(args)
+    plasmaGlobe.super.new(self,args)
+    args=args or {}
+    self.shader=love.graphics.newShader('shaders/backgrounds/plasmaGlobe.glsl')
+    -- Create iChannel0 (noise texture)
+    local noiseSize = 256
+    local imageData = love.image.newImageData(noiseSize, noiseSize)
+
+    -- The shader samples .x and .yx from iChannel0, so we need at least two noise channels (R and G)
+    imageData:mapPixel(function(x, y, r, g, b, a)
+        local val1 = math.random() -- For .x component
+        local val2 = math.random() -- For .y component (used in .yx)
+        return val1, val2, 0, 1 -- Store in R and G channels
+    end)
+    local iChannel0 = love.graphics.newImage(imageData)
+    iChannel0:setFilter("linear", "linear") -- ShaderToy textures usually have linear filtering
+    iChannel0:setWrap("repeat", "repeat")   -- Important for noise sampling
+    self.cameraAngleX = math.pi/4 -- Corresponds to yaw (left/right)
+    self.cameraAngleY = 0.0 -- Corresponds to pitch (up/down)
+    self.rotationSpeed = math.pi / 1.5 -- Radians per second, adjust for sensitivity
+    self.paramSendFunction=function(self,shader)
+        shader:send("iTime", love.timer.getTime())
+        shader:send("iResolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+        
+        shader:send("u_camAngleX", self.cameraAngleX)
+        shader:send("u_camAngleY", self.cameraAngleY)
+
+        shader:send("iChannel0", iChannel0)
+    end
+end
+plasmaGlobe.update=function(self,dt)
+    -- dt=0.005
+    self.frame=self.frame+1
+    -- if isDown("left") then
+    --     self.cameraAngleX = self.cameraAngleX - self.rotationSpeed * dt
+    -- end
+    -- if isDown("right") then
+    --     self.cameraAngleX = self.cameraAngleX + self.rotationSpeed * dt
+    -- end
+    -- if isDown("up") then
+    --     self.cameraAngleY = self.cameraAngleY + self.rotationSpeed * dt
+    -- end
+    -- if isDown("down") then
+    --     self.cameraAngleY = self.cameraAngleY - self.rotationSpeed * dt
+    -- end
+end
+-- testShader.draw=function(self)
+--     Shader.draw(self)
+--     love.graphics.print(''..self.cameraAngleX..', '..self.cameraAngleY, 310, 100)
+-- end
+BackgroundPattern.PlasmaGlobe=plasmaGlobe
+
+local fractalShader=love.graphics.newShader('shaders/backgrounds/fractal.glsl')
+local Fractal=Shader:extend()
+function Fractal:new(args)
+    Fractal.super.new(self,args)
+    args=args or {}
+    self.shader=fractalShader
+    local randomOffset=math.random(0,1000)
+    self.paramSendFunction=function(self,shader)
+        shader:send("iTime", love.timer.getTime()/3+randomOffset)
+        shader:send("iResolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+    end
+end
+BackgroundPattern.Fractal=Fractal
+
+-- tessellation on H^2 is calculated similar to main menu tessellation: calculate schwarz triangle vertices and send this fundamental triangle to shader. after flip, flip count and barycenter coordinates are used to calculate color and height.
+local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
+local H3Terrain=Shader:extend()
+function H3Terrain:new()
+    H3Terrain.super.new(self)
+    self.shader=H3TerrainShader
+    self.cam_translation={0,0,1}
+    self.cam_pitch=-0.3
+    self.cam_yaw=0
+    self.cam_roll=0
+    self.p,self.q,self.r=3,6,6
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
+    local length=Shape.distance(V0[1],V0[2],V1[1],V1[2])
+    self.length=length
+    self.moveLength=0.01
+    local autoMove=true
+    self.paramSendFunction=function(self,shader)
+        local l=length-self.moveLength
+        local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
+        dir=dir+(l>0 and math.pi or 0)
+        local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
+        local axisY=Shape.axisY
+        V0[2]=V0[2]-axisY
+        V1[2]=V1[2]-axisY
+        V2[2]=V2[2]-axisY
+        shader:send("V0", V0)
+        shader:send("V1", V1)
+        shader:send("V2", V2)
+        -- shader:send("time", self.frame/60*3)
+        local trans=self.cam_translation or {0,0,0}
+        if autoMove then
+            trans[3]=math.cos(self.frame/200)*-0.5+1.5
+        end
+        shader:send("cam_translation", trans)
+        local pitch=self.cam_pitch or 0
+        if autoMove then
+            pitch=math.cos(self.frame/200)*-0.3-0.3
+        end
+        shader:send("cam_pitch", pitch)
+        shader:send("cam_yaw", self.cam_yaw or 0)
+        local roll=self.cam_roll or 0
+        shader:send("cam_roll", roll)
+        shader:send("flat_", true)
+    end
+end
+H3Terrain.update=function(self,dt)
+    local xyRange=1.5
+    local xyStep=0.9*dt
+    self.moveLength=(self.moveLength+0.3/(1+self.cam_translation[1]^2))%(self.length*2)
+    self.frame=self.frame+1
+    local keyIsDown=love.keyboard.isDown
+    if keyIsDown("n") then
+        self.cam_pitch = self.cam_pitch - dt
+    end
+    if keyIsDown("m") then
+        self.cam_pitch = self.cam_pitch + dt
+    end
+    if keyIsDown("h") then
+        self.cam_yaw = self.cam_yaw - dt
+    end
+    if keyIsDown("j") then
+        self.cam_yaw = self.cam_yaw + dt
+    end
+    if keyIsDown("y") then
+        self.cam_roll = self.cam_roll - dt
+    end
+    if keyIsDown("u") then
+        self.cam_roll = self.cam_roll + dt
+    end
+    if keyIsDown("i") then
+        self.cam_translation[3] = self.cam_translation[3] + dt
+    end
+    if keyIsDown("k") then
+        self.cam_translation[3] = self.cam_translation[3] - dt
+    end
+    if Player.objects[1] then
+        keyIsDown=Player.objects[1].keyIsDown -- nmhjyu aren't recorded in player, so these keys use love.keyboard.isDown. arrow keys use player to restore in replay
+    end
+    if keyIsDown("right") then
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] + xyStep,-xyRange,xyRange)
+    end
+    if keyIsDown("left") then
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] - xyStep,-xyRange,xyRange)
+    end
+    if keyIsDown("up") then
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] - xyStep,-xyRange,xyRange)
+    end
+    if keyIsDown("down") then
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] + xyStep,-xyRange,xyRange)
+    end
+end
+BackgroundPattern.H3Terrain=H3Terrain
 
 return BackgroundPattern

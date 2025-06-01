@@ -1,4 +1,4 @@
-VERSION="0.4.5.8"
+VERSION="0.4.5.8~1"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -10,6 +10,8 @@ require'misc'
 local input = require "input"
 function love.load()
     Object,GameObject = unpack(require "classic")
+    ---@type ShaderScan
+    ShaderScan = (require 'shaderScan')()
     Shape = require "shape"
     require "shapeFunctions"
     Circle = require "circle"
