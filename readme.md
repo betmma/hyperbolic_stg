@@ -32,9 +32,10 @@ Completed scenes display as green and give 10 XP each.
 Perfectly completed (without being harmed) scenes display as golden and give 12 XP each.
 
 ##### Todo:
-1. Use shader to draw hyperbolic polygon in background.
-2. ~~Use shader to perform Player:testRotate (hyperbolic rotate)~~.
-(I suppose these two will hugely improve efficiency)
+1. Rearrange levels
+2. Nickname system
+3. Dialogue system
+4. Story
 
 
 ### Acknowledgements

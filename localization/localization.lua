@@ -145,6 +145,10 @@ return {
                 en_us = 'Nareko Michigami',
                 zh_cn = '道神驯子',
             },
+            minamitsu = {
+                en_us = 'Minamitsu Murasa',
+                zh_cn = '村纱水蜜',
+            }
         },
         spellcards = {
             -- level 1
@@ -780,6 +784,16 @@ return {
                     zh_cn = '看似无限的空间迅速被子弹填满。所有的道路现在都很危险。',
                 }
             },
+            [90] = {
+                spellName = {
+                    en_us = 'Heavy Sign "Weight of a Thousand Fathoms"',
+                    zh_cn = '重符「千寻之重」',
+                },
+                quote = {
+                    en_us = 'The huge anchor explodes into countless pieces. Must guide it to the deep corners of the area.',
+                    zh_cn = '巨大的锚爆炸成无数碎片。必须引导它到区域的深处。',
+                }
+            }
         },
     },
     ui = {
