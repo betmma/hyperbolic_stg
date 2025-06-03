@@ -106,11 +106,12 @@ end
 function Charge:draw(dt)
     local data=self.sprite.data
     local size=self.sprite.data.sizeX
+    local _,_,r=Shape.getCircle(self.obj.x,self.obj.y,self.radius)
     for k,particle in pairs(self.particles) do
         if particle.frame>=self.particleFrame then
             goto continue
         end
-        local scale=self.particleSize*0.95^(self.particleFrame-particle.frame)
+        local scale=self.particleSize*0.95^(self.particleFrame-particle.frame)*(r/3)
         particle.x,particle.y=Shape.rThetaPos(self.obj.x,self.obj.y,particle.speed*(-particle.frame+self.particleFrame),particle.direction)
         local x,y=particle.x,particle.y
         Asset.effectBatch:setColor(self.color[1],self.color[2],self.color[3],1-0.3*particle.frame/self.particleFrame)

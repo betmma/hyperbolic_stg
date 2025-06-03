@@ -12,7 +12,7 @@ return {
         en=Enemy{x=400,y=600000,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=800000,noBorder=true}
         local center={x=400,y=600000}
-        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,700,4))
+        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,400,4))
         local largerBorder=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,720,4),false)
         player.moveMode=Player.moveModes.Natural
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
@@ -47,7 +47,7 @@ return {
             local times=self.spawnEvent.executedTimes
             if times%3==2 then
                 SFX:play('enemyCharge',true,self.spawnSFXVolume)
-                Effect.Charge{obj=self}
+                Effect.Charge{obj=a}
                 Event.DelayEvent{
                     obj=self,delayFrame=60,executeFunc=function()
                         SFX:play('enemyPowerfulShot',true,0.7)
@@ -64,9 +64,21 @@ return {
                                 SFX:play('kill',true,1)
                                 BulletSpawner{x=large.x,y=large.y,period=1,frame=0,lifeFrame=1,bulletNumber=500,bulletSpeed=25,bulletLifeFrame=10000,angle=0,spawnCircleRadius=10,spawnCircleAngle='0+999',bulletSprite=BulletSprites.lightRound.blue,highlight=true,bulletSize=1.5,bulletEvents={
                                     function(cir,args,self)
-                                        if not largerBorder:inside(cir.x,cir.y) then
-                                            cir:remove()
-                                        end
+                                        Event.LoopEvent{
+                                            obj=cir,period=1,times=1,conditionFunc=function()
+                                                return not largerBorder:inside(cir.x,cir.y)
+                                            end,
+                                            executeFunc=function()
+                                                Event.EaseEvent{
+                                                    obj=cir,aimTable=cir,aimKey='spriteTransparency',aimValue=0,easeFrame=90
+                                                }
+                                                Event.DelayEvent{
+                                                    obj=cir,delayFrame=90,executeFunc=function()
+                                                        cir:remove()
+                                                    end
+                                                }
+                                            end
+                                        }
                                     end
                                 }}
                                 large:remove()
