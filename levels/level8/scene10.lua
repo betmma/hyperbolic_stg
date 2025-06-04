@@ -64,6 +64,10 @@ return {
                                 SFX:play('kill',true,1)
                                 BulletSpawner{x=large.x,y=large.y,period=1,frame=0,lifeFrame=1,bulletNumber=500,bulletSpeed=25,bulletLifeFrame=10000,angle=0,spawnCircleRadius=10,spawnCircleAngle='0+999',bulletSprite=BulletSprites.lightRound.blue,highlight=true,bulletSize=1.5,bulletEvents={
                                     function(cir,args,self)
+                                        if args.index%2==1 then
+                                            cir.invincible=true
+                                            cir:changeSpriteColor('purple')
+                                        end
                                         Event.LoopEvent{
                                             obj=cir,period=1,times=1,conditionFunc=function()
                                                 return not largerBorder:inside(cir.x,cir.y)

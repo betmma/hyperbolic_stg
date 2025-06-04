@@ -109,6 +109,9 @@ end
 ---@return table|number
 -- extract a and b from a+b string. used to replace string format with table format in bulletSpawner
 function math._extractABfromstr(str)
+    if type(str)=="table" then
+        return str -- already a table
+    end
     -- Check if the string is in the format 'a+b' where a can be negative
     local a, b = string.match(str, "([%-]?%d+%.?%d*)%+(%d+%.?%d*)")
     

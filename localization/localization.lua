@@ -793,6 +793,16 @@ return {
                     en_us = 'The huge anchor explodes into countless pieces. Must guide it to the deep corners of the area.',
                     zh_cn = '巨大的锚爆炸成无数碎片。必须引导它到区域的深处。',
                 }
+            },
+            [91] = {
+                spellName = {
+                    en_us = 'Drowning Sign "Double Vortex"',
+                    zh_cn = '溺符「双重漩涡」',
+                },
+                quote = {
+                    en_us = 'The water is swirling around, and I can\'t find the way out. It\'s like being trapped in a whirlpool.',
+                    zh_cn = '水在旋转，我找不到出路。就像被困在漩涡中一样。',
+                }
             }
         },
     },

@@ -369,7 +369,7 @@ function Shape.rThetaPosPolarAngle(x,y,r,theta)
     local x2,y2,r2=Shape.getCircle(x,y,r)
     local xp,yp=x2,y2+r2 -- theta=pi/2
     local retX,retY=Shape.rotateAround(xp,yp,theta-math.pi/2,x,y)
-    local finaltheta=math.atan2(retY-y,retX-x)%(math.pi*2)
+    local finaltheta=math.atan2(retY-y2,retX-x2)%(math.pi*2)
     if finaltheta>math.pi*3/2 and theta<math.pi/2 then 
         div=div-1
     end
