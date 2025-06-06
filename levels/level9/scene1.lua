@@ -3,10 +3,11 @@ return {
     user='minamitsu',
     spellName='Drowning Sign "Double Vortex"',
     make=function()
+        -- solution: use side shot, toggle naturalDirection to near 0 and dodge by moving vertically
         G.levelRemainingFrame=7200
         G.backgroundPattern:remove()
         -- G.backgroundPattern=BackgroundPattern.H3Terrain()
-        Shape.removeDistance=1000
+        Shape.removeDistance=2500
         local en,a
         en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200,hpSegments={0.75,0.5,0.25},hpSegmentsFunc=function(self,hpLevel)
             SFX:play('enemyCharge',true)
@@ -32,20 +33,20 @@ return {
         spawnBatchFunc=function(self)
             SFX:play('enemyShot',true,1)
             local waveTimes=en:getHPLevel()
-            local num=3+2*waveTimes
+            local num=5+1*waveTimes
             local angle=self.angle
             local speed=math.eval(self.bulletSpeed)
             local size=math.eval(self.bulletSize)
             local spawnCircleAngle0=math.eval(0,0.1)+math.pi/2
-            for ri=1,50,1 do
+            for ri=1,30,1 do
                 local spawnCircleAngle=spawnCircleAngle0+math.eval(0,0.1)
                 for i = 1, num, 1 do
                     local ratio=(i-num/2)/num*2
                     local angle1=math.pi*math.sign(ratio)*(math.abs(ratio))^0.5+spawnCircleAngle
-                    local x,y=Shape.rThetaPos(player.x,player.y,ri^0.5*20,angle1)
+                    local x,y=Shape.rThetaPos(player.x,player.y,ri^0.5*30,angle1)
                     local direction=Shape.to(x,y,player.x,player.y)-Shape.to(player.x,player.y,x,y)+math.pi+angle
                     self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=ri*3,sprite=self.bulletSprite}
-                    x,y=Shape.rThetaPos(player.x,player.y,ri^0.5*20,angle1+math.pi)
+                    x,y=Shape.rThetaPos(player.x,player.y,ri^0.5*30,angle1+math.pi)
                     self:spawnBulletFunc{x=x,y=y,direction=direction+math.pi+player.naturalDirection,speed=speed/2,radius=size,index=i,batch=self.bulletBatch,fogTime=ri*3,sprite=BulletSprites.rain.blue}
                 end
             end
@@ -56,7 +57,7 @@ return {
                 dis0=dis0+15
             end
             local x0,y0=Shape.rThetaPos(en.x,en.y,dis0,toPlayer0-math.pi*1/4)
-            local num=10
+            local num=20
             for waveIndex=1,waveTimes-1 do
                 local xn,yn=Shape.rThetaPos(en.x,en.y,dis0+20*waveIndex,toPlayer0-math.pi*(math.mod2Sign(waveIndex)*1/4))
                 local dir=Shape.to(x0,y0,xn,yn)
