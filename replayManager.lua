@@ -166,11 +166,12 @@ replayManager.replayTweak=function(replay)
     -- below is compat with old replay. Newer modification should be applied earlier, otherwise old modification will be overwritten by the new one.
     if replay.time<'2024-12-10 21:20:00' then
         player.shootInterval=1
-        player.shootRows.back.straight.damage=1
-        player.shootRows.side.straight.damage=1
-        player.shootRows.front.straight.damage=1
-        player.shootRows.front.homing.damage=1
-        player.shootRows.back.straight.num=player.shootRows.back.straight.num*2
+        local bs=player:findShootType('back','straight')
+        bs.damage=1
+        bs.num=bs.num*2
+        player:findShootType('side','straight').damage=1
+        player:findShootType('front','straight').damage=1
+        player:findShootType('front','homing').damage=1
     end
     local version=replay.version or '0.0.0'
     player.version=version -- version<0.2.0.1 old graze effect is in player.lua

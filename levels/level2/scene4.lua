@@ -2,12 +2,12 @@ return {
     ID=15,
     quote='Heptagrams are more mysterious than pentagrams.',
     user='takane',
-    spellName='Preparation "Suwa Daimyōjin Invocation"',
+    spellName='Leaf Skill "Green Heptagram"',
     make=function()
         local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
         local b
-        b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rice.blue,fogEffect=false,
+        b=BulletSpawner{x=400,y=150,period=600,frame=540,lifeFrame=10000,bulletNumber=8,bulletSpeed=210,angle='0+9999',bulletSprite=BulletSprites.rain.green,fogEffect=false,
         spawnBulletFunc=function(self,args)
             local en
             local d0=args.direction

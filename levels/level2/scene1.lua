@@ -2,10 +2,10 @@ return {
     ID=14,
     quote='Moving through this "square" grid is so difficult.',
     user='nemuno',
-    spellName='Illusion Trap "Killing Grid"',
+    spellName='Blade Exhaustion Sign "Killing Grid"',
     make=function()
         local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800,speed=5}
-        local a=BulletSpawner{x=400,y=300,period=300,frame=180,lifeFrame=10000,bulletNumber=0,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.knife.blue,fogEffect=true,fogTime=60,bulletEvents={
+        local a=BulletSpawner{x=400,y=300,period=300,frame=180,lifeFrame=10000,bulletNumber=0,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.knife.red,fogEffect=true,fogTime=60,bulletEvents={
             function(cir,args)
                 local spd=cir.speed
                 cir.speed=0
@@ -29,7 +29,7 @@ return {
             -- local nx,ny
             local inum=6
             local player=Player.objects[1]
-            Shape.timeSpeed=0
+            -- Shape.timeSpeed=0
             local dashDirection=angle2+math.pi/2*(self.spawnEvent.executedTimes%2==1 and 1 or -1)
             local dashAmount=4
             en.x,en.y=Shape.rThetaPos(en.x,en.y,-2*dashAmount,dashDirection)
@@ -44,7 +44,7 @@ return {
                         delayFrame=i+ii*3,
                         executeFunc=function(self)
                             if i==num and ii==inum then
-                                Shape.timeSpeed=1
+                                -- Shape.timeSpeed=1
                             end
                             local angle3=angle2+math.pi/60*(ii-inum/2)
                             local x,y=Shape.rThetaPos(self.obj.x,self.obj.y,radi,angle3)
@@ -115,7 +115,7 @@ return {
             -- local nx,ny
             for x0=150,650,50 do
                 for y0=50,600,50 do
-                    self:spawnBulletFunc{x=x0,y=y0,direction=0,speed=0,radius=size/(y0-Shape.axisY)*500,invincible=true}
+                    self:spawnBulletFunc{x=x0,y=y0,direction=0,speed=0,radius=size/(y0-Shape.axisY)*500,invincible=true,highlight=true}
                 end
             end
         end

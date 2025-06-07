@@ -1,8 +1,8 @@
 return {
     ID=22,
-    quote='Are there hidden black holes twisting the path of stars?',
+    quote='Bullets are waving left and right, similar to how Manekineko waves its paw.',
     user='mike',
-    spellName='Black Magic "Gamma-ray Burst"',
+    spellName='Invitation Sign "Welcoming Gesture"',
     make=function()
         local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7500}
         local player=Player{x=400,y=600}
@@ -10,11 +10,11 @@ return {
         -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
         -- G.viewMode.object=player
         local a
-        a={x=150,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=512,bulletSpeed='20',bulletLifeFrame=10000,angle=math.pi/2,range=math.pi*256*0,bulletSprite=BulletSprites.star.orange,bulletEvents={
+        a={x=150,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=512,bulletSpeed='20',bulletLifeFrame=10000,angle=math.pi/2,range=math.pi*256*0,bulletSprite=BulletSprites.rim.orange,bulletEvents={
             function(cir,args,self)
                 local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
                 local ind=math.floor(math.eval(5,4))
-                cir.sprite=BulletSprites.star[colors[ind]]
+                cir.sprite=BulletSprites.rim[colors[ind]]
                 local ratio=(cir.args.index/self.bulletNumber)
                 Event.EaseEvent{
                     obj=cir,
@@ -24,6 +24,9 @@ return {
                     aimValue=cir.direction+(((ratio*32%1)*2+0.8)*math.pi/2)*(self.fogTime==61 and 1 or -1),
                     progressFunc=function(x)
                         return math.sin(x*math.pi*2)
+                    end,
+                    afterFunc=function(self)
+                        cir:remove()
                     end
                 }
                 Event.DelayEvent{

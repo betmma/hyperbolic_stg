@@ -2,11 +2,11 @@ return {
     ID=21,
     quote='My common sense really gets in the way.',
     user='takane',
-    spellName='"Hakurei Transmit Barrier"',
+    spellName='Forest Sign "Folded Forest Region"',
     make=function()
         local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
-        local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.scale.red,spawnBatchFunc=function(self)
+        local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.bill.green,spawnBatchFunc=function(self)
             SFX:play('enemyShot',true)
             local num=math.eval(self.bulletNumber)
             local range=math.eval(self.range)
@@ -35,13 +35,13 @@ return {
             love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
         end
         local a
-        a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=16,bulletSpeed='30',bulletLifeFrame=10000,angle=-0.5,range=math.pi*2,bulletSprite=BulletSprites.dot.blue,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=16,bulletSpeed='30',bulletLifeFrame=10000,angle=-0.5,range=math.pi*2,bulletSprite=BulletSprites.dot.cyan,bulletEvents={
             function(cir)
                 Event.DelayEvent{
                     obj=cir,
                     delayFrame=60,
                     executeFunc=function()
-                        cir.sprite=BulletSprites.bill.blue
+                        cir.sprite=BulletSprites.rain.cyan
                         cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*0.4
                     end
                 }
@@ -80,7 +80,7 @@ return {
                             end
                             if flag then
                                 cir.mark=true
-                                cir.sprite=BulletSprites.bill.green
+                                cir.sprite=BulletSprites.rain.green
                             end
                         end
                         -- local vx=cir.speed*math.cos(cir.direction)

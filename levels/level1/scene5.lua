@@ -2,7 +2,7 @@ return {
     ID=13,
     quote='I wonder where is the best place to induce these bullets.',
     user='mike',
-    spellName='Spirit Sign "Fantasy Seal -Focus-"',
+    spellName='Beckon Sign "Koban Attraction"',
     make=function()
         local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800}
         Event.LoopEvent{
@@ -13,7 +13,7 @@ return {
             end
         }
         local player=Player{x=400,y=600}
-        local b=BulletSpawner{x=400,y=200,period=600,frame=540,lifeFrame=10000,bulletNumber=120,bulletSpeed=30,angle='0+9999',bulletSprite=BulletSprites.bill.red,bulletEvents={
+        local b=BulletSpawner{x=400,y=200,period=600,frame=540,lifeFrame=10000,bulletNumber=120,bulletSpeed=30,angle='0+9999',bulletSprite=BulletSprites.round.yellow,bulletEvents={
             function(cir,args)
                 local key=args.index
                 Event.LoopEvent{
@@ -25,7 +25,7 @@ return {
                     end,
                     executeFunc=function(self)
                         cir.speed=20
-                        cir.sprite=BulletSprites.bill.blue
+                        cir:changeSpriteColor('red')
                         cir.direction=Shape.to(cir.x,cir.y,Player.objects[1].x,Player.objects[1].y)
                         -- Event.EaseEvent{
                         --     obj=cir,
@@ -53,7 +53,9 @@ return {
             local sideNum=3
             for i = 1, num, 1 do
                 local direction=range*(i-0.5-num/2)/num+angle
-                local sped=speed/math.cos((direction-angle2)%(math.pi/(sideNum/2))-math.pi/sideNum)^(1)
+                local theta=direction-angle2
+                local vt,vp=speed*math.cos(theta),speed*math.sin(theta)*0.7
+                local sped=math.sqrt(vt^2+vp^2)
                 self:spawnBulletFunc{direction=direction,speed=sped,radius=size,index=i}
             end
             -- angle2=angle2+math.pi

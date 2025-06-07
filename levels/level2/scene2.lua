@@ -2,20 +2,20 @@ return {
     ID=41,
     quote='Random jump kicks, and a powerful strike. Sometimes she almost leaves the screen.',
     user='nemuno',
-    spellName='Strike Sign "Drunken Fist"',
+    spellName='Blade Sign "Swirling Knife Sharpening"',
     make=function()
         Shape.removeDistance=2000
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=6000}
         local player=Player{x=400,y=600}
         local a
-        a=BulletSpawner{x=400,y=100,period=2,frame=0,lifeFrame=10000,bulletNumber=3,bulletSpeed=30,bulletLifeFrame=10000,angle='0',range=math.pi*2,bulletSprite=BulletSprites.rice.red,bulletEvents={
+        a=BulletSpawner{x=400,y=100,period=2,frame=0,lifeFrame=10000,bulletNumber=3,bulletSpeed=30,bulletLifeFrame=10000,angle='0',range=math.pi*2,bulletSprite=BulletSprites.rice.yellow,highlight=true,bulletEvents={
             function(cir,args,self)
                 local speedRef=cir.speed
                 if not a.flag then
-                    local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
-                    local ind=math.floor(math.eval(5,4))
-                    cir.sprite=BulletSprites.rice[colors[ind]]
-                    cir.speed=math.random(5,5)
+                    cir:changeSpriteColor('yellow')
+                    cir.direction=cir.direction+math.eval(0,2)
+                    cir.speed=math.eval(0.2,0.2)
+                    speedRef=speedRef*math.eval(1,0.5)
                 end
                 Event.LoopEvent{
                     obj=cir,
@@ -50,8 +50,8 @@ return {
                     local co={math.eval(0,3),math.eval(0,3),math.eval(0,3),math.eval(0,3)}
                     a.flag=false
                     a.bulletSpeed=30
-                    a.bulletNumber=9+math.ceil((1-hpp)*6)
-                    a.spawnEvent.period=20
+                    a.bulletNumber=2+math.ceil((1-hpp)*2)
+                    a.spawnEvent.period=5
                     SFX:play('enemyCharge')
                     local k=(hpp<0.7 and 1 or 0)+(hpp<0.4 and 1 or 0)+1
                     Event.EaseEvent{
@@ -75,7 +75,7 @@ return {
                         afterFunc=function()
                             SFX:play('enemyPowerfulShot',true)
                             a.flag=true
-                            a.bulletSprite=BulletSprites.rice.blue
+                            a.bulletSprite=BulletSprites.rice.red
                             a.spawnEvent.period=1
                             a.bulletNumber=5
                         end

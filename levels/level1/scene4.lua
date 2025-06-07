@@ -19,14 +19,14 @@ return {
                 sy=sy/2+75
                 cir.speed=(sx^2+sy^2)^0.5
                 cir.direction=math.atan2(sy,sx)
-                cir.sprite=cir.args.index%3==0 and BulletSprites.round.yellow or BulletSprites.round.purple
+                cir.sprite=cir.args.index%3==0 and BulletSprites.round.blue or BulletSprites.round.purple
                 Event.DelayEvent{
                     obj=cir,
                     delayFrame=60,
                     executeFunc=function()
                         local dirRef=cir.args.index%2==0 and Shape.to(cir.x,cir.y,tmpBullets[cir.args.index%a.bulletNumber+1].x,tmpBullets[cir.args.index%a.bulletNumber+1].y) or Shape.to(cir.x,cir.y,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].x,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].y)
                         --(cir.direction+3.14*0.6*(cir.args.index%2==0 and -1 or 1))%(math.pi*2)
-                        local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=0.7,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.yellow or BulletSprites.laser.purple,
+                        local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=0.7,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.blue or BulletSprites.laser.purple,
                         bulletEvents={
                             function(cir)
                                 Event.LoopEvent{
@@ -43,7 +43,7 @@ return {
                                     end,
                                     executeFunc=function(self)
                                         if not cir.safe then
-                                            Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval(0,0.3),speed=20,sprite=BulletSprites.dot.red}
+                                            Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval(0,0.3),speed=20,sprite=BulletSprites.rice.red}
                                         end
                                 end}
                             end

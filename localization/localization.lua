@@ -159,7 +159,7 @@ return {
             },
             nemuno = {
                 en_us = 'Nemuno Sakata',
-                zh_cn = '坂田合欢乃',
+                zh_cn = '坂田合欢',
             },
             takane = {
                 en_us = 'Takane Yamashiro',
@@ -174,8 +174,8 @@ return {
                     zh_cn = '在这个世界里，靠近顶部的东西看起来会更小。',
                 },
                 spellName = {
-                    en_us = 'Magic Sign "Otherworld Star Dust"',
-                    zh_cn = '魔符「异界星尘」',
+                    en_us = 'Dream Sign "Permeable Wall"',
+                    zh_cn = '梦符「可渗透的墙」',
                 },
             },
             [12] = {
@@ -194,8 +194,8 @@ return {
                     zh_cn = '哪里是诱导这些子弹的最佳位置？',
                 },
                 spellName = {
-                    en_us = 'Spirit Sign "Fantasy Seal -Focus-"',
-                    zh_cn = '灵符「梦想封印 -聚-」',
+                    en_us = 'Beckon Sign "Koban Attraction"',
+                    zh_cn = '招符「小判吸引」',
                 },
             },
             [14] = {
@@ -204,18 +204,18 @@ return {
                     zh_cn = '穿过这个"方"阵真是太困难了。',
                 },
                 spellName = {
-                    en_us = 'Illusion Trap "Killing Grid"',
-                    zh_cn = '幻阱「杀戮方阵」',
+                    en_us = 'Blade Exhaustion Sign "Killing Grid"',
+                    zh_cn = '尽符「杀戮方阵」',
                 },
             },
             [15] = {
                 quote = {
-                    en_us = 'She decided to use heptagrams in this world. Does it gives her more power?',
-                    zh_cn = '在这个世界里，她决定使用七角星。这会给她更多力量吗？',
+                    en_us = 'The shape reminds me of the Moriya maiden. Maybe Takane learned this from her.',
+                    zh_cn = '这个形状让我想起了守矢的巫女。也许高岭是从她那里学来的。',
                 },
                 spellName = {
-                    en_us = 'Preparation "Suwa Daimyōjin Invocation"',
-                    zh_cn = '准备「召请诹访大明神」',
+                    en_us = 'Leaf Skill "Green Heptagram"',
+                    zh_cn = '叶技「绿色七角星」',
                 },
             },
             [16] = {
@@ -231,32 +231,32 @@ return {
             -- level 2
             [21] = {
                 quote = {
-                    en_us = 'My common sense really gets in the way.',
-                    zh_cn = '我的常识真的成了绊脚石。',
+                    en_us = 'Leaves are teleporting across the screen, or maybe they are just moving fast due to forest qi.',
+                    zh_cn = '树叶好像在瞬移，也有可能它们因为森林的气而移动得很快。',
                 },
                 spellName = {
-                    en_us = '"Hakurei Transmit Barrier"',
-                    zh_cn = '「博丽传送结界」',
+                    en_us = 'Forest Sign "Folded Forest Region"',
+                    zh_cn = '森符「折叠的森域」',
                 },
             },
             [22] = {
                 quote = {
-                    en_us = 'Are there hidden black holes twisting the path of stars?',
-                    zh_cn = '是否有隐藏的黑洞扭曲了星星的轨迹？',
+                    en_us = 'Bullets are waving left and right, similar to how Manekineko waves its paw.',
+                    zh_cn = '子弹左右摇摆，和招财猫挥动爪子的方式类似。'
                 },
                 spellName = {
-                    en_us = 'Black Magic "Gamma-ray Burst"',
-                    zh_cn = '黑魔「伽马射线暴」',
+                    en_us = 'Invitation Sign "Welcoming Gesture"',
+                    zh_cn = '邀符「欢迎姿态」',
                 },
             },
             [23] = {
                 quote = {
-                    en_us = 'Are these red hearts my deep desires?',
-                    zh_cn = '这些红心是我的深层欲望吗？',
+                    en_us = 'Moving around can help shake off these bullets.',
+                    zh_cn = '到处跑可以帮助摆脱这些子弹。'
                 }, -- I have a feeling that something will happen if I linger till...'
                 spellName = {
-                    en_us = 'Unconscious "Super-Ego\'s Trace"',
-                    zh_cn = '无意识「超我的痕迹」',
+                    en_us = 'Dream Sign "Lingering Memory"',
+                    zh_cn = '梦符「萦绕的记忆」',
                 },
             },
             [24] = {
@@ -281,12 +281,12 @@ return {
             },
             [26] = {
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'Straight lines curve upwards and appear as arcs. Should be careful when dodging.',
+                    zh_cn = '直线向上弯曲并呈弧形。躲避时要小心。',
                 },
                 spellName = {
-                    en_us = '"Eye of Horus"',
-                    zh_cn = '「荷鲁斯之眼」',
+                    en_us = '"Eye of Nightmare"',
+                    zh_cn = '「噩梦之眼」',
                 },
             },
             [27] = {
@@ -374,12 +374,12 @@ return {
             -- level 4
             [41] = {
                 quote = {
-                    en_us = 'Random jump kicks, and a powerful strike. Sometimes she almost leaves the screen.',
-                    zh_cn = '几下胡乱跳踢，接一次强力打击。她有时几乎离开了屏幕。',
+                    en_us = 'This knife sharpening way looks funny. Sometimes she almost leaves the screen.',
+                    zh_cn = '这种磨刀方式看起来很有趣。有时她几乎要离开屏幕了。',
                 },
                 spellName = {
-                    en_us = 'Strike Sign "Drunken Fist"',
-                    zh_cn = '击符「醉拳」',
+                    en_us = 'Blade Sign "Swirling Knife Sharpening"',
+                    zh_cn = '刃符「旋转式磨刀」',
                 },
             },
             [42] = {
