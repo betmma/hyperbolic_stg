@@ -148,6 +148,10 @@ return {
             minamitsu = {
                 en_us = 'Minamitsu Murasa',
                 zh_cn = '村纱水蜜',
+            },
+            urumi = {
+                en_us = 'Urumi Ushizaki',
+                zh_cn = '牛崎润美',
             }
         },
         spellcards = {
@@ -802,6 +806,16 @@ return {
                 quote = {
                     en_us = 'The water is swirling around, and I can\'t find the way out. It\'s like being trapped in a whirlpool.',
                     zh_cn = '水在旋转，我找不到出路。就像被困在漩涡中一样。',
+                }
+            },
+            [92] = {
+                spellName = {
+                    en_us = 'Stone Sign "Rotating Stone"',
+                    zh_cn = '石符「旋转的石头」',
+                },
+                quote = {
+                    en_us = 'Stones mysteriously become larger after rotating around.',
+                    zh_cn = '石头在旋转后神秘地变大了。',
                 }
             }
         },

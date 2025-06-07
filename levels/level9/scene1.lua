@@ -5,8 +5,6 @@ return {
     make=function()
         -- solution: use side shot, toggle naturalDirection to near 0 and dodge by moving vertically
         G.levelRemainingFrame=7200
-        G.backgroundPattern:remove()
-        -- G.backgroundPattern=BackgroundPattern.H3Terrain()
         Shape.removeDistance=2500
         local en,a
         en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200,hpSegments={0.75,0.5,0.25},hpSegmentsFunc=function(self,hpLevel)

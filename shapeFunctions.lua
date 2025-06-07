@@ -85,7 +85,7 @@ function Shape.onscreenDistanceToLine(xc,yc,x1,y1,x2,y2)
     return math.abs(Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2))
 end
 
--- used to calculate segment hitbox (note it's approx.)
+-- used to calculate segment (not line) hitbox (note it's approx.)
 function Shape.distanceToSegment(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<Shape.EPS then -- vertical
         -- make a perpendicular (hyperbolic) line from (xc,yc) to x=xc, intersects at (xc,yd)
@@ -131,6 +131,12 @@ function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     -- direction is limited in (0,pi) so sin(direction) is positive
 
     return {centerX+radius*x,Shape.axisY+radius*math.sqrt(1-x^2)}
+end
+
+--- calculate the distance from point xc,yc to line [x1,y1 to x2,y2]. Uses nearestToLine.
+function Shape.distanceToLine(xc,yc,x1,y1,x2,y2)
+    local nearest=Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
+    return Shape.distance(xc,yc,nearest[1],nearest[2])
 end
 
 --- reflect a point xc,yc by line [x1,y1 to x2,y2]. when drawing flipped object, besides using this function to calculate the new position, also need to horizontally flip the object.

@@ -70,7 +70,13 @@ return {
                                         end
                                         Event.LoopEvent{
                                             obj=cir,period=1,times=1,conditionFunc=function()
-                                                return not largerBorder:inside(cir.x,cir.y)
+                                                local isInside,x1,y1,x2,y2=largerBorder:inside(cir.x,cir.y)
+                                                if not isInside then
+                                                    local distance=Shape.distanceToLine(cir.x,cir.y,x1,y1,x2,y2)
+                                                    if distance>20 then
+                                                        return true
+                                                    end
+                                                end
                                             end,
                                             executeFunc=function()
                                                 Event.EaseEvent{
