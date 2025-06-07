@@ -1,55 +1,85 @@
 return {
-    ID=22,
-    quote='Are there hidden black holes twisting the path of stars?',
-    user='marisa',
-    spellName='Black Magic "Gamma-ray Burst"',
+    ID=41,
+    quote='Random jump kicks, and a powerful strike. Sometimes she almost leaves the screen.',
+    user='nemuno',
+    spellName='Strike Sign "Drunken Fist"',
     make=function()
-        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7500}
+        Shape.removeDistance=2000
+        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=6000}
         local player=Player{x=400,y=600}
-        -- player.moveMode=Player.moveModes.Monopolar
-        -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
-        -- G.viewMode.object=player
         local a
-        a={x=150,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=512,bulletSpeed='20',bulletLifeFrame=10000,angle=math.pi/2,range=math.pi*256*0,bulletSprite=BulletSprites.star.orange,bulletEvents={
+        a=BulletSpawner{x=400,y=100,period=2,frame=0,lifeFrame=10000,bulletNumber=3,bulletSpeed=30,bulletLifeFrame=10000,angle='0',range=math.pi*2,bulletSprite=BulletSprites.rice.red,bulletEvents={
             function(cir,args,self)
-                local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
-                local ind=math.floor(math.eval(5,4))
-                cir.sprite=BulletSprites.star[colors[ind]]
-                local ratio=(cir.args.index/self.bulletNumber)
-                Event.EaseEvent{
+                local speedRef=cir.speed
+                if not a.flag then
+                    local colors={'gray','red','purple','blue','cyan','green','yellow','orange'}
+                    local ind=math.floor(math.eval(5,4))
+                    cir.sprite=BulletSprites.rice[colors[ind]]
+                    cir.speed=math.random(5,5)
+                end
+                Event.LoopEvent{
                     obj=cir,
-                    easeFrame=800*ratio,
-                    aimTable=cir,
-                    aimKey='direction',
-                    aimValue=cir.direction+(((ratio*32%1)*2+0.8)*math.pi/2)*(self.fogTime==61 and 1 or -1),
-                    progressFunc=function(x)
-                        return math.sin(x*math.pi*2)
-                    end
-                }
-                Event.DelayEvent{
-                    obj=cir,
-                    delayFrame=300,
+                    period=1,
                     executeFunc=function()
-                        cir.speed=cir.speed+math.eval(0,1)
+                        if a.flag then
+                            cir.speed=speedRef
+                        end
                     end
                 }
             end
         }}
-        local s=BulletSpawner(a)
-        a.x=650;a.frame=90;a.fogTime=61
-        local c=BulletSpawner(a)
-        
+        a.flag=true
         Event.LoopEvent{
             obj=en,
             period=1,
             executeFunc=function()
-                local per=en.hp/en.maxhp
-                if per<0.33 then
-                    s.bulletNumber,c.bulletNumber=512,512
-                elseif per<0.67 then
-                    s.bulletNumber,c.bulletNumber=384,384
-                else
-                    s.bulletNumber,c.bulletNumber=256,256
+                local hpp=en.hp/en.maxhp
+                if a.flag then
+                    a.angle=a.angle+math.pi/30
+                    a.bulletSpeed=a.bulletSpeed+0.5
+                end
+                a.spawnEvent.frame=a.spawnEvent.frame+Shape.distance(a.x,a.y,en.x,en.y)*4
+                a.x,a.y=en.x,en.y
+                local frame=en.frame
+                if (frame+298)%300==0 then
+                    local nx,ny=Shape.rThetaPos(player.x,player.y,50,math.eval(0,3.14))
+                    nx=math.clamp(nx,200,600)
+                    nx=math.clamp(nx,en.x-100,en.x+100)
+                    ny=math.clamp(ny,0,550)
+                    ny=math.clamp(ny,en.y-100,en.y+100)
+                    local co={math.eval(0,3),math.eval(0,3),math.eval(0,3),math.eval(0,3)}
+                    a.flag=false
+                    a.bulletSpeed=30
+                    a.bulletNumber=9+math.ceil((1-hpp)*6)
+                    a.spawnEvent.period=20
+                    SFX:play('enemyCharge')
+                    local k=(hpp<0.7 and 1 or 0)+(hpp<0.4 and 1 or 0)+1
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=en,
+                        aimKey='x',
+                        aimValue=nx,
+                        easeFrame=200,
+                        progressFunc=function(x)return math.sin(x*math.pi/2)+(x*x*co[1]-x*co[2])*math.sin(x*math.pi*k) end
+                    }
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=en,
+                        aimKey='y',
+                        aimValue=ny,
+                        easeFrame=200,
+                        progressFunc=function(x)
+                            local r=math.sin(x*math.pi/2)+(x*x*co[3]-x*co[4])*math.sin(x*math.pi*k)
+                            a.angle=r*(co[1]^2+co[2]^2+co[3]^2+co[4]^2)/3
+                            return r end,
+                        afterFunc=function()
+                            SFX:play('enemyPowerfulShot',true)
+                            a.flag=true
+                            a.bulletSprite=BulletSprites.rice.blue
+                            a.spawnEvent.period=1
+                            a.bulletNumber=5
+                        end
+                    }
                 end
             end
         }

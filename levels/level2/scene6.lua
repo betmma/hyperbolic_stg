@@ -1,84 +1,106 @@
 return {
-    ID=26,
-    quote='??',
-    user='satori',
-    spellName='"Eye of Horus"',
+    ID=25,
+    quote='This kind of ice looks quite sharp. I\'d never want to touch it.',
+    user='cirno',
+    spellName='Crystalization "Supernatural Lattice"',
     make=function()
-        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
-        local phi0=math.eval(0,999)
+        local bullets={}
         local a
-        local tmpBullets={}
-        a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.yellow,fogEffect=true,fogTime=20,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=600,frame=540,lifeFrame=23000,bulletNumber=600,bulletSpeed=40,bulletLifeFrame=9900,angle='-1.57+0.9',range=math.pi*200,bulletSprite=BulletSprites.crystal.blue,fogEffect=true,fogTime=20,bulletEvents={
             function(cir,args,self)
-                if cir.args.index==1 then
-                    tmpBullets={}
-                end
-                table.insert(tmpBullets,cir)
-                local sx,sy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
-                sy=sy/2+75
-                cir.speed=(sx^2+sy^2)^0.5
-                cir.direction=math.atan2(sy,sx)
-                cir.sprite=cir.args.index%3==0 and BulletSprites.round.yellow or BulletSprites.round.purple
-                Event.DelayEvent{
+                local x0,y0=cir.x,cir.y
+                Event.LoopEvent{
                     obj=cir,
-                    delayFrame=60,
+                    period=1,
                     executeFunc=function()
-                        local dirRef=cir.args.index%2==0 and Shape.to(cir.x,cir.y,tmpBullets[cir.args.index%a.bulletNumber+1].x,tmpBullets[cir.args.index%a.bulletNumber+1].y) or Shape.to(cir.x,cir.y,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].x,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].y)
-                        --(cir.direction+3.14*0.6*(cir.args.index%2==0 and -1 or 1))%(math.pi*2)
-                        local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=0.7,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.yellow or BulletSprites.laser.purple,
-                        bulletEvents={
-                            function(cir)
-                                Event.LoopEvent{
-                                    obj=cir,
-                                    times=1,
-                                    period=1,
-                                    conditionFunc=function()
-                                        if not(cir.x>120 and cir.x<680 and cir.y>0 and cir.y<650) then
-                                            cir:remove()
-                                        end 
-                                        if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then
-                                            return cir.sprite==BulletSprites.laser.yellow and cir.index%10==0 
-                                        end
-                                    end,
-                                    executeFunc=function(self)
-                                        if not cir.safe then
-                                            Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval(0,0.3),speed=20,sprite=BulletSprites.dot.red}
-                                        end
-                                end}
+                        if not cir.flag then
+                            local dis=Shape.distance(cir.x,cir.y,x0,y0)
+                            if dis>60 then
+                                cir.flag=true
+                                cir.direction=math.eval(0,3.14)
+                                cir.speed=math.eval(20,5)
                             end
-                        }}
-                        cir.speed=0
-                        local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5*(cir.args.index%2==0 and -1 or 1)--math.eval(0,0.5)
-                        Event.EaseEvent{
-                            obj=laser,
-                            aimTable=laser.args,
-                            aimKey='direction',
-                            aimValue=laser.args.direction+rotate,
-                            easeFrame=60,
-                            progressFunc=function(x)
-                                return -math.sin(math.pi/2*(1-x))+1
-                            end,
-                        }
+                            if cir.frame%20==0 then
+                                local rand= math.eval(0.0,1.0)
+                                local angle=math.pi/3
+                                local prob=0.2
+                                if rand<prob and cir.turn~=1 then
+                                    cir.direction=cir.direction+angle
+                                    cir.turn=1
+                                elseif rand>1-prob and cir.turn~=-1 then
+                                    cir.direction=cir.direction-angle
+                                    cir.turn=-1
+                                end
+                            end
+                            local flag=true
+                            for key, value in pairs(bullets) do
+                                local dis=Shape.distance(value.x,value.y,cir.x,cir.y)
+                                if dis<5 then
+                                    flag=false
+                                    break
+                                end
+                            end
+                            if flag then
+                                cir.flag=true
+                                cir.speed=0
+                                cir.dis=dis
+                                table.insert(bullets,cir)
+                            end
+                            
+                        end
                     end
                 }
-                -- Event.LoopEvent{
-                --     obj=cir,period=1,
-                --     executeFunc=function ()
-                --         -- cir.direction=cir.direction+(cir.y-300)/10000
-                --         for key, player in pairs(Player.objects) do
-                --             local dis=Shape.distance(player.x,player.y,cir.x,cir.y)
-                --             local radi=player.radius+cir.radius
-                --             if dis<radi+player.radius*1.5 and not cir.damaged then
-                --                 player.hurt=true
-                --                 player.hp=player.hp-0.02
-                --                 cir.damaged=true
-                --             end
-                --         end
-                --     end
-                -- }
             end
             }
+        }
+        Event.LoopEvent{
+            obj=en,
+            period=10,
+            executeFunc=function()
+                local newB={}
+                for key,value in pairs(bullets)do
+                    if not value.removed then
+                        table.insert(newB,value)
+                    end
+                end
+                bullets=newB
+            end
+        }
+        Event.LoopEvent{
+            obj=en,
+            period=1,
+            executeFunc=function()
+                local f=a.frame
+                -- if f%600==100 then
+                --     Effect.Charge{
+                --         animationFrame=100,
+                --         obj=a,
+                --         x=a.x,y=a.y
+                --     }
+                -- end
+                if f%600==200 then
+                    local dir=Shape.to(a.x,a.y,player.x,player.y)
+                    for key,value in pairs(bullets)do
+                        Event.DelayEvent{
+                            obj=value,
+                            delayFrame=value.dis,
+                            executeFunc=function()
+                                value.direction=dir--+math.eval(0,0.01)
+                                Event.EaseEvent{
+                                    obj=value,
+                                    easeFrame=200,
+                                    aimTable=value,
+                                    aimKey='speed',
+                                    aimValue=30
+                                }
+                            end
+                        }
+                    end
+                    bullets={}
+                end
+            end
         }
     end
 }

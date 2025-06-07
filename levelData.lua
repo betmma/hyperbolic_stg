@@ -146,27 +146,36 @@ local function loadLevels(levelStr,sceneStrList)
     end
     return levels
 end
--- currently levels are randomly stored, and need to be reorganized after majority of levels are done. The draft of final arrangement is as follows:
--- main idea: similar to original game, characters are sorted by the stage they appear in the original game. Like fan-game "Shatter All Spell Card", it's a good idea to add secret levels and unlock secret upgrades.
--- level 1: doremy's regular attack first (introduction), then doremy's spell, then protagonists like reimu, marisa, sakuya, sanae to give useful information. (yuugi should be moved to later levels)
--- level 2-4: characters from stage 1-3. 
--- level 5: introduce the follow view and broader move area. Let doremy introduce is fine, or maybe seiga (霍 青娥).
--- level 6-9: characters from stage 4-EX.
--- level 10: introduce boardless levels? I really wonder if this leads to interesting gameplay.
--- (an idea for boardless level: player needs to go far away then return to initial place. Without compass it's very difficult in hyperbolic world.)
--- level EX: protagonists' spells again.
+--[[
+current level arrangement:
+level 1: doremy 1-1 to 1-4, 1-5 to 1-6 is mike goutokuji
+level 2: nemuno sakata 2-1 to 2-2, takane yamashiro 2-3 to 2-4, cirno 2-5 to 2-6
+these two levels are most of small map levels (except for yuugi's)
+add a scene in level 3 to introduce the follow view and broader move area by seiga (霍 青娥).
+level 3: stage 1 characters. 3-1 3-2 mystia lorelei, 3-3 3-4 chirizuka ubame
+level 4: stage 2 characters. 4-1 4-2 houjuu chimi, 4-3 urumi ushizaki
+level 5: stage 3 characters, 5-1 5-2 kawashiro nitori, 5-3 5-4 michigami sureko, 5-5 5-6 yuugi hoshiguma
+level 6: stage 4 characters, 6-1 6-2 shameimaru aya, 6-3 to 6-5 patchouli knowledge, 6-6 6-7 minamitsu murasa
+level 7: stage 5 characters, 7-1 7-2 kijin seija, 7-3 7-4 toramaru shou, 7-5 7-6 udongein reisen 7-7 7-8 clownpiece
+level 8: protagonists. 8-1 to 8-3 youmu konpaku, 8-4 8-5 sakuya izayoi
+level 9: stage 6 characters, 9-1 9-2 reiuji utsuho, 9-3 9-4 haniyasushin keiki, 9-5 to 9-7 motara okina
+level 10: stage EX characters, 10-1 to 10-3 yakumo yukari, 10-4 10-5 flandre scarlet, 10-6 10-7 usami renko
+level EX: not categorized spell cards (temporary). EX-1 remilia o(riginal)3-1, EX-2 suwako ring reference, EX-3 eirin remember direction, EX-4 hina ring, EX-5 alice many bullets, EX-6 junko
+]]
 -- some other idea: pun on the game name "soukyokuiki", where "soukyo" could be "壮挙", "soukyoku" could be "箏曲""双極", "kyokuiki" could be "局域". "箏曲域" can cue the mastermind is related to koto (yatsuhashi tsukumo), and "双極" relates to tsukumo sisters. nice idea. "奏曲""葬曲" are also good.
 -- th20's new characters are interesting, and it's such a coincidence that th20 is related to a place called "seiiki", so the plot could be related to it. 
 local levelData={
     loadLevels(1,{'1','2','3','4','5','6'}),
-    loadLevels(2,{'1','2','3','4','5','6','7'}),
-    loadLevels(3,{'1','2','3','4','5','6','7'}),
-    loadLevels(4,{'1','2','3','4','5','6','7','8'}),
-    loadLevels(5,{'1','2','3','4','5','6','7','8'}),
-    loadLevels(6,{'1','2','3','4','5','6','7','8'}),
-    loadLevels(7,{'1','2','3','4','5','6','7','8','9'}),
-    loadLevels(8,{'1','2','3','4','5','6','7','8','9','10'}),
-    loadLevels(9,{'1','2'}),
+    loadLevels(2,{'1','2','3','4','5','6'}),
+    loadLevels(3,{'1','2','3','4'}),
+    loadLevels(4,{'1','2','3'}),
+    loadLevels(5,{'1','2','3','4','5','6'}),
+    loadLevels(6,{'1','2','3','4','5','6','7'}),
+    loadLevels(7,{'1','2','3','4','5','6','7','8'}),
+    loadLevels(8,{'1','2','3','4','5'}),
+    loadLevels(9,{'1','2','3','4','5','6','7'}),
+    loadLevels(10,{'1','2','3','4','5','6','7'}),
+    loadLevels('EX',{'1','2','3','4','5','6'}),
 }
 
 ---@type {id:{level:number,scene:number}}
@@ -185,6 +194,6 @@ for i,level in ipairs(levelData) do
 end
 levelData.ID2LevelScene=ID2LevelScene
 
-levelData.needPass={3,6,9,12,16,22,30,40,50,60}
+levelData.needPass={3,6,9,12,16,22,30,40,50,60,70,80}
 levelData.defaultQuote='What will happen here?'
 return levelData

@@ -1,268 +1,119 @@
 return {
-    ID=74,
-    quote='?',
-    user='yukari',
-    spellName='Barrier ""', 
+    ID=34,
+    quote='What is she doing? I don\'t think my orientation has changed, but the world is still spinning...',
+    user='seija',
+    spellName='Turnabout "Change Projection"',
     make=function()
-        -- after 60 seconds you can only get information from reflections. In this phase the key is to move in a circle, rotating with →↓←↑, instead of finding the direction, so that you don't get confused by the reflections.
-        G.levelRemainingFrame=7200
-        G.levelIsTimeoutSpellcard=true
-        G.UseHypRotShader=false
-        Shape.removeDistance=100000
-        local a,b
-        local en
-        en=Enemy{x=5000,y=300,mainEnemy=true,maxhp=96000000}
-        en:addHPProtection(600,10)
+        G.levelRemainingFrame=5400
+        Shape.removeDistance=2000
+        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
-        player.cancelVortex=true
-        player.shoot=function() end
+        -- the angle of normal rotation. What this spellcard does is to replace hyperbolic rotation with normal rotation (that rotates y=-100 line), so that the direction to other things remains same, but it looks distorted.
+        player.naturalDirectionSpecial=0
         player.moveMode=Player.moveModes.Natural
-        local _,r=BackgroundPattern.calculateSideLength(4,5)
-        local borderAngle=0
-        local function borderCreate()
-            player.border:remove()
-            local poses={}
-            for i = 1, 4, 1 do
-                local nx,ny=Shape.rThetaPos(400,300,r,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i))+borderAngle)
-                table.insert(poses,{nx,ny})
-            end
-            player.border=PolyLine(poses)
+        player.border:remove()
+        local poses={}
+        for i = 1, 12, 1 do
+            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
+            table.insert(poses,{nx,ny})
         end
-        borderCreate()
+        player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-
-        --- input object and (x1,y1), (x2,y2) that determines the mirror, return a fake object (a table with x, y and orientation)
-        ---@param obj table
-        ---@param x1 number
-        ---@param y1 number
-        ---@param x2 number
-        ---@param y2 number
-        ---@return table
-        local function objReflection(obj,x1,y1,x2,y2)
-            local xs,ys=obj.x,obj.y
-            local xReflection,yReflection,deltaOrientation=Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
-            local fakeObj={x=xReflection,y=yReflection,orientation=deltaOrientation-(obj.orientation or 0),sprite=obj.sprite} 
-            return fakeObj
-        end
-
-        -- wrap obj.functionName to achieve calling the original function on every reflection object.
-        -- functionName should be "atomic" function that doesn't call other obj methods (so only love draw)
-        -- using copy_table on reflected object above is clearly a heavy load and causes fps drop, so you need to copy needed attributes from self to reflectedSelf
-        local function reflectFunctionalize(obj,functionName,exitLayer,drawConditionFunc,modificationToReflectionFunc,extraNote)
-            local originalFunc=obj[functionName]
-            obj[functionName]=function(self,...) -- add layer, lastIndex and inReflection parameter
-                local paramLength=select('#',...)
-                local inReflection=paramLength>0 and select(-1,...)=='inReflection'
-                local layer=0
-                local lastIndex
-                local args={...}
-                if inReflection then
-                    layer=select(-3,...)
-                    lastIndex=select(-2,...)
-                else
-                    table.insert(args,0)
-                    table.insert(args,0)
-                    table.insert(args,'inReflection')
-                end
-                if not drawConditionFunc or drawConditionFunc(self,layer) then
-                    local div=math.ceil(en.frame/30)%5+1
-                    local decrease=0
-                    if extraNote=='bullet' then
-                        local frame=en.frame
-                        if frame<3600 and layer==0 then
-                            decrease=en.frame/7200
-                        elseif frame>3600 and lastIndex==div then
-                            decrease=(frame-3600)/7200
-                        end
+        local b=BulletSpawner{x=400,y=300,period=10,frame=0,lifeFrame=6001,bulletNumber=72,bulletSpeed=60,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.rice.red,bulletEvents={
+            function(cir)
+                local color=cir.sprite.data.color
+                Event.DelayEvent{
+                    obj=cir,
+                    delayFrame=30+10*(1-en.hp/en.maxhp),
+                    executeFunc=function()
+                        cir.sprite=BulletSprites.blackrice[color]
+                        cir.speed=cir.speed-30
+                        Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5,safe=true}
                     end
-                    local base=0.6+0.4*math.cos(((lastIndex==div or layer==0) and 1 or 0)*(en.frame%30/30)^0.3*6.28)
-                    love.graphics.setColor(1,1,1,base-decrease)
-                    originalFunc(self,...)
-                    love.graphics.setColor(1,1,1,1)
-                end
-                args[#args-2]=layer+1 -- layer+=1
-                if layer==exitLayer then return end
-                local border=player.border
-                for i=1,#border.points do
-                    if i==lastIndex then
-                        goto continue
+                }
+                Event.DelayEvent{
+                    obj=cir,
+                    delayFrame=100,
+                    executeFunc=function()
+                        cir.sprite=BulletSprites.rice[color]
+                        cir.speed=cir.speed+30
+                        Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=0,sprite=BulletSprites.fog.red,lifeFrame=5,safe=true}
+                        cir.direction=cir.direction+1.7*(color=='red' and 1 or -1)
                     end
-                    local x1,y1=border.points[i].x,border.points[i].y
-                    local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
-                    local reflectedSelf=objReflection(self,x1,y1,x2,y2)
-                    if modificationToReflectionFunc then
-                        modificationToReflectionFunc(reflectedSelf,self,x1,y1,x2,y2)
-                    end
-                    args[#args-1]=i -- lastIndex
-                    obj[functionName](reflectedSelf,unpack(args))
-                    ::continue::
-                end
-            end
-        end
-
-        reflectFunctionalize(player,'draw',2,function(self,layer)
-            return layer>0 or en.frame<60
-        end,function(fakePlayer,self)
-            fakePlayer.drawRadius=self.drawRadius
-            fakePlayer.focusPointTransparency=self.focusPointTransparency
-            fakePlayer.time=-self.time
-            fakePlayer.horizontalFlip=not self.horizontalFlip
-        end)
-
-        local function reflectBorder()
-            local borderdrawOneRef=player.border.drawOne
-            player.border.drawOne=function(p1,p2,layer,lastIndex)
-                layer=layer or 0
-                borderdrawOneRef(p1,p2)
-                if layer==2 then return end
-                local border=player.border
-                for i=1,#border.points do
-                    if i==lastIndex then
-                        goto continue
-                    end
-                    local x1,y1=border.points[i].x,border.points[i].y
-                    local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
-                    local xs1=p1.x
-                    local ys1=p1.y
-                    local xs2=p2.x
-                    local ys2=p2.y
-                    if xs1==x1 and ys1==y1 and xs2==x2 and ys2==y2 then
-                        goto continue
-                    end
-                    -- ugh 2 reflections here make it not able to use reflectFunctionalize :(
-                    local xr1,yr1=Shape.reflectByLine(xs1,ys1,x1,y1,x2,y2)
-                    local xr2,yr2=Shape.reflectByLine(xs2,ys2,x1,y1,x2,y2)
-                    player.border.drawOne({x=xr1,y=yr1},{x=xr2,y=yr2},layer+1,i)
-                    ::continue::
-                end
-            end
-        end
-        reflectBorder()
-
-        local function bulletBase(cir)
-            reflectFunctionalize(cir,'drawSprite',2,function(self,layer)
-                return layer>0 or en.frame<3640
-            end,function(reflectedSelf,self,x1,y1,x2,y2)
-                reflectedSelf.radius=self.radius
-                reflectedSelf.batch=self.batch
-                reflectedSelf.direction=math.pi-self.direction+reflectedSelf.orientation
-                reflectedSelf.orientation=0
-            end,'bullet')
-            local ref=cir.drawSprite
-            cir.drawSprite=function(self,...)
-                if player.border:inside(cir.x,cir.y) then
-                    ref(self,...)
-                end
-            end
-        end
-
-        local basePos={x=400,y=300}
-
-        a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=40,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,bulletEvents={
-            function(cir,args,self)
-                bulletBase(cir)
-                if args.index%2==1 then
-                    cir.speed=cir.speed+math.min(40,en.frame/60)
-                    cir:changeSpriteColor('red')
-                    Event.DelayEvent{
-                        obj=cir,
-                        delayFrame=30,
-                        executeFunc=function()
-                            Event.EaseEvent{
-                                obj=cir,
-                                aimTable=cir,
-                                aimKey='speed',
-                                aimValue=0,
-                                easeFrame=20,
-                                afterFunc=function()
-                                    cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+math.eval(0,0.5)
-                                    Event.EaseEvent{
-                                        obj=cir,
-                                        aimTable=cir,
-                                        aimKey='speed',
-                                        aimValue=30,
-                                        easeFrame=20
-                                    }
-                                end
-                            }
-                        end
-                    }
-                else
-                    Event.EaseEvent{
-                        obj=cir,
-                        aimTable=cir,
-                        aimKey='speed',
-                        aimValue=20+math.min(30,en.frame/120),
-                        easeFrame=20
-                    }
-                end
-            end
-        }}
-
-        Event.LoopEvent{
-            obj=en,
-            period=1,
-            executeFunc=function()
-                G.viewOffset.x=(player.x-400)*0.1
-                G.viewOffset.y=(player.y-300)*0.1
-                local frame=en.frame
-                local testing=0
-                if frame==20 then
-                    SFX:play('enemyCharge',true)
-                    Effect.Charge{obj=player,particleSize=30,particleSpeed=0.5,color={0.3,0.3,0.3}}
-                end
-                if frame==60 then
-                    SFX:play('enemyPowerfulShot',true)
-                end
-                if frame==math.max(1200-testing,2) then
-                    SFX:play('enemyCharge',true)
-                    b=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed=15,bulletLifeFrame=3500,angle='player',range=math.pi/3,bulletSprite=BulletSprites.bigStar.blue,bulletEvents={
-                        function(cir,args,self)
-                            if args.index==1 then
-                                SFX:play('enemyPowerfulShot',true)
-                            end
-                            bulletBase(cir)
-                            cir.x,cir.y=Shape.rThetaPos(cir.x,cir.y,80-10*2*math.abs(args.index/b.bulletNumber-0.5),cir.direction)
-                            cir.direction=Shape.to(cir.x,cir.y,b.x,b.y)
-                        end
-                    }}
-                end
-                if frame==2400 then
-                    SFX:play('enemyCharge',true)
-                end
-                if frame>=2400 then
-                    Shape.moveTowards(basePos,player,0.1,true)
-                    a.x,a.y=basePos.x,basePos.y
-                    b.x,b.y=basePos.x,basePos.y
-                end
-                if frame==3600-testing then
-                    SFX:play('enemyCharge',true)
-                    Effect.Shockwave{x=a.x,y=a.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
-                    Effect.Charge{obj=a,particleSize=60,particleSpeed=2,color={0.3,0.3,0.3}}
-                    a:remove()
-                    b.spawnEvent.frame=180
-                end
-                if frame==4500-testing then
-                    SFX:play('enemyCharge',true)
-                    b.spawnEvent.frame=0
-                    b.spawnEvent.period=150
-                end
-                if frame>=4500-testing then
-                    borderAngle=borderAngle+math.pi/180*0.5
-                    borderCreate()
-                    reflectBorder()
-                end
-                if frame==6000-testing then
-                    SFX:play('enemyCharge',true)
-                    a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=10,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,bulletEvents={
-                        function(cir,args,self)
-                            bulletBase(cir)
-                        end
-                    }}
-                end
+                }
             end
         }
-        
-    end
+        }
+        local c=BulletSpawner{x=400,y=300,period=30,frame=0,lifeFrame=6001,bulletNumber=6,range=0.48,bulletSpeed=60,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.bigRound.blue,}
+
+        Event.LoopEvent{
+            obj=b,
+            period=1,
+            executeFunc=function()
+                local t=b.frame%200
+                local times=math.ceil(b.frame/200)
+                local hpPercent=en.hp/en.maxhp
+                if t==0 then
+                    b.spawnEvent.frame=0
+                    b.spawnEvent.period=10
+                elseif t>=100*(1-0.6*hpPercent) then
+                    b.spawnEvent.period=9999
+                    b.angle=b.angle+math.eval(0,0.3)
+                end
+                if times%2==0 then
+                    b.bulletSprite=BulletSprites.rice.red
+                else
+                    b.bulletSprite=BulletSprites.rice.blue
+                end
+                if hpPercent>0.9 then
+                    c.spawnEvent.period=9999
+                else
+                    if not c.reset then
+                        c.spawnEvent.frame=0
+                        c.reset=true
+                    end
+                    c.spawnEvent.period=10*(1.5+0.5*hpPercent)
+                    c.bulletSpeed=50*(0.95-0.4*hpPercent)
+                end
+                c.angle=Shape.to(c.x,c.y,player.x,player.y)+math.eval(0,0.04)
+                player.orientation=-player.naturalDirectionSpecial
+            end
+        }
+        Event.LoopEvent{
+            obj=en,
+            period=300,
+            executeFunc=function()
+                Effect.Charge{obj=b,x=b.x,y=b.y}
+                Event.DelayEvent{
+                    obj=b,
+                    delayFrame=100,
+                    executeFunc=function()
+                        SFX:play("enemyPowerfulShot")
+                        local delta=player.naturalDirection-player.naturalDirectionSpecial
+                        delta=math.abs(delta)<math.pi/2 and math.pi/2*math.sign(delta)+delta or delta
+                        Event.EaseEvent{
+                            obj=player,aimTable=player,aimKey='naturalDirectionSpecial',aimValue=delta+player.naturalDirectionSpecial,easeFrame=100,progressFunc=Event.sineIOProgressFunc
+                        }
+                    end
+                }
+            end
+        }
+
+        local rotateRef=player.testRotate
+        player.testRotate=function (player,angle,restore)
+            if not restore then
+                love.graphics.push()
+                local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
+                local theta=player.naturalDirectionSpecial
+                love.graphics.translate(player.x,player.y)
+                love.graphics.rotate(theta)
+                love.graphics.translate(-player.x,-player.y)
+            else
+                love.graphics.pop()
+            end
+            rotateRef(player,angle-player.naturalDirectionSpecial,restore)
+        end
+
+    end,
 }

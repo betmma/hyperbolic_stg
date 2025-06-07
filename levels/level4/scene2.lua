@@ -1,75 +1,92 @@
 return {
-    ID=42,
-    quote='?',
-    user='patchouli',
-    spellName='Moon Wood Sign "Celestial Thread"',
+    ID=87,
+    user='chimi',
+    spellName='Mountain Spirit Sign "Qi of a Drainage Divide"',
     make=function()
-        Shape.removeDistance=2500
-        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=6000}
-        local player=Player{x=400,y=600}
-        local centers={}
-        local a
-        a=BulletSpawner{x=400,y=100,period=300,frame=260,lifeFrame=10000,bulletNumber=4,bulletSpeed='30',bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.round.red,invincible=true,bulletEvents={
+        G.levelRemainingFrame=7200
+        Shape.removeDistance=1500
+        local a,b
+        local en
+        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
+        -- en:addHPProtection(600,10)
+        local player=Player{x=400,y=600,noBorder=true}
+        player.moveMode=Player.moveModes.Natural
+        local center={x=400,y=300}
+        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
+        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.object=player
+        local x01,y01=Shape.rThetaPos(400,300,120,-1.45+math.pi)
+        local x02,y02=Shape.rThetaPos(400,300,120,-1.45)
+        a=BulletSpawner{x=400,y=300,period=3,frame=-40,lifeFrame=10000,spawnCircleRadius='120+20',spawnCircleAngle='1.6+0.53',bulletNumber=2,bulletSpeed='50+20',bulletLifeFrame=450,angle='2.65+0.2',range=math.pi*2,bulletSprite=BulletSprites.rain.cyan,fogEffect=true,fogTime=10,bulletEvents={
             function(cir,args,self)
-                local hpp=en.hp/en.maxhp
-                local t0=en.frame
-                centers[t0]=centers[t0] or {}
-                cir.index=#centers[t0]+1
-                centers[t0][#centers[t0]+1]=cir
-                cir.speed=math.eval(150,60)
-                local theta=math.eval(0,999)
-                cir.theta=theta
-                cir.r=5
-                local aim=Shape.to(cir.x,cir.y,player.x,player.y)
-                cir.direction=math.modClamp(cir.direction,aim,math.pi)
+                local offset=math.eval(0,0.25)
+                if args.index%2==1 then
+                    cir.direction=Shape.to(cir.x,cir.y,x01,y01)+offset
+                else
+                    cir.direction=Shape.to(cir.x,cir.y,x02,y02)+offset
+                end
+            end
+        }}
+        a.spawnEvent.mode=Event.modes.oneFrameMultiple
+        local x1,y1=Shape.rThetaPos(400,300,120,-0.75)
+        local x2,y2=Shape.rThetaPos(400,300,120,-0.75+math.pi)
+        b=BulletSpawner{x=400,y=300,period=4,frame=0,lifeFrame=10000,bulletNumber=6,spawnCircleRadius='30+10',spawnCircleAngle='0+999',bulletSpeed=30,bulletLifeFrame=300,fogEffect=true,fogTime=10,angle=1,range=math.pi*2,bulletSprite=BulletSprites.bigRound.black,highlight=true,bulletEvents={
+            function(cir,args,self)
+                local offset=math.eval(0,0.3)
+                if args.index%2==1 then
+                    cir.direction=Shape.to(cir.x,cir.y,x1,y1)+offset
+                else
+                    cir.direction=Shape.to(cir.x,cir.y,x2,y2)+offset
+                end
+            end
+        }}
+        Event.LoopEvent{
+            period=600,frame=300,
+            executeFunc=function()
+                SFX:play('enemyCharge')
                 Event.EaseEvent{
-                    obj=cir,
-                    aimTable=cir,
-                    aimKey='speed',
-                    aimValue=20,
-                    easeFrame=150,
-                    progressFunc=Event.sineOProgressFunc,
-                    afterFunc=function()
-                        Event.EaseEvent{
-                            obj=cir,
-                            aimTable=cir,
-                            aimKey='direction',
-                            aimValue=aim,
-                            easeFrame=80,
-                            progressFunc=Event.sineOProgressFunc
-                        }
-                    end
+                    obj=a,
+                    easeFrame=60,
+                    aimTable=a.spawnEvent,
+                    aimKey='period',
+                    aimValue=0.5
                 }
-                cir.sign=math.eval(0,1)>0 and 1 or -1
+                a.bulletSprite=BulletSprites.rain.blue
+                a.bulletSpeed={50,30}
+                b.spawnEvent.period=30
+                b.bulletSprite=BulletSprites.bigRound.gray
+            end
+        }
+        Event.LoopEvent{
+            period=600,frame=0,
+            executeFunc=function()
+                SFX:play('enemyCharge')
+                Event.EaseEvent{
+                    obj=a,
+                    easeFrame=60,
+                    aimTable=a.spawnEvent,
+                    aimKey='period',
+                    aimValue=3
+                }
+                a.bulletSprite=BulletSprites.rain.cyan
+                a.bulletSpeed={50,20}
+                b.spawnEvent.period=4
+                b.bulletSprite=BulletSprites.bigRound.black
+            end
+        }
+        Event.LoopEvent{
+            period=40,frame=0,
+            executeFunc=function()
+                local x,y=Shape.rThetaPos(400,300,math.eval(10,10),math.eval(0,999))
+                local pos={x=x,y=y}
                 Event.LoopEvent{
-                    obj=cir,
-                    period=1,
-                    executeFunc=function()
-                        cir.theta=cir.theta+0.3*cir.sign/cir.r
-                        local num=#centers[t0]
-                        for i = cir.index, num, 1 do
-                            local center=centers[t0][i]
-                            if center.removed or center==cir then
-                                goto continue
-                            end
-                            local count=0
-                            local d=Shape.distance(cir.x,cir.y,center.x,center.y)
-                            d=d-(d%6)*2
-                            for r=d,0,-6 do
-                                count=count+1
-                                local angle=Shape.to(cir.x,cir.y,center.x,center.y)
-                                local x,y=Shape.rThetaPos(cir.x,cir.y,r,angle)
-                                local sprite=BulletSprites.dot.red
-                                if (hpp<0.7 and count%2==0) or (hpp<0.5) then
-                                    sprite=BulletSprites.round.gray
-                                end
-                                Circle{x=x,y=y,direction=angle,speed=0,sprite=sprite,lifeFrame=0}
-                            end
-                            ::continue::
-                        end
+                    period=1,times=20,
+                    executeFunc=function(self,times)
+                        Shape.moveTowards(en,pos,0.4,true)
+                        b.x,b.y=en.x,en.y
                     end
                 }
             end
-        }}
+        }
     end
 }

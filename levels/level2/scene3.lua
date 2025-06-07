@@ -1,103 +1,132 @@
 return {
-    ID=23,
-    quote='I can barely escape from these red hearts.',-- I have a feeling that something will happen if I linger till...',
-    user='koishi',
-    spellName='Unconscious "Super-Ego\'s Trace"',
+    ID=21,
+    quote='My common sense really gets in the way.',
+    user='takane',
+    spellName='"Hakurei Transmit Barrier"',
     make=function()
-        Shape.removeDistance=300
-        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
-        local moveFunc=function(cir,args,self)
-            local color2ratio={green=0.3,blue=0.5,purple=0.8,red=1}
-            local color=cir.sprite.data.color
-            local moveRatio=color2ratio[color]
-            local ratio=(cir.args.index/self.bulletNumber)
-            if color=='purple'or color=='red'then
-                cir.speed=cir.speed*ratio
-                cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
+        local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.scale.red,spawnBatchFunc=function(self)
+            SFX:play('enemyShot',true)
+            local num=math.eval(self.bulletNumber)
+            local range=math.eval(self.range)
+            local angle=math.eval(self.angle)
+            local size=math.eval(self.bulletSize)
+            for i = 1, num, 1 do
+                local direction=range*(i-0.5-num/2)/num+angle
+                self:spawnBulletFunc{x=self.x,y=self.y,direction=direction,speed=math.eval(self.bulletSpeed),radius=size,index=i,batch=self.bulletBatch}
             end
-            Event.EaseEvent{
-                obj=cir,
-                easeFrame=9500,--*ratio,
-                aimTable=cir,
-                aimKey='x',
-                aimValue=cir.x+moveRatio,
-                progressFunc=function(x)
-                    return player.x--math.sin(x*math.pi*2)
+        end}
+        local greenLines=Shape{x=300,y=0,lifeFrame=99999}
+        table.insert(G.sceneTempObjs,greenLines)
+        greenLines.items={}
+        greenLines.draw=function(self)
+            local colorref={love.graphics.getColor()}
+            love.graphics.setColor(0,1,0,0.5)
+            local new={}
+            for i,value in pairs(self.items) do
+                local x1,y1,x2,y2,rest=value[1],value[2],value[3],value[4],value[5]
+                if rest>0 then
+                    table.insert(new,{x1,y1,x2,y2,rest-1})
                 end
-            }
-            Event.EaseEvent{
-                obj=cir,
-                easeFrame=9500,--*ratio,
-                aimTable=cir,
-                aimKey='y',
-                aimValue=cir.y+moveRatio,
-                progressFunc=function(x)
-                    return player.y--math.sin(x*math.pi*2)
-                end
-            }
+                love.graphics.line(x1,y1,x2,y2)
+            end
+            self.items=new
+            love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
         end
-        local a,b,c,d
-        a=BulletSpawner{x=400,y=300,period=120,lifeFrame=10000,bulletNumber=10,bulletSpeed='20',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.green,bulletEvents={
-            moveFunc
-        }}
-        a.removeDistance=500
-        Event.LoopEvent{
-            period=1,
-            obj=a,
-            executeFunc=function()
-                local frame=a.frame
-                local theta=frame/120
-                local x,y=Shape.rThetaPos(player.x,player.y,30,theta)
-                a.x,a.y=x,y
-                local per=math.min(en.hp/en.maxhp,G.levelRemainingFrame/G.levelRemainingFrameMax)
-                if per<0.8 and not b then
-                    b=BulletSpawner{x=400,y=300,period=120,lifeFrame=10000,bulletNumber=10,bulletSpeed='15',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.blue,bulletEvents={
-                        moveFunc,
-                        function(cir,args,self)
-                            Event.DelayEvent{
-                                delayFrame=20,
-                                executeFunc=function()
-                                    cir.direction=Shape.to(b.x,b.y,player.x,player.y)
-                                end
-                            }
+        local a
+        a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=16,bulletSpeed='30',bulletLifeFrame=10000,angle=-0.5,range=math.pi*2,bulletSprite=BulletSprites.dot.blue,bulletEvents={
+            function(cir)
+                Event.DelayEvent{
+                    obj=cir,
+                    delayFrame=60,
+                    executeFunc=function()
+                        cir.sprite=BulletSprites.bill.blue
+                        cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*0.4
+                    end
+                }
+                -- Event.DelayEvent{
+                --     obj=cir,
+                --     delayFrame=120,
+                --     executeFunc=function()
+                --         cir.sprite=BulletSprites.bill.blue
+                --         cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*-1
+                --     end
+                -- }
+                Event.LoopEvent{
+                    obj=cir,
+                    period=1,
+                    executeFunc=function()
+                        if not cir.mark then
+                            local polyline=Player.objects[1].border
+                            local flag=true
+                            if cir.x<150 then
+                                cir.x=650
+                                table.insert(greenLines.items,{150,cir.y,650,cir.y,5})
+                            elseif cir.x>650 then
+                                cir.x=150
+                                table.insert(greenLines.items,{150,cir.y,650,cir.y,5})
+                            elseif not polyline:insideOne(cir.x,cir.y,1) then
+                                local ny=Shape.lineX2Y(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x)
+                                -- print(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x,ny)
+                                table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
+                                cir.y=ny
+                            elseif not polyline:insideOne(cir.x,cir.y,3) then
+                                local ny=Shape.lineX2Y(polyline.points[1].x,polyline.points[1].y,polyline.points[2].x,polyline.points[2].y,cir.x)
+                                table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
+                                cir.y=ny
+                            else
+                                flag=false
+                            end
+                            if flag then
+                                cir.mark=true
+                                cir.sprite=BulletSprites.bill.green
+                            end
                         end
-                    }}
-                    b.removeDistance=500
+                        -- local vx=cir.speed*math.cos(cir.direction)
+                        -- local vy=cir.speed*math.sin(cir.direction)
+                        -- vx=vx+math.cos(a.angle)*0.05
+                        -- vy=vy+math.sin(a.angle)*0.05
+                        -- cir.speed=(vx*vx+vy*vy)^0.5
+                        -- cir.direction=math.atan2(vy,vx)
+                    end
+                }
+            end
+        }}
+        Event.LoopEvent{
+            obj=a,
+            period=1,
+            executeFunc=function(self)
+                local pe=1800
+                local t=a.frame%(pe*2)
+                if t==2 then
+                    a.bulletNumber=12
+                    a.bulletSpeed=20
+                    a.range=math.pi*2
                 end
-                if b then
-                    local x,y=Shape.rThetaPos(player.x,player.y,math.min(40,30+b.frame/2),theta+b.frame/360)
-                    b.x,b.y=x,y
+                if t==180 then
+                    a.bulletSpeed=30
+                    a.bulletNumber=8
+                    a.range=math.pi/2
                 end
-                if per<0.6 and not c then
-                    c=BulletSpawner{x=400,y=300,period=180,lifeFrame=10000,bulletNumber=4,bulletSpeed='10',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.purple,bulletEvents={
-                        moveFunc,
-                    }}
-                    c.removeDistance=500
+                if t<180 then
+                    a.angle=a.angle+0.0033*(a.angle<1.57 and 1 or -1)
+                elseif t>=180 and t<pe then
+                    a.angle=a.angle+0.0007*(a.angle<1.57 and 1 or -1)
+                elseif t>=pe and t<2*pe-180 then
+                    a.angle=a.angle-0.0007*(a.angle<1.57 and 1 or -1)
+                elseif t>=2*pe-180 then
+                    a.angle=a.angle-0.0033*(a.angle<1.57 and 1 or -1)
                 end
-                if c then
-                    local x,y=Shape.rThetaPos(player.x,player.y,math.min(50,40+c.frame/2),theta+b.frame/360+c.frame/240)
-                    c.x,c.y=x,y
+                if t%60==45 and t>150 then
+                    a.spawnEvent.period=999
+                elseif t%60==0 then
+                    a.spawnEvent.period=3
+                    a.spawnEvent.frame=0
+                    a.angle=math.pi-a.angle
                 end
-                if per<0.4 and not d then
-                    --1/(1/180+1/120+1/240+1/360)=48
-                    local the=theta+b.frame/360+c.frame/240
-                    local need=math.pi-the%math.pi
-                    d=BulletSpawner{x=400,y=300,period=452,frame=452-need*48,lifeFrame=10000,bulletNumber=1,bulletSpeed='8',bulletLifeFrame=10000,angle='0+3.14',range=math.pi*2,bulletSprite=BulletSprites.heart.red,bulletEvents={
-                        moveFunc,
-                    }}
-                    d.removeDistance=10000
-                end
-                if d then
-                    local x,y=Shape.rThetaPos(player.x,player.y,math.min(60,50+c.frame/2),theta+b.frame/360+c.frame/240+(d.realFrame)/180)
-                    d.x,d.y=x,y
-                end
+
             end
         }
-    end,
-    leave=function()
-        if G.levelRemainingFrame<=0 then
-            G.save.extraUnlock[2]=true
-        end
     end
 }

@@ -1,12 +1,12 @@
 return {
-    ID=51,
+    ID=36,
     quote='?',
-    user='utsuho',
-    spellName='Explosion Sign "Critical Mass"', -- a pun on nuclear critical mass and the "critical" bullet player needs to identify
+    user='nitori',
+    spellName='Battle Machine "Autonomous Sentries"',
     make=function()
-        G.levelRemainingFrame=7200
+        G.levelRemainingFrame=5400
         Shape.removeDistance=2000
-        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200,hpSegments={0.5}}
+        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
@@ -15,146 +15,87 @@ return {
             local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
             table.insert(poses,{nx,ny})
         end
+        local dis0=Shape.distance(poses[1][1],poses[1][2],poses[2][1],poses[2][2])
         player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local function q(cir)
-            cir.speed=math.eval(50,50)
-            cir.x=cir.x+math.eval(0,20)
-            cir.y=cir.y+math.eval(0,20)
-            Event.EaseEvent{
-                obj=cir,
-                aimTable=cir,
-                aimKey='speed',
-                aimValue=20,
-                easeFrame=120
-            }
-            Event.LoopEvent{
-                obj=cir,
-                period=1,
-                conditionFunc=function()return not player.border:inside(cir.x,cir.y) end,
-                executeFunc=function()
-                    player.border:reflection(cir)
-                end
-            }
+        local b={x=-500,y=300,period=24,frame=0,lifeFrame=6001,bulletSpeed=20,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.bullet.red,
+        spawnBatchFunc=function(self)
+            SFX:play('enemyShot',true,self.spawnSFXVolume)
+            -- local num=math.ceil((1-en.hp/en.maxhp)*12)
+            local speed=math.eval(self.bulletSpeed)
+            local size=math.eval(self.bulletSize)
+            local distance=self.dist or 0
+            self.dist=distance+3
+            local index=math.floor(self.dist/dis0)
+                local x0,y0=Shape.rThetaPos(400,300,100,math.pi/6*(index-.5))
+                local x1,y1=Shape.rThetaPos(400,300,100,math.pi/6*(index+.5))
+                local direction0=Shape.to(x0,y0,x1,y1)
+                local x,y=Shape.rThetaPos(x0,y0,self.dist%dis0,direction0)
+                local direction=Shape.to(x,y,player.x,player.y)
+                self.x,self.y=x,y
+                self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=1,batch=self.bulletBatch}
         end
-        local a
-        local t0=480
-        a=BulletSpawner{x=400,y=300,period=600,frame=540,lifeFrame=10000,bulletNumber=40,bulletSpeed=30,bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.bigRound.red,bulletEvents={
-            function(cir,args,self)
-                q(cir)
-                if args.index==1 then
-                    BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=1,bulletNumber=20,bulletSpeed=20,bulletLifeFrame=10000,angle='0+999',bulletSprite=BulletSprites.dot.red,bulletEvents={
-                        function(cir,args,self)
-                            q(cir)
-                        end}}
-                    cir.invincible=true
-                    local count=0
-                    Event.LoopEvent{
-                        obj=cir,
-                        period=1,
-                        times=t0,
-                        executeFunc=function()
-                            local t=cir.frame
-                            if t<t0-200 and t%40==0 or t0-200<=t and t<t0-80 and t%20==0 or t0-80<=t and t%10==0 then
-                                if count%2==0 then
-                                    cir:changeSpriteColor('blue')
-                                else
-                                    cir:changeSpriteColor('red')
-                                end
-                                local distance=Shape.distance(cir.x,cir.y,player.x,player.y)
-                                local volume=math.max(0.5,1-distance/50)
-                                SFX:play('graze',true,volume)
-                                count=count+1
-                            end
-                        end
-                    }
-                    Event.DelayEvent{
-                        obj=cir,
-                        delayFrame=t0,
-                        executeFunc=function()
-                            cir:remove()
-                            local p
-                            p=BulletSpawner{x=cir.x,y=cir.y,period=2,frame=0,lifeFrame=60,bulletNumber=50,bulletSpeed=80,bulletLifeFrame=150,angle=0,spawnCircleRadius=20,bulletSprite=BulletSprites.bigRound.yellow,highlight=true,bulletEvents={
-                                function(cir,args,self)
-                                    if args.index==1 then
-                                        p.spawnCircleRadius=p.spawnCircleRadius+0.35
-                                    end
-                                    cir.spriteTransparency=0.1
-                                    Event.EaseEvent{
-                                        obj=cir,
-                                        aimTable=cir,
-                                        aimKey='spriteTransparency',
-                                        aimValue=1,
-                                        easeFrame=30
-                                    }
-                                    Event.EaseEvent{
-                                        obj=cir,
-                                        aimTable=cir,
-                                        aimKey='speed',
-                                        aimValue=150,
-                                        easeFrame=30
-                                    }
-                                    Event.LoopEvent{
-                                        obj=cir,
-                                        period=1,
-                                        times=30,
-                                        executeFunc=function()
-                                            cir.direction=cir.direction+(args.index%2*2-1)*0.04+math.eval(0,0.04)
-                                        end
-                                    }
-                                end
-                            }
-                            }
-                            Effect.Shockwave{x=cir.x,y=cir.y,lifeFrame=20,radius=15,growSpeed=1.02,color='yellow'}
-                            SFX:play('enemyPowerfulShot',true)
-                        end
-                    }
-                end
+        }
+        local c={x=-500,y=300,period=24,frame=0,lifeFrame=6001,bulletSpeed=60,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.bullet.yellow,
+        spawnBatchFunc=function(self)
+            SFX:play('enemyShot',true,self.spawnSFXVolume)
+            local speed=math.eval(self.bulletSpeed)
+            local size=math.eval(self.bulletSize)
+            local distance=self.dist or 0
+            self.dist=distance+10
+            local index=math.floor(self.dist/dis0)
+                local x0,y0=Shape.rThetaPos(400,300,100,math.pi/6*(index-.5))
+                local x1,y1=Shape.rThetaPos(400,300,100,math.pi/6*(index+.5))
+                local direction0=Shape.to(x0,y0,x1,y1)
+                local x,y=Shape.rThetaPos(x0,y0,self.dist%dis0,direction0)
+                local direction=Shape.to(x,y,400,300)
+                self.x,self.y=x,y
+                self:spawnBulletFunc{x=x,y=y,direction=direction,speed=speed,radius=size,index=1,batch=self.bulletBatch}
+        end
+        }
+        local d={x=-500,y=300,period=72,frame=0,lifeFrame=6001,bulletSpeed=50,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.bullet.blue,
+        spawnBatchFunc=function(self)
+            SFX:play('enemyShot',true,self.spawnSFXVolume)
+            local speed=math.eval(self.bulletSpeed)
+            local size=math.eval(self.bulletSize)
+            local distance=self.dist or 0
+            self.dist=distance+30
+            local index=math.floor(self.dist/dis0)
+            local x0,y0=Shape.rThetaPos(400,300,100,math.pi/6*(index-.5))
+            local x1,y1=Shape.rThetaPos(400,300,100,math.pi/6*(index+.5))
+            local direction0=Shape.to(x0,y0,x1,y1)
+            local x,y=Shape.rThetaPos(x0,y0,self.dist%dis0,direction0)
+            local direction=Shape.to(x,y,player.x,player.y)+math.eval(0,0.2)
+            self.x,self.y=x,y
+            local num=10
+            for i = 1, num, 1 do
+                local nx,ny=Shape.rThetaPos(x,y,(i-num/2-0.5)*2,direction+math.pi/2)
+                self:spawnBulletFunc{x=nx,y=ny,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch}
             end
-        }}
-        local hpflag=false
+        end
+        }
+        local list={b,c,d}
+        local hppRef=1
+        local sentryNum=0
+        local sentries={}
         Event.LoopEvent{
-            obj=en,
+            obj=b,
             period=1,
             executeFunc=function()
-                local fr=(a.spawnEvent.frame-540)%600
-                if fr==120 then
-                    Event.EaseEvent{
-                        obj=en,
-                        aimTable=en,
-                        aimKey='y',
-                        aimValue=30,
-                        easeFrame=120,
-                        progressFunc=Event.sineOProgressFunc
-                    }
-                end
-                if fr==560 then
-                    Event.EaseEvent{
-                        obj=en,
-                        aimTable=en,
-                        aimKey='y',
-                        aimValue=300,
-                        easeFrame=120,
-                        progressFunc=Event.sineOProgressFunc
-                    }
-                end
                 local hpp=en.hp/en.maxhp
-                if en.frame>500 then
-                    a.bulletNumber=20
+                en.x,en.y=Shape.rThetaPos(en.x,en.y,math.min((hppRef-hpp)*1000,Shape.distance(en.x,en.y,player.x,player.y)),Shape.to(en.x,en.y,player.x,player.y))
+                for key, value in pairs(sentries) do
+                    value.spawnEvent.frame=value.spawnEvent.frame+(hppRef-hpp)*5000
                 end
-                if hpp<0.5 and not hpflag then
-                    hpflag=true
-                    SFX:play('enemyCharge',true)
-                    Effect.Shockwave{x=en.x,y=en.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
-                    a.spawnEvent.frame=540
-                end 
-                if hpp<0.5 and fr==81 then
-                    a.bulletSprite=BulletSprites.giant.red
-                    t0=260
-                    a:spawnBatchFunc()
-                    t0=480
-                    a.bulletSprite=BulletSprites.bigRound.red
+                hppRef=hpp
+                -- b.spawnEvent.period=6*(hpp+0.5)
+                local num=math.ceil((1-hpp)*12)
+                if sentryNum<num then
+                    sentryNum=sentryNum+1
+                    local choose={1,1,2,1,2,3,1,2,3,1,2,3,1,2,3}
+                    table.insert(sentries,BulletSpawner(list[choose[sentryNum]]))
+                    sentries[sentryNum].dist=-dis0*sentryNum
                 end
             end
         }

@@ -1,93 +1,93 @@
 return {
-    ID=77,
-    user='patchouli',
-    spellName='Fire Sign "Hephaestus Pyrotechnics"',
+    ID=55,
+    quote='?',
+    user='clownpiece',
+    spellName='Hell Sign "Erroneous Orbit"', 
     make=function()
         G.levelRemainingFrame=7200
-        Shape.removeDistance=1e100
-        local a,b
+        Shape.removeDistance=2000
+        local a
         local en
-        en=Enemy{x=400,y=600000,mainEnemy=true,maxhp=7200}
+        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=9600,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
+            Enemy.hpSegmentsFuncShockwave(self,hpLevel)
+            a.spawnEvent.frame=a.spawnEvent.period-60
+            en:addHPProtection(600,10)
+        end}
         en:addHPProtection(600,10)
-        local player=Player{x=400,y=1200000,noBorder=true}
+        local player=Player{x=400,y=600}
         player.moveMode=Player.moveModes.Natural
+        player.border:remove()
         local poses={}
-        for i = 1, 30, 1 do
-            local nx,ny=Shape.rThetaPos(400,600000,700,math.pi/15*(i-.5))
+        for i = 1, 12, 1 do
+            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-
-        local extraUpdate=function(cir)
-            if cir.lighted and cir.frame%5==0 then
-                Circle{x=cir.x,y=cir.y,sprite=cir.sprite,lifeFrame=12,direction=cir.direction+math.eval(0,999),speed=cir.speed*0.2,radius=cir.radius*0.8,safe=true,batch=cir.batch,
-                    spriteTransparency=0.75}
-            end
-            if en.frame%300==0 then
-                cir.lighted=true
-                cir:changeSprite(BulletSprites.flame[cir.sprite.data.color])
-                cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)--+math.eval(0,0.2)
-                Event.EaseEvent{
-                    obj=cir,
-                    easeFrame=200,
-                    aimTable=cir,
-                    aimKey='speed',
-                    aimValue=Shape.distance(cir.x,cir.y,player.x,player.y),
-                    progressFunc=function(x)return math.sin(x*math.pi) end,
-                    afterFunc=function()
-                        cir.lighted=false
-                        cir:changeSprite(BulletSprites.round[cir.sprite.data.color])
-                    end
-                }
+        local modf=function(x,m) return x%(2*m)<m end
+        a=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=3,bulletSpeed=20,bulletLifeFrame=300,angle='1.57+1',range=math.pi*0,spawnCircleRadius=50,spawnCircleAngle='0+999',fogEffect=true,fogTime=30,bulletSprite=BulletSprites.bigStar.red,bulletEvents={
+            function(cir,args,self)
+                local hpLevel=en:getHPLevel()
+                if args.index==1 then
+                    SFX:play('enemyPowerfulShot',true)
+                end
                 Event.DelayEvent{
                     obj=cir,
-                    delayFrame=100,
+                    delayFrame=299,
                     executeFunc=function()
-                        cir.direction=cir.direction+math.eval(0,en.frame/1800)
+                        BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=20,bulletSpeed=20,bulletLifeFrame=1000,angle='0+999',bulletSprite=BulletSprites.bigStar.blue,highlight=true}
                     end
                 }
-            end
-        end
-
-        a=BulletSpawner{x=400,y=600000,period=6,frame=-30,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletLifeFrame=3600,angle=math.eval(0,999),range=math.pi*2,highlight=true,bulletSprite=BulletSprites.round.red,fogEffect=true,fogTime=3,bulletEvents={
-            function(cir,args,self)
-                a.angle=a.angle+0.01
-                cir.extraUpdate[1]=extraUpdate
-            end
-        }}
-        b=BulletSpawner{x=400,y=600000,period=120,frame=-300,lifeFrame=10000,bulletNumber=10,bulletSpeed=30,bulletLifeFrame=3600,angle=math.eval(0,999),range=math.pi*2,highlight=true,bulletSprite=BulletSprites.round.blue,fogEffect=true,fogTime=3,bulletSize=2,bulletEvents={
-            function(cir,args,self)
-                cir.extraUpdate[1]=extraUpdate
+                Event.LoopEvent{
+                    obj=cir,
+                    period=1,
+                    executeFunc=function()
+                        local dir=Shape.to(cir.x,cir.y,a.x,a.y)
+                        local vx,vy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
+                        local dv
+                        local dis=Shape.distance(cir.x,cir.y,a.x,a.y)
+                        if hpLevel==2 then
+                            dv=1000*dis^-2
+                        elseif hpLevel==1 then
+                            dv=dis/30
+                        else
+                            dir=Shape.to(cir.x,cir.y,player.x,player.y)
+                            -- dis=Shape.distance(cir.x,cir.y,player.x,player.y)
+                            dv=2
+                        end
+                        vx=vx+dv*math.cos(dir)
+                        vy=vy+dv*math.sin(dir)
+                        cir.direction=math.atan2(vy,vx)
+                        cir.speed=math.sqrt(vx^2+vy^2)
+                        if cir.frame%1==0 then
+                            cir.count=(cir.count or 0)+1
+                            local c=Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi/2*math.mod2Sign(cir.count),speed=0,sprite=BulletSprites.star[modf(cir.count,1) and 'red' or 'blue'],lifeFrame=1000}
+                            Event.DelayEvent{
+                                obj=c,
+                                delayFrame=300-cir.frame+(modf(cir.count,2*hpLevel) and 60 or 0),
+                                executeFunc=function()
+                                    Event.EaseEvent{
+                                        obj=c,
+                                        aimTable=c,
+                                        aimKey='speed',
+                                        aimValue=30,
+                                        easeFrame=120
+                                    }
+                                end
+                            }
+                        end
+                    end
+                }
             end
         }}
         Event.LoopEvent{
             obj=en,
             period=1,
             executeFunc=function()
-                local angle=en.frame/30
-                local x,y=Shape.rThetaPos(player.x,player.y,30,angle)
-                local aim={x=x,y=y}
-                local distance=Shape.distance(a.x,a.y,x,y)
-                Shape.moveTowards(a,aim,math.max(1,distance/10),true)
-                b.x,b.y=en.x,en.y
-                if en.frame%300==240 then
-                    SFX:play('enemyCharge')
-                end
-                if en.frame%300==0 then
-                    SFX:play('enemyPowerfulShot')
-                    Effect.Larger{sprite=BulletSprites.shockwave.gray,x=en.x,y=en.y,animationFrame=60}
-                    Event.LoopEvent{
-                        obj=en,
-                        period=1,times=120,
-                        executeFunc=function()
-                            local distance2=Shape.distance(en.x,en.y,x,y)
-                            Shape.moveTowards(en,aim,math.max(0.25,distance2/40),true)
-                        end
-                    }
-                end
+
             end
         }
+        
     end
 }

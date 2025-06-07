@@ -1,124 +1,84 @@
 return {
-    ID=14,
-    quote='Moving through this "square" grid is so difficult.',
-    user='sakuya',
-    spellName='Illusion Trap "Killing Grid"',
+    ID=26,
+    quote='??',
+    user='doremy',
+    spellName='"Eye of Horus"',
     make=function()
-        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800,speed=5}
-        local a=BulletSpawner{x=400,y=300,period=300,frame=180,lifeFrame=10000,bulletNumber=0,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.knife.blue,fogEffect=true,fogTime=60,bulletEvents={
-            function(cir,args)
-                local spd=cir.speed
-                cir.speed=0
-                Event.EaseEvent{
-                    obj=cir,
-                    aimTable=cir,
-                    aimKey='speed',
-                    aimValue=spd,
-                    easeFrame=60
-                }
-            end
-        },
-        spawnBatchFunc=function(self)
-            SFX:play('enemyShot',true,1)
-            local num=math.eval(self.bulletNumber)
-            local range=math.eval(self.range)
-            local angle=math.eval(self.angle)
-            local speed=math.eval(self.bulletSpeed)
-            local size=math.eval(self.bulletSize)
-            local angle2=Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y)
-            -- local nx,ny
-            local inum=6
-            local player=Player.objects[1]
-            Shape.timeSpeed=0
-            local dashDirection=angle2+math.pi/2*(self.spawnEvent.executedTimes%2==1 and 1 or -1)
-            local dashAmount=4
-            en.x,en.y=Shape.rThetaPos(en.x,en.y,-2*dashAmount,dashDirection)
-            for ii=1,inum,1 do
-                for i = 1, num, 1 do
-                    local direction=range*(i-0.5-num/2)/num+angle
-                    local radi=i/num*100+(-1)^ii*ii*0.2
-                    local angle3=angle2
-                    -- nx,ny=self.x+radi*math.cos(angle2),self.y+radi*math.sin(angle2)
-                    Event.DelayEvent{
-                        obj=self,
-                        delayFrame=i+ii*3,
-                        executeFunc=function(self)
-                            if i==num and ii==inum then
-                                Shape.timeSpeed=1
-                            end
-                            local angle3=angle2+math.pi/60*(ii-inum/2)
-                            local x,y=Shape.rThetaPos(self.obj.x,self.obj.y,radi,angle3)
-                            self.obj:spawnBulletFunc{x=x,y=y,direction=direction+ii*0.1,speed=speed,radius=size,index=i}
-                            if i==1 then
-                                en.x,en.y=Shape.rThetaPos(en.x,en.y,dashAmount,dashDirection)
-                            end
-                        end
-                    }
+        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+        local player=Player{x=400,y=600}
+        local phi0=math.eval(0,999)
+        local a
+        local tmpBullets={}
+        a=BulletSpawner{x=400,y=100,period=240,frame=200,lifeFrame=23000,bulletNumber=30,bulletSpeed=50,bulletLifeFrame=300,angle='1.57+0.5',range=math.pi*2,bulletSprite=BulletSprites.round.yellow,fogEffect=true,fogTime=20,bulletEvents={
+            function(cir,args,self)
+                if cir.args.index==1 then
+                    tmpBullets={}
                 end
-            end
-        end
-        }
-        Event.LoopEvent{
-            obj=en,
-            period=1,
-            executeFunc=function()
-                en.direction=Shape.to(en.x,en.y,Player.objects[1].x,Player.objects[1].y)
-                a.x=en.x;a.y=en.y
-                a.bulletNumber=20+math.floor(20*(1-en.hp/en.maxhp))
-                if Shape.distance(a.x,a.y,Player.objects[1].x,Player.objects[1].y)<10 and a.frame%30==0 then
-                    local num
-                    local range=math.eval(a.range)
-                    local angle=math.eval(a.angle)
-                    local speed=math.eval(a.bulletSpeed)
-                    local size=math.eval(a.bulletSize)
-                    local angle2=Shape.to(a.x,a.y,Player.objects[1].x,Player.objects[1].y)
-                    num=30
-                    for ii = 1, num, 1 do
-                        local direction=range*(ii)/num+angle-math.pi/2
-                        local radi=50
-                        local angle3=angle2+ii/num*math.pi*2
-                        -- nx,ny=self.x+radi*math.cos(angle2),self.y+radi*math.sin(angle2)
-                        Event.DelayEvent{
-                            obj=a,
-                            delayFrame=ii/10,
-                            executeFunc=function(self)
-                                self.obj:spawnBulletFunc{x=self.obj.x+radi*math.cos(angle3),y=self.obj.y+radi*math.sin(angle3),direction=direction+ii*0.1,speed=2*speed,radius=size,index=ii}
+                table.insert(tmpBullets,cir)
+                local sx,sy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
+                sy=sy/2+75
+                cir.speed=(sx^2+sy^2)^0.5
+                cir.direction=math.atan2(sy,sx)
+                cir.sprite=cir.args.index%3==0 and BulletSprites.round.yellow or BulletSprites.round.purple
+                Event.DelayEvent{
+                    obj=cir,
+                    delayFrame=60,
+                    executeFunc=function()
+                        local dirRef=cir.args.index%2==0 and Shape.to(cir.x,cir.y,tmpBullets[cir.args.index%a.bulletNumber+1].x,tmpBullets[cir.args.index%a.bulletNumber+1].y) or Shape.to(cir.x,cir.y,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].x,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].y)
+                        --(cir.direction+3.14*0.6*(cir.args.index%2==0 and -1 or 1))%(math.pi*2)
+                        local laser=Laser{x=cir.x,y=cir.y,direction=dirRef,speed=300,radius=0.7,index=1,lifeFrame=240,warningFrame=80,fadingFrame=20,sprite=cir.args.index%3==0 and BulletSprites.laser.yellow or BulletSprites.laser.purple,
+                        bulletEvents={
+                            function(cir)
+                                Event.LoopEvent{
+                                    obj=cir,
+                                    times=1,
+                                    period=1,
+                                    conditionFunc=function()
+                                        if not(cir.x>120 and cir.x<680 and cir.y>0 and cir.y<650) then
+                                            cir:remove()
+                                        end 
+                                        if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then
+                                            return cir.sprite==BulletSprites.laser.yellow and cir.index%10==0 
+                                        end
+                                    end,
+                                    executeFunc=function(self)
+                                        if not cir.safe then
+                                            Circle{x=cir.x,y=cir.y,direction=cir.direction+math.pi+math.eval(0,0.3),speed=20,sprite=BulletSprites.dot.red}
+                                        end
+                                end}
                             end
+                        }}
+                        cir.speed=0
+                        local rotate=math.sin(a.spawnEvent.executedTimes+phi0)*0.5*(cir.args.index%2==0 and -1 or 1)--math.eval(0,0.5)
+                        Event.EaseEvent{
+                            obj=laser,
+                            aimTable=laser.args,
+                            aimKey='direction',
+                            aimValue=laser.args.direction+rotate,
+                            easeFrame=60,
+                            progressFunc=function(x)
+                                return -math.sin(math.pi/2*(1-x))+1
+                            end,
                         }
                     end
-                end
-            end
-        }
-        local player=Player{x=400,y=600}
-        local b=BulletSpawner{x=400,y=300,period=6000,frame=5940,lifeFrame=6001,bulletNumber=10,bulletSpeed=10,angle='0+9999',bulletLifeFrame=990000 ,bulletSprite=BulletSprites.bigRound.red,fogEffect=true,bulletEvents={
-            function(cir,args)
-                local spd=cir.speed
-                cir.speed=0
-                Event.EaseEvent{
-                    obj=cir,
-                    aimTable=cir,
-                    aimKey='speed',
-                    aimValue=spd,
-                    easeFrame=60
                 }
+                -- Event.LoopEvent{
+                --     obj=cir,period=1,
+                --     executeFunc=function ()
+                --         -- cir.direction=cir.direction+(cir.y-300)/10000
+                --         for key, player in pairs(Player.objects) do
+                --             local dis=Shape.distance(player.x,player.y,cir.x,cir.y)
+                --             local radi=player.radius+cir.radius
+                --             if dis<radi+player.radius*1.5 and not cir.damaged then
+                --                 player.hurt=true
+                --                 player.hp=player.hp-0.02
+                --                 cir.damaged=true
+                --             end
+                --         end
+                --     end
+                -- }
             end
-        },
-        spawnBatchFunc=function(self)
-            local num=math.eval(self.bulletNumber)
-            local range=math.eval(self.range)
-            local angle=math.eval(self.angle)
-            local angle2=self.angle2 or math.pi/-6
-            self.angle2=(self.angle2 or 0)+math.pi/6
-            local speed=math.eval(self.bulletSpeed)
-            local size=math.eval(self.bulletSize)
-            local sideNum=3
-            -- local nx,ny
-            for x0=150,650,50 do
-                for y0=50,600,50 do
-                    self:spawnBulletFunc{x=x0,y=y0,direction=0,speed=0,radius=size/(y0-Shape.axisY)*500,invincible=true}
-                end
-            end
-        end
+            }
         }
     end
 }

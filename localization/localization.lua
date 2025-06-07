@@ -152,6 +152,18 @@ return {
             urumi = {
                 en_us = 'Urumi Ushizaki',
                 zh_cn = '牛崎润美',
+            },
+            mike = {
+                en_us = 'Mike Goutokuji',
+                zh_cn = '豪德寺三花',
+            },
+            nemuno = {
+                en_us = 'Nemuno Sakata',
+                zh_cn = '坂田合欢乃',
+            },
+            takane = {
+                en_us = 'Takane Yamashiro',
+                zh_cn = '山城高岭',
             }
         },
         spellcards = {
