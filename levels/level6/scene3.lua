@@ -6,7 +6,12 @@ return {
     make=function()
         Shape.removeDistance=2500
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=6000}
-        local player=Player{x=400,y=600}
+        local player=Player{x=400,y=600,noBorder=true}
+        local center={x=400,y=300}
+        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
+        player.moveMode=Player.moveModes.Natural
+        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.object=player
         local centers={}
         local a
         a=BulletSpawner{x=400,y=100,period=300,frame=260,lifeFrame=10000,bulletNumber=4,bulletSpeed='30',bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.round.red,invincible=true,bulletEvents={

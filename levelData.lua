@@ -160,7 +160,7 @@ level 7: stage 5 characters, 7-1 7-2 kijin seija, 7-3 7-4 toramaru shou, 7-5 7-6
 level 8: protagonists. 8-1 to 8-3 youmu konpaku, 8-4 8-5 sakuya izayoi
 level 9: stage 6 characters, 9-1 9-2 reiuji utsuho, 9-3 9-4 haniyasushin keiki, 9-5 to 9-7 motara okina
 level 10: stage EX characters, 10-1 to 10-3 yakumo yukari, 10-4 10-5 flandre scarlet, 10-6 10-7 usami renko
-level EX: not categorized spell cards (temporary). EX-1 remilia o(riginal)3-1, EX-2 suwako ring reference, EX-3 eirin remember direction, EX-4 hina ring, EX-5 alice many bullets, EX-6 junko
+level EX: not categorized spell cards (temporary). EX-1 remilia (original 3-1), EX-2 suwako ring reference, EX-3 eirin remember direction, EX-4 hina ring, EX-5 alice many bullets, EX-6 junko
 ]]
 -- some other idea: pun on the game name "soukyokuiki", where "soukyo" could be "壮挙", "soukyoku" could be "箏曲""双極", "kyokuiki" could be "局域". "箏曲域" can cue the mastermind is related to koto (yatsuhashi tsukumo), and "双極" relates to tsukumo sisters. nice idea. "奏曲""葬曲" are also good.
 -- th20's new characters are interesting, and it's such a coincidence that th20 is related to a place called "seiiki", so the plot could be related to it. 
