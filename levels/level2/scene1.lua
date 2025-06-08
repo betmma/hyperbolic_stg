@@ -1,132 +1,124 @@
 return {
-    ID=21,
-    quote='My common sense really gets in the way.',
-    user='reimu',
-    spellName='"Hakurei Transmit Barrier"',
+    ID=14,
+    quote='Moving through this "square" grid is so difficult.',
+    user='nemuno',
+    spellName='Blade Exhaustion Sign "Killing Grid"',
     make=function()
-        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
-        local player=Player{x=400,y=600}
-        local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.scale.red,spawnBatchFunc=function(self)
-            SFX:play('enemyShot',true)
+        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800,speed=5}
+        local a=BulletSpawner{x=400,y=300,period=300,frame=180,lifeFrame=10000,bulletNumber=0,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.knife.red,fogEffect=true,fogTime=60,bulletEvents={
+            function(cir,args)
+                local spd=cir.speed
+                cir.speed=0
+                Event.EaseEvent{
+                    obj=cir,
+                    aimTable=cir,
+                    aimKey='speed',
+                    aimValue=spd,
+                    easeFrame=60
+                }
+            end
+        },
+        spawnBatchFunc=function(self)
+            SFX:play('enemyShot',true,1)
             local num=math.eval(self.bulletNumber)
             local range=math.eval(self.range)
             local angle=math.eval(self.angle)
+            local speed=math.eval(self.bulletSpeed)
             local size=math.eval(self.bulletSize)
-            for i = 1, num, 1 do
-                local direction=range*(i-0.5-num/2)/num+angle
-                self:spawnBulletFunc{x=self.x,y=self.y,direction=direction,speed=math.eval(self.bulletSpeed),radius=size,index=i,batch=self.bulletBatch}
-            end
-        end}
-        local greenLines=Shape{x=300,y=0,lifeFrame=99999}
-        table.insert(G.sceneTempObjs,greenLines)
-        greenLines.items={}
-        greenLines.draw=function(self)
-            local colorref={love.graphics.getColor()}
-            love.graphics.setColor(0,1,0,0.5)
-            local new={}
-            for i,value in pairs(self.items) do
-                local x1,y1,x2,y2,rest=value[1],value[2],value[3],value[4],value[5]
-                if rest>0 then
-                    table.insert(new,{x1,y1,x2,y2,rest-1})
-                end
-                love.graphics.line(x1,y1,x2,y2)
-            end
-            self.items=new
-            love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
-        end
-        local a
-        a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=16,bulletSpeed='30',bulletLifeFrame=10000,angle=-0.5,range=math.pi*2,bulletSprite=BulletSprites.dot.blue,bulletEvents={
-            function(cir)
-                Event.DelayEvent{
-                    obj=cir,
-                    delayFrame=60,
-                    executeFunc=function()
-                        cir.sprite=BulletSprites.bill.blue
-                        cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*0.4
-                    end
-                }
-                -- Event.DelayEvent{
-                --     obj=cir,
-                --     delayFrame=120,
-                --     executeFunc=function()
-                --         cir.sprite=BulletSprites.bill.blue
-                --         cir.direction=cir.direction+(cir.args.index%2==1 and 1 or -1)*-1
-                --     end
-                -- }
-                Event.LoopEvent{
-                    obj=cir,
-                    period=1,
-                    executeFunc=function()
-                        if not cir.mark then
-                            local polyline=Player.objects[1].border
-                            local flag=true
-                            if cir.x<150 then
-                                cir.x=650
-                                table.insert(greenLines.items,{150,cir.y,650,cir.y,5})
-                            elseif cir.x>650 then
-                                cir.x=150
-                                table.insert(greenLines.items,{150,cir.y,650,cir.y,5})
-                            elseif not polyline:insideOne(cir.x,cir.y,1) then
-                                local ny=Shape.lineX2Y(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x)
-                                -- print(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x,ny)
-                                table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
-                                cir.y=ny
-                            elseif not polyline:insideOne(cir.x,cir.y,3) then
-                                local ny=Shape.lineX2Y(polyline.points[1].x,polyline.points[1].y,polyline.points[2].x,polyline.points[2].y,cir.x)
-                                table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
-                                cir.y=ny
-                            else
-                                flag=false
+            local angle2=Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y)
+            -- local nx,ny
+            local inum=6
+            local player=Player.objects[1]
+            -- Shape.timeSpeed=0
+            local dashDirection=angle2+math.pi/2*(self.spawnEvent.executedTimes%2==1 and 1 or -1)
+            local dashAmount=4
+            en.x,en.y=Shape.rThetaPos(en.x,en.y,-2*dashAmount,dashDirection)
+            for ii=1,inum,1 do
+                for i = 1, num, 1 do
+                    local direction=range*(i-0.5-num/2)/num+angle
+                    local radi=i/num*100+(-1)^ii*ii*0.2
+                    local angle3=angle2
+                    -- nx,ny=self.x+radi*math.cos(angle2),self.y+radi*math.sin(angle2)
+                    Event.DelayEvent{
+                        obj=self,
+                        delayFrame=i+ii*3,
+                        executeFunc=function(self)
+                            if i==num and ii==inum then
+                                -- Shape.timeSpeed=1
                             end
-                            if flag then
-                                cir.mark=true
-                                cir.sprite=BulletSprites.bill.green
+                            local angle3=angle2+math.pi/60*(ii-inum/2)
+                            local x,y=Shape.rThetaPos(self.obj.x,self.obj.y,radi,angle3)
+                            self.obj:spawnBulletFunc{x=x,y=y,direction=direction+ii*0.1,speed=speed,radius=size,index=i}
+                            if i==1 then
+                                en.x,en.y=Shape.rThetaPos(en.x,en.y,dashAmount,dashDirection)
                             end
                         end
-                        -- local vx=cir.speed*math.cos(cir.direction)
-                        -- local vy=cir.speed*math.sin(cir.direction)
-                        -- vx=vx+math.cos(a.angle)*0.05
-                        -- vy=vy+math.sin(a.angle)*0.05
-                        -- cir.speed=(vx*vx+vy*vy)^0.5
-                        -- cir.direction=math.atan2(vy,vx)
+                    }
+                end
+            end
+        end
+        }
+        Event.LoopEvent{
+            obj=en,
+            period=1,
+            executeFunc=function()
+                en.direction=Shape.to(en.x,en.y,Player.objects[1].x,Player.objects[1].y)
+                a.x=en.x;a.y=en.y
+                a.bulletNumber=20+math.floor(20*(1-en.hp/en.maxhp))
+                if Shape.distance(a.x,a.y,Player.objects[1].x,Player.objects[1].y)<10 and a.frame%30==0 then
+                    local num
+                    local range=math.eval(a.range)
+                    local angle=math.eval(a.angle)
+                    local speed=math.eval(a.bulletSpeed)
+                    local size=math.eval(a.bulletSize)
+                    local angle2=Shape.to(a.x,a.y,Player.objects[1].x,Player.objects[1].y)
+                    num=30
+                    for ii = 1, num, 1 do
+                        local direction=range*(ii)/num+angle-math.pi/2
+                        local radi=50
+                        local angle3=angle2+ii/num*math.pi*2
+                        -- nx,ny=self.x+radi*math.cos(angle2),self.y+radi*math.sin(angle2)
+                        Event.DelayEvent{
+                            obj=a,
+                            delayFrame=ii/10,
+                            executeFunc=function(self)
+                                self.obj:spawnBulletFunc{x=self.obj.x+radi*math.cos(angle3),y=self.obj.y+radi*math.sin(angle3),direction=direction+ii*0.1,speed=2*speed,radius=size,index=ii}
+                            end
+                        }
                     end
+                end
+            end
+        }
+        local player=Player{x=400,y=600}
+        local b=BulletSpawner{x=400,y=300,period=6000,frame=5940,lifeFrame=6001,bulletNumber=10,bulletSpeed=10,angle='0+9999',bulletLifeFrame=990000 ,bulletSprite=BulletSprites.bigRound.red,fogEffect=true,bulletEvents={
+            function(cir,args)
+                local spd=cir.speed
+                cir.speed=0
+                Event.EaseEvent{
+                    obj=cir,
+                    aimTable=cir,
+                    aimKey='speed',
+                    aimValue=spd,
+                    easeFrame=60
                 }
             end
-        }}
-        Event.LoopEvent{
-            obj=a,
-            period=1,
-            executeFunc=function(self)
-                local pe=1800
-                local t=a.frame%(pe*2)
-                if t==2 then
-                    a.bulletNumber=12
-                    a.bulletSpeed=20
-                    a.range=math.pi*2
+        },
+        spawnBatchFunc=function(self)
+            local num=math.eval(self.bulletNumber)
+            local range=math.eval(self.range)
+            local angle=math.eval(self.angle)
+            local angle2=self.angle2 or math.pi/-6
+            self.angle2=(self.angle2 or 0)+math.pi/6
+            local speed=math.eval(self.bulletSpeed)
+            local size=math.eval(self.bulletSize)
+            local sideNum=3
+            -- local nx,ny
+            for x0=150,650,50 do
+                for y0=50,600,50 do
+                    self:spawnBulletFunc{x=x0,y=y0,direction=0,speed=0,radius=size/(y0-Shape.axisY)*500,invincible=true,highlight=true}
                 end
-                if t==180 then
-                    a.bulletSpeed=30
-                    a.bulletNumber=8
-                    a.range=math.pi/2
-                end
-                if t<180 then
-                    a.angle=a.angle+0.0033*(a.angle<1.57 and 1 or -1)
-                elseif t>=180 and t<pe then
-                    a.angle=a.angle+0.0007*(a.angle<1.57 and 1 or -1)
-                elseif t>=pe and t<2*pe-180 then
-                    a.angle=a.angle-0.0007*(a.angle<1.57 and 1 or -1)
-                elseif t>=2*pe-180 then
-                    a.angle=a.angle-0.0033*(a.angle<1.57 and 1 or -1)
-                end
-                if t%60==45 and t>150 then
-                    a.spawnEvent.period=999
-                elseif t%60==0 then
-                    a.spawnEvent.period=3
-                    a.spawnEvent.frame=0
-                    a.angle=math.pi-a.angle
-                end
-
             end
+        end
         }
     end
 }

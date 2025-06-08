@@ -202,6 +202,8 @@ function Laser:new(args)
         executeFunc=function()
             args.direction=math.eval(self.args.direction)
             args.speed=math.eval(self.args.speed)
+            args.x=self.x
+            args.y=self.y
             if self.enableWarningAndFading and G.replay and isVersionSmaller(G.replay.version,'0.2.8.7') then
                 args.speed=args.speed*math.eval(1,0.01)
             end

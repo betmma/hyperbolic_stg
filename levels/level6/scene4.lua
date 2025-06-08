@@ -1,138 +1,159 @@
 return {
-    ID=64,
+    ID=48,
     quote='?',
-    user='junko',
-    spellName='"Sterile Flowers of Murderous Intent"', 
+    user='patchouli',
+    spellName='Sun Metal Sign "Solar Alloy"',
     make=function()
-        G.levelRemainingFrame=7200
-        Shape.removeDistance=1000
-        local colors={'','blue','purple'}
-        local a
-        local en
-        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=9600,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
-            Enemy.hpSegmentsFuncShockwave(self,hpLevel)
-            if hpLevel==2 then
-                a.spawnEvent.period=200
-                a.bulletNumber=576
-                a.bulletLifeFrame=350
-                Shape.removeDistance=1000
-                a.bulletSprite=BulletSprites.scale[colors[3]]
-            end
-            if hpLevel==1 then
-                a.spawnEvent.period=150
-                a.bulletNumber=720
-                a.bulletLifeFrame=250
-                Shape.removeDistance=800
-                a.bulletSprite=BulletSprites.scale[colors[2]]
-            end
-            a.spawnEvent.frame=a.spawnEvent.period-60
-            en:addHPProtection(600,10)
-        end}
-        en:addHPProtection(600,10)
-        local player=Player{x=400,y=600}
+        G.levelRemainingFrame=5400
+        Shape.removeDistance=20000000
+        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
+        local player=Player{x=400,y=1000}
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         local poses={}
         for i = 1, 12, 1 do
-            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
+            local nx,ny=Shape.rThetaPos(400,300,150,math.pi/6*(i-.5))
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=448,bulletSpeed=50,bulletLifeFrame=350,angle=math.eval(0,360),range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
-            function(cir,args,self)
-                local ns,nd=32,14
-                local hpLevel=en:getHPLevel()
-                if hpLevel==3 then
-                    ns,nd=7,32
-                elseif hpLevel==2 then
-                    ns,nd=16,18
-                end
-                local index=args.index
-                local mods,modd=index%ns,index%nd
-                local dspeed=math.sin(mods*math.pi/ns)*50
-                Event.EaseEvent{
-                    obj=cir,
-                    aimTable=cir,
-                    aimKey='speed',
-                    aimValue=cir.speed-dspeed,
-                    easeFrame=120,
-                    progressFunc=function(x)return math.sin(x*math.pi) end
+        local innerPoints={}
+        en.outerR=150
+        local a,aa,b,c
+        a={x=400,y=300,direction=0,lifeFrame=15,frequency=1,speed=0,sprite=Asset.bulletSprites.laser.yellow,invincible=true,laserEvents={
+            function(laser)
+                Event.LoopEvent{
+                    obj=laser,
+                    period=1,
+                    executeFunc=function()
+                        laser.args.direction=laser.args.direction+math.pi/(laser.lifeFrame-2)*2
+                    end
                 }
-                if hpLevel==2 then
-                    Event.DelayEvent{
-                        obj=cir,
-                        delayFrame=60,
-                        executeFunc=function()
-                            Event.EaseEvent{
-                                obj=cir,
-                                aimTable=cir,
-                                aimKey='speed',
-                                aimValue=cir.speed+100,
-                                easeFrame=150,
-                                progressFunc=Event.sineIOProgressFunc
-                            }
-                        end
-                    }
-                end
-                local t=150
-                if hpLevel==2 then
-                    t=60
-                end
-                Event.EaseEvent{
+            end
+        },
+        bulletEvents={
+            function(cir,args,self)
+                local dir0=cir.direction
+                table.insert(innerPoints,cir)
+                Event.LoopEvent{
                     obj=cir,
-                    aimTable=cir,
-                    aimKey='direction',
-                    aimValue=cir.direction+(modd-(nd-1)/2)*math.pi/22,
-                    easeFrame=t,
-                    progressFunc=function(x)return math.sin(x*math.pi) end
+                    period=1,
+                    executeFunc=function()
+                        local the=dir0+en.frame/800
+                        cir.direction=the+math.pi/3
+                        local r
+                        if en.frame<20 then
+                            r=0
+                        elseif en.frame<140 then
+                            r=120*(1-(1-(en.frame-20)/120)^4)
+                        else
+                            r=math.sin((en.frame-140)/100*math.pi/2)*25+120
+                        end
+                        cir.r,cir.theta=r,the
+                        cir.x,cir.y=Shape.rThetaPos(en.x,en.y,r,the)
+                    end
+                }
+            end
+        }
+        }
+        aa=copy_table(a)
+        b=Laser(a)
+        -- aa.enableWarningAndFading=true
+        -- aa.warningFrame=1
+        aa.bulletEvents[1]=function(cir,args,self)
+            local dir0=cir.direction
+            Event.LoopEvent{
+                obj=cir,
+                period=1,
+                executeFunc=function()
+                    local the=dir0+en.frame/800
+                    cir.direction=the+math.pi/3
+                    local r
+                    if en.frame<140 then
+                        r=140+en.outerR-en.frame
+                    else
+                        r=math.sin((en.frame-140)/100*math.pi/2)*25+en.outerR
+                    end
+                    cir.x,cir.y=Shape.rThetaPos(en.x,en.y,r,the)
+                end
+            }
+        end
+        c=Laser(aa)
+        local border
+        local e
+        e=BulletSpawner{x=400,y=300,period=30,frame=-100,lifeFrame=10000,bulletNumber=48,bulletSpeed=150,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.giant.red,bulletEvents={
+            function(cir,args,self)
+                cir.spriteTransparency=0.1
+                cir.safe=true
+                Event.LoopEvent{
+                    obj=cir,
+                    period=1,
+                    times=1,
+                    conditionFunc=function()
+                        return not border:inside(cir.x,cir.y)
+                        end,
+                    executeFunc=function()
+                        Event.EaseEvent{
+                            obj=cir,
+                            aimTable=cir,
+                            aimKey='spriteTransparency',
+                            aimValue=1,
+                            easeFrame=10
+                        }
+                        cir.safe=false
+                        cir:changeSprite(BulletSprites.bill.red)
+                        cir.speed=math.eval(7,2)
+                        if en.hp<en.maxhp*0.7 then
+                            cir:changeSprite(BulletSprites.bill.orange)
+                            cir.direction=cir.direction+0.3*(math.eval(0,1)>0 and 1 or -1)
+                        end
+                    end
                 }
             end
         }}
-        
-
+        local f=BulletSpawner{x=400,y=300,period=30000,frame=0,lifeFrame=10000,bulletNumber=80,bulletSpeed=15,bulletLifeFrame=1000,angle='player',range=math.pi/3,bulletSprite=BulletSprites.bill.yellow,bulletEvents={
+            function(cir,args,self)
+            end
+        }}
+        f.set=false
+        local outerRdecreased=false
         Event.LoopEvent{
             obj=en,
             period=1,
             executeFunc=function()
-                local hpLevel=en:getHPLevel()
-                if a.spawnEvent.frame==a.spawnEvent.period-60 and hpLevel>=2 then
-                    local sign=math.mod2Sign(a.spawnEvent.executedTimes)
-                    local color=colors[hpLevel]
-                    a.angle=math.eval(0,360)
-                    for i=1,10 do
-                        Laser{x=a.x,y=a.y,direction=math.pi*2/5*i+a.angle,speed=800,sprite=BulletSprites.laser[color],lifeFrame=140,warningFrame=60,radius=hpLevel,canRemovedByBulletRemover=true,
-                        bulletEvents={
-                            function(laser,args)
-                                Event.LoopEvent{
-                                    obj=laser,
-                                    period=1,
-                                    executeFunc=function()
-                                        laser.direction=laser.direction+0.1*(i>5 and 1 or -1)
-                                        laser.radius=laser.radius+0.05
-                                    end
-                                }
-                            end
-                        },
-                        laserEvents={
-                            function(laser,args)
-                                Event.LoopEvent{
-                                    obj=laser,
-                                    period=1,
-                                    executeFunc=function()
-                                        laser.args.direction=laser.args.direction+0.005*sign
-                                    end
-                                }
-                            end
-                            }
-                        }
-                    end
-                elseif a.spawnEvent.frame==a.spawnEvent.period-60 then
-                    a.angle=math.eval(0,360)
+                if en.frame<20 then return end
+                local poses={}
+                for i=1,#innerPoints-1,1 do
+                    local cir=innerPoints[i]
+                    local x,y=Shape.rThetaPos(400,300,cir.r-2,cir.theta)
+                    table.insert(poses,{x,y})
+                end
+                if border then
+                    border:remove()
+                end
+                border=PolyLine(poses,false)
+                if border:inside(player.x,player.y) and en.frame%1==0 then
+                    Circle{x=en.x,y=en.y,direction=Shape.to(400,300,player.x,player.y)+math.eval(0,0.5),speed=100,sprite=BulletSprites.giant.yellow,invincible=true,lifeFrame=2000}
+                end
+                local hpp=en.hp/en.maxhp
+                if hpp<0.5 and not f.set then
+                    f.set=true
+                    f.spawnEvent.period=300
+                    f.spawnEvent.frame=290
+                end
+                if hpp<0.3 and not outerRdecreased then
+                    SFX:play('enemyCharge',true)
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=en,
+                        aimKey='outerR',
+                        aimValue=140,
+                        easeFrame=100
+                    }
+                    outerRdecreased=true
                 end
             end
         }
-        
     end
 }

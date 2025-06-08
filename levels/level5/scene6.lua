@@ -1,177 +1,129 @@
 return {
-    ID=56,
-    quote='?',
-    user='clownpiece',
-    spellName='?', 
+    ID=32,
+    quote='Yuugi\'s classic three steps become unpredictable here. She is truly drunken.',
+    user='yuugi',
+    spellName='Big Four Arcanum "Knock Out In Three Sides"',
     make=function()
-        G.levelRemainingFrame=7200
-        Shape.removeDistance=2000
-        local a,b
-        local en
-        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=9600,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
-            Enemy.hpSegmentsFuncShockwave(self,hpLevel)
-            a.spawnEvent.frame=a.spawnEvent.period-60
-            b.spawnEvent.frame=b.spawnEvent.period-95
-            en:addHPProtection(600,10)
-        end}
-        en:addHPProtection(600,10)
-        local player=Player{x=400,y=600}
+        G.levelRemainingFrame=5400
+        Shape.removeDistance=2500
+        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
+        local player=Player{x=400,y=600,noBorder=true}
+        local center={x=400,y=300}
+        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
         player.moveMode=Player.moveModes.Natural
-        player.border:remove()
-        local poses={}
-        for i = 1, 12, 1 do
-            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
-            table.insert(poses,{nx,ny})
-        end
-        player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local bullet=nil
-        a=BulletSpawner{x=400,y=300,period=300,frame=200,lifeFrame=10000,bulletNumber=3,bulletSpeed=20,bulletLifeFrame=200,angle='1+999',range=math.pi*0,spawnCircleRadius=50,spawnCircleAngle='0+999',fogEffect=true,fogTime=30,bulletSprite=BulletSprites.bigStar.red,bulletEvents={
-            function(cir,args,self)
-                bullet=cir
-                cir.direction=math.eval(0,999)
-                local count=0
-                local hpLevel=en:getHPLevel()
-                local range=hpLevel==1 and 30 or hpLevel==2 and 15 or 5
-                if hpLevel==3 then
-                    cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
-                end
-                Event.LoopEvent{
-                    obj=cir,
-                    period=1,
-                    executeFunc=function(self,times)
-                        if times>60 and times%2==0 then
-                            local dir=Shape.to(cir.x,cir.y,player.x,player.y)
-                            local offset=math.pi/2*math.max(300-times*2,range)/240*math.mod2Sign(count)
-                            if hpLevel==3 then
-                                offset=math.pi/2*math.max(200-times,range)/240*math.mod2Sign(count)
-                            end
-                            local c=Circle{x=cir.x,y=cir.y,direction=dir+offset,speed=90,sprite=BulletSprites.bigRound.red,lifeFrame=1000}
-                            count=count+1
-                        end
-                    end
-                }
-            end
-        }}
-        local squareSize=24
-        b=BulletSpawner{x=400,y=300,period=150,frame=40,lifeFrame=10000,bulletNumber=288,bulletSpeed=20,bulletLifeFrame=300,angle=0,range=math.pi*2,spawnCircleRadius=0,spawnCircleAngle='0+999',highlight=true,bulletSprite=BulletSprites.ellipse.red,bulletEvents={
-            function(cir,args,self)
-                local hpLevel=en:getHPLevel()
-                if hpLevel==2 then
-                    -- local d={1,5,3,7,2,6,4,8}
-                    -- cir.speed=cir.speed-d[args.index%8+1]*5
-                    local ret=args.index%squareSize
-                    cir.speed=cir.speed-3*math.abs(squareSize/2-ret)-(args.index%(squareSize*2)<squareSize and 3 or 0)
-                    cir.direction=cir.direction-math.clamp((ret-squareSize/4),0,squareSize/2)*math.pi/b.bulletNumber*4
-                elseif hpLevel==1 then
-                    local ret=args.index%squareSize
-                    cir.speed=cir.speed-1.5*math.abs(squareSize/2-ret)
-                    cir.direction=cir.direction-math.clamp((ret-squareSize/4),0,squareSize/2)*math.pi/b.bulletNumber*4
-                else
-                    cir.speed=cir.speed*(1-math.eval(0.5,0.5)^2)
-                end
-                if hpLevel<=2 then
-                    Event.LoopEvent{
-                        obj=cir,
-                        period=1,
-                        executeFunc=function()
-                            cir.speed=cir.speed+1.6-0.5*hpLevel
-                        end
-                    }
-                else
-                    Event.EaseEvent{
-                        obj=cir,
-                        aimTable=cir,
-                        aimKey='speed',
-                        aimValue=0,
-                        easeFrame=120,
-                        afterFunc=function()
-                            local dir=cir.direction
-                            for i=1,4,1 do
-                                local c=Circle{x=cir.x,y=cir.y,direction=dir+math.pi/2*(i-1),speed=30,sprite=BulletSprites.ellipse.red,lifeFrame=5000}
-                                Event.EaseEvent{
-                                    obj=c,
-                                    aimTable=c,
-                                    aimKey='speed',
-                                    aimValue=0,
-                                    easeFrame=20,
-                                    afterFunc=function()
-                                        Event.EaseEvent{
-                                            obj=c,
-                                            aimTable=c,
-                                            aimKey='direction',
-                                            aimValue=cir.direction,
-                                            easeFrame=20,
-                                        }
-                                    end
-                                }
-                            end
-                            cir:remove()
-                        end
-                    }
-                end
-            end
-        }}
+        local center,radius,thetas,vertices,outvertices,polyline,outpolyline
         Event.LoopEvent{
-            obj=en,
             period=1,
+            obj=en,
             executeFunc=function()
-                local hpLevel=en:getHPLevel()
-                if hpLevel==1 then
-                    if b.spawnEvent.frame==20 then
-                        local type=math.random(1,2)
-                        if type==1 then
-                            b.angle=b.angle+math.pi/12
-                            b:spawnBatchFunc()
+                -- a.x,a.y=en.x,en.y--
+                local hpp=en.hp/en.maxhp
+                local t=(en.frame-100)%480
+                if t==0 then
+                    center={x=math.eval(400,50),y=math.eval(300,50)}
+                    
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=en,
+                        aimKey='x',
+                        aimValue=center.x,
+                        easeFrame=60,
+                        progressFunc=Event.sineIOProgressFunc
+                    }
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=en,
+                        aimKey='y',
+                        aimValue=center.y,
+                        easeFrame=60,
+                        progressFunc=Event.sineIOProgressFunc
+                    }
+                    radius=math.eval(60,20)
+                    thetas={math.eval(0,3)}
+                    table.insert(thetas,thetas[1]+math.pi*2/3+math.eval(0,0.5))
+                    table.insert(thetas,thetas[2]+math.pi*2/3+math.eval(0,0.5))
+                    vertices={}
+                    outvertices={}
+                    for i = 1, 3 do
+                        local x,y=Shape.rThetaPos(center.x,center.y,radius-7,thetas[i])
+                        local xo,yo=Shape.rThetaPos(center.x,center.y,radius+7,thetas[i])
+                        table.insert(vertices,{x,y})
+                        table.insert(outvertices,{xo,yo})
+                        local fog=Circle({x=x, y=y, radius=1, lifeFrame=60, sprite=Asset.bulletSprites.fog.gray,safe=true})
+                        Event.EaseEvent{
+                            obj=fog,
+                            easeFrame=60,
+                            aimTable=fog,
+                            aimKey='spriteTransparency',
+                            aimValue=0,
+                            -- period=60,
+                            afterFunc=function()
+                                SFX:play('enemyShot',true,1)
+                                local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round.red,lifeFrame=400,invincible=true}
+                                for j=1,30 do
+                                    Circle{x=x,y=y,direction=j*math.pi/15+thetas[i],speed=15,sprite=BulletSprites.rim.red,lifeFrame=800}
+                                end
+                            end
+                        }
+                    end
+                    if polyline then
+                        polyline:remove()
+                    end
+                    polyline=PolyLine(vertices,false)
+                    if outpolyline then
+                        outpolyline:remove()
+                    end
+                    outpolyline=PolyLine(outvertices,false)
+                elseif t==130 then
+                    local xoff=math.eval(0,0.1)
+                    local count=0
+                    local sfxplayed,sfxplayed2=false,false
+                    for r0 = 0, 100, 5 do
+                        local num=math.min(math.ceil(math.sinh(r0/Shape.curvature)*120),100)
+                        local thetaOffset=math.eval(0,0.1)
+                        for idx = 1, num do
+                            count=count+1
+                            local nx,ny=Shape.rThetaPos(en.x,en.y,r0,idx*math.pi*2/num+thetaOffset)
+                            local inarea=polyline:inside(nx,ny)
+                            local outarea=not outpolyline:inside(nx,ny)
+                            if not inarea and not outarea then
+                                goto continue
+                            end
+                            local delay0=Shape.distance(center.x,center.y,nx,ny)*(inarea and 1.1 or 0.1)
                             Event.DelayEvent{
-                                obj=b,
-                                delayFrame=20,
+                                delayFrame=delay0+(inarea and 0 or 80),
                                 executeFunc=function()
-                                    if en:getHPLevel()~=1 then return end
-                                    b.angle=b.angle-math.pi/12
-                                    b:spawnBatchFunc()
-                                    b.angle=math.eval(0,999)
+                                    if not sfxplayed then
+                                        SFX:play('enemyShot',true,1)
+                                        sfxplayed=true
+                                    end
+                                    local cir=Circle{x=nx,y=ny,direction=Shape.to(center.x,center.y,nx,ny)+(inarea and math.pi or 0),speed=0,sprite=inarea and BulletSprites.bigRound.red or BulletSprites.giant.red,lifeFrame=800,batch=Asset.bulletHighlightBatch,radius=(inarea and 1 or 1+r0/100)}
+                                    Event.DelayEvent{
+                                        delayFrame=-delay0+80+(inarea and 0 or 30),
+                                        executeFunc=function()
+                                            
+                                    if not sfxplayed2 then
+                                        SFX:play('enemyShot',true,1)
+                                        sfxplayed2=true
+                                    end
+                                            if inarea then
+                                                cir.speed=15
+                                            end
+                                            Event.EaseEvent{
+                                                obj=cir,easeFrame=100,aimTable=cir,aimKey='speed',aimValue=inarea and 30 or 60,
+                                            }
+                                        end
+                                    }
+                                    
                                 end
                             }
-                        else
-                            local sign=math.randomSign()
-                            b.angle=b.angle-math.pi/24*0.75*sign
-                            squareSize=12
-                            b:spawnBatchFunc()
-                            Event.DelayEvent{
-                                obj=b,
-                                delayFrame=10,
-                                executeFunc=function()
-                                    if en:getHPLevel()~=1 then return end
-                                    squareSize=24
-                                    b.angle=b.angle-math.pi/24*.75*sign
-                                    b:spawnBatchFunc()
-                                    b.angle=math.eval(0,999)
-                                    squareSize=24
-                                end
-                            }
+                            ::continue::
                         end
                     end
-                elseif hpLevel==2 then
-                    squareSize=4
-                    b.bulletNumber=216
-                    b.angle='0+999'
-                    if b.spawnEvent.frame==20 then
-                        b:spawnBatchFunc()
-                    end
-                else
-                    a.bulletNumber=1
-                    a.spawnCircleRadius=20
-                    -- a.fogTime=100
-                    b.bulletNumber=15
-                    b.bulletSpeed=100
-                    b.bulletLifeFrame=6000
-                    b.bulletSprite=BulletSprites.bigRound.red
-                    b.x,b.y=bullet and bullet.x or 400,bullet and bullet.y or 300
                 end
             end
         }
-        
     end
 }

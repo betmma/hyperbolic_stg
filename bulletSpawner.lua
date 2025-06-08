@@ -32,35 +32,36 @@ function BulletSpawner:new(args)
     self.fogEffect=args.fogEffect or false
     self.fogTime=args.fogTime or 60
     self.spawnSFXVolume=args.spawnSFXVolume -- nil means default volume set in audio.lua (50%)
-    self.spawnBulletFunc=args.spawnBulletFunc or function(self,args)
-        if not args.x then
-            args.x=self.x
+    self.spawnBulletFunc=args.spawnBulletFunc or function(self,_args)
+        if not _args.x then
+            _args.x=self.x
         end
-        if not args.y then
-            args.y=self.y
+        if not _args.y then
+            _args.y=self.y
         end
-        if not args.lifeFrame then
-            args.lifeFrame=self.bulletLifeFrame
+        if not _args.lifeFrame then
+            _args.lifeFrame=self.bulletLifeFrame
         end
-        if not args.sprite then
-            args.sprite=self.bulletSprite
+        if not _args.sprite then
+            _args.sprite=self.bulletSprite
         end
-        args.direction=math.eval(args.direction)
-        args.speed=math.eval(args.speed)
-        args.invincible=self.args.invincible or args.invincible or false
-        if args.sprite.data.isLaser then
-            args.laserEvents=self.args.laserEvents or {}
-            args.bulletEvents=self.bulletEvents
-            args.warningFrame=self.args.warningFrame or 0
-            args.fadingFrame=self.args.fadingFrame or 0
-            local cir=Laser(args)
+        _args.direction=math.eval(_args.direction)
+        _args.speed=math.eval(_args.speed)
+        _args.invincible=_args.invincible or args.invincible or false
+        if _args.sprite.data.isLaser then
+            _args.laserEvents=args.laserEvents or {}
+            _args.bulletEvents=self.bulletEvents
+            _args.warningFrame=args.warningFrame or 0
+            _args.fadingFrame=args.fadingFrame or 0
+            _args.frequency=args.frequency
+            local cir=Laser(_args)
             return
         end
-        args.extraUpdate=self.bulletExtraUpdate or {}
-        local cir=Circle(args)
+        _args.extraUpdate=self.bulletExtraUpdate or {}
+        local cir=Circle(_args)
         -- table.insert(ret,cir)
         for key, func in pairs(self.bulletEvents) do
-            func(cir,args,self)
+            func(cir,_args,self)
         end
         return cir
     end

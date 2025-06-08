@@ -1,20 +1,21 @@
 return {
-    ID=83,
-    user='okina',
-    spellName='Secret Ceremony "One Eyed Bat"',
+    ID=73,
+    quote='?',
+    user='youmu',
+    spellName='Karmic Binding Sword "Karmic Retribution Slash"', 
     make=function()
         G.levelRemainingFrame=7200
         Shape.removeDistance=1e100
-        local a,b
+        local a
         local en
-        en=Enemy{x=400,y=1600000,mainEnemy=true,maxhp=12600,hpSegments={0.5},hpSegmentsFunc=function(self,hpLevel)
+        en=Enemy{x=400,y=400000,mainEnemy=true,maxhp=9600,hpSegments={0.7,0.4},hpSegmentsFunc=function(self,hpLevel)
             Enemy.hpSegmentsFuncShockwave(self,hpLevel)
-            a.lifeFrame=91
-            a.bulletSprite=BulletSprites.scale.orange
+            a.spawnEvent.period=a.spawnEvent.period+30
+            a.spawnEvent.frame=a.spawnEvent.period-60
             en:addHPProtection(600,10)
         end}
         en:addHPProtection(600,10)
-        local player=Player{x=400,y=800000,noBorder=true}
+        local player=Player{x=400,y=600000,noBorder=true}
         player.moveMode=Player.moveModes.Natural
         local poses={}
         for i = 1, 30, 1 do
@@ -25,60 +26,270 @@ return {
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
 
-        a={x=400,y=1600000,period=30,frame=0,speed=20,lifeFrame=61,bulletNumber=20,bulletSpeed=70,bulletLifeFrame=1000,angle=0,range=0,highlight=true,bulletSprite=BulletSprites.scale.purple,fogEffect=true,fogTime=3,bulletEvents={
-            function(cir,args,self)
-                local hpLevel=en._hpLevel
-                local index=args.index
-                local sign=math.mod2Sign(index)
-                local div2=math.ceil(index/2)
-                cir.direction=cir.direction+math.pi/2*sign
-                cir.speed=cir.speed-div2*3
-                cir.extraUpdate[1]=function(cir)
-                    cir.direction=cir.direction-cir.speed/Shape.curvature/60*sign*(1+div2/10*(0.7+hpLevel*0.15))
+        local function createLaser(x,y,direction,deltaTheta,mode)
+            mode=mode or 'spread'
+            if mode~='spread' then
+                deltaTheta=0
+            end
+            local firstLaserunit
+            local laser=Laser{x=x,y=y,direction=direction+math.pi-deltaTheta,lifeFrame=3,frequency=1,speed=80,sprite=Asset.bulletSprites.laser.gray,radius=1,invincible=true,meshLimit=100,laserEvents={
+                function(laser)
+                    Event.LoopEvent{
+                        obj=laser,
+                        period=1,
+                        executeFunc=function()
+                            if mode=='spread' then
+                                laser.args.direction=laser.args.direction+deltaTheta*2
+                            else
+                                laser.args.direction=laser.args.direction+math.pi
+                            end
+                        end
+                    }
                 end
+                },
+            bulletEvents={
+                function(cir)
+                    if cir.index>2 then
+                        cir:remove()
+                        return
+                    end
+                    if cir.index==1 then
+                            cir.deltaOrientation=math.pi
+                        firstLaserunit=cir
+                    end
+                    local function generate(cir,speed,colorIndex)
+                        if cir.index==1 then
+                            return
+                        end
+                        local x1,y1=cir.x,cir.y
+                        local x2,y2=firstLaserunit.x,firstLaserunit.y
+                        local distance=Shape.distance(x1,y1,x2,y2)
+                        local dir=Shape.to(x1,y1,x2,y2)
+                        local hpLevel=en:getHPLevel()
+                        local dr=math.max(1,distance/(16-hpLevel*2))
+                        for r=0,distance,dr do
+                            local x3,y3=Shape.rThetaPos(x1,y1,r,dir)
+                            local dir2=Shape.to(x3,y3,x2,y2)
+                            if math.abs(r-distance)<Shape.EPS then
+                                dir2=Shape.to(x3,y3,x1,y1)+math.pi
+                            end
+                            local toPlayerAngle=Shape.to(x3,y3,player.x,player.y)
+                            local dir3=dir2+math.eval(1.57,0.2)
+                            dir3=math.modClamp(dir3,toPlayerAngle,math.pi/2)
+                            local new=Circle{x=x3,y=y3,direction=dir3,speed=math.eval(0,10)-speed,sprite=BulletSprites.scale[Asset.colors[colorIndex or 1]],lifeFrame=1000}
+                            Event.EaseEvent{
+                                obj=new,
+                                aimTable=new,
+                                aimKey='speed',
+                                aimValue=2*speed,
+                                easeFrame=60
+                            }
+                        end
+                    end
+                    Event.DelayEvent{
+                        obj=cir,
+                        delayFrame=10,
+                        executeFunc=function()
+                            Event.EaseEvent{
+                                obj=cir,
+                                aimTable=cir,
+                                aimKey='direction',
+                                aimValue=cir.direction+math.mod2Sign(cir.index)*deltaTheta/2,
+                                easeFrame=40,
+                                afterFunc=function()
+                                    Event.LoopEvent{
+                                        obj=cir,
+                                        period=30,
+                                        times=5,
+                                        executeFunc=function(self,times)
+                                            generate(cir,10+times*2.5,times+1)
+                                        end
+                                    }
+                                end
+                            }
+                            Event.EaseEvent{
+                                obj=cir,
+                                aimTable=cir,
+                                aimKey='speed',
+                                aimValue=0,
+                                easeFrame=1000
+                            }
+                            Event.EaseEvent{
+                                obj=cir,
+                                aimTable=cir,
+                                aimKey='radius',
+                                aimValue=4,
+                                easeFrame=80
+                            }
+                        end
+                    }
+                    Event.DelayEvent{
+                        obj=cir,
+                        delayFrame=1170,
+                        executeFunc=function()
+                            cir.speed=0
+                            Event.EaseEvent{
+                                obj=cir,
+                                aimTable=cir,
+                                aimKey='radius',
+                                aimValue=0,
+                                easeFrame=20
+                            }
+                        end
+                    }
+                    Event.DelayEvent{
+                        obj=cir,
+                        delayFrame=1200,
+                        executeFunc=function()
+                            cir:remove()
+                        end
+                    }
+                end
+            }}
+        end
+        local function enemyDash(step,pos)
+            pos=pos or {x=player.x,y=player.y}
+            local toPlayerAngle=Shape.to(en.x,en.y,pos.x,pos.y)
+            local dis=Shape.distance(en.x,en.y,pos.x,pos.y)
+            en.x,en.y=Shape.rThetaPos(en.x,en.y,math.min(dis,step),toPlayerAngle)
+            a.x,a.y=en.x,en.y
+        end
+
+        en.arrowAngle=0
+        local function drawArrow()
+            local x,y=player.x,player.y
+            local angle=en.arrowAngle
+            local nx,ny
+            local size=4
+            local f=30
+            local function circle(x,y)
+                local cir=Circle{x=x,y=y,speed=0,direction=angle,sprite=BulletSprites.round.blue,lifeFrame=f,invincible=true,safe=true}
+                Event.EaseEvent{
+                    obj=cir,
+                    aimTable=cir,
+                    aimKey='spriteTransparency',
+                    aimValue=0,
+                    easeFrame=f
+                }
+            end
+            for i=0,10 do
+                nx,ny=Shape.rThetaPos(x,y,size*i,angle)
+                circle(nx,ny)
+            end
+            local angle2=Shape.to(nx,ny,x,y)
+            for i=1,3 do
+                local nx2,ny2=Shape.rThetaPos(nx,ny,size*i,angle2+math.pi/6)
+                circle(nx2,ny2)
+                nx2,ny2=Shape.rThetaPos(nx,ny,size*i,angle2-math.pi/6)
+                circle(nx2,ny2)
+            end
+            for i=-1,-10,-1 do
+                nx,ny=Shape.rThetaPos(x,y,size*i,angle)
+                circle(nx,ny)
+            end
+            angle2=Shape.to(nx,ny,x,y)
+            for i=1,3 do
+                local nx2,ny2=Shape.rThetaPos(nx,ny,size*i,angle2+math.pi/6)
+                circle(nx2,ny2)
+                nx2,ny2=Shape.rThetaPos(nx,ny,size*i,angle2-math.pi/6)
+                circle(nx2,ny2)
+            end
+        end
+        a=BulletSpawner{x=400,y=300000,period=150,frame=80,lifeFrame=10000,bulletNumber=2,bulletSpeed=150,bulletLifeFrame=350,angle=0,range=math.pi*2,bulletSprite=BulletSprites.giant.yellow,bulletEvents={
+            function(cir,args,self)
+                createLaser(cir.x,cir.y,cir.direction,0.35)
             end
         }}
-        Event.DelayEvent{
-            obj=en,delayFrame=60,executeFunc=function() -- give a broader view of backside
-                SFX:play('enemyPowerfulShot')
-                Event.EaseEvent{
-                    obj=en,aimTable=G.viewOffset,aimKey='y',aimValue=-200,easeFrame=180,progressFunc=Event.sineIOProgressFunc
-                }
-                Event.EaseEvent{
-                    obj=en,aimTable=Shape,aimKey='axisY',aimValue=-50,easeFrame=180,progressFunc=Event.sineIOProgressFunc
+        local function oneAttack(deltaTheta)
+            deltaTheta=deltaTheta or 0
+            SFX:play('enemyCharge',true)
+            local newAngle=Shape.to(player.x,player.y,en.x,en.y)+math.pi+deltaTheta
+            en.arrowAngle=newAngle
+            drawArrow()
+            local distance0=Shape.distance(player.x,player.y,en.x,en.y)
+            local hpLevel0=en:getHPLevel()
+            Event.DelayEvent{
+                obj=en,
+                delayFrame=52,
+                executeFunc=function()
+                    en.safe=true -- prevent enemy's body killing player when dashing
+                    Event.LoopEvent{
+                        obj=en,
+                        period=1,
+                        times=5,
+                        executeFunc=function(self,times,maxTimes)
+                            local aimx,aimy=Shape.rThetaPos(player.x,player.y,math.max(distance0,40),newAngle+math.pi)
+                            local distance=Shape.distance(player.x,player.y,aimx,aimy)
+                            local rt=maxTimes-times
+                            enemyDash(distance/rt,{x=aimx,y=aimy})
+                        end
+                    }
+                end
+            }
+            Event.DelayEvent{
+                obj=en,
+                delayFrame=60,
+                executeFunc=function()
+                    local hpLevel=en:getHPLevel()
+                    if hpLevel0~=hpLevel then -- into next phase, cancel current attack
+                        return
+                    end
+                    SFX:play('enemyPowerfulShot',true)
+                    createLaser(player.x,player.y,newAngle,1.5,'normal')
+                    local xp,yp=player.x,player.y
+                    local xn,yn=en.x,en.y
+                    local angle=Shape.to(xp,yp,xn,yn)
+                    local distance=Shape.distance(xp,yp,xn,yn)
+                    local dr=math.max(2,distance/(hpLevel<3 and 50 or 20))
+                    for r=-distance,distance,dr do
+                        if math.abs(r)<8 then
+                           goto continue 
+                        end
+                        local x3,y3=Shape.rThetaPos(xp,yp,r,angle)
+                        local dir2=Shape.to(x3,y3,xp,yp)
+                        local new=Circle{x=x3,y=y3,direction=dir2+math.eval(0,0.4),speed=math.eval(-120,30),sprite=BulletSprites.scale.orange,lifeFrame=600}
+                        Event.EaseEvent{
+                            obj=new,
+                            aimTable=new,
+                            aimKey='speed',
+                            aimValue=60,
+                            easeFrame=120
+                        }
+                        ::continue::
+                    end
+                    en.x,en.y=Shape.rThetaPos(xp,yp,math.clamp(distance,20,80),angle+math.pi)
+                    en.safe=false
+                end
+            }
+        end
+        local spawnBatchFuncRef=a.spawnBatchFunc
+        a.spawnBatchFunc=function (self)
+            local hpLevel=en:getHPLevel()
+            for i=1,hpLevel do
+                local deltaTheta=math.pi/(hpLevel)*(i-1)
+                Event.DelayEvent{
+                    obj=en,
+                    delayFrame=i*5-4,
+                    executeFunc=function()
+                        local hpLevel2=en:getHPLevel()
+                        if hpLevel2~=hpLevel then -- into next phase, cancel current attack
+                            return
+                        end
+                        oneAttack(deltaTheta)
+                    end
                 }
             end
-        }
+        end
+
+        
+
         Event.LoopEvent{
             obj=en,
-            period=120,
-            frame=110,
+            period=1,
             executeFunc=function()
-                local angle=math.pi/12*math.eval(0,1)
-                Event.LoopEvent{
-                    obj=en,
-                    period=1,
-                    times=60,
-                    executeFunc=function()
-                        local nx,ny=Shape.rThetaPos(player.x,player.y,150,player.naturalDirection+math.pi/2+angle)
-                        local enemyToAimDistance=Shape.distance(nx,ny,en.x,en.y)
-                        Shape.moveTowards(en,{x=nx,y=ny},math.min(1.2,enemyToAimDistance/4),true)
-                        -- a.x,a.y=en.x,en.y
-                    end
-                }
-                local hpLevel=en:getHPLevel()
-                Event.DelayEvent{
-                    obj=en,delayFrame=60,executeFunc=function()
-                        SFX:play('enemyShot',true,1)
-                        a.x,a.y=en.x,en.y
-                        local angle=Shape.to(a.x,a.y,player.x,player.y)
-                        a.angle=angle
-                        local spawner=BulletSpawner(a)
-                        spawner.direction=angle
-                        local round=BulletSpawner{x=en.x,y=en.y,period=1,frame=0,speed=30,direction=angle,lifeFrame=500,bulletNumber=20,bulletSpeed=0,bulletLifeFrame=1,angle=0,range=0,highlight=true,spawnCircleRadius=5+5*hpLevel,bulletSprite=BulletSprites.bigRound.red}
-                    end
-                }
+                enemyDash(0.1)
             end
         }
+        
     end
 }

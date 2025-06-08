@@ -1,64 +1,66 @@
 return {
-    ID=43,
-    quote='Hyperbolic geometry distorts her rings a lot.',
-    user='suwako',
-    spellName='Divine Tool "Moriya\'s Elastic Ring"',
+    ID=92,
+    user='urumi',
+    spellName='Stone Sign "Rotating Stone"',
     make=function()
-        G.levelRemainingFrame=5400
-        Shape.removeDistance=2000
-        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
-        local player=Player{x=400,y=600}
+        G.UseHypRotShader=false
+        G.levelRemainingFrame=7200
+        Shape.removeDistance=2500
+        local en,a
+        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
+        -- en:addHPProtection(300,10)
+        local player=Player{x=400,y=600,noBorder=true}
+        local center={x=400,y=300}
+        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
         player.moveMode=Player.moveModes.Natural
-        player.border:remove()
-        local poses={}
-        for i = 1, 12, 1 do
-            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
-            table.insert(poses,{nx,ny})
-        end
-        player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local a
-        a=BulletSpawner{x=400,y=300,period=30,frame=0,lifeFrame=10000,bulletNumber=48,bulletSpeed=50,bulletLifeFrame=10000,angle='0+999',spawnCircleRadius=0,range=math.pi*2,bulletSprite=BulletSprites.rice.red,bulletEvents={
+        a=BulletSpawner{x=en.x,y=en.y,period=150,frame=100,lifeFrame=10000,bulletSpeed=10,bulletNumber=10,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.lightRound.purple,bulletEvents={
             function(cir,args,self)
-                Event.DelayEvent{
-                    obj=cir,
-                    delayFrame=30,
-                    executeFunc=function()
-                        local direction=a.angle--Shape.to(a.x,a.y,player.x,player.y)--args.index%8*math.pi/4
-                        local nx,ny=Shape.rThetaPos(a.x,a.y,290,direction)
-                        cir.direction=Shape.to(cir.x,cir.y,nx,ny)--+math.pi
-                    end
-                }
+                local times=a.spawnEvent.executedTimes
+                local sign=math.mod2Sign(times)
+                local round=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bigRound.yellow,lifeFrame=cir.lifeFrame}
+                local roundRadius=round.radius
+                local radiusRef=cir.radius
+                round.invincible=true
                 Event.LoopEvent{
-                    obj=cir,
-                    period=1,
-                    times=3,
-                    conditionFunc=function()return not player.border:inside(cir.x,cir.y) end,
-                    executeFunc=function()
-                        player.border:reflection(cir)
+                    obj=round,period=1,conditionFunc=function(self)
+                        if cir.removed then
+                            round:remove()
+                            return false
+                        end
+                        return true
+                    end,
+                    executeFunc=function(self)
+                        round.x=cir.x
+                        round.y=cir.y
+                        round.radius=cir.radius/radiusRef*roundRadius
+                    end
+                }
+                local afterHypRotX0,afterHypRotY0=Shape.rotateAround(cir.x,cir.y,-player.naturalDirection,player.x,player.y)
+                local metricRef=(afterHypRotY0-Shape.axisY)/Shape.curvature
+                local angle=cir.direction
+                local r=math.pseudoRandom(times)*20+80
+                Event.LoopEvent{
+                    obj=cir,period=1,times=360,executeFunc=function(self,times,maxTimes)
+                        local ratio=math.sin(times/maxTimes*math.pi-math.pi/2)/2+0.5
+                        cir.x,cir.y=Shape.rThetaPos(en.x,en.y,(1-(1-ratio)^3)*r,angle+math.pi*ratio*sign)
+                        round.x=cir.x
+                        round.y=cir.y
+                        if times<180 then
+                            local afterHypRotX,afterHypRotY=Shape.rotateAround(cir.x,cir.y,-player.naturalDirection,player.x,player.y)
+                            cir.radius=radiusRef*metricRef/(afterHypRotY-Shape.axisY)*Shape.curvature
+                        end
+                        if times==maxTimes-1 then
+                            cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
+                            Event.EaseEvent{
+                                obj=cir,aimKey='speed',aimValue=40,easeFrame=60
+                            }
+                        end
                     end
                 }
             end
-        }}
-        Event.LoopEvent{
-            obj=en,
-            period=1,
-            executeFunc=function()
-                local fr=a.frame%600
-                if fr==302 then
-                    a.spawnEvent.period=10000
-                elseif fr==2 then
-                    a.spawnEvent.period=15
-                    a.spawnEvent.frame=0
-                end
-                if fr<200 then
-                    a.angle=Shape.to(a.x,a.y,player.x,player.y)
-                else
-                    a.angle=a.angle+math.pi/89
-                end
-            end
+        },
         }
-
     end
 }

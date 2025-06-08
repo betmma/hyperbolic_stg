@@ -1,7 +1,7 @@
 return {
     ID=11,
     quote="In this world things appear smaller when closer to top.",
-    user='marisa',
+    user='doremy',
     spellName='Magic Sign "Otherworld Star Dust"',
     make=function ()
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
