@@ -17,6 +17,7 @@ return {
         G.viewMode.object=player
         a=BulletSpawner{x=en.x,y=en.y,period=150,frame=100,lifeFrame=10000,bulletSpeed=10,bulletNumber=10,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.lightRound.purple,bulletEvents={
             function(cir,args,self)
+                cir.invincible=true -- prevent vortex removing all bullets. set to false at 120 frames
                 local times=a.spawnEvent.executedTimes
                 local sign=math.mod2Sign(times)
                 local round=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bigRound.yellow,lifeFrame=cir.lifeFrame}
@@ -43,6 +44,9 @@ return {
                 local r=math.pseudoRandom(times)*20+80
                 Event.LoopEvent{
                     obj=cir,period=1,times=360,executeFunc=function(self,times,maxTimes)
+                        if times==120 then
+                            cir.invincible=false
+                        end
                         local ratio=math.sin(times/maxTimes*math.pi-math.pi/2)/2+0.5
                         cir.x,cir.y=Shape.rThetaPos(en.x,en.y,(1-(1-ratio)^3)*r,angle+math.pi*ratio*sign)
                         round.x=cir.x

@@ -453,6 +453,16 @@ return {
                     zh_cn = '日金符「太阳合金」',
                 },
             },
+            [144] = {
+                quote = {
+                    en_us = 'The souls stop drifting and shoot bullets before disappearing. I wonder what they are thinking.',
+                    zh_cn = '漂流的灵魂在消失前会停下来射出子弹。它们在想什么呢。',
+                },
+                spellName = {
+                    en_us = 'Drowning Sign "Drifting Souls"',
+                    zh_cn = '溺符「漂流的灵魂」',
+                },
+            },
             -- level 5
             [51] = {
                 quote = {

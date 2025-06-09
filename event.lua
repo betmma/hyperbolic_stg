@@ -151,7 +151,7 @@ Event.EaseEvent=EaseEvent
 
 ---@class EaseEventBatchArgs
 ---@field obj Object
----@field aimTable table
+---@field aimTable table|nil "defaults to obj"
 ---@field aimKeys string[]
 ---@field aimValues number[]
 ---@field easeFrames number[]
