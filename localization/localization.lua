@@ -463,6 +463,16 @@ return {
                     zh_cn = '溺符「漂流的灵魂」',
                 },
             },
+            [145] = {
+                quote = {
+                    en_us = 'Boulder\'s mass is so large that its gravity attracts all water drops in the river. Is this really possible?',
+                    zh_cn = '巨石的质量如此之大，以至于它的引力吸引了河中所有的水滴。这真的可能吗？',
+                },
+                spellName = {
+                    en_us = 'Stone Sign "Boulder in Sanzu River"',
+                    zh_cn = '石符「三途川的巨石」',
+                },
+            },
             -- level 5
             [51] = {
                 quote = {
