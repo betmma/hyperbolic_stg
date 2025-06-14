@@ -371,6 +371,16 @@ return {
                     zh_cn = '禁弹「边界破碎」',
                 },
             },
+            [131] = {
+                spellName = {
+                    en_us = 'Collapse "Sanctuary of Schwarz',
+                    zh_cn = '崩溃「施瓦茨圣域」',
+                },
+                quote = {
+                    en_us = 'She tried but failed to destroy this Hyperbolic Domain. Who to visit next?',
+                    zh_cn = '她试图摧毁双曲域，但失败了。接下来要去拜访谁呢？',
+                },
+            },
             -- level 4
             [41] = {
                 quote = {

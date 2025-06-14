@@ -384,7 +384,7 @@ end
 
 
 --- Calculates the coordinates of the vertices of a Schwarz triangle (p,q,r)
---- in the Upper Half-Plane model.
+--- in the Upper Half-Plane model. vertices are ordered in counter-clockwise direction.
 ---@param p integer Reciprocal of the angle at vertex v0 (angle = pi/p).
 ---@param q integer Reciprocal of the angle at vertex v1 (angle = pi/q).
 ---@param r integer Reciprocal of the angle at vertex v2 (angle = pi/r).
@@ -452,4 +452,79 @@ function Shape.schwarzTriangleVertices(p, q, r, v0_coord, dir_v0v1_angle)
     local v2_out = {v2x, v2y}
   
     return v0_out, v1_out, v2_out
+end
+
+--- return the area of a triangle with vertices (x1,y1), (x2,y2), (x3,y3). not using Shape.curvature
+---@return number "area of the triangle"
+function Shape.triangleArea(x1,y1,x2,y2,x3,y3)
+    local angleA=math.abs(math.modClamp(Shape.to(x1,y1,x2,y2)-Shape.to(x1,y1,x3,y3)))
+    local angleB=math.abs(math.modClamp(Shape.to(x2,y2,x1,y1)-Shape.to(x2,y2,x3,y3)))
+    local angleC=math.abs(math.modClamp(Shape.to(x3,y3,x1,y1)-Shape.to(x3,y3,x2,y2)))
+    return math.pi-angleA-angleB-angleC
+end
+
+--- return the barycenter coordinates of a point (x,y) in triangle with vertices (x1,y1), (x2,y2), (x3,y3).
+---@return number "barycenter coordinate A"
+---@return number "barycenter coordinate B"
+---@return number "barycenter coordinate C"
+function Shape.barycenterCoordinates(x,y,x1,y1,x2,y2,x3,y3)
+    local area=Shape.triangleArea(x1,y1,x2,y2,x3,y3)
+    local areaA=Shape.triangleArea(x,y,x2,y2,x3,y3)
+    local areaB=Shape.triangleArea(x1,y1,x,y,x3,y3)
+    local areaC=Shape.triangleArea(x1,y1,x2,y2,x,y)
+    return areaA/area, areaB/area, areaC/area
+end
+
+--- flip a point (x,y) into a triangle with vertices (x1,y1), (x2,y2), (x3,y3). If the point is outside the triangle, it will be reflected by the edges until it is inside or flipLimit is reached.
+---@return coordinate "x of the flipped point"
+---@return coordinate "y of the flipped point"
+---@return angle "delta orientation after flipping"
+---@return number "number of flips" 
+---@return boolean "after flipLimit loops, true if the point is inside the triangle, false if it is still outside"
+function Shape.flipIntoTriangle(x,y,x1,y1,x2,y2,x3,y3,flipLimit)
+    --[[
+    usage example (due to reflectByLine flip axis thing is kinda spaghetti):
+    v1,v2,v3=Shape.schwarzTriangleVertices(p,q,r,{center.x,center.y},0) -- coords of the triangle vertices
+    outerx,outery=... before flipping
+    innerx,innery,deltaOrientation,flipCount,inside=Shape.flipIntoTriangle(outerx,outery,v1[1],v1[2],v2[1],v2[2],v3[1],v3[2],20)
+    if you want after flip, the direction towards center:
+    innerToCenterDir=Shape.to(innerx,innery,center.x,center.y)
+    then before flip, the direction is calculated by:
+    outerDir=innerToCenterDir-deltaOrientation (this deltaOrientation means afterFlip-beforeFlip, so minus here)
+    and, if flipCount is odd, needs an extra flip:
+    if flipCount%2==1 then
+        outerDir=math.pi-outerDir
+    end
+    ]]
+    flipLimit=flipLimit or 20
+    local loopCount=0
+    local flipCount=0
+    local deltaOrientationSum=0
+    local dO=0
+    while loopCount<flipLimit do
+        local inside=true
+        if not Shape.leftToLine(x,y,x1,y1,x2,y2) then
+            x,y,dO=Shape.reflectByLine(x,y,x1,y1,x2,y2)
+            inside=false
+            deltaOrientationSum=-deltaOrientationSum+dO
+            flipCount=flipCount+1
+        end
+        if not Shape.leftToLine(x,y,x2,y2,x3,y3) then
+            x,y,dO=Shape.reflectByLine(x,y,x2,y2,x3,y3)
+            inside=false
+            deltaOrientationSum=-deltaOrientationSum+dO
+            flipCount=flipCount+1
+        end
+        if not Shape.leftToLine(x,y,x3,y3,x1,y1) then
+            x,y,dO=Shape.reflectByLine(x,y,x3,y3,x1,y1)
+            inside=false
+            deltaOrientationSum=-deltaOrientationSum+dO
+            flipCount=flipCount+1
+        end
+        if inside==true then
+            return x,y, deltaOrientationSum, flipCount, true
+        end
+        loopCount=loopCount+1
+    end
+    return x,y, deltaOrientationSum, flipCount, false
 end
