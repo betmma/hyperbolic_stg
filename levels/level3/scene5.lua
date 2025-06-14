@@ -22,9 +22,9 @@ return {
             executeFunc=function()
                 -- a.x,a.y=en.x,en.y--
                 local hpp=en.hp/en.maxhp
-                local t=(en.frame)%600
-                if t>=100 and t<=150 and t%1==0 then
-                    if t==100 then
+                local t=(en.frame)%650
+                if t>=50 and t<=100 and t%1==0 then
+                    if t==50 then
                         local pqrsIndex=math.random(1,#pqrs)
                         local pqrs=pqrs[pqrsIndex]
                         local permIndex=math.random(1,#permutation)
@@ -38,7 +38,7 @@ return {
                         count=0
                     end
                     local sfxplayed,sfxplayed2=false,false
-                    local t0=t-100
+                    local t0=t-50
                     local r0=120-t0*2.4
                     local num=math.min(math.ceil(math.sinh(r0/Shape.curvature)*80),100)
                     local thetaOffset=math.eval(0,0.1)
@@ -80,8 +80,8 @@ return {
                                     delayFrame=1,
                                     executeFunc=function()
                                         Event.LoopEvent{
-                                            obj=cir,period=1,times=100,executeFunc=function(self,time,maxTime)
-                                                Shape.moveTowards(cir,{x=nx,y=ny},distance/100,true)
+                                            obj=cir,period=1,times=150,executeFunc=function(self,time,maxTime)
+                                                Shape.moveTowards(cir,{x=nx,y=ny},distance/77.85*0.99^time,true)
                                             end
                                         }
                                     end
@@ -93,9 +93,9 @@ return {
                                             SFX:play('enemyPowerfulShot',true,0.5)
                                             sfxplayed2=true
                                         end
-                                        cir.speed=toFlipCenterDistance
+                                        cir.speed=toFlipCenterDistance*0.7
                                         Event.EaseEvent{
-                                            obj=cir,easeFrame=200+math.mod2Sign(flipCount)*50,aimTable=cir,aimKey='speed',aimValue=-toFlipCenterDistance*0.5-20,
+                                            obj=cir,easeFrame=300+math.mod2Sign(flipCount)*75,aimTable=cir,aimKey='speed',aimValue=-toFlipCenterDistance*0.7-10,
                                         }
                                     end
                                 }

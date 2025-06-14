@@ -373,7 +373,7 @@ return {
             },
             [131] = {
                 spellName = {
-                    en_us = 'Collapse "Sanctuary of Schwarz',
+                    en_us = 'Collapse "Sanctuary of Schwarz"',
                     zh_cn = '崩溃「施瓦茨圣域」',
                 },
                 quote = {
