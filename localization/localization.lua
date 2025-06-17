@@ -995,18 +995,28 @@ return {
                 zh_cn = '双曲域 ~ Exponential Existence',
             },
             description = {
-                en_us = 'This is the title screen theme.\nHyperbolic geometry means exponential growth, so I used Fibonacci sequence time signature.\nSounds a little bit 8-bit retro?\nI can look at the infinitely zooming background for a long time.',
-                zh_cn = '标题画面的主题曲。\n双曲几何意味着指数增长，所以我用了斐波那契数列的拍号。\n听起来有点8位复古？\n我可以看着无限放大的背景很久呢。',
+                en_us = 'This is the title screen theme.\nHyperbolic geometry means exponential growth, so I used Fibonacci sequence time signature.\nSounds a little bit 8-bit retro?\nI can look at the zooming background for a long time.',
+                zh_cn = '标题画面的主题曲。\n双曲几何意味着指数增长，所以我用了斐波那契数列的拍号。\n听起来有点8位复古？\n我可以看着不停缩放的背景很久呢。',
+            },
+        },
+        level1 = {
+            name = {
+                en_us = 'The Dream of a Mathematician',
+                zh_cn = '数学家之梦',
+            },
+            description = {
+                en_us = 'By Shinanij\nThis is (currently) first half level\'s theme.\nThis time I tried to make the climax part the most cheerful and uplifting.\nAlthough the difficulty of no-damage clear is hellish, after all, gaming should be a joyful thing. So should mathematics.\nBy the way, which one would be more interested in visiting this space, a mathematician or a physicist?',
+                zh_cn = 'By Shinanij\n这是（目前）前半关卡的主题曲。\n这次尝试把高潮部分写得最为欢乐，催人奋进。\n虽然无伤通关的难度是地狱，但是游戏总归是一件快乐的事。数学也应该是如此吧。\n话说数学家和物理学家，哪个会对来访这片空间更感兴趣呢？',
             },
         },
         level2 = {
             name = {
-                en_us = 'not decided (^^;',
-                zh_cn = '还没想好 (^^;',
+                en_us = 'Broader Sky',
+                zh_cn = '更广阔的天空',
             },
             description = {
-                en_us = 'This is (currently) all level\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;',
-                zh_cn = '这是（目前）所有关卡的主题曲。\n听起来充满活力和积极。\n前奏有一种强烈的庆祝春节的感觉(^^;',
+                en_us = 'This is (currently) second half level\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;\nHyperbolic sky, would be almost dark if considered again.',
+                zh_cn = '这是（目前）后半关卡的主题曲。\n听起来充满活力和积极。\n前奏有一种强烈的庆祝春节的感觉(^^;\n双曲的天空，再想想的话，几乎是纯黑的吧。',
             },
         }
     },

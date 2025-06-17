@@ -51,6 +51,6 @@ Title image (title.png) and upgrades icons (upgrades.png) are drawn by myself.
 
 #### Audio
 
-Music is made by myself.
+Music is made by me and my friend.
 
 SFX are from th6.

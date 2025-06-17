@@ -6,6 +6,7 @@
 ---@field leave fun():nil | nil do things when leaving the level, like recover modified global things, or secret unlocks
 ---@field quote string | nil After implementation of localization, this field is not used in game. It's only for coding reference.
 ---@field spellName string | nil Same as above
+---@field bgm string | nil the name of the background music of this level. If not assigned, will use default BGM based on level.
 
 
 local Text=require"text"
@@ -196,4 +197,16 @@ levelData.ID2LevelScene=ID2LevelScene
 
 levelData.needPass={3,6,9,12,16,22,30,40,50,60,70,80}
 levelData.defaultQuote='What will happen here?'
+
+---@return string
+levelData.getBGMName=function(level,scene)
+    local levelData=levelData[level][scene]
+    if levelData and levelData.bgm then
+        return levelData.bgm
+    end
+    if level<6 then
+        return 'level1'
+    end
+    return 'level2'
+end
 return levelData

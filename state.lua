@@ -378,6 +378,7 @@ G={
                 love.graphics.setColor(0,0,0,0.3)
                 love.graphics.rectangle("fill",optionBaseX,bottomY,width,180)
                 love.graphics.setColor(1,1,1,1)
+                SetFont(20)
                 love.graphics.printf(description,optionBaseX+edge,bottomY+edge,width-edge*2,'left')
                 love.graphics.rectangle("line",optionBaseX,bottomY,width,180)
                 -- SetFont(36)
@@ -732,10 +733,12 @@ G={
         },
         IN_LEVEL={
             enter=function(self,previousState)
+                local level,scene=self.currentLevel[1],self.currentLevel[2]
                 -- transition animation caused this function to be called frames LATER than G.enterLevel (precisely, TRANSITION_IMAGE calls enter at half point of the transition). so I move G.enterLevel code and call replayManager's tweak code here.
                 if previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
                     self:replaceBackgroundPatternIfIs(BackgroundPattern.MainMenuTesselation,BackgroundPattern.FollowingTesselation)
-                    BGM:play('level2')
+                    local bgmName=LevelData.getBGMName(level,scene)
+                    BGM:play(bgmName)
                 end
                 -- if previousState==self.STATES.GAME_END then
                 --     self.backgroundPattern:remove()
@@ -747,7 +750,6 @@ G={
                 end
                 AccumulatedTime=0 -- prevent lagging in menu causing accelerated frames in level
                 self:removeAll()
-                local level,scene=self.currentLevel[1],self.currentLevel[2]
                 Shape.restore()
                 Circle.restore()
                 self.levelRemainingFrame=nil
