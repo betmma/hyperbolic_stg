@@ -433,14 +433,13 @@ return {
                 },
             },
             [46] = {
-                quote = {
-                    en_us =
-                    'The misfortune released from her leaves a scar on the ground. Hope she will clean it up after the battle.',
-                    zh_cn = '她释放的厄运在地上留下了痕迹。希望她在战斗后能清理干净。',
-                },
                 spellName = {
-                    en_us = 'Misfortune Sign "Scar of Calamity"',
-                    zh_cn = '厄符「灾厄之痕」',
+                    en_us = 'Stack Sign "Crop Circle"',
+                    zh_cn = '堆符「麦田怪圈」',
+                },
+                quote = {
+                    en_us = 'Stones are stacked in a way that looks like a crop circle. Then, shouldn\'t it be called "Stone Circle"?',
+                    zh_cn = '石头堆成的形状看起来像麦田怪圈。那么，难道不应该叫“石头怪圈”吗？',
                 },
             },
             [47] = {
@@ -1015,7 +1014,7 @@ return {
                 zh_cn = '更广阔的天空',
             },
             description = {
-                en_us = 'This is (currently) second half level\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;\nHyperbolic sky, would be almost dark if considered again.',
+                en_us = 'This is (currently) second half level\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;\nHyperbolic sky, would be nearly pure black if considered again.',
                 zh_cn = '这是（目前）后半关卡的主题曲。\n听起来充满活力和积极。\n前奏有一种强烈的庆祝春节的感觉(^^;\n双曲的天空，再想想的话，几乎是纯黑的吧。',
             },
         }
