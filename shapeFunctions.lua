@@ -109,7 +109,8 @@ end
 ---@return table "{x,y}"
 function Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<Shape.EPS then -- vertical
-        return {x1,yc}
+        local r2=(yc-Shape.axisY)^2+(xc-x1)^2
+        return {x1,Shape.axisY+math.sqrt(r2)}
     end
     local centerX,radius=Shape.lineCenter(x1,y1,x2,y2)
     --[[ let the semicircle from xc,yc to the foot of the perpendicular line intersecting the semicircle of (centerX,radius) be (centerX2, radius2), then radius2 is radius*tan(direction) (this can be negative, but we only use squared value below so doesn't matter), centerX2 is centerX+radius/cos(direction), xc,yc is on it, so (xc-centerX2)^2+(yc-Shape.axisY)^2=radius2^2, which is:

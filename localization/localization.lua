@@ -164,7 +164,11 @@ return {
             takane = {
                 en_us = 'Takane Yamashiro',
                 zh_cn = '山城高岭',
-            }
+            },
+            eika = {
+                en_us = 'Eika Ebisu',
+                zh_cn = '戎璎花',
+            },
         },
         spellcards = {
             -- level 1
@@ -379,6 +383,16 @@ return {
                 quote = {
                     en_us = 'She tried but failed to destroy this Hyperbolic Domain. Who to visit next?',
                     zh_cn = '她试图摧毁双曲域，但失败了。接下来要去拜访谁呢？',
+                },
+            },
+            [137] = {
+                spellName = {
+                    en_us = 'Stack Sign "Tower Stoxx"',
+                    zh_cn = '堆符「石头叠叠乐」',
+                },
+                quote = {
+                    en_us = 'It\'s stone version of that stack building game! Should hyperbolic tower be more unstable?',
+                    zh_cn = '这是石头版的叠建筑物游戏！双曲塔会更不稳定吗？',
                 },
             },
             -- level 4
