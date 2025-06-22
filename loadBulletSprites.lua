@@ -193,4 +193,4 @@ Asset.bulletSpriteLoaders={
     setCenterPosition=setCenterPosition,
 }
 
-loadfile('assets/bulletSpritesDefinition.lua')(Asset)
+love.filesystem.load('assets/bulletSpritesDefinition.lua')(Asset)

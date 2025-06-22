@@ -75,7 +75,7 @@ bulletImage:setFilter("nearest", "linear") -- this "linear filter" removes some 
 
 local hitRadius={laser=4,scale=2.4,rim=2.4,round=4,rice=2.4,kunai=2.4,crystal=2.4,bill=2.8,bullet=2.4,blackrice=2.4,star=4,darkdot=2.4,dot=2.4,bigStar=7,bigRound=8.5,butterfly=7,knife=6,ellipse=7,fog=8.5,heart=10,giant=14,lightRound=14,hollow=2.4,flame=6,orb=6,moon=60,nuke=96}
 Asset.hitRadius=hitRadius
-loadfile('loadBulletSprites.lua')(Asset)
+love.filesystem.load('loadBulletSprites.lua')(Asset)
 
 local bgImage = love.graphics.newImage( "assets/bg.png" )
 Asset.backgroundImage=bgImage
