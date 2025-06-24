@@ -496,6 +496,16 @@ return {
                     zh_cn = '石符「三途川的巨石」',
                 },
             },
+            [146] = {
+                quote = {
+                    en_us = 'Though called silent land, the ground is always moving. More like a living land.',
+                    zh_cn = '虽然叫做寂静大地，但地面总是在移动。更像是有生命的土地。',
+                },
+                spellName = {
+                    en_us = 'Mountain Spirit Sign "Qi of Silent Land"',
+                    zh_cn = '魑符「寂静大地之气」',
+                },
+            },
             -- level 5
             [51] = {
                 quote = {

@@ -153,8 +153,8 @@ level 1: doremy 1-1 to 1-4, 1-5 to 1-6 is mike goutokuji
 level 2: nemuno sakata 2-1 to 2-2, takane yamashiro 2-3 to 2-4, cirno 2-5 to 2-6
 these two levels are most of small map levels (except for yuugi's)
 add a scene in level 3 to introduce the follow view and broader move area by seiga (霍 青娥).
-level 3: stage 1 characters. 3-1 3-2 mystia lorelei, 3-3 3-4 chirizuka ubame
-level 4: stage 2 characters. 4-1 4-2 houjuu chimi, 4-3 urumi ushizaki
+level 3: stage 1 characters. 3-1 3-2 mystia lorelei, 3-3 3-4 3-5 chirizuka ubame, 3-6 3-7 eika ebisu
+level 4: stage 2 characters. 4-1 4-2 houjuu chimi, 4-3 4-4 4-5 urumi ushizaki
 level 5: stage 3 characters, 5-1 5-2 kawashiro nitori, 5-3 5-4 michigami sureko, 5-5 5-6 yuugi hoshiguma
 level 6: stage 4 characters, 6-1 6-2 shameimaru aya, 6-3 to 6-5 patchouli knowledge, 6-6 6-7 minamitsu murasa
 level 7: stage 5 characters, 7-1 7-2 kijin seija, 7-3 7-4 toramaru shou, 7-5 7-6 udongein reisen 7-7 7-8 clownpiece
@@ -169,7 +169,7 @@ local levelData={
     loadLevels(1,{'1','2','3','4','5','6'}),
     loadLevels(2,{'1','2','3','4','5','6'}),
     loadLevels(3,{'1','2','3','4','5','6','7'}),
-    loadLevels(4,{'1','2','3','4','5'}),
+    loadLevels(4,{'1','2','3','4','5','6'}),
     loadLevels(5,{'1','2','3','4','5','6'}),
     loadLevels(6,{'1','2','3','4','5','6','7'}),
     loadLevels(7,{'1','2','3','4','5','6','7','8'}),
