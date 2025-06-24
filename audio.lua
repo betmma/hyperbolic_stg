@@ -75,15 +75,15 @@ function AudioSystem:setAudioVolume(name,volume)
     self.audioVolumes[name]=volume
 end
 ---@type AudioSystem
-local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout','enemyShot','enemyCharge','enemyPowerfulShot'},volumeCoeff=0.5}
+local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout','enemyShot','enemyCharge','enemyPowerfulShot'},volumeCoeff=0.35}
 sfx:setAudioVolume('enemyShot',0.3)
 sfx:setAudioVolume('enemyCharge',0.6)
 sfx:setAudioVolume('enemyPowerfulShot',0.6)
 ---@type AudioSystem
 local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title'}
-bgm:setAudioVolume('title',0.7)
+bgm:setAudioVolume('title',0.5)
 bgm:setAudioVolume('level1',1)
-bgm:setAudioVolume('level2',1)
+bgm:setAudioVolume('level2',0.8)
 --- @type {sfx:AudioSystem,bgm:AudioSystem}
 local Audio={
     sfx=sfx,
