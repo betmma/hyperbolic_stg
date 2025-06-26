@@ -1,143 +1,90 @@
 return {
-    ID=78,
-    user='mystia',
-    spellName='Night-Blindness "Bioluminescent Night"',
+    ID=132,
+    user='seiran',
+    spellName='Bullet Sign "Eagle\'s Volley Fire"',
     make=function()
-        G.UseHypRotShader=false
         G.levelRemainingFrame=7200
-        G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.Empty()
-        Shape.removeDistance=1e100
-        local a,b,c
+        Shape.removeDistance=1000
+        local a,b
         local en
-        en=Enemy{x=400,y=600000,mainEnemy=true,maxhp=7200}
+        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
         -- en:addHPProtection(600,10)
-        local player=Player{x=400,y=1200000,noBorder=true}
+        local player=Player{x=400,y=600,noBorder=true}
         player.moveMode=Player.moveModes.Natural
-        local center={x=400,y=600000}
-        local poses={}
-        local borderVertices=30
-        for i = 1, borderVertices, 1 do
-            local nx,ny=Shape.rThetaPos(center.x,center.y,700,math.pi/borderVertices*2*(i-.5))
-            table.insert(poses,{nx,ny})
-        end
-        player.border=PolyLine(poses)
+        local center={x=400,y=300}
+        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local lightSources={}
-        a=BulletSpawner{x=400,y=600000,period=170,frame=90,lifeFrame=10000,bulletNumber=1,bulletSpeed=30,spawnSFXVolume=0.7,bulletLifeFrame=1000,angle=math.eval(0,999),range=math.pi*2,bulletSprite=BulletSprites.butterfly.yellow,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=350,frame=10,lifeFrame=10000,bulletNumber=10,bulletSpeed=70,bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.bullet.cyan,fogEffect=true,spawnSFXVolume=1,bulletEvents={
             function(cir,args,self)
-                a.angle=a.angle+math.eval(0,1)
-                lightSources[#lightSources+1]=cir
             end
-        }}
-
-        b=BulletSpawner{x=400,y=600000,period=300,frame=200,lifeFrame=10000,bulletNumber=6,bulletSpeed=30,bulletLifeFrame=350,angle=0,range=math.pi*2,bulletSprite=BulletSprites.bigRound.yellow,bulletEvents={
-            function(cir,args,self)
-                Event.LoopEvent{
-                    obj=cir,period=1,times=100,executeFunc=function()
-                        cir.direction=cir.direction+math.mod2Sign(args.index)*0.02
-                    end
-                }
-                Event.LoopEvent{
-                    obj=cir,period=math.max(10,20-b.spawnEvent.executedTimes),executeFunc=function()
-                        BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=2,bulletSpeed=0,bulletLifeFrame=300,angle=cir.direction,range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,bulletEvents={
-                            function(cir,args,self)
-                                Event.EaseEvent{
-                                    obj=cir,easeFrame=100,aimTable=cir,aimKey='speed',aimValue=50
-                                }
+        },spawnBatchFunc=function(self)
+            SFX:play('enemyShot',true,self.spawnSFXVolume)
+            local num=math.eval(self.bulletNumber)
+            local range=math.eval(self.range)
+            local angle=self.angle=='player' and Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y) or math.eval(self.angle)
+            local speed=math.eval(self.bulletSpeed)
+            local size=math.eval(self.bulletSize)
+            for index=1,num do
+                local direction=range*(index-0.5-num/2)/num+angle
+                for i=1,10,1 do
+                    for j = 1, i, 1 do
+                        local x,y,dir=Shape.rThetaPosT(self.x,self.y,2*(j-i/2-0.499),direction+math.pi/2)
+                        dir=dir+math.pi/2*math.sign(j-i/2-0.499)
+                        Event.DelayEvent{
+                            delayFrame=i*5+(index*3%10)*15,
+                            executeFunc=function()
+                                self:spawnBulletFunc{x=x,y=y,direction=dir,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=15,sprite=self.bulletSprite}
                             end
-                        }}
+                        }
                     end
-                }
-                -- cir.speed=cir.speed+math.eval(0,20)
+                end
             end
-        }}
-
-        local offset=0
-        local angleD=0.1
-        c=BulletSpawner{x=400,y=600000,period=300,frame=50,lifeFrame=10000,bulletNumber=92,bulletSpeed=20,bulletLifeFrame=650,angle='player',range=0,bulletSprite=BulletSprites.round.green,bulletEvents={
+        end}
+        b=BulletSpawner{x=400,y=300,period=10,frame=-50,lifeFrame=10000,bulletNumber=20,bulletSpeed=80,bulletLifeFrame=1500,angle=math.eval(0,999),range=math.pi*2,bulletSprite=BulletSprites.bigRound.white,highlight=true,bulletEvents={
             function(cir,args,self)
                 if args.index==1 then
-                    offset=math.eval(0,0.05)
-                    local distance=Shape.distance(en.x,en.y,player.x,player.y)
-                    angleD=0.2/math.max(0.5,math.sinh(distance/Shape.curvature)*3)
-                    Event.LoopEvent{
-                        obj=cir,period=5,times=5,executeFunc=function()
-                            SFX:play('enemyShot',true,0.7)
-                        end
-                    }
+                    b.bulletSpeed=b.bulletSpeed+(1-en.hp/en.maxhp)*10
+                    if b.spawnEvent.executedTimes%15==14 then 
+                        b.spawnEvent.frame=-50
+                        b.angle=math.eval(0,999)
+                        b.bulletSpeed=80
+                    end
                 end
-                cir.direction=cir.direction+offset+(math.ceil(args.index/4)-12)*angleD
                 Event.EaseEvent{
-                    obj=cir,easeFrame=(args.index%4)*15+math.ceil(args.index/4)*5,aimTable=cir,aimKey='speed',aimValue=80
+                    obj=cir,
+                    easeFrame=50,
+                    aimKey='speed',
+                    aimValue=0,
+                    afterFunc=function()
+                        -- Circle{x=cir.x,y=cir.y,lifeFrame=1,sprite=BulletSprites.fog.white,speed=0}
+                        cir:changeSprite(BulletSprites.scale.red)
+                        cir.direction=cir.direction+math.pi*0.7*math.mod2Sign(args.index)
+                        cir.speed=50
+                    end,
                 }
             end
         }}
-
-        local shader = love.graphics.newShader("shaders/light.glsl")
-        local bg=Shape{x=300,y=0,lifeFrame=99999}
-        table.insert(G.sceneTempObjs,bg)
-        bg.update=function(self)
-        end
-        local image=Asset.backgroundImage
-        local MAX_LIGHT=16
-        bg.draw=function(self)
-            local translateX,translateY,scale=G:followModeTransform(true)
-            local function translate(x,y)
-                return x*scale+translateX,y*scale+translateY
-            end
-            local function antiTranslate(x,y)
-                return (x-translateX)/scale,(y-translateY)/scale
-            end
-            local filteredLightSources={}
-            local lightPositions={}
-            local lightColors={}
-            local lightIntensities={}
-            local enx,eny=translate(en.x,en.y)
-            table.insert(lightPositions,{enx,eny})
-            table.insert(lightColors,{1,1,1})
-            table.insert(lightIntensities,-1)
-            for i=1,#lightSources do
-                local cir=lightSources[i]
-                if not cir.removed then
-                    filteredLightSources[#filteredLightSources+1]=cir
-                    if #lightPositions>=MAX_LIGHT then
-                        break
-                    end
-                    local x,y=translate(cir.x,cir.y)
-                    table.insert(lightPositions,{x,y})
-                    table.insert(lightColors,{1,1,1})
-                    local lifetimeLeftRatio=(cir.lifeFrame-cir.frame)/cir.lifeFrame
-                    local initialLightup=(cir.frame/cir.lifeFrame)*10
-                    local lightIntensity=math.min(lifetimeLeftRatio,initialLightup)
-                    table.insert(lightIntensities,lightIntensity)
-                end
-            end
-            -- fill the lightPositions, lightColors and lightIntensities to MAX_LIGHT
-            -- for i=#lightPositions+1,MAX_LIGHT do
-            --     lightPositions[i]={0,0}
-            --     lightColors[i]={0,0,0}
-            --     lightIntensities[i]=0
-            -- end
-            shader:send("numLights", #lightPositions)
-            if #lightPositions>0 then
-                shader:send("lightPositions",unpack(lightPositions))
-                shader:send("lightColors",unpack(lightColors))
-                shader:send("lightIntensities",unpack(lightIntensities))
-            end
-            shader:send("backgroundLightIntensity", math.min(1,1.5-en.frame/120))
-
-            love.graphics.setShader(shader)
-        end
 
         Event.LoopEvent{
             obj=en,
             period=1,
             executeFunc=function()
-                -- a.x,a.y=en.x,en.y
-                if en.frame==60 then
+                if a.spawnEvent.frame==a.spawnEvent.period-60 then
                     SFX:play('enemyCharge')
+                end
+                if en.frame%200==199 then
+                    SFX:play('enemyShot',true,0.5)
+                    local x,y=Shape.rThetaPos(center.x,center.y,math.eval(30,30),math.eval(0,999))
+                    Event.LoopEvent{
+                        obj=en,period=1,
+                        times=100,
+                        executeFunc=function ()
+                            Shape.moveTowards(en,{x=x,y=y},0.6,true)
+                            a.x,a.y=en.x,en.y
+                            b.x,b.y=en.x,en.y
+                        end
+                    }
                 end
             end
         }

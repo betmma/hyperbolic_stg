@@ -169,6 +169,10 @@ return {
                 en_us = 'Eika Ebisu',
                 zh_cn = '戎璎花',
             },
+            seiran = {
+                en_us = 'Seiran',
+                zh_cn = '清兰',
+            }
         },
         spellcards = {
             -- level 1
@@ -393,6 +397,16 @@ return {
                 quote = {
                     en_us = 'It\'s stone version of that stack building game! Should hyperbolic tower be more unstable?',
                     zh_cn = '这是石头版的叠建筑物游戏！双曲塔会更不稳定吗？',
+                },
+            },
+            [132] = {
+                spellName = {
+                    en_us = 'Bullet Sign "Eagle\'s Volley Fire"',
+                    zh_cn = '弹符「鹰之齐射」',
+                },
+                quote = {
+                    en_us = 'The pattern is quite similar to when she is in normal world. Or her bullets originally belong to this dimension?',
+                    zh_cn = '这种弹幕和她在正常世界时的很相似。也许她的子弹本来就属于这个维度？',
                 },
             },
             -- level 4
