@@ -621,7 +621,7 @@ function H3Terrain:new()
     self.paramSendFunction=function(self,shader)
         local l=length-self.moveLength
         local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
-        dir=dir+(l>0 and math.pi or 0)
+        -- dir=dir+(l>0 and math.pi or 0)
         local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
         local axisY=Shape.axisY
         V0[2]=V0[2]-axisY

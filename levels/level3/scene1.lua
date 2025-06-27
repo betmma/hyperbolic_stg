@@ -30,7 +30,7 @@ return {
                 for i=1,10,1 do
                     for j = 1, i, 1 do
                         local x,y,dir=Shape.rThetaPosT(self.x,self.y,2*(j-i/2-0.499),direction+math.pi/2)
-                        dir=dir+math.pi/2*math.sign(j-i/2-0.499)
+                        dir=dir+math.pi/2
                         Event.DelayEvent{
                             delayFrame=i*5+(index*3%10)*15,
                             executeFunc=function()

@@ -405,8 +405,18 @@ return {
                     zh_cn = '弹符「鹰之齐射」',
                 },
                 quote = {
-                    en_us = 'The pattern is quite similar to when she is in normal world. Or her bullets originally belong to this dimension?',
+                    en_us = 'The pattern is quite similar to when she was in normal world. Or her bullets originally belong to this dimension?',
                     zh_cn = '这种弹幕和她在正常世界时的很相似。也许她的子弹本来就属于这个维度？',
+                },
+            },
+            [133] = {
+                spellName = {
+                    en_us = 'Bullet Sign "Eagle\'s Big Shot"',
+                    zh_cn = '弹符「鹰之大射」',
+                },
+                quote = {
+                    en_us = 'Woah, a giant triangle! Its recoil pushes her too far away, so she can\'t shoot it continuously.',
+                    zh_cn = '哇，一个巨大的三角形！后坐力把她推得太远了，所以她不能连续射击。',
                 },
             },
             -- level 4

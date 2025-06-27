@@ -10,6 +10,14 @@ function Shape.distance(x1,y1,x2,y2)
     return 2*Shape.curvature*math.log((math.distance(x1,y1,x2,y2)+math.distance(x1,y1,x2,2*ay-y2))/(2*((y1-ay)*(y2-ay))^0.5))
 end
 
+--  get distance between two objects with x,y coordinates
+---@param obj1 table "{x,y}"
+---@param obj2 table "{x,y}"
+---@return number distance (hyperbolic) distance between obj1 and obj2
+function Shape.distanceObj(obj1,obj2)
+    return Shape.distance(obj1.x,obj1.y,obj2.x,obj2.y)
+end
+
 -- get X coordinate and radius of center point of line x1,y1 to x2,y2
 ---@return coordinate centerX X coordinate of center point
 ---@return number radius (Euclidean) radius of line
@@ -339,7 +347,7 @@ function Shape.rThetaPos(x,y,r,theta)
     return retX,retY
 end
 
--- same as rThetaPos, but return the new direction facing after moving.
+-- same as rThetaPos, but return the new direction facing after moving. Note that when r is negative, the direction is facing the beginning point (naturally, because you are moving backward), so flip r's sign and add pi to theta will result in same newX and newY, but pi added to newTheta.
 ---@param x coordinate
 ---@param y coordinate
 ---@param r number
@@ -351,14 +359,15 @@ function Shape.rThetaPosT(x,y,r,theta)
     if r==0 then
         return x,y,theta
     end
-    if r<0 then
+    local rLT0=r<0
+    if rLT0 then
         r=-r
         theta=theta+math.pi
     end
     local x2,y2,r2=Shape.getCircle(x,y,r)
     local xp,yp=x2,y2+r2 -- theta=pi/2
     local retX,retY=Shape.rotateAround(xp,yp,theta-math.pi/2,x,y)
-    return retX,retY,Shape.to(retX,retY,x,y)+math.pi
+    return retX,retY,Shape.to(retX,retY,x,y)+(rLT0 and 0 or math.pi) -- if r>0 add pi
 end
 
 -- get Euclidean polar angle. It's used in Shape.drawArc and probably nowhere else.

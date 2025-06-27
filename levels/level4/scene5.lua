@@ -23,7 +23,7 @@ return {
             for r=-110,110,10 do
                 r=r+offset
                 local x1,y1,dir=Shape.rThetaPosT(x0,y0,r,0)
-                dir=dir-math.sign(r)*math.pi/2
+                dir=dir-math.pi/2
                 local x2,y2,dir2=Shape.rThetaPosT(x1,y1,100,dir)
                 local cir=Circle{x=x2,y=y2,lifeFrame=1000,sprite=Asset.bulletSprites.rice.blue,speed=30,direction=dir2+math.pi,spriteTransparency=0,highlight=true,extraUpdate={
                     function(cir)

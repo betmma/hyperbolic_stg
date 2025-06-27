@@ -168,7 +168,7 @@ level EX: not categorized spell cards (temporary). EX-1 remilia (original 3-1), 
 local levelData={
     loadLevels(1,{'1','2','3','4','5','6'}),
     loadLevels(2,{'1','2','3','4','5','6'}),
-    loadLevels(3,{'1','3','4','5','6','7'}),
+    loadLevels(3,{'1','2','3','4','5','6','7'}),
     loadLevels(4,{'1','2','3','4','5','6','7','8'}),
     loadLevels(5,{'1','2','3','4','5','6'}),
     loadLevels(6,{'1','2','3','4','5','6','7'}),
