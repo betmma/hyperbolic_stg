@@ -1,57 +1,69 @@
 return {
-    ID=88,
-    user='nareko',
-    spellName='Riddle Sign "Pseudo Hexagonal Labyrinth"',
+    ID=16,
+    quote='not come up yet',
+    user='yuugi',
+    spellName='Manacles Sign "Manacles a Criminal Can\'t Take Off"',
     make=function()
-        G.levelRemainingFrame=7200
-        Shape.removeDistance=1000
-        local en
-        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200,}
-        en:addHPProtection(600,10)
+        Shape.removeDistance=2500
+        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600,noBorder=true}
-        player.moveMode=Player.moveModes.Natural
         local center={x=400,y=300}
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
+        player.moveMode=Player.moveModes.Natural
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local spawnCount=0
-        local function spawn()
-            spawnCount=(spawnCount+1)%2
-            local delayCount=0
-            local count=0
-            local theta=math.eval(0,999)
-            local sideNum=6
-            for r=1,3 do
-                local num=r*6
-                r=r*40
-                for i=1,num do
-                    local angle=theta+i*math.pi*2/num
-                    local rRatio=math.cos(math.pi/sideNum)/math.cos((angle-theta)%(math.pi/(sideNum/2))-math.pi/sideNum)
-                    local x,y,to=Shape.rThetaPosT(center.x,center.y,r*rRatio,angle)
-                    Event.DelayEvent{
-                        obj=en,delayFrame=count*2,executeFunc=function()
-                            local b=BulletSpawner{x=x,y=y,period=10,lifeFrame=50,bulletNumber=6,bulletSpeed=50-(spawnCount)*10,bulletLifeFrame=400,angle=to+math.pi/2,range=math.pi*2,bulletSprite=BulletSprites.blackrice.yellow,fogEffect=true,fogTime=20}
-                            b.delayCount=delayCount
-                            delayCount=delayCount+1
-                            Event.LoopEvent{
-                                obj=b,
-                                period=10,
-                                executeFunc=function()
-                                    b.angle=b.angle+0.05*math.mod2Sign(b.delayCount)*(spawnCount+1)
-                                end
-                            }
+        local a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed='60',bulletLifeFrame=100,range=math.pi*2,angle='1.17+3.14',bulletSprite=BulletSprites.laser.blue,bulletEvents={
+            function(cir)
+                Event.LoopEvent{
+                    obj=cir,
+                    period=1,
+                    executeFunc=function()
+                        local t=cir.frame%120
+                        if t<30 then
+                            cir.direction=cir.direction+0.12
+                        elseif t>=60 and t<90 then
+                            cir.direction=cir.direction-0.12
                         end
-                    }
-                    count=count+1
-                end
+                    end
+                }
             end
-        end
+        }}
+        local b
+        b=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=35,bulletSpeed='80',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.laser.red,frequency=4,highlight=true,bulletEvents={
+            function(cir)
+                Event.EaseEvent{
+                    obj=cir,aimKey='speed',aimValue=480,easeFrame=10
+                }
+            end},laserEvents={
+            function(laser)
+                local enDirRef=en.direction
+                Event.LoopEvent{
+                    obj=laser,
+                    period=1,
+                    executeFunc=function(self)
+                        laser.args.direction=laser.args.direction+en.direction-enDirRef+(a.spawnEvent.executedTimes%2==1 and 1 or -1)*0.0005*(2-en.hp/en.maxhp)
+                        enDirRef=en.direction
+                        laser.x,laser.y=en.x,en.y
+                    end
+                }
+            end
+        }}
         Event.LoopEvent{
-            obj=en,
-            period=200,
-            frame=140,
-            executeFunc=function()
-                spawn()
+            obj=en,period=300,frame=200,executeFunc=function(self,dt)
+                local dir=Shape.to(en.x,en.y,player.x,player.y)+math.eval(0,0.4)
+                local distance=Shape.distance(en.x,en.y,player.x,player.y)
+                Event.LoopEvent{
+                    obj=en,period=1,times=200,executeFunc=function(self,times,maxTimes)
+                        Shape.moveTowards(en,dir,distance/maxTimes*math.sin(times/maxTimes*math.pi))
+                        a.x,a.y=en.x,en.y
+                        b.x,b.y=en.x,en.y
+                        if times==maxTimes-1 then
+                            local newAngle=Shape.to(en.x,en.y,player.x,player.y)
+                            a.angle=newAngle+math.eval(0,0.4)
+                            b.angle=newAngle+math.eval(0,0.54)
+                        end
+                    end
+                }
             end
         }
     end

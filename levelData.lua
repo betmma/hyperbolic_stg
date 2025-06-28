@@ -148,7 +148,7 @@ local function loadLevels(levelStr,sceneStrList)
     return levels
 end
 --[[
-current level arrangement:
+current level arrangement (outdated):
 level 1: doremy 1-1 to 1-4, 1-5 to 1-6 is mike goutokuji
 level 2: nemuno sakata 2-1 to 2-2, takane yamashiro 2-3 to 2-4, cirno 2-5 to 2-6
 these two levels are most of small map levels (except for yuugi's)
@@ -170,13 +170,13 @@ local levelData={
     loadLevels(2,{'1','2','3','4','5','6'}),
     loadLevels(3,{'1','2','3','4','5','6','7'}),
     loadLevels(4,{'1','2','3','4','5','6','7','8'}),
-    loadLevels(5,{'1','2','3','4','5','6'}),
+    loadLevels(5,{'1','2','3','4','5','6','7'}),
     loadLevels(6,{'1','2','3','4','5','6','7'}),
     loadLevels(7,{'1','2','3','4','5','6','7','8'}),
     loadLevels(8,{'1','2','3','4','5'}),
     loadLevels(9,{'1','2','3','4','5','6','7'}),
     loadLevels(10,{'1','2','3','4','5','6','7'}),
-    loadLevels('EX',{'1','2','3','5','6'}),
+    loadLevels('EX',{'1','2','5','6'}),
 }
 
 ---@type {id:{level:number,scene:number}}

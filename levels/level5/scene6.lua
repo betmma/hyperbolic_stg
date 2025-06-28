@@ -1,129 +1,133 @@
 return {
-    ID=32,
-    quote='Yuugi\'s classic three steps become unpredictable here. She is truly drunken.',
-    user='yuugi',
-    spellName='Big Four Arcanum "Knock Out In Three Sides"',
+    ID=44,
+    quote='Her ancient memory about leaving somewhere to find mysterious ingredient.',
+    user='nareko',
+    spellName='Obstructing Sign "Distant Memory"',
     make=function()
-        G.levelRemainingFrame=5400
-        Shape.removeDistance=2500
-        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
-        local player=Player{x=400,y=600,noBorder=true}
-        local center={x=400,y=300}
-        player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
+        G.levelRemainingFrame=4800
+        G.levelIsTimeoutSpellcard=true
+        Shape.removeDistance=2000
+        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=72000000}
+        Event.EaseEvent{
+            obj=en,
+            aimTable=en,
+            aimKey='y',
+            aimValue=-50,
+            easeFrame=100
+        }
+        local player=Player{x=400,y=300}
+        local hitEffectRef=player.hitEffect
+        player.hitEffect=function(player,damage)
+            hitEffectRef(player,damage)
+            Event.EaseEvent{
+                obj=player,
+                aimTable=player,
+                aimKey='x',
+                aimValue=400,
+                easeFrame=10
+            }
+            Event.EaseEvent{
+                obj=player,
+                aimTable=player,
+                aimKey='y',
+                aimValue=300,
+                easeFrame=10
+            }
+        end
         player.moveMode=Player.moveModes.Natural
+        player.border:remove()
+        local poses={}
+        for i = 1, 12, 1 do
+            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
+            table.insert(poses,{nx,ny})
+        end
+        player.border=PolyLine(poses)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local center,radius,thetas,vertices,outvertices,polyline,outpolyline
-        Event.LoopEvent{
-            period=1,
-            obj=en,
-            executeFunc=function()
-                -- a.x,a.y=en.x,en.y--
-                local hpp=en.hp/en.maxhp
-                local t=(en.frame-100)%480
-                if t==0 then
-                    center={x=math.eval(400,50),y=math.eval(300,50)}
-                    
-                    Event.EaseEvent{
-                        obj=en,
-                        aimTable=en,
-                        aimKey='x',
-                        aimValue=center.x,
-                        easeFrame=60,
-                        progressFunc=Event.sineIOProgressFunc
-                    }
-                    Event.EaseEvent{
-                        obj=en,
-                        aimTable=en,
-                        aimKey='y',
-                        aimValue=center.y,
-                        easeFrame=60,
-                        progressFunc=Event.sineIOProgressFunc
-                    }
-                    radius=math.eval(60,20)
-                    thetas={math.eval(0,3)}
-                    table.insert(thetas,thetas[1]+math.pi*2/3+math.eval(0,0.5))
-                    table.insert(thetas,thetas[2]+math.pi*2/3+math.eval(0,0.5))
-                    vertices={}
-                    outvertices={}
-                    for i = 1, 3 do
-                        local x,y=Shape.rThetaPos(center.x,center.y,radius-7,thetas[i])
-                        local xo,yo=Shape.rThetaPos(center.x,center.y,radius+7,thetas[i])
-                        table.insert(vertices,{x,y})
-                        table.insert(outvertices,{xo,yo})
-                        local fog=Circle({x=x, y=y, radius=1, lifeFrame=60, sprite=Asset.bulletSprites.fog.gray,safe=true})
+        local safeAngle=0
+        local safeWidth=math.pi/6
+        local a
+        a=BulletSpawner{x=400,y=300,period=1200,frame=1199,lifeFrame=10000,bulletNumber=500,bulletSpeed=0,bulletLifeFrame=1200,angle='0+999',spawnCircleRadius=0,range=math.pi*2,invincible=true,bulletSprite=BulletSprites.ellipse.blue,fogEffect=true,fogTime=20,
+        spawnBatchFunc=function(self)
+            local ind=a.spawnEvent.executedTimes
+            SFX:play('enemyShot',true,self.spawnSFXVolume)
+            local num=math.eval(self.bulletNumber)
+            local angle=self.angle=='player' and Shape.to(self.x,self.y,Player.objects[1].x,Player.objects[1].y) or math.eval(self.angle)
+            local speed=math.eval(self.bulletSpeed)
+            local size=math.eval(self.bulletSize)
+            for i = 1, num, 1 do
+                local ii=i^0.5*num^0.5
+                local direction=angle+ii*0.04*(ind%2*2-1)
+                local x,y=Shape.rThetaPos(self.x,self.y,ii/num*70+10,direction)
+                self.fogTime=math.ceil(ii/num*120)
+                self:spawnBulletFunc{x=x,y=y,direction=direction+1.5,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=self.fogTime}
+                if(ind>0 and i%(12-2*ind)==0) then
+                    self:spawnBulletFunc{x=x,y=y,direction=direction+math.pi+ind*0.1,speed=5,radius=size,index=i,sprite=self.bulletSprite,fogTime=self.fogTime}
+                end
+                
+            end
+        end,
+        bulletEvents={
+            function(cir,args,self)
+                local speedRef=cir.speed
+                Event.DelayEvent{
+                    obj=cir,
+                    delayFrame=1000-cir.args.fogTime,
+                    executeFunc=function()
+                        cir.grazed=true
+                        cir.damage=2
+                        cir.sprite=BulletSprites.ellipse.purple
                         Event.EaseEvent{
-                            obj=fog,
-                            easeFrame=60,
-                            aimTable=fog,
-                            aimKey='spriteTransparency',
-                            aimValue=0,
-                            -- period=60,
-                            afterFunc=function()
-                                SFX:play('enemyShot',true,1)
-                                local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round.red,lifeFrame=400,invincible=true}
-                                for j=1,30 do
-                                    Circle{x=x,y=y,direction=j*math.pi/15+thetas[i],speed=15,sprite=BulletSprites.rim.red,lifeFrame=800}
-                                end
+                            obj=cir,
+                            aimTable=cir,
+                            aimKey='speed',
+                            aimValue=Shape.distance(cir.x,cir.y,400,300),
+                            easeFrame=100,
+                            progressFunc=Event.sineOProgressFunc,
+                        }
+                        cir.direction=Shape.to(cir.x,cir.y,400,300)
+                        Event.DelayEvent{
+                            obj=cir,
+                            delayFrame=100,
+                            executeFunc=function()
+                                -- cir.sprite=BulletSprites.ellipse.red
+                                -- cir.damage=1
+                                cir.speed=90
+                                cir.direction=cir.args.index/a.bulletNumber*(math.pi*2-safeWidth/2)+safeAngle+safeWidth/2
                             end
                         }
                     end
-                    if polyline then
-                        polyline:remove()
-                    end
-                    polyline=PolyLine(vertices,false)
-                    if outpolyline then
-                        outpolyline:remove()
-                    end
-                    outpolyline=PolyLine(outvertices,false)
-                elseif t==130 then
-                    local xoff=math.eval(0,0.1)
-                    local count=0
-                    local sfxplayed,sfxplayed2=false,false
-                    for r0 = 0, 100, 5 do
-                        local num=math.min(math.ceil(math.sinh(r0/Shape.curvature)*120),100)
-                        local thetaOffset=math.eval(0,0.1)
-                        for idx = 1, num do
-                            count=count+1
-                            local nx,ny=Shape.rThetaPos(en.x,en.y,r0,idx*math.pi*2/num+thetaOffset)
-                            local inarea=polyline:inside(nx,ny)
-                            local outarea=not outpolyline:inside(nx,ny)
-                            if not inarea and not outarea then
-                                goto continue
-                            end
-                            local delay0=Shape.distance(center.x,center.y,nx,ny)*(inarea and 1.1 or 0.1)
-                            Event.DelayEvent{
-                                delayFrame=delay0+(inarea and 0 or 80),
-                                executeFunc=function()
-                                    if not sfxplayed then
-                                        SFX:play('enemyShot',true,1)
-                                        sfxplayed=true
-                                    end
-                                    local cir=Circle{x=nx,y=ny,direction=Shape.to(center.x,center.y,nx,ny)+(inarea and math.pi or 0),speed=0,sprite=inarea and BulletSprites.bigRound.red or BulletSprites.giant.red,lifeFrame=800,batch=Asset.bulletHighlightBatch,radius=(inarea and 1 or 1+r0/100)}
-                                    Event.DelayEvent{
-                                        delayFrame=-delay0+80+(inarea and 0 or 30),
-                                        executeFunc=function()
-                                            
-                                    if not sfxplayed2 then
-                                        SFX:play('enemyShot',true,1)
-                                        sfxplayed2=true
-                                    end
-                                            if inarea then
-                                                cir.speed=15
-                                            end
-                                            Event.EaseEvent{
-                                                obj=cir,easeFrame=100,aimTable=cir,aimKey='speed',aimValue=inarea and 30 or 60,
-                                            }
-                                        end
-                                    }
-                                    
-                                end
-                            }
-                            ::continue::
-                        end
-                    end
+                }
+            end
+        }
+        }
+        Event.LoopEvent{
+            obj=en,
+            period=1,
+            executeFunc=function()
+                local fr=en.frame%1200
+                if fr==2 then
+                    safeAngle=math.eval(0,3.14)
+                    Circle{x=400,y=300,direction=safeAngle,speed=30,sprite=BulletSprites.fog.blue,invincible=true,safe=true,lifeFrame=2000,}
+                end
+                if fr==1190 then
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=player,
+                        aimKey='x',
+                        aimValue=400,
+                        easeFrame=10
+                    }
+                    Event.EaseEvent{
+                        obj=en,
+                        aimTable=player,
+                        aimKey='y',
+                        aimValue=300,
+                        easeFrame=10
+                    }
                 end
             end
         }
+
     end
 }

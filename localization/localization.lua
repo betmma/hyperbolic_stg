@@ -451,13 +451,13 @@ return {
                 },
             },
             [44] = {
-                quote = {
-                    en_us = 'I guess, the ancient memory is about leaving somewhere to find mysterious ingredient?',
-                    zh_cn = '我猜，这古老的记忆是离开某处去寻找神秘的材料？',
-                },
                 spellName = {
-                    en_us = 'Mind of God "Distant Memory"',
-                    zh_cn = '神脑「远古的记忆」',
+                    en_us = 'Obstructing Sign "Wall of Misdirection"',
+                    zh_cn = '塞符「误向之墙」',
+                },
+                quote = {
+                    en_us = 'Examine the environment carefully to tell direction. I\'m learning a useful skill!',
+                    zh_cn = '仔细观察环境来判断方向。我正在学习一项有用的技能！',
                 },
             },
             [45] = {

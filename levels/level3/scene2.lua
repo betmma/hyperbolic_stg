@@ -3,6 +3,7 @@ return {
     user='seiran',
     spellName='Bullet Sign "Eagle\'s Big Shot"',
     make=function()
+        -- more interesting than expected. thought similar to junko's shivering star, actually 2 ways to solve: first stand aside to first bullet, cuz center column of bullets form straight line and all other columns are moving away. second is stay at 2 (or 10) o'clock, when last few rows come, move through tilted passage.
         G.levelRemainingFrame=7200
         Shape.removeDistance=10000
         local a,b
