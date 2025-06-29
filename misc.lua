@@ -11,6 +11,14 @@ function math.sign(x)
     return x>0 and 1 or x<0 and -1 or 0
 end
 
+function math.xy2rTheta(x,y)
+    return (x^2+y^2)^0.5,math.atan2(y,x)
+end
+
+function math.rTheta2xy(r,theta)
+    return r*math.cos(theta),r*math.sin(theta)
+end
+
 -- returns random number in [0,1]. sometimes (especially particle system) random numbers are needed each frame. The bad part of using math.random is it easily break every replay on slightest change of a particle. So use this function instead. seeds can be (obj, seed2) which expands to (obj.x, seed2, obj.y, obj.frame). seed2 is to generate different numbers for same obj at same frame.
 -- and warning: the distribution is not even since it uses sin function.
 function math.pseudoRandom(seed1,seed2,seed3,seed4)

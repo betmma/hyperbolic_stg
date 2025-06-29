@@ -136,7 +136,7 @@ function Player:isDownInt(keyname)
 end
 
 function Player:update(dt)
-    if not self.replaying then
+    if not self.replaying then -- record keys pressed
         local keyVal=0
         for key, value in pairs(self.key2Value) do
             if self.keyIsDown(key)then
@@ -149,46 +149,54 @@ function Player:update(dt)
     if self.keyIsDown('z') and self.frame%self.shootInterval==0 then
         self:shoot()
     end
+
+    self:moveUpdate(dt)
+
+    -- handle invincible time from hit
+    self.invincibleTime=self.invincibleTime-dt
+    if self.invincibleTime<=0 then
+        self.invincibleTime=0
+    end
+
+    -- hp regen
+    self.hp=math.clamp(self.hp+self.hpRegen*dt,0,self.maxhp)
+
+    self:calculateMovingTransitionSprite()
+    self:calculateFocusPointTransparency()
+    self:calculateFlashbomb()
+    self.grazeCountThisFrame=0
+
+end
+
+function Player:moveUpdate(dt)
     local xref=self.x
     local yref=self.y
-    local rightDir,downDir
+    local rightDirOffset,downDirOffset
     local the=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
     if self.moveMode==Player.moveModes.Monopolar then
-        rightDir=the
-        downDir=rightDir
+        rightDirOffset=the
+        downDirOffset=rightDirOffset
     elseif self.moveMode==Player.moveModes.Bipolar then
-        rightDir,downDir=the,0
+        rightDirOffset,downDirOffset=the,0
     elseif self.moveMode==Player.moveModes.Euclid then
-        rightDir,downDir=0,0
+        rightDirOffset,downDirOffset=0,0
     elseif self.moveMode==Player.moveModes.Natural then
-        rightDir=self.naturalDirection
-        downDir=self.naturalDirection
+        rightDirOffset=self.naturalDirection
+        downDirOffset=self.naturalDirection
     end
-    self.direction=rightDir
-    local right=self:isDownInt("right")-self:isDownInt("left")
-    if right==-1 then
-        self.direction=math.pi+self.direction
-    end
-    local down=self:isDownInt("down")-self:isDownInt("up")
-    if self.y<Shape.axisY then
-        down=down*-1
-    end
-    if right==0 and down==0 then
-        self.speed=0
-    elseif right*down==0 then
-        self.speed=self.movespeed
-        if right==0 then
-            self.direction=math.pi/2*down+downDir
-        end
-    else
-        local upOrDownDir=math.pi/2*down+downDir
-        local ratio=math.cos((self.direction-upOrDownDir)/2)
-        if self.diagonalSpeedAddition then 
-            self.speed=self.movespeed*2*ratio -- it means when moving diagonally, the speed is the addition of 2 vectors of U/D and L/R. Not multiplying by sqrt(2) is because U/D vector and L/R vector could be not orthogonal.
-        else
-            self.speed=self.movespeed*math.sign(ratio)
-        end
-        self.direction=(self.direction+upOrDownDir)/2
+    local rightx,righty=math.rTheta2xy(1,rightDirOffset)
+    local downx,downy=math.rTheta2xy(1,downDirOffset+math.pi/2)
+    
+    -- self.direction=rightDir
+    local rightAmount=self:isDownInt("right")-self:isDownInt("left")
+    local downAmount=self:isDownInt("down")-self:isDownInt("up")
+
+    local vxunit,vyunit=rightx*rightAmount+downx*downAmount, righty*rightAmount+downy*downAmount
+    local vlen,dir=math.xy2rTheta(vxunit,vyunit)
+    self.direction=dir
+    self.speed=vlen>0 and self.movespeed or 0 -- if vlen==0, then player is not moving, so speed is 0.
+    if rightAmount~=0 and downAmount~=0 and self.diagonalSpeedAddition then
+        self.speed=self.speed*math.sqrt(vxunit^2+vyunit^2) -- it means when moving diagonally, the speed is the addition of 2 vectors of U/D and L/R. Not multiplying by sqrt(2) is because U/D vector and L/R vector could be not orthogonal.
     end
     if self.keyIsDown('lshift') then
         self.speed=self.speed*self.focusFactor
@@ -208,17 +216,6 @@ function Player:update(dt)
         self.x=p[1]--xref+dot*dirx
         self.y=p[2]--yref+dot*diry
     end
-
-    -- handle invincible time from hit
-    self.invincibleTime=self.invincibleTime-dt
-    if self.invincibleTime<=0 then
-        self.invincibleTime=0
-    end
-
-    -- hp regen
-    self.hp=math.clamp(self.hp+self.hpRegen*dt,0,self.maxhp)
-
-
     if self.moveMode==Player.moveModes.Natural then
         -- problems & thoughts: 1. when player is blocked by border, the moveDistance is still the assumed distance before calculating border. (solved by calculating math.distance of current pos and ref pos)
         -- 2. while not calling self:testRotate, the rightward direction is changing correctly. So, the ideal operation is posing a hyperbolic rotate transform before drawing all things (and restore after it), but obviously love2d doesn't support that. Hyperbolic rotate transform is simple as the testRotate, and the difference between normal rotate is that, the y=-100 line doesn't change (rotating player's view shouldn't change the line). Applying testRotate to all objects, changing their real position and cancelling out naturalDirection's update is not ideal and actually wrong.
@@ -230,15 +227,7 @@ function Player:update(dt)
         self.naturalDirection=(self.naturalDirection+dtheta)%(math.pi*2)
         -- self:testRotate(self.naturalDirection)
     end
-
-
-    self:calculateMovingTransitionSprite()
-    self:calculateFocusPointTransparency()
-    self:calculateFlashbomb()
-    self.grazeCountThisFrame=0
-
 end
-
 -- calculate which player sprite to use (normal, moveTransition and moving). Specifically, when not moving, loop through 8 normal sprites for each 8 frames. when moving, loop through 4 moveTransition sprites for each 2 frames, and after it loop through 8 moving sprites for each 8 frames. Use [tilt] to record.
 function Player:calculateMovingTransitionSprite()
     local lingerFrame={normal=8,moveTransition=2,moving=8}
@@ -498,7 +487,7 @@ function Player:draw()
     --draw hit point
     local focusSizeFactor=0.5
     Asset.playerFocusBatch:setColor(1,1,1,(self.focusPointTransparency or 1)*color[4])
-    Asset.playerFocusBatch:add(BulletSprites.playerFocus.quad,x,y,self.time+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,32,32)-- the image is 64*64 but the focus center seems slightly off
+    Asset.playerFocusBatch:add(BulletSprites.playerFocus.quad,x,y,self.time+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,32,32)
     local spriteSizeFactor=0.53
     if self.sprite then
         Asset.playerBatch:setColor(1,1,1,color[4])
