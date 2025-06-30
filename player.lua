@@ -168,9 +168,8 @@ function Player:update(dt)
 
 end
 
-function Player:moveUpdate(dt)
-    local xref=self.x
-    local yref=self.y
+-- return vx, vy from keyboard input. normally this will directly be player's move speed, but in some levels simulating platformer (with gravity) more calculation is needed.
+function Player:getKeyboardMoveSpeed()
     local rightDirOffset,downDirOffset
     local the=math.atan2(self.y-Shape.axisY,self.x-self.centerX)-math.pi/2
     if self.moveMode==Player.moveModes.Monopolar then
@@ -193,21 +192,17 @@ function Player:moveUpdate(dt)
 
     local vxunit,vyunit=rightx*rightAmount+downx*downAmount, righty*rightAmount+downy*downAmount
     local vlen,dir=math.xy2rTheta(vxunit,vyunit)
-    self.direction=dir
-    self.speed=vlen>0 and self.movespeed or 0 -- if vlen==0, then player is not moving, so speed is 0.
+    local speed=vlen>0 and self.movespeed or 0 -- if vlen==0, then player is not moving, so speed is 0.
     if rightAmount~=0 and downAmount~=0 and self.diagonalSpeedAddition then
-        self.speed=self.speed*math.sqrt(vxunit^2+vyunit^2) -- it means when moving diagonally, the speed is the addition of 2 vectors of U/D and L/R. Not multiplying by sqrt(2) is because U/D vector and L/R vector could be not orthogonal.
+        speed=speed*math.sqrt(vxunit^2+vyunit^2) -- it means when moving diagonally, the speed is the addition of 2 vectors of U/D and L/R. Not multiplying by sqrt(2) is because U/D vector and L/R vector could be not orthogonal.
     end
     if self.keyIsDown('lshift') then
-        self.speed=self.speed*self.focusFactor
-        self.focusing=true
-    else
-        self.focusing=false
+        speed=speed*self.focusFactor
     end
+    return speed, dir
+end
 
-    self.super.update(self,dt) -- actually move
-
-    -- limit player in border
+function Player:limitInBorder()
     local count=0
     while self.border and count<10 and not self.border:inside(self.x,self.y) do
         count=count+1
@@ -216,6 +211,18 @@ function Player:moveUpdate(dt)
         self.x=p[1]--xref+dot*dirx
         self.y=p[2]--yref+dot*diry
     end
+end
+
+function Player:moveUpdate(dt)
+    local xref=self.x
+    local yref=self.y
+    self.speed, self.direction=self:getKeyboardMoveSpeed()
+
+    self.super.update(self,dt) -- actually move
+
+    -- limit player in border
+    self:limitInBorder()
+
     if self.moveMode==Player.moveModes.Natural then
         -- problems & thoughts: 1. when player is blocked by border, the moveDistance is still the assumed distance before calculating border. (solved by calculating math.distance of current pos and ref pos)
         -- 2. while not calling self:testRotate, the rightward direction is changing correctly. So, the ideal operation is posing a hyperbolic rotate transform before drawing all things (and restore after it), but obviously love2d doesn't support that. Hyperbolic rotate transform is simple as the testRotate, and the difference between normal rotate is that, the y=-100 line doesn't change (rotating player's view shouldn't change the line). Applying testRotate to all objects, changing their real position and cancelling out naturalDirection's update is not ideal and actually wrong.

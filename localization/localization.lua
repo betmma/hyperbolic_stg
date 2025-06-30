@@ -612,6 +612,16 @@ return {
                     zh_cn = '还没想好 :P',
                 },
             },
+            [151] = {
+                spellName = {
+                    en_us = 'Water Sign "the Grand Water War"',
+                    zh_cn = '水符「大水仗」',
+                },
+                quote = {
+                    en_us = 'Playful water fight! If this is Kappa\'s daily life I would like to be a Kappa too.',
+                    zh_cn = '顽皮的水仗！如果这是河童的日常生活，我也想当个河童。',
+                },
+            },
             -- level 6
             [61] = {
                 quote = {
