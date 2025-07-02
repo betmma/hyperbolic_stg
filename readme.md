@@ -53,4 +53,4 @@ Title image (title.png) and upgrades icons (upgrades.png) are drawn by myself.
 
 Music is made by me and my friend.
 
-SFX are from th6.
+SFX are from th6 and [Old-school Shonen SFX](https://heltonyan.itch.io/retroanimesfx).

@@ -21,11 +21,17 @@ function AudioSystem:new(args)
     self.audioVolumes={}
     self.fileNames=args.fileNames
     for k,v in pairs(args.fileNames)do
-        local path='assets/'..self.folder..'/'..v..self.fileSuffix
+        local path='assets/'..self.folder..'/'..v
+        local dotIndex=string.find(v,'%.')
+        if not dotIndex then
+            path=path..self.fileSuffix
+        else
+            v=string.sub(v,1,dotIndex-1)
+        end
         if not love.filesystem.getInfo(path)then
             goto continue
         end
-        self.data[v]=love.audio.newSource(path,'static')
+        self.data[v]=love.audio.newSource(path,args.loadType or 'static')
         self.audioVolumes[v]=1
         if self.looping then
             self.data[v]:setLooping(true)
@@ -75,12 +81,15 @@ function AudioSystem:setAudioVolume(name,volume)
     self.audioVolumes[name]=volume
 end
 ---@type AudioSystem
-local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout','enemyShot','enemyCharge','enemyPowerfulShot'},volumeCoeff=0.35}
+local sfx=AudioSystem{folder='sfx',fileSuffix='.wav',fileNames={'select','graze','damage','dead','kill','cancel','timeout','enemyShot','enemyCharge','enemyPowerfulShot','start.mp3','stop.mp3'},volumeCoeff=0.35}
+--[[ start and stop are used for izayoi's time stop effects. start should be played 30 frames before time stop starts, and stop should be played 20 frames before time stop ends. ]]
 sfx:setAudioVolume('enemyShot',0.3)
 sfx:setAudioVolume('enemyCharge',0.6)
 sfx:setAudioVolume('enemyPowerfulShot',0.6)
+sfx:setAudioVolume('start',3)
+sfx:setAudioVolume('stop',3)
 ---@type AudioSystem
-local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title'}
+local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title',loadType='stream'}
 bgm:setAudioVolume('title',0.5)
 bgm:setAudioVolume('level1',1)
 bgm:setAudioVolume('level2',0.8)
