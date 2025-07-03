@@ -237,6 +237,9 @@ function Player:moveUpdate(dt)
 end
 -- calculate which player sprite to use (normal, moveTransition and moving). Specifically, when not moving, loop through 8 normal sprites for each 8 frames. when moving, loop through 4 moveTransition sprites for each 2 frames, and after it loop through 8 moving sprites for each 8 frames. Use [tilt] to record.
 function Player:calculateMovingTransitionSprite()
+    if Shape.timeSpeed==0 then
+        return -- stop sprite transition when time is stopped
+    end
     local lingerFrame={normal=8,moveTransition=2,moving=8}
     local tiltMax=#Asset.player.moveTransition.left*lingerFrame.moveTransition
     local right=self:isDownInt("right")-self:isDownInt("left")
@@ -448,6 +451,9 @@ local directionMode2ShootFunc={
     back={straight=Player.shootBackStraight,homing=Player.shootBackStraight}
 }
 function Player:shoot()
+    if Shape.timeSpeed==0 then
+        return -- dont shoot when time is stopped
+    end
     -- local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local rows={front=0,side=0,back=0}
     for k,shootType in pairs(self.shootRows) do

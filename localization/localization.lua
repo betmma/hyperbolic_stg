@@ -887,6 +887,16 @@ return {
                     zh_cn = '看似无限的空间迅速被子弹填满。所有的道路现在都很危险。',
                 }
             },
+            [181] = {
+                spellName = {
+                    en_us = 'Illusion Existence "Doppelganger"',
+                    zh_cn = '幻在「双生」',
+                },
+                quote = {
+                    en_us = 'Thought it\'s her doppelganger, but actually knives\' doppelgangers. Do my bullets have doppelgangers too?',
+                    zh_cn = '以为是她的分身，实际上是刀的分身。我的子弹也有分身吗？',
+                }
+            },
             [90] = {
                 spellName = {
                     en_us = 'Heavy Sign "Weight of a Thousand Fathoms"',

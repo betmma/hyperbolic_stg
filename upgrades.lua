@@ -150,7 +150,7 @@ local upgradesData = {
                         return
                     end
                     local x,y=player.x,player.y
-                    local theta=0.02*executedTimes
+                    local theta=0.02*(player.time*60-1)
                     local r=20
                     local nx,ny=Shape.rThetaPos(x,y,r,theta)
                     local vortex=Effect.Shockwave{x=nx,y=ny,radius=2,canRemove={bullet=true,invincible=false,safe=false},animationFrame=1}

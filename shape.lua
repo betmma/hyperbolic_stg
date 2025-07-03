@@ -34,7 +34,7 @@ function Shape:getMoveRadius()
 end
 
 function Shape:update(dt)
-    self.time=self.time+dt
+    self.time=self.time+dt*Shape.timeSpeed
     self.frame=self.frame+1
     if self.frame>self.lifeFrame then
         self:remove()

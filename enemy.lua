@@ -197,7 +197,7 @@ function Enemy:drawHexagram()
     local color={love.graphics.getColor()}
     love.graphics.setColor(0.5,0.1,0.1)
     local points={}
-    local theta=self.frame/100
+    local theta=self.time*3/5
     local rIN=40
     local rOUT=45
     for i=1,6 do

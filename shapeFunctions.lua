@@ -67,6 +67,14 @@ function Shape.to(x1,y1,x2,y2)
     return theta1-math.pi/2
 end
 
+-- get direction from obj1 to obj2 (at obj1)
+---@param obj1 table "{x,y}"
+---@param obj2 table "{x,y}"
+---@return angle 'direction in [-pi/2,3pi/2]'
+function Shape.toObj(obj1,obj2)
+    return Shape.to(obj1.x,obj1.y,obj2.x,obj2.y)
+end
+
 -- calculate the SIGNED ON-SCREEN distance a point xc,yc to line [x1,y1 to x2,y2] (positive when in/out the semicircle if angle p1 to p2 is negative/positive // left to a vertical line)
 function Shape.onscreenDistanceToLineSigned(xc,yc,x1,y1,x2,y2)
     if math.abs(x1-x2)<Shape.EPS then -- vertical
