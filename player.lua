@@ -348,9 +348,11 @@ function Player:testRotate(angle,restore)
         end
     end
 
-    for k2,obj in pairs(PolyLine.objects)do
-        for k,point in pairs(obj.points) do
-            rotate(point)
+    if PolyLine.useMesh ~= true then
+        for k2,obj in pairs(PolyLine.objects)do
+            for k,point in pairs(obj.points) do
+                rotate(point)
+            end
         end
     end
     if G.backgroundPattern:is(BackgroundPattern.FixedTesselation) or G.backgroundPattern:is(BackgroundPattern.FollowingTesselation) then

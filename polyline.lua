@@ -16,15 +16,17 @@ end
 
 -- Warning: points must form a convex polygon
 local PolyLine=GameObject:extend()
+PolyLine.useMesh=true -- use mesh to draw polyline
 function PolyLine:new(points,draw)
     self.doDraw=draw==nil and true or draw
     self.points={}
     for key, value in pairs(points) do
         self.points[#self.points+1] = Point(value[1],value[2],self.doDraw)
     end
+    self.sprite=BulletSprites.laser.white
 end
 
--- assume that points are given by increasing polar angle (so points should be right to each line)
+-- assume that points are given by increasing polar angle (so each point should be right to previous line)
 function PolyLine:inside(xc,yc)
     local itenum=#self.points
     if itenum==2 then
@@ -64,6 +66,14 @@ function PolyLine:draw()
     if not self.doDraw then
         return
     end
+    if self.useMesh==true then
+        self:drawMesh()
+    else
+        self:drawRaw()
+    end
+end
+
+function PolyLine:drawRaw()
     local itenum=#self.points
     if itenum==2 then
         itenum=1
@@ -81,6 +91,52 @@ function PolyLine.drawOne(p1,p2)
     local y2=p2.y
     Shape.drawSegment(x1,y1,x2,y2)
 end
+
+function PolyLine:getMeshPoses()
+    local width=self.width or 1
+    local poses={}
+    local itenum=#self.points
+    if itenum==2 then
+        itenum=1
+    end
+    for i=1,itenum do
+        local x1,y1,x2,y2=self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y
+        local distance=Shape.distance(x1,y1,x2,y2)
+        local direction=Shape.to(x1,y1,x2,y2)
+        local maxDist=5
+        local maxMiddlePoints=40
+        local middlePoints=math.min(math.floor(distance/maxDist),maxMiddlePoints)
+        local middleDistance=distance/middlePoints
+        for j=0,middlePoints do
+            local distanceToMiddle=j*middleDistance
+            local mx,my,mdir=Shape.rThetaPosT(x1,y1,distanceToMiddle,direction)
+            -- calculate edge position (approximately)
+            local mwidth=width*my/Shape.curvature
+            local mx1,my1=math.rThetaPos(mx,my,mwidth,mdir+math.pi/2)
+            local mx2,my2=math.rThetaPos(mx,my,mwidth,mdir-math.pi/2)
+            poses[#poses+1]={mx1,my1}
+            poses[#poses+1]={mx2,my2}
+        end
+    end
+    return poses
+end
+
+function PolyLine:drawMesh(poses)
+    poses=poses or self:getMeshPoses()
+    local vertices={}
+    local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
+    x,y,w,h=x/W,y/H,w/W,h/H
+    for i=1,#poses,2 do
+        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, 1})
+        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, 1})
+    end
+    if #vertices<4 then return end
+    local mesh=love.graphics.newMesh(vertices,'strip')
+    mesh:setTexture(Asset.bulletImage)
+    table.insert(Asset.laserBatch,mesh)
+end
+
 function PolyLine:remove()
     PolyLine.super.remove(self)
     for key, value in pairs(self.points) do

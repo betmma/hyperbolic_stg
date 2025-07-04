@@ -109,4 +109,21 @@ vec4 position(mat4 transform_projection, vec4 vertex_pos) {
     );
     
     return transform_projection * vec4(rotated_pos_euclidean.x, rotated_pos_euclidean.y, 0.0, 1.0);
+
+    // vec2 z_prime = vec2(rotated_pos_euclidean.x, rotated_pos_euclidean.y - shape_axis_y);
+    // vec2 z0_prime = vec2(player_pos.x, player_pos.y - shape_axis_y);
+
+    // vec2 z0_prime_conj = vec2(z0_prime.x, -z0_prime.y);
+    // vec2 numerator = z_prime - z0_prime;
+    // vec2 denominator = z_prime - z0_prime_conj;
+    // // map to disk coordinates
+    // float denominator_sq = dot(denominator, denominator);
+    // vec2 w = vec2((numerator.x * denominator.x + numerator.y * denominator.y) / denominator_sq,
+    //                 (numerator.y * denominator.x - numerator.x * denominator.y) / denominator_sq);
+    // // Convert to screen coordinates
+    // vec2 screen_size = vec2(800.0, 600.0); // Example screen size, replace with actual uniform if needed
+    // float r= 0.5 * min(screen_size.x, screen_size.y);
+    // vec2 screen_pos = vec2(screen_size.x / 2 + w.x * r, screen_size.y/2 + w.y * r);
+
+    // return transform_projection * vec4(screen_pos, 0.0, 1.0);
 }

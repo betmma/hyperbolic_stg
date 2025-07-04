@@ -9,6 +9,7 @@ return {
         G.levelIsTimeoutSpellcard=true
         G.UseHypRotShader=false
         Shape.removeDistance=100000
+        PolyLine.useMesh=false -- reflection written for drawOne, so it doesn't work with mesh
         local a,b
         local en
         en=Enemy{x=5000,y=300,mainEnemy=true,maxhp=96000000}
@@ -263,6 +264,8 @@ return {
                 end
             end
         }
-        
+    end,
+    leave=function() -- restore PolyLine.useMesh
+        PolyLine.useMesh=true
     end
 }

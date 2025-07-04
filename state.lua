@@ -1455,6 +1455,11 @@ G.enterLevel=function(self,level,scene)
 end
 -- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), pressing "R" to restart or exiting from pause menu.
 G.leaveLevel=function(self)
+    local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+    local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+    if LevelData[level][scene].leave then
+        LevelData[level][scene].leave()
+    end
     if self.replay then
         self.replay=nil
         self:switchState(self.STATES.LOAD_REPLAY)
@@ -1462,11 +1467,6 @@ G.leaveLevel=function(self)
         return
     end
     self:_incrementTryCount()
-    local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
-    local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    if LevelData[level][scene].leave then
-        LevelData[level][scene].leave()
-    end
 end
 G._incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
