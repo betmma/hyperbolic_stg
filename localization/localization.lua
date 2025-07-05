@@ -897,6 +897,16 @@ return {
                     zh_cn = '以为是她的分身，实际上是刀的分身。我的子弹也有分身吗？',
                 }
             },
+            [182] = {
+                spellName = {
+                    en_us = 'Love Sign "Expanding Spark"',
+                    zh_cn = '恋符「扩散火花」',
+                },
+                quote = {
+                    en_us = 'The range expands suddenly, and the sparks are everywhere. Individual spark looks like ... popcorn?',
+                    zh_cn = '范围突然扩大，火花无处不在。单个火花看起来像……爆米花？',
+                }
+            },
             [90] = {
                 spellName = {
                     en_us = 'Heavy Sign "Weight of a Thousand Fathoms"',
