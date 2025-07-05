@@ -348,7 +348,7 @@ function Player:testRotate(angle,restore)
         end
     end
 
-    if PolyLine.useMesh ~= true then
+    if not(PolyLine.useMesh == true and G.UseHypRotShader) then
         for k2,obj in pairs(PolyLine.objects)do
             for k,point in pairs(obj.points) do
                 rotate(point)
