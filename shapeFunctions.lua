@@ -271,14 +271,15 @@ end
 ---@param r number
 ---@param n number
 ---@param theta angle|nil
+---@param xyindex boolean|nil "if true, return {x=...,y=...} instead of {x,y}"
 ---@return table[] points table of coordinates of the vertices. {{x1,y1},{x2,y2},...}
-function Shape.regularPolygonCoordinates(x,y,r,n,theta)
+function Shape.regularPolygonCoordinates(x,y,r,n,theta,xyindex)
     theta=theta or 0
     local points={}
     for i=1,n do
         local angle=math.pi*2/n*(i-0.5)+theta
         local x2,y2=Shape.rThetaPos(x,y,r,angle)
-        points[i]={x2,y2}
+        points[i]=xyindex and {x=x2,y=y2} or {x2,y2}
     end
     return points
 end
@@ -545,4 +546,31 @@ function Shape.flipIntoTriangle(x,y,x1,y1,x2,y2,x3,y3,flipLimit)
         loopCount=loopCount+1
     end
     return x,y, deltaOrientationSum, flipCount, false
+end
+
+--- given a segment with endpoints (x1,y1) and (x2,y2), return equally spaced points on the segment, with distance <= step but number of points <= maxPoints.
+---@param x1 coordinate
+---@param y1 coordinate
+---@param x2 coordinate
+---@param y2 coordinate
+---@param step number
+---@param maxPoints number
+---@return table[] points "table of points, each point is a table with x and y attributes"
+function Shape.segmentPoints(x1,y1,x2,y2,step,maxPoints)
+    local points={}
+    local distance=Shape.distance(x1,y1,x2,y2)
+    if distance<Shape.EPS then
+        return {{x=x1,y=y1},{x=x2,y=y2}} -- if distance is 0, return two points
+    end
+    local numPoints=math.ceil(distance/step)
+    if numPoints>maxPoints then
+        numPoints=maxPoints
+    end
+    local stepSize=distance/numPoints
+    local dir=Shape.to(x1,y1,x2,y2)
+    for i=0,numPoints do
+        local x,y=Shape.rThetaPos(x1,y1,stepSize*i,dir)
+        points[i+1]={x=x,y=y}
+    end
+    return points
 end

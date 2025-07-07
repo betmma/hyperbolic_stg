@@ -8,7 +8,7 @@ function Point:new(x, y,draw)
 end
 
 function Point:draw()
-    if not self.doDraw then
+    if not self.doDraw or PolyLine.useMesh==true then
         return
     end
     love.graphics.circle("line", self.x, self.y, 1) -- 1 px

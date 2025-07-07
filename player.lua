@@ -100,7 +100,7 @@ function Player:new(args)
     self.grazeCount=0
     self.hurt=false --to check perfect completion
     self.invincibleTime=0
-    self.grazeRadiusFactor=5
+    self.grazeRadiusFactor=15
 
     self.shootRows=copy_table(Player.shootRows)
     self.shootRadius=0.5
@@ -115,7 +115,7 @@ function Player:new(args)
     if self.replaying then
         self:setReplaying()
     end
-    self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32}
+    self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32,x=64}
     self.keyIsDown=love.keyboard.isDown
     self.realCreatedTime=os.date('%Y-%m-%d %H:%M:%S')
 end
@@ -513,12 +513,12 @@ end
 -- this function draws which keys are pressed. The keys are arranged as:
 --[[
             U
-Shift Z   L D R 
+Shift Z X L D R 
 ]]
 function Player:displayKeysPressed()
     local x0,y0=15,500
-    local gridSize=20
-    local keysPoses={up={4,0},down={4,1},left={3,1},right={5,1},lshift={0,1},z={1,1}}
+    local gridSize=15
+    local keysPoses={up={5,0},down={5,1},left={4,1},right={6,1},lshift={0,1},z={1,1},x={2,1}}
     local color={love.graphics.getColor()}
     for key, value in pairs(keysPoses) do
         local x,y=x0+value[1]*gridSize,y0+value[2]*gridSize
@@ -612,7 +612,7 @@ function Player:calculateFlashbomb()
     if self.grazeCount>=count*self.grazeCountForFlashbomb then
         self.flashbombCount=count+1
         SFX:play('enemyPowerfulShot',true,0.8)
-        Effect.FlashBomb{x=self.x,y=self.y,width=self.flashbombWidth*self:getMetric(),lifeFrame=30,direction=math.pi/2}
+        Effect.FlashBomb{x=self.x,y=self.y,direction=self.naturalDirection-math.pi/2}
     end
 end
 

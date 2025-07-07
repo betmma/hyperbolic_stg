@@ -124,23 +124,45 @@ end
 local FlashBomb=Effect:extend()
 Effect.FlashBomb=FlashBomb
 function FlashBomb:new(args)
+    args.lifeFrame=args.lifeFrame or 60
     FlashBomb.super.new(self, args)
-    self.width=args.width or 10
-    self.color=args.color or 'gray'
-    self.sprite=BulletSprites.laser[self.color]
+    self.radiusFunction=args.radiusFunction or function(ratio) return 200*math.min(ratio*10,10/9*(1-ratio)) end
+    self.radius=args.radius or 0.1
+    self.sideNum=args.sideNum or 3
+    self.color=args.color or 'black'
+    self.sprite=BulletSprites.laserDark[self.color]
     self.canRemove=args.canRemove or {bullet=true,invincible=false}
+    self.points=Shape.regularPolygonCoordinates(self.x,self.y,self.radius,self.sideNum,self.direction,true)
 end
 
-function FlashBomb:draw()
+function FlashBomb:update(dt)
+    FlashBomb.super.update(self,dt)
     local ratio=self.frame/self.lifeFrame
-    local tWidth=self.width*math.cos(ratio*math.pi/2)
-    local xa,ya=math.rThetaPos(self.x,self.y,tWidth,self.direction+math.pi/2)
-    local xb,yb=math.rThetaPos(self.x,self.y,tWidth,self.direction-math.pi/2)
-    local x1,y1=math.rThetaPos(xa,ya,1500,self.direction)
-    local x2,y2=math.rThetaPos(xb,yb,1500,self.direction)
-    local x3,y3=math.rThetaPos(xb,yb,1500,self.direction+math.pi)
-    local x4,y4=math.rThetaPos(xa,ya,1500,self.direction+math.pi)
-    Laser.LaserUnit.drawMesh(self,{{x1,y1},{x4,y4},{x3,y3},{x2,y2}})
+    self.radius=math.max(self.radiusFunction(ratio),0.1) -- negative radius will cause points order reversed and remove all bullets
+    self.points=Shape.regularPolygonCoordinates(self.x,self.y,self.radius,self.sideNum,self.direction,true)
+end
+
+FlashBomb.insideOne=PolyLine.insideOne
+FlashBomb.inside=PolyLine.inside
+
+function FlashBomb:draw()
+    local points=self.points
+    local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
+    x,y,w,h=x/W,y/H,w/W,h/H
+    local meshVertices={{self.x,self.y,x+w,y, 1, 1, 1, 1}} -- center point
+    for i=1,#points do
+        local x1,y1,x2,y2=points[i].x,points[i].y,points[i%#points+1].x,points[i%#points+1].y
+        local verts=Shape.segmentPoints(x1,y1,x2,y2,10,30)
+        for j=1,#verts do
+            local xj,yj=verts[j].x,verts[j].y
+            table.insert(meshVertices, {xj, yj, x, y+(j%2==1 and 0 or h), 1, 1, 1, 1})
+        end
+    end
+    if #meshVertices<4 then return end
+    local mesh=love.graphics.newMesh(meshVertices,'fan')
+    mesh:setTexture(Asset.bulletImage)
+    table.insert(Asset.laserBatch,mesh)
 end
 
 return Effect

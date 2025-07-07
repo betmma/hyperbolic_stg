@@ -59,7 +59,7 @@ return {
                     end
                     for r=rs[i],rs[i+1],2 do
                         local x,y=Shape.rThetaPos(400,300,r,angles[i])
-                        local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round[lastFrameSpeeds[i]>0 and 'red' or 'blue'],invincible=true,lifeFrame=5,radius=1,batch=Asset.bulletHighlightBatch,}
+                        local cir=Circle{x=x,y=y,direction=0,speed=0,sprite=BulletSprites.round[lastFrameSpeeds[i]>0 and 'red' or 'blue'],invincible=true,lifeFrame=5,radius=1,batch=Asset.bulletHighlightBatch,grazed=true}
                         Event.EaseEvent{
                             obj=cir,aimTable=cir,aimKey='spriteTransparency',aimValue=0.2,easeFrame=5
                         }

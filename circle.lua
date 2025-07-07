@@ -31,6 +31,8 @@ function Circle:new(args)
     -- invincible means won't be removed by normal shockwave (win shockwave can)
     self.invincible=args.invincible or false
 
+    self.grazed=args.grazed or false
+
     self.batch=args.batch or (args.highlight and Asset.bulletHighlightBatch or BulletBatch)
     self.spriteTransparency=args.spriteTransparency or 1
 
@@ -104,10 +106,9 @@ function Circle:checkShockwaveRemove()
     end
 end
 function Circle:checkFlashBombRemove()
-    if not self.safe then 
+    if not self.safe then
         for k,flashBomb in pairs(Effect.FlashBomb.objects) do
-            local nx,ny=math.rThetaPos(flashBomb.x,flashBomb.y,10,flashBomb.direction)-- get another point on the straight line
-            if flashBomb.canRemove.bullet==true and(self.invincible==false or flashBomb.canRemove.invincible==true) and math.pointToLineDistance(self.x,self.y,flashBomb.x,flashBomb.y,nx,ny)<flashBomb.width+self.radius then
+            if flashBomb.canRemove.bullet==true and(self.invincible==false or flashBomb.canRemove.invincible==true) and flashBomb:inside(self.x,self.y) then
                 self:remove()
                 self:removeEffect()
             end
@@ -120,7 +121,7 @@ function Circle:checkHitPlayer()
             local dis=Shape.distance(player.x,player.y,self.x,self.y)
             local radi=player.radius+self.radius
             if dis<radi+player.radius*player.grazeRadiusFactor and not self.grazed then
-                player:grazeEffect((self.lifeFrame<3 or self.frame<3) and 0.25 or 1)
+                player:grazeEffect((self.lifeFrame<3 or self.frame<3) and 0.05 or 1)
                 self.grazed=true
             end
             if player.invincibleTime<=0 and dis<radi then

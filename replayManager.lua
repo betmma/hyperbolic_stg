@@ -182,6 +182,9 @@ replayManager.replayTweak=function(replay)
         Circle.sizeFactor=4.5
         Circle.spriteSizeFactor=1.0
     end
+    if isVersionSmaller(version,'0.5.6') then
+        player.grazeRadiusFactor=5.0
+    end
     if isVersionSmaller(version,'0.2.1') then
         player.grazeRadiusFactor=3.0
     end
