@@ -2,6 +2,13 @@ This is an attempt to learn LÖVE and implement shoot 'em up in hyperbolic geome
 This game is a touhou fan-game.
 This game is still WIP so there could be bugs.
 
+# How to play
+
+It's a love2d game so you can follow [love2d tutorial](https://love2d.org/wiki/Getting_Started). Or follow steps below
+1. Download [love2d](https://love2d.org/) and install
+2. Download source code from this repo (click the green "Code" button near top of this page then click "Download Zip")
+3. Drag the `hyperbolic_stg` folder onto `love.exe` (default install path is `C:\Program Files\LOVE`)
+
 #### Control:
 ##### In Game:
 Arrow keys to move.
