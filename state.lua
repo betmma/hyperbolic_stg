@@ -789,10 +789,8 @@ G={
                     elseif self.viewMode.mode==self.VIEW_MODES.FOLLOW then
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
-                elseif isPressed('w')then
-                    -- Player.objects[1].hp=999
-                    -- Player.objects[1].maxhp=999
-                    -- Player.objects[1].moveMode=Player.moveModes.Natural
+                elseif isPressed('e')then
+                    G.viewMode.hyperbolicModel=1- G.viewMode.hyperbolicModel
                 end
 
                 -- rest time calculation
@@ -1288,8 +1286,10 @@ G:switchState(G.STATES.MAIN_MENU)
 G.frame=0
 G.sceneTempObjs={}
 G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
+G.HYPERBOLIC_MODELS={UHP=0,DISK=1} -- use number is because it will be sent to shader
 G.viewMode={
     mode=G.VIEW_MODES.NORMAL,
+    hyperbolicModel=G.HYPERBOLIC_MODELS.UHP,
     object=...,
 }
 
@@ -1539,7 +1539,7 @@ G._drawBatches=function(self)
 end
 -- transform the coordinate system to make the player in the center of the screen. If [getParams] is true, return the translation and scaling parameters instead of applying them. (for shader use)
 G.followModeTransform=function(self, getParams)
-    if G.viewMode.mode~=G.VIEW_MODES.FOLLOW then
+    if not(G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP) then
         return 0,0,1
     end
     local screenWidth, screenHeight = love.graphics.getDimensions()
