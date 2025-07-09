@@ -790,7 +790,7 @@ G={
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
                 elseif isPressed('e')then
-                    G.viewMode.hyperbolicModel=1- G.viewMode.hyperbolicModel
+                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
                 end
 
                 -- rest time calculation
@@ -1286,7 +1286,8 @@ G:switchState(G.STATES.MAIN_MENU)
 G.frame=0
 G.sceneTempObjs={}
 G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
-G.HYPERBOLIC_MODELS={UHP=0,DISK=1} -- use number is because it will be sent to shader
+G.HYPERBOLIC_MODELS={UHP=0,P_DISK=1,K_DISK=2} -- use number is because it will be sent to shader
+G.HYPERBOLIC_MODELS_COUNT=3
 G.viewMode={
     mode=G.VIEW_MODES.NORMAL,
     hyperbolicModel=G.HYPERBOLIC_MODELS.UHP,

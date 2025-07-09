@@ -13,7 +13,8 @@ uniform float rotation_angle;   // Angle of rotation in radians
 uniform float shape_axis_y;     // Y-coordinate of the hyperbolic plane's boundary axis
 uniform int hyperbolic_model; // 0 for UHP, 1 for DISK
 #define HYPERBOLIC_MODEL_UHP 0
-#define HYPERBOLIC_MODEL_DISK 1
+#define HYPERBOLIC_MODEL_P_DISK 1
+#define HYPERBOLIC_MODEL_K_DISK 2
 
 // Helper function for complex number multiplication: (a.x + i*a.y) * (b.x + i*b.y)
 vec2 complex_mul(vec2 a, vec2 b) {
@@ -126,9 +127,18 @@ vec4 position(mat4 transform_projection, vec4 vertex_pos) {
     vec2 w = vec2((numerator.x * denominator.x + numerator.y * denominator.y) / denominator_sq,
                     (numerator.y * denominator.x - numerator.x * denominator.y) / denominator_sq);
     w=vec2(-w.y,w.x); // i dunno why a 90 degrees rotation is needed
+
+    float rFactor=2.5;
+    if(hyperbolic_model==HYPERBOLIC_MODEL_K_DISK){
+        float ww = dot(w, w);
+        ww = (2)/(1.0 + ww); // Klein model projection
+        w = w * ww;
+        rFactor=1.4;
+    }
+
     // Convert to screen coordinates
     vec2 screen_size = vec2(800.0, 600.0); // Example screen size, replace with actual uniform if needed
-    float r= 0.8 * min(screen_size.x, screen_size.y);
+    float r= 0.5 * min(screen_size.x, screen_size.y) * rFactor;
     vec2 screen_pos = vec2(screen_size.x / 2 + w.x * r, screen_size.y/2 + w.y * r);
 
     return transform_projection * vec4(screen_pos, 0.0, 1.0);
