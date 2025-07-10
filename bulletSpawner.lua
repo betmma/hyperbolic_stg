@@ -12,6 +12,8 @@ local BulletSpawner=Shape:extend()
 function BulletSpawner:new(args)
     BulletSpawner.super.new(self, args)
     self.radius=args.radius or 5
+    self.visible=args.visible or (self.lifeFrame>60 and true or false)
+    self.sprite=BulletSprites.lotus[args.bulletSprite and Asset.spectrum1MapSpectrum2[args.bulletSprite.data.color] or 'gray']
     self.period=args.period or 60
     self.frame=args.frame or 0
     self.realFrame=0
@@ -113,10 +115,13 @@ function BulletSpawner:update(dt)
 end
 
 function BulletSpawner:draw()
-    local color={love.graphics.getColor()}
-    love.graphics.setColor(1,0,1)
-    Shape.drawCircle(self.x,self.y,self.radius)
-    love.graphics.setColor(color[1],color[2],color[3])
+    -- local color={love.graphics.getColor()}
+    -- love.graphics.setColor(1,0,1)
+    -- Shape.drawCircle(self.x,self.y,self.radius)
+    -- love.graphics.setColor(color[1],color[2],color[3])
+    if self.visible then
+        self:drawSprite()
+    end
 end
 
 ---@class fogArgs
@@ -150,6 +155,23 @@ function BulletSpawner.wrapFogEffect(args, func, wrapping)
         -- period=self.fogTime,
         afterFunc=easeFunc
     }
+end
+
+function BulletSpawner:drawSprite()
+    if not self.sprite then
+        return
+    end
+    local color={love.graphics.getColor()}
+    local x,y,radius=Shape.getCircle(self.x,self.y,self.radius)
+    local data=self.sprite.data
+    local scale=radius/data.hitRadius*0.3
+    local r,g,b
+    if self.spriteColor then
+        r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
+    end
+    local batch=self.bulletBatch or Asset.bulletBatch
+    batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 0.5)*color[4])
+    batch:add(self.sprite.quad,x,y,self.time,scale,scale,data.centerX,data.centerY)
 end
 
 return BulletSpawner
