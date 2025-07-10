@@ -166,22 +166,31 @@ Asset.flushBatches=function(self)
         end
     end
 end
+Asset.setHyperbolicRotateShader=function()
+    if not (G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader) then
+        return
+    end
+    local object=G.viewMode.object
+    local shader=G.hyperbolicRotateShader
+    love.graphics.setShader(shader)
+    shader:send("player_pos", {object.x, object.y})
+    shader:send("rotation_angle",0)
+    shader:send("shape_axis_y", Shape.axisY)
+    shader:send("hyperbolic_model", G.viewMode.hyperbolicModel)
+end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
         -- use hyperbolicRotateShader from playerBatch to playerFocusBatch. Note that some levels have their own shader, levels need to set G.UseHypRotShader to false to prevent being overridden
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader then
             local object=G.viewMode.object
             local shader=G.hyperbolicRotateShader
-            if batch==Asset.playerBatch then
-                love.graphics.setShader(shader)
-                shader:send("player_pos", {object.x, object.y})
-                shader:send("rotation_angle",0) -- player is not rotated
-                shader:send("shape_axis_y", Shape.axisY)
-                shader:send("hyperbolic_model", G.viewMode.hyperbolicModel) -- send hyperbolic model to shader
-            elseif batch==Asset.playerBulletBatch then
+            if batch==Asset.playerBatch then 
+                Asset.setHyperbolicRotateShader()
+            end
+            if batch==Asset.playerFocusBatch or batch==Asset.playerBatch then -- player and focus are not rotated
+                shader:send("rotation_angle",0)
+            else
                 shader:send("rotation_angle",-object.naturalDirection)
-            elseif batch==Asset.playerFocusBatch then
-                shader:send("rotation_angle",0) -- player focus is not rotated
             end
         end
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then

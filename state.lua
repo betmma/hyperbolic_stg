@@ -793,6 +793,10 @@ G={
                     G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
                 end
 
+                if not G.UseHypRotShader then
+                    G.viewMode.hyperbolicModel=G.HYPERBOLIC_MODELS.UHP -- without shader only UHP is supported
+                end
+                
                 -- rest time calculation
                 self.levelRemainingFrame=self.levelRemainingFrame-1
                 if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then

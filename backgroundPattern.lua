@@ -336,6 +336,8 @@ function FixedTesselation:update(dt)
 end
 
 function FixedTesselation:draw()
+    local shader=love.graphics.getShader()
+    Asset.setHyperbolicRotateShader() -- contains G.UseHypRotShader check
     local ay=Shape.axisY
     -- Shape.axisY=-10
     local width=love.graphics.getLineWidth()
@@ -364,6 +366,7 @@ function FixedTesselation:draw()
     end
     love.graphics.setLineWidth(width)
     Shape.axisY=ay
+    love.graphics.setShader(shader)
 end
 BackgroundPattern.FixedTesselation=FixedTesselation
 

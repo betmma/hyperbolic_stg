@@ -127,6 +127,8 @@ function Enemy:dieEffect()
 end
 
 function Enemy:draw()
+    local shader=love.graphics.getShader()
+    Asset.setHyperbolicRotateShader() -- contains G.UseHypRotShader check
     local color={love.graphics.getColor()}
     if self.mainEnemy then
         self:drawHexagram()
@@ -137,6 +139,7 @@ function Enemy:draw()
         self:drawCircleHPBar()
     end
     love.graphics.setColor(color[1],color[2],color[3])
+    love.graphics.setShader(shader)
 end
 
 function Enemy:drawText()

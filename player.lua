@@ -329,7 +329,7 @@ function Player:testRotate(angle,restore)
             v.x,v.y,v.direction=v.testRotateRef[1],v.testRotateRef[2],v.testRotateRef[3]
         end
     end
-    local list={Enemy,Circle,Laser} -- due to different implementation, PolyLine has to be handled separately. not ideal
+    local list={BulletSpawner,Enemy,Circle,Laser} -- due to different implementation, PolyLine has to be handled separately. not ideal
     if G.UseHypRotShader then
         list={Enemy} -- sprites don't need to be rotated
     end
