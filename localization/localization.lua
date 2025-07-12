@@ -907,6 +907,16 @@ return {
                     zh_cn = '范围突然扩大，火花无处不在。单个火花看起来像……爆米花？',
                 }
             },
+            [183] = {
+                spellName = {
+                    en_us = 'Star Sign "Star Chain"',
+                    zh_cn = '星符「星之链」',
+                },
+                quote = {
+                    en_us = 'Chains are bent away from her. Is that showing her power?',
+                    zh_cn = '链条向外弯曲。这是在展示她的力量吗？',
+                }
+            },
             [90] = {
                 spellName = {
                     en_us = 'Heavy Sign "Weight of a Thousand Fathoms"',
