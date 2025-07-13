@@ -99,6 +99,7 @@ G={
         MAIN_MENU='MAIN_MENU',
         OPTIONS='OPTIONS',
         MUSIC_ROOM='MUSIC_ROOM',
+        NICKNAMES='NICKNAMES',
         UPGRADES='UPGRADES',
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
@@ -125,6 +126,9 @@ G={
             MUSIC_ROOM={
                 slideDirection='down'
             },
+            NICKNAMES={
+                slideDirection='up'
+            },
         },
         OPTIONS={
             MAIN_MENU={
@@ -134,6 +138,11 @@ G={
         MUSIC_ROOM={
             MAIN_MENU={
                 slideDirection='up'
+            }
+        },
+        NICKNAMES={
+            MAIN_MENU={
+                slideDirection='down'
             }
         },
         UPGRADES={
@@ -168,6 +177,7 @@ G={
                 {text='Replay',value='REPLAY'},
                 {text='Options',value='OPTIONS'},
                 {text='Music Room',value='MUSIC_ROOM'},
+                {text='Nicknames',value='NICKNAMES'},
                 {text='Exit',value='EXIT'},
             },
             chosen=1,
@@ -184,6 +194,7 @@ G={
                 optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
                 REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
                 MUSIC_ROOM=function(self)self:switchState(self.STATES.MUSIC_ROOM)end,
+                NICKNAMES=function(self)self:switchState(self.STATES.NICKNAMES)end,
                 OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
                 Asset.titleBatch:clear()
                 Asset.titleBatch:add(Asset.title,70,-30,0,0.5,0.5,0,0)
@@ -200,8 +211,8 @@ G={
                 local color={love.graphics.getColor()}
                 SetFont(36)
                 love.graphics.setColor(1,1,1,0.6)
-                love.graphics.printf("Hyperbolic Domain",200,270,400,'center')
-                local optionBaseY=275
+                love.graphics.printf("Hyperbolic Domain",200,250,400,'center')
+                local optionBaseY=255
                 SetFont(36)
                 love.graphics.setColor(1,1,1,1)
                 for index, value in ipairs(self.currentUI.options) do
@@ -384,6 +395,104 @@ G={
                 -- SetFont(36)
                 -- love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
             end,
+        },
+        NICKNAMES={
+            enter=function(self)
+                self.currentUI.chosen=1
+            end,
+            update=function(self,dt)
+                local nicknameCount=Nickname.nicknameCount
+                self.backgroundPattern:update(dt)
+                if isPressed('x') or isPressed('escape')then
+                    SFX:play('select')
+                    self:switchState(self.STATES.MAIN_MENU)
+                    self:saveData()
+                elseif isPressed('left') then
+                    self.currentUI.chosen=self.currentUI.chosen-1
+                    if self.currentUI.chosen<1 then
+                        self.currentUI.chosen=nicknameCount
+                    end
+                    SFX:play('select')
+                elseif isPressed('right') then
+                    self.currentUI.chosen=self.currentUI.chosen+1
+                    if self.currentUI.chosen>nicknameCount then
+                        self.currentUI.chosen=1
+                    end
+                    SFX:play('select')
+                elseif isPressed('up') then
+                    self.currentUI.chosen=self.currentUI.chosen-10
+                    if self.currentUI.chosen<1 then
+                        self.currentUI.chosen=nicknameCount-9+(self.currentUI.chosen-nicknameCount-1)%10
+                    end
+                    SFX:play('select')
+                elseif isPressed('down') then
+                    self.currentUI.chosen=self.currentUI.chosen+10
+                    if self.currentUI.chosen>nicknameCount then
+                        self.currentUI.chosen=1+(self.currentUI.chosen-1)%10
+                    end
+                    SFX:play('select')
+                end
+            end,
+            draw=function(self)
+            end,
+            drawText=function(self)
+                local color={love.graphics.getColor()}
+                SetFont(48)
+                love.graphics.setColor(1,1,1,1)
+                love.graphics.print(Localize{'ui',"NICKNAMES"}, 100, 30)
+                local nicknames=Nickname.nicknames
+                local xbegin,ybegin=100,100
+                local gridSize=50
+                local numberPerRow=10
+                local index=0
+                local boxX,boxY=100,480
+                local gap=10
+                for k,v in pairs(nicknames) do
+                    index=index+1
+                    local x=xbegin+(index-1)%numberPerRow*gridSize
+                    local y=ybegin+math.floor((index-1)/numberPerRow)*gridSize
+                    local name=Localize{'nickname',v.name,'name'}
+                    local condition=Localize{'nickname',v.name,'condition'}
+                    local description=Localize{'nickname',v.name,'description'}
+                    local progress=v.progressFunc()
+                    if not v.isSecret then
+                        if progress>=1 then
+                            love.graphics.setColor(1,1,0.5) -- yellow for unlocked nicknames
+                        else
+                            love.graphics.setColor(1,1,1,1) -- white for normal nicknames
+                        end
+                        SetFont(48)
+                        love.graphics.print(string.format('%02d',index),x+5,y)
+                    end
+                    love.graphics.setColor(1,1,1,1)
+                    if index==self.currentUI.chosen then
+                        love.graphics.rectangle("line",x,y,gridSize,gridSize)
+                        if v.isSecret then
+                            goto continue
+                        end
+                        SetFont(24)
+                        love.graphics.print(name,boxX,boxY-30)
+                        SetFont(18)
+                        local text=condition
+                        if progress>=1 then
+                            text=text..'\n'..description
+                        else
+                            local x0,y0,width=boxX+gap,boxY+50,600-gap*2
+                            love.graphics.setColor(1,1,1)
+                            love.graphics.rectangle("line",x0,y0,width,10)
+                            love.graphics.setColor(1,1,0.5)
+                            love.graphics.rectangle("fill",x0,y0,width*progress,10)
+                            love.graphics.setColor(1,1,1,1)
+                        end
+                        love.graphics.printf(text,boxX+gap,boxY+gap,600-gap*2,'left')
+                        love.graphics.rectangle("line",boxX,boxY,600,85)
+                    end
+                    ::continue::
+                end
+
+                love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
+            end
+            
         },
         UPGRADES={
             enter=function(self)
@@ -1313,6 +1422,7 @@ end
 ---@field defaultName string
 ---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
 ---@field extraUnlock {[integer]: boolean} -- secret level unlocks, format not decided
+---@field nicknames {statistics: {[string]: number}}
 ---@type Save
 G.save={
     levelData={[1]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}},
@@ -1323,7 +1433,8 @@ G.save={
         playTimeOverall=0,
         playTimeInLevel=0,
     },
-    extraUnlock={} -- secret level unlocks, format not decided
+    extraUnlock={}, -- secret level unlocks, format not decided
+    nicknames={},
 }
 G.loadData=function(self)
 	local file = love.filesystem.read("savedata.txt")
@@ -1417,15 +1528,19 @@ G.language=G.save.options.language--'zh_cn'--'en_us'--
 ---@param self table
 ---@return integer "number of passed scenes"
 ---@return integer "number of all scenes"
+---@return integer "number of perfect scenes"
 G.countPassedSceneNum=function(self)
-    local allSceneCount,passedSceneCount=0,0
+    local allSceneCount,passedSceneCount,perfectSceneCount=0,0,0
     for id,value in pairs(LevelData.ID2LevelScene) do
         allSceneCount=allSceneCount+1
         if self.save.levelData[id].passed>0 then
             passedSceneCount=passedSceneCount+1
         end
+        if self.save.levelData[id].passed==2 then
+            perfectSceneCount=perfectSceneCount+1
+        end
     end
-    return passedSceneCount,allSceneCount
+    return passedSceneCount,allSceneCount, perfectSceneCount
 end
 G.win=function(self)
     self:switchState(self.STATES.GAME_END)
@@ -1446,12 +1561,14 @@ G.win=function(self)
     if saveData.firstPerfect==0 and winLevel==2 then
         saveData.firstPerfect=saveData.tryCount
     end
+    EventManager.post('winLevel',levelID,scene)
     self:saveData()
 end
 G.lose=function(self)
     self:switchState(self.STATES.GAME_END)
     self:leaveLevel()
     self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
+    EventManager.post('loseLevel',self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)

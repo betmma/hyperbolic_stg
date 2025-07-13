@@ -966,6 +966,10 @@ return {
             en_us = 'Music Room',
             zh_cn = '音乐室',
         },
+        NICKNAMES = {
+            en_us = 'Nicknames',
+            zh_cn = '称号',
+        },
         EXIT = {
             en_us = 'Exit',
             zh_cn = '退出',
@@ -1276,6 +1280,50 @@ return {
             description = {
                 en_us = 'Increase back shot damage by 50%, but they do less damage if you are close to enemy',
                 zh_cn = '后方子弹伤害增加50%，但离敌人较近时伤害降低',
+            },
+        },
+    },
+    nickname = {
+        PassAllScenes = {
+            name = {
+                en_us = 'Hyperbolic Master',
+                zh_cn = '双曲大师',
+            },
+            condition = {
+                en_us = 'All scenes cleared',
+                zh_cn = '通过所有场景',
+            },
+            description = {
+                en_us = 'Congratulations! You have mastered the hyperbolic domain and all its challenges!',-- Hit Z to see the ending screen.',
+                zh_cn = '恭喜你！你已经掌握了双曲域及其所有挑战！',--按Z键查看结局画面。',
+            },
+        },
+        Pass1Scene = {
+            name = {
+                en_us = 'Hyperbolic Beginner',
+                zh_cn = '双曲新手',
+            },
+            condition = {
+                en_us = '1 scene cleared',
+                zh_cn = '通过1个场景',
+            },
+            description = {
+                en_us = 'The adventure begins here. Be prepared for mindblowing challenges ahead!',
+                zh_cn = '冒险从这里开始。准备好迎接令人震撼的挑战吧！',
+            },
+        },
+        PerfectAllScenes = {
+            name = {
+                en_us = 'Hyperbolic Indigenous',
+                zh_cn = '双曲原住民',
+            },
+            condition = {
+                en_us = 'All scenes cleared without taking damage',
+                zh_cn = '无伤通过所有场景',
+            },
+            description = {
+                en_us = 'No way! You have achieved perfection in the hyperbolic domain! Please, feel free to tell me "I\'m indigeneous to hyperbolic domain" on social media.',
+                zh_cn = '不可能！你在双曲域中达到了完美！请在社交媒体上告诉我“我是双曲域的原住民”。',
             },
         },
     }

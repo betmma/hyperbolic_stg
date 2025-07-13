@@ -1,8 +1,9 @@
+-- this Event class is more like a timer (do something after some time)
 ---@class Event:Object
 ---@field time number time (seconds) since the event was created
 ---@field frame number frame since the event was created
 ---@field times number max times the event will be executed
----@field mode number Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple. I think I never used Event.modes.oneFrameMultiple?
+---@field mode number Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple.
 ---@field executedTimes number times the event has been executed
 ---@field obj Object the object that the event is attached to. If not provided, it defaults to self. If obj is removed, the event will be removed too.
 ---@field conditionFunc fun(self: Object, ...):boolean Each frame, if it returns true, the event will be executed.

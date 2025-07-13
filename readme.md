@@ -42,7 +42,7 @@ Completed scenes display as green and give 10 XP each.
 Perfectly completed (without being harmed) scenes display as golden and give 12 XP each.
 
 ##### Todo:
-1. Rearrange levels
+1. ~~Rearrange levels~~
 2. Nickname system
 3. Dialogue system
 4. Story
