@@ -1422,7 +1422,8 @@ end
 ---@field defaultName string
 ---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
 ---@field extraUnlock {[integer]: boolean} -- secret level unlocks, format not decided
----@field nicknames {statistics: {[string]: number}}
+---@field nicknameUnlock {[string]: boolean}
+---@field statistics {[string]: number}
 ---@type Save
 G.save={
     levelData={[1]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}},
@@ -1434,7 +1435,8 @@ G.save={
         playTimeInLevel=0,
     },
     extraUnlock={}, -- secret level unlocks, format not decided
-    nicknames={},
+    nicknameUnlock={},
+    statistics={},
 }
 G.loadData=function(self)
 	local file = love.filesystem.read("savedata.txt")
@@ -1517,6 +1519,14 @@ G.loadData=function(self)
 
     if not self.save.extraUnlock then
         self.save.extraUnlock={}
+    end
+
+    if not self.save.nicknameUnlock then
+        self.save.nicknameUnlock={}
+    end
+
+    if not self.save.statistics then
+        self.save.statistics={}
     end
 
     self:saveData()

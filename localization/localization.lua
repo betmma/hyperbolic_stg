@@ -1077,7 +1077,11 @@ return {
         replaying = {
             en_us = 'Replaying',
             zh_cn = '回放中',
-        }
+        },
+        nicknameGet = {
+            en_us = 'Get nickname:',
+            zh_cn = '获得称号:',
+        },
     },
     musicData = {
         title = {
@@ -1310,6 +1314,20 @@ return {
             description = {
                 en_us = 'The adventure begins here. Be prepared for mindblowing challenges ahead!',
                 zh_cn = '冒险从这里开始。准备好迎接令人震撼的挑战吧！',
+            },
+        },
+        Lose100Times = {
+            name = {
+                en_us = 'Necessary Pain',
+                zh_cn = '必要的痛苦',
+            },
+            condition = {
+                en_us = 'Lose 100 times',
+                zh_cn = '满身疮痍100次',
+            },
+            description = {
+                en_us = '100 times is just beginning. Come on and try again!',
+                zh_cn = '100次只是开始。再来一次吧！',
             },
         },
         PerfectAllScenes = {

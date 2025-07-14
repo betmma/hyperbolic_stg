@@ -1,4 +1,4 @@
-VERSION="0.5.9"
+VERSION="0.5.9.1"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -90,6 +90,7 @@ end
 
 function love.draw()
     G:draw()
+    Nickname:drawText() -- nickname is an individual system 
     -- for i = 50, 600, 50 do
     -- if CIM then
     --     local x0,y0,x1,y1=Player.objects[1].x,Player.objects[1].y,CIM.x,CIM.y

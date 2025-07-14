@@ -1,4 +1,5 @@
 ---@class Nickname:Object
+---@field ID integer
 ---@field name string used to find name and description in localization file. should be unique and short
 ---@field progressFunc fun():number read from statistics and calculate filled ratio of progress bar in nickname menu, and if returns 1 this nickname is unlocked.
 ---@field eventName string the event this nickname is associated with
@@ -8,7 +9,9 @@ local Nickname=Object:extend()
 
 -- localization format: name, condition, description
 
+---@type table<integer,Nickname>
 Nickname.nicknames={}
+
 Nickname.nicknameCount=0
 
 function Nickname:new(args)
@@ -18,17 +21,54 @@ function Nickname:new(args)
     self.eventName=args.eventName
     self.eventFunc=args.eventFunc or function(...)end
     self.isSecret=args.isSecret or false
+    Nickname.nicknameCount=Nickname.nicknameCount+1
+    self.ID=Nickname.nicknameCount
     EventManager.listenTo(self.eventName, function(...)
         self.eventFunc(...)
-        if self.progressFunc()>=1 and G.save.nicknames[self.name]~=true then
-            G.save.nicknames[self.name]=true
-            EventManager.post('NicknameUnlocked',self.name)
+        if self.progressFunc()>=1 and G.save.nicknameUnlock[self.name]~=true then
+            G.save.nicknameUnlock[self.name]=true
+            EventManager.post('NicknameGet',self.ID)
         end
     end)
-    Nickname.nicknameCount=Nickname.nicknameCount+1
     Nickname.nicknames[Nickname.nicknameCount]=self
 end
 
+local nicknamePending={}
+local displayFrame=120
+local function nicknameGet(id)
+    nicknamePending[id]=G.frame
+    Event.DelayEvent{
+        obj=G,delayFrame=displayFrame,executeFunc=function()
+            nicknamePending[id]=nil
+        end
+    }
+end
+EventManager.listenTo('NicknameGet',nicknameGet)
+
+-- this is to draw notice box when a nickname is unlocked
+function Nickname:drawText()
+    local count=0
+    local x,y=650,0
+    local width,height=150,50
+    local gap=5
+    for id,frame in pairs(nicknamePending) do
+        local ratio=(G.frame-frame)/displayFrame
+        local transparency=math.min(ratio*10,1-ratio)
+        local nickname=Nickname.nicknames[id]
+        local get=Localize{'ui','nicknameGet'}
+        local name=Localize{'nickname',nickname.name,'name'}
+        love.graphics.setColor(0,0,0,transparency)
+        love.graphics.rectangle('fill',x,y+height*count,width,height)
+        love.graphics.setColor(1,1,1,transparency)
+        love.graphics.rectangle('line',x,y+height*count,width,height)
+        SetFont(16)
+        love.graphics.printf(get,x+gap,y+height*count,width-gap*2,'center')
+        love.graphics.setColor(1,1,0.5,transparency)
+        SetFont(18)
+        love.graphics.printf(name,x+gap,y+height*count+gap*3,width-gap*2,'center')
+        count=count+1
+    end
+end
 
 Nickname{
     name='PassAllScenes',
@@ -44,6 +84,17 @@ Nickname{
         return G:countPassedSceneNum()
     end,
     eventName='winLevel'
+}
+Nickname{
+    name='Lose100Times',
+    progressFunc=function()
+        G.save.statistics.loseCount=G.save.statistics.loseCount or 0
+        return G.save.statistics.loseCount/100
+    end,
+    eventName='loseLevel',
+    eventFunc=function()
+        G.save.statistics.loseCount=(G.save.statistics.loseCount or 0)+1
+    end,
 }
 Nickname{
     name='PerfectAllScenes',
