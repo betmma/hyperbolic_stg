@@ -16,9 +16,7 @@ return {
             easeFrame=100
         }
         local player=Player{x=400,y=300}
-        local hitEffectRef=player.hitEffect
-        player.hitEffect=function(player,damage)
-            hitEffectRef(player,damage)
+        local move=function()
             Event.EaseEvent{
                 obj=player,
                 aimTable=player,
@@ -34,6 +32,7 @@ return {
                 easeFrame=10
             }
         end
+        EventManager.listenTo('playerHit',move,'leaveLevel')
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         local poses={}

@@ -71,11 +71,15 @@ return {
             }
             return cir
         end
-        local hitEffectRef=player.hitEffect
-        player.hitEffect=function(player,damage)
-            hitEffectRef(player,damage)
+        -- local hitEffectRef=player.hitEffect
+        -- player.hitEffect=function(player,damage)
+        --     hitEffectRef(player,damage)
+        --     evict(getRadius())
+        -- end
+        local autoEvict=function()
             evict(getRadius())
         end
+        EventManager.listenTo('playerHit',autoEvict,'leaveLevel')
 
         local function circleEffect(cir)
             Event.LoopEvent{
