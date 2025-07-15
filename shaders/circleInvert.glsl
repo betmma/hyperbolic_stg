@@ -17,9 +17,9 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords)
         // Invert the colors by subtracting from 1
         texColor.rgb = vec3(1.0) - texColor.rgb;
         
-        return texColor;
+        return texColor*color;
     } else {
         // Else, return the original color
-        return Texel(texture, texture_coords);
+        return Texel(texture, texture_coords)*color;
     }
 }

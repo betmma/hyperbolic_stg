@@ -1642,14 +1642,13 @@ G.update=function(self,dt)
 end
 G.hyperbolicRotateShader=love.graphics.newShader("shaders/hyperbolicRotateM.glsl")
 G.draw=function(self)
-    -- local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT)
-    -- love.graphics.setCanvas(canvas)
-    -- love.graphics.clear()
+    local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT)
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
 
     self.currentUI=self.UIDEF[self.STATE]
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         self:_drawBatches()
-        self.currentUI.drawText(self)
     elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW then
         if not G.viewMode.object then
             G.viewMode.object=Player.objects[1]
@@ -1669,14 +1668,16 @@ G.draw=function(self)
             object:testRotate(0,true) -- "true" means restore objects' coordinates
         end
         love.graphics.pop()
-        self.currentUI.drawText(self)
     end
 
-    -- love.graphics.setCanvas()
-    -- if Player.objects[1] then
-    --     Player.objects[1]:invertShader()
-    -- end
-    -- love.graphics.draw(canvas, 0, 0)
+    love.graphics.setCanvas()
+    if Player.objects[1] then
+        Player.objects[1]:invertShader()
+    end
+    love.graphics.draw(canvas, 0, 0)
+    love.graphics.setShader()
+
+    self.currentUI.drawText(self)
 end
 G._drawBatches=function(self)
     if not self.backgroundPattern.noZoom or G.viewMode.mode==G.VIEW_MODES.NORMAL then

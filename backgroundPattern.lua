@@ -336,6 +336,9 @@ function FixedTesselation:update(dt)
 end
 
 function FixedTesselation:draw()
+    love.graphics.setColor(0,0,0,1)
+    love.graphics.rectangle('fill',0,0,800,600)
+    love.graphics.setColor(1,1,1,1)
     local shader=love.graphics.getShader()
     Asset.setHyperbolicRotateShader() -- contains G.UseHypRotShader check
     local ay=Shape.axisY
@@ -479,6 +482,9 @@ function Pendulum:draw() -- ugh direct drawing looks kinda cringe. maybe find an
         return {colorTable[1]*self.colorRatio,colorTable[2]*self.colorRatio,colorTable[3]*self.colorRatio}
     end
     -- the background
+    love.graphics.setColor(0,0,0,1)
+    love.graphics.rectangle('fill',0,0,800,600) -- black background, without it part of border won't display due to background has alpha=0, and "add" blend mode doesn't change alpha
+
     local outerBGColor=colorMult{0.25,0.10,0.04}
     love.graphics.setColor(outerBGColor)
     love.graphics.rectangle('fill',250,0,300,400) -- outer rectangle

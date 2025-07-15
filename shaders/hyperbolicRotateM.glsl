@@ -126,7 +126,7 @@ vec4 position(mat4 transform_projection, vec4 vertex_pos) {
     }
 
     vec2 z_prime = vec2(rotated_pos_euclidean.x, rotated_pos_euclidean.y - shape_axis_y);
-    vec2 z0_prime = vec2(aim_pos.x, aim_pos.y - shape_axis_y);
+    vec2 z0_prime = vec2(screen_size.x/2, screen_size.y/2 - shape_axis_y);
 
     vec2 z0_prime_conj = vec2(z0_prime.x, -z0_prime.y);
     vec2 numerator = z_prime - z0_prime;

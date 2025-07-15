@@ -593,19 +593,33 @@ function Player:hitEffect(damage)
 end
 EventManager.listenTo('playerHit',Player.hitEffect)
 
--- effect is strange, not used
+-- part of hit effect so based on dieFrame not invincibleTime
 function Player:invertShader()
-    if self.invincibleTime<=0 then return end
-    local t=self.invincibleTime
+    -- if self.invincibleTime<=0 then return end
+    if not (self.dieFrame and self.frame-self.dieFrame<60) then return end
+    local t=1-(self.frame-self.dieFrame)/60
     love.graphics.setShader(invertShader)
-    local x,y,r=self.x,self.y,10
-    x,y,r=Shape.getCircle(x,y,r)
-    invertShader:send("centerInner",{x,y})
-    invertShader:send("radiusInner",r)
-    x,y,r=self.x,self.y,10+t*100
-    x,y,r=Shape.getCircle(x,y,r)
-    invertShader:send("centerOuter",{x,y})
-    invertShader:send("radiusOuter",r)
+    local x,y=self.x,self.y
+    if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
+        if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+            x,y=WINDOW_WIDTH/2+G.viewOffset.x,WINDOW_HEIGHT/2+G.viewOffset.y
+        else
+            x,y=WINDOW_WIDTH/2,WINDOW_HEIGHT/2
+            invertShader:send("centerInner",{x,y})
+            invertShader:send("radiusInner",y*t*0.5)
+            invertShader:send("centerOuter",{x,y})
+            invertShader:send("radiusOuter",y*t)
+            return
+        end
+    end
+    local r=t*50
+    local x1,y1,r1=Shape.getCircle(x,y,r)
+    invertShader:send("centerInner",{x1,y1})
+    invertShader:send("radiusInner",r1)
+    r=t*100
+    x1,y1,r1=Shape.getCircle(x,y,r)
+    invertShader:send("centerOuter",{x1,y1})
+    invertShader:send("radiusOuter",r1)
 end
 
 function Player:calculateFlashbomb()
