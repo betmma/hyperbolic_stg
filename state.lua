@@ -24,12 +24,12 @@ end
 local G={
     CONSTANTS={
         DRAW=function(self)
-            GameObject:drawShaderAll()
             Asset:clearBatches()
             local colorRef={love.graphics.getColor()}
             Asset.foregroundBatch:setColor(colorRef[1],colorRef[2],colorRef[3],self.foregroundTransparency)
             Asset.foregroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
             Asset.foregroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
+                Asset.setHyperbolicRotateShader()
             GameObject:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
             Asset:flushBatches()
             Asset:drawBatches()
@@ -1400,6 +1400,10 @@ G.frame=0
 G.sceneTempObjs={}
 G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
 G.HYPERBOLIC_MODELS={UHP=0,P_DISK=1,K_DISK=2} -- use number is because it will be sent to shader
+G.DISK_RADIUS_BASE={
+    [G.HYPERBOLIC_MODELS.P_DISK]=1, -- Poincare disk
+    [G.HYPERBOLIC_MODELS.K_DISK]=1, -- Klein disk
+}
 G.HYPERBOLIC_MODELS_COUNT=3
 G.viewMode={
     mode=G.VIEW_MODES.NORMAL,
@@ -1589,6 +1593,7 @@ end
 G.leaveLevel=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+    EventManager:post('leaveLevel',level,scene)
     if LevelData[level][scene].leave then
         LevelData[level][scene].leave()
     end
@@ -1637,6 +1642,10 @@ G.update=function(self,dt)
 end
 G.hyperbolicRotateShader=love.graphics.newShader("shaders/hyperbolicRotateM.glsl")
 G.draw=function(self)
+    -- local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT)
+    -- love.graphics.setCanvas(canvas)
+    -- love.graphics.clear()
+
     self.currentUI=self.UIDEF[self.STATE]
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         self:_drawBatches()
@@ -1662,6 +1671,12 @@ G.draw=function(self)
         love.graphics.pop()
         self.currentUI.drawText(self)
     end
+
+    -- love.graphics.setCanvas()
+    -- if Player.objects[1] then
+    --     Player.objects[1]:invertShader()
+    -- end
+    -- love.graphics.draw(canvas, 0, 0)
 end
 G._drawBatches=function(self)
     if not self.backgroundPattern.noZoom or G.viewMode.mode==G.VIEW_MODES.NORMAL then
@@ -1671,7 +1686,7 @@ G._drawBatches=function(self)
 end
 -- transform the coordinate system to make the player in the center of the screen. If [getParams] is true, return the translation and scaling parameters instead of applying them. (for shader use)
 G.followModeTransform=function(self, getParams)
-    if not(G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP) then
+    if G.UseHypRotShader then
         return 0,0,1
     end
     local screenWidth, screenHeight = love.graphics.getDimensions()

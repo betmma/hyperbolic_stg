@@ -174,9 +174,11 @@ Asset.setHyperbolicRotateShader=function()
     local shader=G.hyperbolicRotateShader
     love.graphics.setShader(shader)
     shader:send("player_pos", {object.x, object.y})
+    shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y})
     shader:send("rotation_angle",0)
     shader:send("shape_axis_y", Shape.axisY)
     shader:send("hyperbolic_model", G.viewMode.hyperbolicModel)
+    shader:send("r_factor", G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
 end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do

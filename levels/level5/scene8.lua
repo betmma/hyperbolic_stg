@@ -135,15 +135,54 @@ return {
         G.backgroundPattern:remove()
         G.backgroundPattern=BackgroundPattern.FollowingTesselation()
         local drawRef=G.backgroundPattern.draw
+        local function getDiskRadius()
+            return G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel]
+        end
         G.backgroundPattern.draw=function(self)
-            local surfaceAx2,surfaceAy2=Shape.rotateAround(surfaceAx,surfaceAy,-player.naturalDirection,player.x,player.y)
-            local surfaceBx2,surfaceBy2=Shape.rotateAround(surfaceBx,surfaceBy,-player.naturalDirection,player.x,player.y)
-            local centerX,radius=Shape.lineCenter(surfaceAx2,surfaceAy2,surfaceBx2,surfaceBy2)
             local colorRef={love.graphics.getColor()}
             love.graphics.setColor(0.2,0.2,1,0.5)
-            love.graphics.circle('fill',centerX,Shape.axisY,99999)
-            love.graphics.setColor(0,0,0,1)
-            love.graphics.circle('fill',centerX,Shape.axisY,radius)
+            local dis=Shape.distanceToLine(player.x,player.y,surfaceAx,surfaceAy,surfaceBx,surfaceBy)*(isAboveWater(player.x,player.y) and 1 or -1)
+            local centerX,radius
+            centerX=WINDOW_WIDTH/2
+            if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+                if G.UseHypRotShader then
+                    local x1,y1=Shape.rThetaPos(centerX,WINDOW_HEIGHT/2,dis,math.pi/2)
+                    radius=y1-Shape.axisY
+                else
+                    local surfaceAx2,surfaceAy2=Shape.rotateAround(surfaceAx,surfaceAy,-player.naturalDirection,player.x,player.y)
+                    local surfaceBx2,surfaceBy2=Shape.rotateAround(surfaceBx,surfaceBy,-player.naturalDirection,player.x,player.y)
+                    centerX,radius=Shape.lineCenter(surfaceAx2,surfaceAy2,surfaceBx2,surfaceBy2)
+                end
+                love.graphics.circle('fill',centerX,Shape.axisY,99999)
+                love.graphics.setColor(0,0,0,1)
+                love.graphics.circle('fill',centerX,Shape.axisY,radius)
+            elseif G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.P_DISK then
+                dis=dis/Shape.curvature
+                local r=math.tanh(dis/2)
+                local centerY=(1+r*r)/(2*r)
+                local ratio=WINDOW_HEIGHT/2*getDiskRadius()
+                if dis>0 then
+                    love.graphics.stencil(function()
+                        love.graphics.circle("fill", centerX,WINDOW_HEIGHT/2,ratio)
+                    end, "replace", 1)
+                    love.graphics.setStencilTest("equal", 1)
+                    love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2+ratio*centerY,ratio*(centerY-r))
+                    love.graphics.setStencilTest()
+                    love.graphics.clear(false, true, 0)
+                else
+                    love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2,ratio)
+                    love.graphics.setColor(0,0,0,1)
+                    love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2+ratio*centerY,ratio*(-centerY+r))
+                end
+            elseif G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
+                dis=dis/Shape.curvature
+                local r=math.tanh(dis/2)
+                r=(2*r)/(1+r*r)
+                local ratio=WINDOW_HEIGHT/2*getDiskRadius()
+                love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2,ratio)
+                love.graphics.setColor(0,0,0,1)
+                love.graphics.rectangle('fill',centerX-ratio,WINDOW_HEIGHT/2-ratio,ratio*2,ratio*(1+r))
+            end
             love.graphics.setColor(colorRef)
             love.graphics.setBlendMode('add')
             drawRef(self)

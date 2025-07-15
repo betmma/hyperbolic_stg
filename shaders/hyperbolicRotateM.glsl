@@ -9,9 +9,11 @@
 
 // Uniforms that will be used by the new 'position' function:
 uniform vec2 player_pos;       // Center of rotation
+uniform vec2 aim_pos;         // Aim position for the player
 uniform float rotation_angle;   // Angle of rotation in radians
 uniform float shape_axis_y;     // Y-coordinate of the hyperbolic plane's boundary axis
 uniform int hyperbolic_model; // 0 for UHP, 1 for DISK
+uniform float r_factor; // Radius factor for disk models
 #define HYPERBOLIC_MODEL_UHP 0
 #define HYPERBOLIC_MODEL_P_DISK 1
 #define HYPERBOLIC_MODEL_K_DISK 2
@@ -101,6 +103,7 @@ vec2 hyperbolically_rotate_point_mobius(vec2 point_to_rotate, vec2 center_of_rot
 // The main 'position' function, updated to use the Mobius transformation method.
 // It expects 'player_pos', 'rotation_angle', and 'shape_axis_y' as uniforms.
 vec4 position(mat4 transform_projection, vec4 vertex_pos) {
+    vec2 screen_size = love_ScreenSize.xy; 
     vec2 current_pos_euclidean = vec2(vertex_pos.x, vertex_pos.y);
     
     // Call the new rotation function.
@@ -112,12 +115,18 @@ vec4 position(mat4 transform_projection, vec4 vertex_pos) {
         shape_axis_y        // uniform float shape_axis_y;
     );
     
+    rotated_pos_euclidean.y -= shape_axis_y;
+    float zoom=(aim_pos.y-shape_axis_y)/(player_pos.y-shape_axis_y);
+    rotated_pos_euclidean.y *= zoom;
+    rotated_pos_euclidean.y += shape_axis_y;
+    rotated_pos_euclidean.x = (rotated_pos_euclidean.x - player_pos.x) * zoom + aim_pos.x;
+
     if(hyperbolic_model==HYPERBOLIC_MODEL_UHP){
         return transform_projection * vec4(rotated_pos_euclidean.x, rotated_pos_euclidean.y, 0.0, 1.0);
     }
 
     vec2 z_prime = vec2(rotated_pos_euclidean.x, rotated_pos_euclidean.y - shape_axis_y);
-    vec2 z0_prime = vec2(player_pos.x, player_pos.y - shape_axis_y);
+    vec2 z0_prime = vec2(aim_pos.x, aim_pos.y - shape_axis_y);
 
     vec2 z0_prime_conj = vec2(z0_prime.x, -z0_prime.y);
     vec2 numerator = z_prime - z0_prime;
@@ -128,17 +137,16 @@ vec4 position(mat4 transform_projection, vec4 vertex_pos) {
                     (numerator.y * denominator.x - numerator.x * denominator.y) / denominator_sq);
     w=vec2(-w.y,w.x); // i dunno why a 90 degrees rotation is needed
 
-    float rFactor=2.5;
+    // float rFactor=2.5;
     if(hyperbolic_model==HYPERBOLIC_MODEL_K_DISK){
         float ww = dot(w, w);
         ww = (2)/(1.0 + ww); // Klein model projection
         w = w * ww;
-        rFactor=1.4;
+        // rFactor=1.4;
     }
 
     // Convert to screen coordinates
-    vec2 screen_size = vec2(800.0, 600.0); // Example screen size, replace with actual uniform if needed
-    float r= 0.5 * min(screen_size.x, screen_size.y) * rFactor;
+    float r= 0.5 * min(screen_size.x, screen_size.y) * r_factor;
     vec2 screen_pos = vec2(screen_size.x / 2 + w.x * r, screen_size.y/2 + w.y * r);
 
     return transform_projection * vec4(screen_pos, 0.0, 1.0);

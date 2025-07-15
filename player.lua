@@ -547,10 +547,13 @@ function Player:drawText()
         love.graphics.rectangle("fill",x0,y0,100*(self.grazeCount%self.grazeCountForFlashbomb)/self.grazeCountForFlashbomb,10)
         love.graphics.setColor(color[1],color[2],color[3])
     end
+    SetFont(12)
     if G.UseHypRotShader then
-        SetFont(12)
         love.graphics.print('Using rotation shader',700,580)
     end
+    local model=G.viewMode.hyperbolicModel
+    local text={[0]='Half Plane',[1]='Poincare Disk',[2]='Klein Disk'}
+    love.graphics.print('Model: '..(text[model] or ''),700,560)
 end
 
 -- spawn a white dot to show the graze effect. Actually this random speed and direction particle has broken old replays sooooo many times each time I tweak bullet size or graze range :(
@@ -591,19 +594,18 @@ end
 EventManager.listenTo('playerHit',Player.hitEffect)
 
 -- effect is strange, not used
-function Player:drawShader()
-    -- if self.dieFrame and self.frame-self.dieFrame<90 then
-    --     local t=self.frame-self.dieFrame
-    --     love.graphics.setShader(invertShader)
-    --     local x,y,r=self.x,self.y,t*2
-    --     x,y,r=Shape.getCircle(x,y,r)
-    --     invertShader:send("centerInner",{x,y})
-    --     invertShader:send("radiusInner",r)
-    --     x,y,r=self.x,self.y,t*2+10
-    --     x,y,r=Shape.getCircle(x,y,r)
-    --     invertShader:send("centerOuter",{x,y})
-    --     invertShader:send("radiusOuter",r)
-    -- end
+function Player:invertShader()
+    if self.invincibleTime<=0 then return end
+    local t=self.invincibleTime
+    love.graphics.setShader(invertShader)
+    local x,y,r=self.x,self.y,10
+    x,y,r=Shape.getCircle(x,y,r)
+    invertShader:send("centerInner",{x,y})
+    invertShader:send("radiusInner",r)
+    x,y,r=self.x,self.y,10+t*100
+    x,y,r=Shape.getCircle(x,y,r)
+    invertShader:send("centerOuter",{x,y})
+    invertShader:send("radiusOuter",r)
 end
 
 function Player:calculateFlashbomb()
