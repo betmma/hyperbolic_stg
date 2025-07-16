@@ -3,7 +3,6 @@ return {
     user='minamitsu',
     spellName='Heavy Sign "Weight of a Thousand Fathoms"',
     make=function()
-        G.UseHypRotShader=false
         G.levelRemainingFrame=7200
         G.backgroundPattern:remove()
         -- G.backgroundPattern=BackgroundPattern.H3Terrain()

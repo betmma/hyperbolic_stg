@@ -136,7 +136,7 @@ function LaserUnit:drawMesh(poses)
     if #vertices<4 then return end
     local mesh=love.graphics.newMesh(vertices,'strip')
     mesh:setTexture(Asset.bulletImage)
-    table.insert(Asset.laserBatch,mesh)
+    table.insert(Asset.laserMeshes,mesh)
     -- love.graphics.draw(mesh)
 end
 

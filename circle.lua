@@ -52,7 +52,15 @@ function Circle:draw()
     --         self:drawSprite()
     --     end
     -- end
-    self:drawSprite()
+    if not self.sprite then
+        return
+    end
+    local radius=self.radius
+    if radius<5 and not self.forceDrawLargeSprite then
+        self:drawSprite()
+    else
+        self:drawLargeSprite()
+    end
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
     -- Shape.drawCircle(self.x,self.y,self.radius)
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
@@ -81,9 +89,6 @@ end
 
 -- this happens in draw.
 function Circle:drawSprite()
-    if not self.sprite then
-        return
-    end
     local color={love.graphics.getColor()}
     local x,y,radius=Shape.getCircle(self.x,self.y,self.radius)
     local data=self.sprite.data
@@ -95,6 +100,28 @@ function Circle:drawSprite()
     self.batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 1)*color[4])
     self.batch:add(self.sprite.quad,x,y,self.direction+math.pi/2+(self.spriteExtraDirection or 0),scale,scale,data.centerX,data.centerY)
 end
+
+-- for large sprites, normal quad (2 triangles) will cause huge distortion, so we use mesh (fan triangles)
+---@param num integer|nil number of vertices on the circle
+function Circle:drawLargeSprite(num)
+    num=num or math.ceil(math.clamp(self.radius,6,32))
+    local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
+    x,y,w,h=x/W,y/H,w/W,h/H
+    local meshVertices={{self.x,self.y,x+w/2,y+h/2, 1, 1, 1, 1}} -- center point
+    local r=self.radius*Circle.spriteSizeFactor*1.41
+    local direction=self.direction+math.pi/2+(self.spriteExtraDirection or 0)
+    for i=0,num-1 do
+        local angle=i/num*math.pi*2
+        local nx,ny=Shape.rThetaPos(self.x,self.y,r,direction+angle)
+        table.insert(meshVertices,{nx,ny,x+w/2*(1+math.cos(angle)),y+h/2*(1+math.sin(angle)), 1, 1, 1, 1})
+    end
+    table.insert(meshVertices,meshVertices[2]) -- close the fan
+    local mesh=love.graphics.newMesh(meshVertices,'fan')
+    mesh:setTexture(Asset.bulletImage)
+    table.insert(Asset.bigBulletMeshes,mesh)
+end
+
 function Circle:checkShockwaveRemove()
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do

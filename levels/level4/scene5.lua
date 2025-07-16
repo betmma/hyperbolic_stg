@@ -3,7 +3,6 @@ return {
     user='urumi',
     spellName='Stone Sign "Boulder in Sanzu River"',
     make=function()
-        G.UseHypRotShader=false
         G.levelRemainingFrame=7200
         Shape.removeDistance=2500
         local en,a,b
@@ -86,7 +85,9 @@ return {
         a=BulletSpawner{x=en.x,y=en.y,period=850,frame=800,lifeFrame=100000,bulletSpeed=0,bulletNumber=1,bulletLifeFrame=100000,angle='1.57+1',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.lightRound.purple,bulletEvents={
             function(cir,args,self)
                 cir.invincible=true
+                cir.forceDrawLargeSprite=true
                 local round=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bigRound['yellow'],lifeFrame=cir.lifeFrame}
+                round.forceDrawLargeSprite=true
                 local roundRadius=round.radius
                 local radiusRef=cir.radius
                 round.invincible=true

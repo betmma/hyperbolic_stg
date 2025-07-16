@@ -4,6 +4,7 @@ return {
     user='seija',
     spellName='Turnabout "Change Projection"',
     make=function()
+        G.UseHypRotShader=false
         G.levelRemainingFrame=5400
         Shape.removeDistance=2000
         local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}

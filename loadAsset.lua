@@ -129,8 +129,9 @@ Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title sc
 
 Asset.playerBatch=love.graphics.newSpriteBatch(playerImage, 5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
+Asset.bigBulletMeshes={}
 Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
-Asset.laserBatch={}
+Asset.laserMeshes={}
 Asset.bulletBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
@@ -138,16 +139,18 @@ Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.Batches={
     Asset.playerBatch,
     Asset.playerBulletBatch,
+    Asset.bigBulletMeshes,
     Asset.bulletHighlightBatch,
-    Asset.laserBatch,
+    Asset.laserMeshes,
     Asset.bulletBatch,
     Asset.effectBatch,
     Asset.playerFocusBatch,
     Asset.foregroundBatch,
 }
 local isHighlightBatch={}
+isHighlightBatch[Asset.bigBulletMeshes]=true
 isHighlightBatch[Asset.bulletHighlightBatch]=true
-isHighlightBatch[Asset.laserBatch]=true
+isHighlightBatch[Asset.laserMeshes]=true
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
         if type(batch)=='table' then -- laser batch that is actually a table of laser meshes

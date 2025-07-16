@@ -27,6 +27,7 @@ function Larger:new(args)
     self.growSpeed=args.growSpeed or 1.2
     self.drawScale=args.drawScale or 1
     self.animationFrame=args.animationFrame or 30
+    self.batch=Asset.effectBatch
 end
 
 function Larger:update(dt)
@@ -38,13 +39,21 @@ function Larger:update(dt)
 end
 
 function Larger:draw()
-    local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
-    local data=self.sprite.data
-    local size=self.sprite.data.sizeX
-    local scale=r/size*2*(self.drawScale or 1)
-    local direction=self.direction or 0
-    Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
-    Asset.effectBatch:add(self.sprite.quad,x,y,direction,scale,scale,data.centerX,data.centerY)
+    -- local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
+    -- local data=self.sprite.data
+    -- local size=self.sprite.data.sizeX
+    -- local scale=r/size*2*(self.drawScale or 1)
+    -- local direction=self.direction or 0
+    -- Asset.effectBatch:setColor(1,1,1,1-self.frame/self.animationFrame)
+    -- Asset.effectBatch:add(self.sprite.quad,x,y,direction,scale,scale,data.centerX,data.centerY)
+    local radius=self.radius
+    self.radius=self.radius/2
+    if radius<5 or not G.UseHypRotShader then
+        Circle.drawSprite(self)
+    else
+        Circle.drawLargeSprite(self)
+    end
+    self.radius=radius
 end
 
 -- A growing shockwave, that removes touched bullets and activate their :removeEffect
@@ -162,7 +171,7 @@ function FlashBomb:draw()
     if #meshVertices<4 then return end
     local mesh=love.graphics.newMesh(meshVertices,'fan')
     mesh:setTexture(Asset.bulletImage)
-    table.insert(Asset.laserBatch,mesh)
+    table.insert(Asset.laserMeshes,mesh)
 end
 
 return Effect

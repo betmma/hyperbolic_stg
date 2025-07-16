@@ -597,6 +597,10 @@ function Player:hitEffect(damage)
 end
 EventManager.listenTo('playerHit',Player.hitEffect)
 
+function Player:useInvertShader()
+    return self.dieFrame and self.frame-self.dieFrame<60
+end
+
 -- part of hit effect so based on dieFrame not invincibleTime
 function Player:invertShader()
     -- if self.invincibleTime<=0 then return end
