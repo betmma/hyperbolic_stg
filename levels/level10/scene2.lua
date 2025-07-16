@@ -7,9 +7,9 @@ return {
         -- after 60 seconds you can only get information from reflections. In this phase the key is to move in a circle, rotating with →↓←↑, instead of finding the direction, so that you don't get confused by the reflections.
         G.levelRemainingFrame=7200
         G.levelIsTimeoutSpellcard=true
-        G.UseHypRotShader=false
+        -- G.UseHypRotShader=false
         Shape.removeDistance=100000
-        PolyLine.useMesh=false -- reflection written for drawOne, so it doesn't work with mesh
+        PolyLine.useMesh=false -- reflection written for drawOne, so it doesn't work with mesh. border is rotated in player.testRotate but circle isn't, so circle reflection will be incorrect if use hyprotshader. so i changed circle reflection and in border calculation to use border poses before rotate, to make it work with hyprotshader.
         local a,b
         local en
         en=Enemy{x=5000,y=300,mainEnemy=true,maxhp=96000000}
@@ -20,14 +20,15 @@ return {
         player.moveMode=Player.moveModes.Natural
         local _,r=BackgroundPattern.calculateSideLength(4,5)
         local borderAngle=0
+        local borderPoses={}
         local function borderCreate()
             player.border:remove()
-            local poses={}
+            borderPoses={}
             for i = 1, 4, 1 do
                 local nx,ny=Shape.rThetaPos(400,300,r,math.pi*(1/2*(i-.5)-0/6*math.mod2Sign(i))+borderAngle)
-                table.insert(poses,{nx,ny})
+                table.insert(borderPoses,{nx,ny})
             end
-            player.border=PolyLine(poses)
+            player.border=PolyLine(borderPoses)
         end
         borderCreate()
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
@@ -89,8 +90,16 @@ return {
                     if i==lastIndex then
                         goto continue
                     end
-                    local x1,y1=border.points[i].x,border.points[i].y
-                    local x2,y2=border.points[i%#border.points+1].x,border.points[i%#border.points+1].y
+                    local pi=border.points[i]
+                    local pi2=border.points[i%#border.points+1]
+                    local x1,y1,x2,y2
+                    if pi.testRotateRef and extraNote=='bullet' and G.UseHypRotShader then
+                        x1,y1=pi.testRotateRef[1],pi.testRotateRef[2]
+                        x2,y2=pi2.testRotateRef[1],pi2.testRotateRef[2]
+                    else
+                        x1,y1=pi.x,pi.y
+                        x2,y2=pi2.x,pi2.y
+                    end
                     local reflectedSelf=objReflection(self,x1,y1,x2,y2)
                     if modificationToReflectionFunc then
                         modificationToReflectionFunc(reflectedSelf,self,x1,y1,x2,y2)
@@ -152,9 +161,20 @@ return {
             end,'bullet')
             local ref=cir.drawSprite
             cir.drawSprite=function(self,...)
-                if player.border:inside(cir.x,cir.y) then
-                    ref(self,...)
+                if G.UseHypRotShader then
+                    for i=1,#borderPoses do -- same as border:inside, but use borderPoses to bypass testrotate since circle is not rotated
+                        local x1,y1=borderPoses[i][1],borderPoses[i][2]
+                        local x2,y2=borderPoses[i%#borderPoses+1][1],borderPoses[i%#borderPoses+1][2]
+                        if Shape.leftToLine(cir.x,cir.y,x1,y1,x2,y2) then
+                            return -- not inside
+                        end
+                    end
+                else
+                    if not player.border:inside(cir.x,cir.y) then
+                        return -- not inside
+                    end
                 end
+                ref(self,...)
             end
         end
 
