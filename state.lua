@@ -900,6 +900,7 @@ G={
                     end
                 elseif isPressed('e')then
                     G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
+                    SFX:play('select')
                 end
 
                 if not G.UseHypRotShader then
@@ -1185,6 +1186,7 @@ G={
             chosenMax=25,
             pageMax=4,
             enter=function(self)
+                self:removeAll()
                 G.viewMode.mode=G.VIEW_MODES.NORMAL
                 self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 ReplayManager.loadAll()
@@ -1558,7 +1560,10 @@ G.countPassedSceneNum=function(self)
 end
 G.win=function(self)
     self:switchState(self.STATES.GAME_END)
-    self:leaveLevel()
+    local inReplay=self:leaveLevel()
+    if inReplay then
+        return -- don't change savedata and other things
+    end
     self.won_current_scene=true -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     local winLevel=1
     if Player.objects[1].hurt==false then
@@ -1580,7 +1585,10 @@ G.win=function(self)
 end
 G.lose=function(self)
     self:switchState(self.STATES.GAME_END)
-    self:leaveLevel()
+    local inReplay=self:leaveLevel()
+    if inReplay then
+        return -- don't change savedata and other things
+    end
     self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     EventManager.post('loseLevel',self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
     self:saveData()
@@ -1589,7 +1597,7 @@ G.enterLevel=function(self,level,scene)
     self.currentLevel={level,scene}
     self:switchState(self.STATES.IN_LEVEL)
 end
--- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), pressing "R" to restart or exiting from pause menu.
+-- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), pressing "R" to restart or exiting from pause menu. return true if in replay (for G.win or lose to skip changing savedata and other things)
 G.leaveLevel=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
@@ -1601,7 +1609,7 @@ G.leaveLevel=function(self)
         self.replay=nil
         self:switchState(self.STATES.LOAD_REPLAY)
         self.save.upgrades=self.upgradesRef
-        return
+        return true
     end
     self:_incrementTryCount()
 end
@@ -1644,7 +1652,7 @@ G.hyperbolicRotateShader=love.graphics.newShader("shaders/hyperbolicRotateM.glsl
 local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT)
 G.draw=function(self)
     love.graphics.setCanvas(canvas)
-    love.graphics.clear()
+    love.graphics.clear({0,0,0,1})
 
     self.currentUI=self.UIDEF[self.STATE]
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
@@ -1671,7 +1679,7 @@ G.draw=function(self)
     end
 
     love.graphics.setCanvas()
-    if Player.objects[1] then
+    if Player.objects[1] and not Player.objects[1].removed then
         Player.objects[1]:invertShader()
     end
     love.graphics.draw(canvas, 0, 0)
