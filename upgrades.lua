@@ -231,6 +231,16 @@ local upgradesData = {
             backStraight.readyFrame=30
         end,
         spritePos={x=0,y=2}
+    },
+    counterShot={
+        name='Counter Shot',
+        description='You can shoot during invincible time after being hit',
+        cost=70,
+        executeFunc=function()
+            local player=Player.objects[1]
+            player.canShootDuringInvincible=true
+        end,
+        spritePos={x=1,y=2}
     }
 }
 upgrades.upgradesData=upgradesData
@@ -263,6 +273,7 @@ local upgradesTree={
             connect={left=true},
             need={{4,1}}
         },
+        {},
         {}
     },
     {
@@ -275,6 +286,7 @@ local upgradesTree={
             connect={up=true,},
             need={{2,1}}
         },
+        {},
         {},
         {},
         {},
@@ -306,8 +318,13 @@ local upgradesTree={
         },
         {
             upgrade='homingShotII',
-            connect={left=true},
+            connect={left=true,right=true},
             need={{4,3}}
+        },
+        {
+            upgrade='counterShot',
+            connect={left=true,down=true},
+            need={{6,3},{6,4},{6,5}}
         }
     },
     {
@@ -334,8 +351,12 @@ local upgradesTree={
         },
         {
             upgrade='sideShotII',
-            connect={left=true},
+            connect={left=true,right=true},
             need={{4,3}}
+        },
+        {
+            connect={left=true,up=true,down=true},
+            need={{6,3},{6,4},{6,5}}
         }
     },
     {
@@ -361,8 +382,12 @@ local upgradesTree={
         },
         {
             upgrade='backShotII',
-            connect={left=true},
+            connect={left=true,right=true},
             need={{4,3}}
+        },
+        {
+            connect={left=true,up=true},
+            need={{6,3},{6,4},{6,5}}
         }
     },
     {
@@ -372,6 +397,7 @@ local upgradesTree={
             connect={up=true},
             need={{2,5}}
         },
+        {},
         {},
         {},
         {},

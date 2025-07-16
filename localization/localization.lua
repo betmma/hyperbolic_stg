@@ -1286,6 +1286,16 @@ return {
                 zh_cn = '后方子弹伤害增加50%，但离敌人较近时伤害降低',
             },
         },
+        counterShot = {
+            name = {
+                en_us = 'Counter Shot',
+                zh_cn = '反击',
+            },
+            description = {
+                en_us = 'You can shoot during invincible time after being hit',
+                zh_cn = '被弹后的无敌时间可以射击',
+            },
+        }
     },
     nickname = {
         PassAllScenes = {

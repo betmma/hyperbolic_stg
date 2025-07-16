@@ -175,6 +175,9 @@ replayManager.replayTweak=function(replay)
     end
     local version=replay.version or '0.0.0'
     player.version=version -- version<0.2.0.1 old graze effect is in player.lua
+    if isVersionSmaller(version,'0.5.10.1') then
+        player.canShootDuringInvincible=true
+    end
     if isVersionSmaller(version,'0.3.2') then
         player.diagonalSpeedAddition=true
     end

@@ -106,6 +106,7 @@ function Player:new(args)
     self.shootRadius=0.5
     self.shootTransparency=0.5
     self.shootInterval=3
+    self.canShootDuringInvincible=false
 
     self.moveMode=Player.moveModes.Bipolar
     self.dieShockwaveRadius=2
@@ -455,6 +456,9 @@ local directionMode2ShootFunc={
 function Player:shoot()
     if Shape.timeSpeed==0 then
         return -- dont shoot when time is stopped
+    end
+    if self.invincibleTime>0 and not self.canShootDuringInvincible then
+        return -- don't shoot when invincible
     end
     -- local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local rows={front=0,side=0,back=0}
