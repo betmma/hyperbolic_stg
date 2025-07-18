@@ -145,6 +145,7 @@ Asset.Batches={
     Asset.bulletBatch,
     Asset.effectBatch,
     Asset.playerFocusBatch,
+    -- G.afterExtraDraw here, not an element of batches
     Asset.foregroundBatch,
 }
 local isHighlightBatch={}
@@ -218,6 +219,11 @@ Asset.drawBatches=function(self)
         end
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.pop()
+        end
+        if batch==Asset.playerFocusBatch then
+            if G.extraAfterDraw then
+                G.extraAfterDraw()
+            end
         end
     end
 end

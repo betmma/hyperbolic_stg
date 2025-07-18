@@ -29,7 +29,7 @@ local G={
             Asset.foregroundBatch:setColor(colorRef[1],colorRef[2],colorRef[3],self.foregroundTransparency)
             Asset.foregroundBatch:add(Asset.backgroundLeft,0,0,0,1,1,0,0)
             Asset.foregroundBatch:add(Asset.backgroundRight,650,0,0,1,1,0,0)
-                Asset.setHyperbolicRotateShader()
+            Asset.setHyperbolicRotateShader()
             GameObject:drawAll() -- including directly calling love.graphics functions like .circle and adding sprite into corresponding batch.
             Asset:flushBatches()
             Asset:drawBatches()

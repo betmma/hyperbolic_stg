@@ -3,10 +3,10 @@ return {
     user='mystia',
     spellName='Night-Blindness "Bioluminescent Night"',
     make=function()
-        G.UseHypRotShader=false
+        -- G.UseHypRotShader=false
         G.levelRemainingFrame=7200
         G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.Empty()
+        -- G.backgroundPattern=BackgroundPattern.Empty()
         Shape.removeDistance=1e100
         local a,b,c
         local en
@@ -75,14 +75,9 @@ return {
             end
         }}
 
-        local shader = love.graphics.newShader("shaders/light.glsl")
-        local bg=Shape{x=300,y=0,lifeFrame=99999}
-        table.insert(G.sceneTempObjs,bg)
-        bg.update=function(self)
-        end
-        local image=Asset.backgroundImage
+        local shader = ShaderScan:load_shader("shaders/light.glsl")
         local MAX_LIGHT=16
-        bg.draw=function(self)
+        local afterDraw=function(self)
             local translateX,translateY,scale=G:followModeTransform(true)
             local function translate(x,y)
                 return x*scale+translateX,y*scale+translateY
@@ -128,8 +123,19 @@ return {
             end
             shader:send("backgroundLightIntensity", math.min(1,1.5-en.frame/120))
 
+            shader:send("player_pos", {player.x, player.y})
+            shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y})
+            shader:send("rotation_angle",-player.naturalDirection)
+            shader:send("hyperbolic_model", G.viewMode.hyperbolicModel)
+            shader:send("r_factor", G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
             love.graphics.setShader(shader)
+            local recX,recY=0,0
+            love.graphics.setBlendMode("multiply","premultiplied")
+            love.graphics.rectangle("fill", recX,recY, WINDOW_WIDTH, WINDOW_HEIGHT)
+            love.graphics.setBlendMode("alpha")
+            love.graphics.setShader()
         end
+        G.extraAfterDraw=afterDraw
 
         Event.LoopEvent{
             obj=en,
@@ -141,5 +147,8 @@ return {
                 end
             end
         }
+    end,
+    leave=function()
+        G.extraAfterDraw=nil
     end
 }

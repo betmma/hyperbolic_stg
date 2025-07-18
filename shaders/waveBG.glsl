@@ -31,7 +31,7 @@ uniform vec3 colorMix;
 uniform vec2 player_pos;       // Center of rotation
 uniform vec2 aim_pos;         // Aim position for the player
 uniform float rotation_angle;   // Angle of rotation in radians
-uniform int hyperbolic_model; // 0 for UHP, 1 for DISK
+uniform int hyperbolic_model; // 0 for UHP, 1 for P_DISK, 2 for K_DISK
 uniform float r_factor; // Radius factor for disk models
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
