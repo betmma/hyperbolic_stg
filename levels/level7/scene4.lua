@@ -4,7 +4,7 @@ return {
     user='seija',
     spellName='Turnabout "Change Projection"',
     make=function()
-        G.UseHypRotShader=false
+        G.UseHypRotShader=false -- this spellcard is really incompatible with HypRotShader since disk model doesn't have y=-100 line
         G.levelRemainingFrame=5400
         Shape.removeDistance=2000
         local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}

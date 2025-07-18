@@ -1648,7 +1648,7 @@ G.update=function(self,dt)
     self.save.playTimeTable.playTimeOverall=self.save.playTimeTable.playTimeOverall+dt
 
 end
-G.hyperbolicRotateShader=love.graphics.newShader("shaders/hyperbolicRotateM.glsl")
+G.hyperbolicRotateShader=ShaderScan:load_shader("shaders/hyperbolicRotateM.glsl")
 local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT)
 G.draw=function(self)
     love.graphics.setCanvas(canvas)

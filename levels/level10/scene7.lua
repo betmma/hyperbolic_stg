@@ -4,6 +4,7 @@ return {
     user='renko',
     spellName='Interference "Wavefront Mandala"', 
     make=function()
+        G.UseHypRotShader=true
         G.levelRemainingFrame=5400
         G.levelIsTimeoutSpellcard=true
         Shape.removeDistance=100000
@@ -32,7 +33,7 @@ return {
         local time=0
         local thereshold=1
         local colorMix={0.7,0,0}
-        local shader = love.graphics.newShader("shaders/waveBG.glsl")
+        local shader = ShaderScan:load_shader("shaders/waveBG.glsl")
         local bg=Shape{x=300,y=0,lifeFrame=99999}
         table.insert(G.sceneTempObjs,bg)
         bg.update=function(self)
@@ -60,6 +61,12 @@ return {
 
             shader:send("curvature", Shape.curvature)
             shader:send("axisY", Shape.axisY)
+
+            shader:send("player_pos", {player.x, player.y})
+            shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y})
+            shader:send("rotation_angle",-player.naturalDirection)
+            shader:send("hyperbolic_model", G.viewMode.hyperbolicModel)
+            shader:send("r_factor", G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
             love.graphics.setShader(shader)
             local recX,recY=antiTranslate(150,0)
             love.graphics.rectangle("fill", recX,recY, 500/scale, 600/scale)

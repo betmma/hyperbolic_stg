@@ -1,3 +1,5 @@
+#include "shaders/modelsTrans.glsl"
+
 // Vector version if you prefer working with vec2
 float shapeDistanceVec(vec2 p1, vec2 p2, float curvature, float axisY) {
     // Calculate the two distances needed for the formula
@@ -25,10 +27,20 @@ uniform float amplitude2;
 uniform float frequency2;
 uniform vec3 colorMix;
 
+
+uniform vec2 player_pos;       // Center of rotation
+uniform vec2 aim_pos;         // Aim position for the player
+uniform float rotation_angle;   // Angle of rotation in radians
+uniform int hyperbolic_model; // 0 for UHP, 1 for DISK
+uniform float r_factor; // Radius factor for disk models
+
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+    vec2 pos=ConvertFromOtherModel(screen_coords, axisY, r_factor, hyperbolic_model);
+    pos=Transform2MakePlayerAtAimPos(pos, aim_pos, player_pos, axisY);
+    pos=hyperbolically_rotate_point_mobius(pos, player_pos, -rotation_angle, axisY);
     // Get distance from current pixel to some reference point
-    float dist1 = shapeDistanceVec(screen_coords, source1, curvature, axisY);
-    float dist2 = shapeDistanceVec(screen_coords, source2, curvature, axisY);
+    float dist1 = shapeDistanceVec(pos, source1, curvature, axisY);
+    float dist2 = shapeDistanceVec(pos, source2, curvature, axisY);
     float phase1 = dist1 * frequency1 - time;
     float phase2 = dist2 * frequency2 - time;
     float sum = amplitude1 * sin(phase1) + amplitude2 * sin(phase2);
