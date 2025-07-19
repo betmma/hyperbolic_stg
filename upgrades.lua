@@ -241,6 +241,16 @@ local upgradesData = {
             player.canShootDuringInvincible=true
         end,
         spritePos={x=1,y=2}
+    },
+    diskModels={
+        name='Disk Models',
+        description='Unlock Poincare Disk and Klein Disk models. Press E in level to switch models.',
+        cost=50,
+        executeFunc=function()
+            local player=Player.objects[1]
+            player.unlockDiskModels=true
+        end,
+        spritePos={x=2,y=2}
     }
 }
 upgrades.upgradesData=upgradesData
@@ -372,10 +382,14 @@ local upgradesTree={
         },
         {
             upgrade='clairvoyance',
-            connect={left=true},
+            connect={left=true,right=true},
             need={{2,5}}
         },
-        {},
+        {
+            upgrade='diskModels',
+            connect={left=true},
+            need={{3,5}}
+        },
         {
             connect={up=true,right=true},
             need={{4,3}}

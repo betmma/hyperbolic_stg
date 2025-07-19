@@ -1295,6 +1295,16 @@ return {
                 en_us = 'You can shoot during invincible time after being hit',
                 zh_cn = '被弹后的无敌时间可以射击',
             },
+        },
+        diskModels = {
+            name = {
+                en_us = 'Disk Models',
+                zh_cn = '圆盘模型',
+            },
+            description = {
+                en_us = 'Unlock Poincare Disk and Klein Disk models. Press E in level to switch model.',
+                zh_cn = '解锁庞加莱圆盘和克莱因圆盘模型。在关卡中按E键切换模型。',
+            },
         }
     },
     nickname = {
