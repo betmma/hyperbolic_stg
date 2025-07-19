@@ -431,6 +431,17 @@ G={
                         self.currentUI.chosen=1+(self.currentUI.chosen-1)%10
                     end
                     SFX:play('select')
+                elseif isPressed('[') or isPressed(']') then
+                    SFX:play('select')
+                    local nicknames=Nickname.nicknames
+                    local currentNickname=nicknames[self.currentUI.chosen]
+                    local bool
+                    if isPressed('[') then
+                        bool=false
+                    else
+                        bool=true
+                    end
+                    self.save.nicknameUnlock[currentNickname.name]=bool
                 end
             end,
             draw=function(self)

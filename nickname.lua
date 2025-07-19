@@ -47,6 +47,7 @@ EventManager.listenTo('NicknameGet',nicknameGet)
 
 -- this is to draw notice box when a nickname is unlocked
 function Nickname:drawText()
+    local color={love.graphics.getColor()}
     local count=0
     local x,y=650,0
     local width,height=150,50
@@ -67,6 +68,9 @@ function Nickname:drawText()
         SetFont(18)
         love.graphics.printf(name,x+gap,y+height*count+gap*3,width-gap*2,'center')
         count=count+1
+    end
+    if count>0 then
+        love.graphics.setColor(color)
     end
 end
 
