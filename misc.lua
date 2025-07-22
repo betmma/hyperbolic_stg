@@ -131,6 +131,7 @@ function math._extractABfromstr(str)
 end
 
 -- randomly sample k elements from a table. If k is larger than the table size, k is considered as the table size.
+-- WARNING: this function modifies the table.
 function math.randomSample(table,k)
     local n=#table
     k=math.min(n,k)
@@ -139,6 +140,7 @@ function math.randomSample(table,k)
         local j=math.random(i,n)
         result[i]=table[j]
         table[j]=table[i]
+        table[i]=result[i]
     end
     return result
 end

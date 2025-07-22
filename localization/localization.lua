@@ -172,7 +172,11 @@ return {
             seiran = {
                 en_us = 'Seiran',
                 zh_cn = '清兰',
-            }
+            },
+            benben = {
+                en_us = 'Benben Tsukumo',
+                zh_cn = '九十九弁弁',
+            },
         },
         spellcards = {
             -- level 1
@@ -945,6 +949,17 @@ return {
                 quote = {
                     en_us = 'Stones mysteriously become larger after rotating around.',
                     zh_cn = '石头在旋转后神秘地变大了。',
+                }
+            },
+            -- boss spellcards
+            [101] = {
+                spellName = {
+                    en_us = 'Music Sign "Sly Musical Score"',
+                    zh_cn = '乐符「狡诈的五线谱」',
+                },
+                quote = {
+                    en_us = 'Varied types of scores are flying around. I can\'t read music, but I can dodge.',
+                    zh_cn = '各种类型的乐谱在空中飞舞。我不会读乐谱，但我可以躲避。',
                 }
             }
         },
