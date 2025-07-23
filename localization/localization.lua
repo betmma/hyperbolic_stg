@@ -1,3 +1,7 @@
+---@alias lang string
+
+---@alias localizationItem table<lang,string>
+
 return {
     levelData = {
         defaultQuote = {
@@ -1322,6 +1326,7 @@ return {
             },
         }
     },
+    ---@type table<string, NicknameLocalization>
     nickname = {
         PassAllScenes = {
             name = {
@@ -1364,6 +1369,42 @@ return {
                 en_us = '100 times is just beginning. Come on and try again!',
                 zh_cn = '100次只是开始。再来一次吧！',
             },
+        },
+        Take10DamageIn1Scene = {
+            name = {
+                en_us = 'Stoneskin',
+                zh_cn = '石肤',
+            },
+            condition = {
+                en_us = 'Take 10 damage in 1 scene',
+                zh_cn = '在1个场景中受到10点伤害',
+            },
+            description = {
+                en_us = 'Actually it\'s you regenerated much HP (^^;',
+                zh_cn = '实际上是回复了很多生命值（^^;',
+            },
+            detail = {
+                en_us = 'Most damage: {level}-{scene}, {amount} damage',
+                zh_cn = '最高伤害: {level}-{scene}，{amount} 伤害',
+            }
+        },
+        PerfectWinIn15Seconds = {
+            name = {
+                en_us = 'Speedrunner',
+                zh_cn = '速通',
+            },
+            condition = {
+                en_us = 'Clear a scene without taking damage in 15 seconds',
+                zh_cn = '在15秒内无伤通过一个场景',
+            },
+            description = {
+                en_us = 'Early spellcard is too easy when you have all the upgrades.',
+                zh_cn = '当你拥有所有升级时，早期的符卡实在是太简单了。',
+            },
+            detail = {
+                en_us = 'Fastest perfect win: {level}-{scene}, {time} seconds',
+                zh_cn = '最快无伤通过: {level}-{scene}，{time} 秒',
+            }
         },
         PerfectAllScenes = {
             name = {

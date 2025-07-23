@@ -465,9 +465,9 @@ G={
                     local name=Localize{'nickname',v.name,'name'}
                     local condition=Localize{'nickname',v.name,'condition'}
                     local description=Localize{'nickname',v.name,'description'}
-                    local progress=v.progressFunc()
+                    local unlocked=G.save.nicknameUnlock[v.name]
                     if not v.isSecret then
-                        if progress>=1 then
+                        if unlocked then
                             love.graphics.setColor(1,1,0.5) -- yellow for unlocked nicknames
                         else
                             love.graphics.setColor(1,1,1,1) -- white for normal nicknames
@@ -485,15 +485,26 @@ G={
                         love.graphics.print(name,boxX,boxY-30)
                         SetFont(18)
                         local text=condition
-                        if progress>=1 then
+                        if v:is(Nickname.DetailedNickname) then
+                            ---@cast v DetailedNickname
+                            local detail=v:detailFunc()
+                            if detail and detail~='' then
+                                text=text..'\n'..detail
+                            end
+                        end
+                        if unlocked then
                             text=text..'\n'..description
                         else
-                            local x0,y0,width=boxX+gap,boxY+50,600-gap*2
-                            love.graphics.setColor(1,1,1)
-                            love.graphics.rectangle("line",x0,y0,width,10)
-                            love.graphics.setColor(1,1,0.5)
-                            love.graphics.rectangle("fill",x0,y0,width*progress,10)
-                            love.graphics.setColor(1,1,1,1)
+                            if v:is(Nickname.ProgressedNickname) then
+                                ---@cast v ProgressedNickname
+                                local progress=math.clamp(v.progressFunc(),0,1)
+                                local x0,y0,width=boxX+gap,boxY+50,600-gap*2
+                                love.graphics.setColor(1,1,1)
+                                love.graphics.rectangle("line",x0,y0,width,10)
+                                love.graphics.setColor(1,1,0.5)
+                                love.graphics.rectangle("fill",x0,y0,width*progress,10)
+                                love.graphics.setColor(1,1,1,1)
+                            end
                         end
                         love.graphics.printf(text,boxX+gap,boxY+gap,600-gap*2,'left')
                         love.graphics.rectangle("line",boxX,boxY,600,85)
@@ -1591,7 +1602,7 @@ G.win=function(self)
     if saveData.firstPerfect==0 and winLevel==2 then
         saveData.firstPerfect=saveData.tryCount
     end
-    EventManager.post('winLevel',levelID,scene)
+    EventManager.post('winLevel',{id=levelID,level=level,scene=scene},Player.objects[1],winLevel==2)
     self:saveData()
 end
 G.lose=function(self)

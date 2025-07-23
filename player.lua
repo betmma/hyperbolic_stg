@@ -99,6 +99,7 @@ function Player:new(args)
     self.grazeHpRegen=0
     self.grazeCount=0
     self.hurt=false --to check perfect completion
+    self.damageTaken=0
     self.invincibleTime=0
     self.grazeRadiusFactor=15
 
@@ -585,6 +586,7 @@ function Player:hitEffect(damage)
         return
     end
     damage=damage or 1
+    self.damageTaken=self.damageTaken+damage
     self.hp=self.hp-damage
     self.hurt=true
     self.dieFrame=self.frame
