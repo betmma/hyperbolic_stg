@@ -199,6 +199,8 @@ end
 function Enemy:drawHexagram()
     local color={love.graphics.getColor()}
     love.graphics.setColor(0.5,0.1,0.1)
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(2)
     local points={}
     local theta=self.time*3/5
     local rIN=40
@@ -227,7 +229,7 @@ function Enemy:drawHexagram()
         Shape.drawSegment(x1,y1,x2,y2)
         Shape.drawSegment(x3,y3,x2,y2)
     end
-
+    love.graphics.setLineWidth(width)
     love.graphics.setColor(color[1],color[2],color[3])
 end
 

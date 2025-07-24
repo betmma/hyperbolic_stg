@@ -225,11 +225,12 @@ function Player:moveUpdate(dt)
     -- limit player in border
     self:limitInBorder()
 
+    local moveDistance=math.distance(self.x,self.y,xref,yref)
+    self.moveSum=(self.moveSum or 0)+moveDistance
     if self.moveMode==Player.moveModes.Natural then
         -- problems & thoughts: 1. when player is blocked by border, the moveDistance is still the assumed distance before calculating border. (solved by calculating math.distance of current pos and ref pos)
         -- 2. while not calling self:testRotate, the rightward direction is changing correctly. So, the ideal operation is posing a hyperbolic rotate transform before drawing all things (and restore after it), but obviously love2d doesn't support that. Hyperbolic rotate transform is simple as the testRotate, and the difference between normal rotate is that, the y=-100 line doesn't change (rotating player's view shouldn't change the line). Applying testRotate to all objects, changing their real position and cancelling out naturalDirection's update is not ideal and actually wrong.
         -- 3. A paradox? We know that this hyperbolic space H² is isotropic, but in this implementation the naturalDirection only changes when player's x coordinate changes, so that x and y aren't equal. The reason is probably that the projection used to map H² to E² (half-plane model) is not isotropic, and the coordinates to store objects are actually in E², not H².
-        local moveDistance=math.distance(self.x,self.y,xref,yref)
         self.direction=Shape.to(xref,yref,self.x,self.y)
         local dtheta=-moveDistance/self:getMoveRadius()
         -- rightDir=rightDir-moveDistance/self.moveRadius

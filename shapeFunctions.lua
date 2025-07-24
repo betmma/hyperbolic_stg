@@ -251,7 +251,10 @@ end
 -- draw hyperbolic circle with center (x,y) and radius r. using Shape.getCircle
 function Shape.drawCircle(x,y,r,mode)
     x,y,r=Shape.getCircle(x,y,r)
+    local width=love.graphics.getLineWidth()
+    love.graphics.setLineWidth(y/300*width)
     love.graphics.circle(mode or "line", x,y,r)
+    love.graphics.setLineWidth(width)
     return x,y,r
 end
 
