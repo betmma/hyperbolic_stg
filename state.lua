@@ -1671,7 +1671,7 @@ G.update=function(self,dt)
 
 end
 G.hyperbolicRotateShader=ShaderScan:load_shader("shaders/hyperbolicRotateM.glsl")
-local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT)
+local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT,{msaa=8})
 G.draw=function(self)
     love.graphics.setCanvas(canvas)
     love.graphics.clear({0,0,0,1})
