@@ -181,6 +181,10 @@ return {
                 en_us = 'Benben Tsukumo',
                 zh_cn = '九十九弁弁',
             },
+            yatsuhashi = {
+                en_us = 'Yatsuhashi Tsukumo',
+                zh_cn = '九十九八桥',
+            },
         },
         spellcards = {
             -- level 1
@@ -964,6 +968,16 @@ return {
                 quote = {
                     en_us = 'Varied types of scores are flying around. I can\'t read music, but I can dodge.',
                     zh_cn = '各种类型的乐谱在空中飞舞。我不会读乐谱，但我可以躲避。',
+                }
+            },
+            [102] = {
+                spellName = {
+                    en_us = 'Koto Sign "Cage of the Thirteen Strings"',
+                    zh_cn = '琴符「十三弦之囚笼」',
+                },
+                quote = {
+                    en_us = 'Is this the feeling of being trapped in koto as a tsukumogami?',
+                    zh_cn = '作为付丧神被困在筝里的感觉……？',
                 }
             }
         },

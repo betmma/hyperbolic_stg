@@ -16,7 +16,7 @@ end
 
 function LaserUnit:update(dt)
     LaserUnit.super.update(self,dt)
-    self:updateWarningAndFading(self.parent)
+    self:updateWarningAndFading(self.parent or {})
 end
 
 function LaserUnit:updateWarningAndFading(parent)
@@ -90,15 +90,15 @@ function LaserUnit:extractCoordinates()
             local dis=Shape.distance(xc1,yc1,xc2,yc2)
             local splitLength=10
             local segMax=self.meshLimit or 10 -- at most self.meshLimit or 10 points
-            if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
-                local viewer=G.viewMode.object
-                local toViewerDistance=Shape.distance(xc1,yc1,viewer.x,viewer.y)
-                local toViewerDistance2=Shape.distance(xc2,yc2,viewer.x,viewer.y)
-                local minDistance=math.min(toViewerDistance,toViewerDistance2)
-                if minDistance>splitLength*segMax then
-                    splitLength=splitLength*segMax -- reduce not important points cuz it's away from player
-                end
-            end
+            -- if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
+            --     local viewer=G.viewMode.object
+            --     local toViewerDistance=Shape.distance(xc1,yc1,viewer.x,viewer.y)
+            --     local toViewerDistance2=Shape.distance(xc2,yc2,viewer.x,viewer.y)
+            --     local minDistance=math.min(toViewerDistance,toViewerDistance2)
+            --     if minDistance>splitLength*segMax then
+            --         splitLength=splitLength*segMax -- reduce not important points cuz it's away from player
+            --     end
+            -- end
             if dis>splitLength then
                 local the=Shape.to(xc1,yc1,xc2,yc2)
                 local r1=Shape.distance(x1,y1,xc1,yc1)
@@ -130,8 +130,8 @@ function LaserUnit:drawMesh(poses)
     local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
     x,y,w,h=x/W,y/H,w/W,h/H
     for i=1,#poses,2 do
-        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, 1})
-        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, 1})
+        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, self.spriteTransparency or 1})
+        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})
     end
     if #vertices<4 then return end
     local mesh=love.graphics.newMesh(vertices,'strip')

@@ -176,7 +176,7 @@ local levelData={
     loadLevels(8,{'1','2','3','4','5','6','7','8'}),
     loadLevels(9,{'1','2','3','4','5','6','7'}),
     loadLevels(10,{'1','2','3','4','5','6','7'}),
-    loadLevels('EX',{'1','2','5','6','7'}),
+    loadLevels('EX',{'1','2','5','6','7','8'}),
 }
 
 ---@type {id:{level:number,scene:number}}

@@ -24,6 +24,7 @@ function PolyLine:new(points,draw)
         self.points[#self.points+1] = Point(value[1],value[2],self.doDraw)
     end
     self.sprite=BulletSprites.laser.white
+    self.spriteTransparency=1
 end
 
 -- assume that points are given by increasing polar angle (so each point should be right to previous line)
@@ -128,8 +129,8 @@ function PolyLine:drawMesh(poses)
     local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
     x,y,w,h=x/W,y/H,w/W,h/H
     for i=1,#poses,2 do
-        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, 1})
-        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, 1})
+        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, self.spriteTransparency or 1})
+        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})
     end
     if #vertices<4 then return end
     local mesh=love.graphics.newMesh(vertices,'strip')
