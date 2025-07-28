@@ -39,6 +39,9 @@ function Circle:new(args)
     self.spriteExtraDirection=0
     self.spriteRotationSpeed=0 -- used for nuke bullet
 
+    if self.sprite.data.key=='note' then
+        self.spriteExtraDirection=math.pi -- note sprites are rotated 180 degrees
+    end
     if self.sprite==BulletSprites.nuke then
         self.invincible=true
         self.batch=Asset.bulletHighlightBatch

@@ -199,7 +199,8 @@ end
 --- @param aimObj {x: number, y:number}|angle "object to be aimed at, or direction (under this case, [stopAtReach] is ignored)"
 --- @param step number "step distance"
 --- @param stopAtReach? boolean "if true, won't go past [aimObj] if [step] is larger than distance between them"
-function Shape.moveTowards(movingObj,aimObj,step,stopAtReach)
+--- @param ratioStep? boolean "if true, [step] is a ratio of distance to [aimObj], otherwise it's a fixed distance"
+function Shape.moveTowards(movingObj,aimObj,step,stopAtReach,ratioStep)
     local angle,aimX,aimY
     if type(aimObj)=='number' then
         angle=aimObj
@@ -214,8 +215,14 @@ function Shape.moveTowards(movingObj,aimObj,step,stopAtReach)
     else
         error('aimObj must be a number or a table with x and y attributes. Got: '..type(aimObj))
     end
+    local distance
+    if ratioStep or stopAtReach then
+        distance=Shape.distance(movingObj.x,movingObj.y,aimX,aimY)
+    end
+    if ratioStep then
+        step=step*distance
+    end
     if stopAtReach then
-        local distance=Shape.distance(movingObj.x,movingObj.y,aimX,aimY)
         step=math.min(step,distance)
     end
     local x,y=Shape.rThetaPos(movingObj.x,movingObj.y,step,angle)

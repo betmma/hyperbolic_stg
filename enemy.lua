@@ -104,7 +104,7 @@ function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
 end
 
 function Enemy:dieEffect()
-    SFX:play('kill')
+    SFX:play('kill',true)
     self:remove()
     if self.mainEnemy then
         local levelID=G.UIDEF.CHOOSE_LEVELS.levelID
@@ -135,7 +135,7 @@ function Enemy:draw()
     end
     love.graphics.setColor(0,1,1)
     Shape.drawCircle(self.x,self.y,self.radius)
-    if not G.levelIsTimeoutSpellcard then 
+    if not G.levelIsTimeoutSpellcard and self.mainEnemy then 
         self:drawCircleHPBar()
     end
     love.graphics.setColor(color[1],color[2],color[3])

@@ -979,6 +979,16 @@ return {
                     en_us = 'Is this the feeling of being trapped in koto as a tsukumogami?',
                     zh_cn = '作为付丧神被困在筝里的感觉……？',
                 }
+            },
+            [104] = {
+                spellName = {
+                    en_us = 'Dirge "Lost Path of Return"',
+                    zh_cn = '葬曲「不知归路」',
+                },
+                quote = {
+                    en_us = 'After funeral procession leaves, the soul wanders around, trying to find the way home.',
+                    zh_cn = '送葬队伍离开后，灵魂徘徊在四周，试图找到回家的路。',
+                }
             }
         },
     },

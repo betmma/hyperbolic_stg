@@ -406,7 +406,7 @@ end
 -- 'abrupt': directly set to the aim direction.
 -- 'portion': (1-arg)*cir.direction+arg*aimDirection. arg defaults to 0.1.
 -- 'clamp': math.clamp(aimDirection,cir.direction-arg,cir.direction+arg). defaults to 0.1.
-local function addHoming(cir,mode,arg)
+function Player:addHoming(cir,mode,arg)
     mode=mode or 'abrupt'
     if mode=='portion' then
         arg=arg or 0.1
@@ -422,7 +422,7 @@ local function addHoming(cir,mode,arg)
                 return
             end
             local closestEnemy
-            local closestDistance=9e9
+            local closestDistance=self.homingDistance or 9e9
             for key, value in pairs(Enemy.objects) do
                 local dis=Shape.distance(cir.x,cir.y,value.x,value.y)
                 if dis<closestDistance then
@@ -447,7 +447,7 @@ end
 
 function Player:shootFrontHoming(pos,shootType)
     local cir=self:shootFrontStraight(pos,shootType)
-    addHoming(cir,self.homingMode,self.homingArg)
+    self:addHoming(cir,self.homingMode,self.homingArg)
 end
 
 local directionMode2ShootFunc={
