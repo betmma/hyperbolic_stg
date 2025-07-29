@@ -28,6 +28,7 @@ function Enemy:new(args)
     self.hpSegmentsFunc=args.hpSegmentsFunc or function(self,hpLevel)end 
     self.damageResistance=1
     self._hpLevel=self:getHPLevel()
+    self.sprite=args.sprite
 end
 
 function Enemy:update(dt)
@@ -44,6 +45,37 @@ function Enemy:update(dt)
     if self._hpLevel~=hpLevel then
         self.hpSegmentsFunc(self,self._hpLevel)
         self._hpLevel=hpLevel
+    end
+    self:calculateMovingTransitionSprite()
+end
+
+function Enemy:calculateMovingTransitionSprite()
+    if not self.sprite then
+        return
+    end
+    if self.sprite.key=='fairy' then -- calculate whether enemy is moving left or right relative to player is kinda complex, so just use normal sprites
+        local sprites=self.sprite.normal
+        local t=self.time
+        local index=math.floor(t/0.2)%#sprites+1
+        self.currentSprite=sprites[index]
+    end
+end
+
+function Enemy:drawSprite()
+    local sprite=self.sprite
+    if not sprite then
+        return
+    end
+    if sprite.key=='fairy' then
+        local x0,y0=self.x,self.y
+        local orientation=0
+        if G.UseHypRotShader and self.testRotateRef then -- due to enemy used to only be boss and always contains hpbar and hexagram which needs testRotate, now i keep testRotate on enemy, but for fairy sprite original pos is needed
+            x0,y0=self.testRotateRef[1],self.testRotateRef[2]
+            orientation=self.testRotateRef[3]-self.direction -- for circles, since orientation is based on direction, the angle difference from distance to player it's automatically set. but for fairies orientation should always be upwards, not related to speed direction. so angle difference is manually set 
+        end
+        local player=Player.objects[1]
+        local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.3)
+        Asset.fairyBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.fairy.width/2,Asset.fairy.height/2)
     end
 end
 
@@ -134,7 +166,10 @@ function Enemy:draw()
         self:drawHexagram()
     end
     love.graphics.setColor(0,1,1)
-    Shape.drawCircle(self.x,self.y,self.radius)
+    if not self.sprite then
+        Shape.drawCircle(self.x,self.y,self.radius)
+    end
+    self:drawSprite()
     if not G.levelIsTimeoutSpellcard and self.mainEnemy then 
         self:drawCircleHPBar()
     end

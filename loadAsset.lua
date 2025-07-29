@@ -107,6 +107,25 @@ for i=1,4 do
     Asset.player.moving.right[i]=love.graphics.newQuad((i-1+4)*playerWidth,playerHeight*2,playerWidth,playerHeight,playerImage:getWidth(),playerImage:getHeight())
 end
 
+local fairyImage = love.graphics.newImage( "assets/fairy.png" )
+Asset.fairyImage=fairyImage
+Asset.fairyColors={'red','blue','green','orange','purple','white','black'}
+Asset.fairy={}
+local fairyWidth,fairyHeight=32,32
+Asset.fairy.width=fairyWidth
+Asset.fairy.height=fairyHeight
+for i,color in pairs(Asset.fairyColors) do
+    Asset.fairy[color]={key='fairy',normal={},moveTransition={},moving={}}
+    for j=1,9 do
+        local type='normal'
+        if j==5 then
+            type='moveTransition'
+        elseif j>5 then
+            type='moving'
+        end
+        Asset.fairy[color][type][#Asset.fairy[color][type]+1]=love.graphics.newQuad((j-1)*fairyWidth,(i-1)*fairyHeight,fairyWidth,fairyHeight,fairyImage:getWidth(),fairyImage:getHeight())
+    end
+end
 --[[
 Batches are used to seperate different draw layers. Generally, order should be:
 
@@ -127,6 +146,7 @@ Dialogue Characters (niy)
 ]]
 Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title screen
 
+Asset.fairyBatch=love.graphics.newSpriteBatch(fairyImage,100,'stream')
 Asset.playerBatch=love.graphics.newSpriteBatch(playerImage, 5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.bigBulletMeshes={}
@@ -137,6 +157,7 @@ Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
 Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.Batches={
+    Asset.fairyBatch,
     Asset.playerBatch,
     Asset.playerBulletBatch,
     Asset.bigBulletMeshes,
@@ -186,11 +207,11 @@ Asset.setHyperbolicRotateShader=function()
 end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        -- use hyperbolicRotateShader from playerBatch to playerFocusBatch. Note that some levels have their own shader, levels need to set G.UseHypRotShader to false to prevent being overridden
+        -- use hyperbolicRotateShader from fairyBatch to playerFocusBatch. Note that some levels have their own shader, levels need to set G.UseHypRotShader to false to prevent being overridden
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader then
             local object=G.viewMode.object
             local shader=G.hyperbolicRotateShader
-            if batch==Asset.playerBatch then 
+            if batch==Asset.fairyBatch then 
                 Asset.setHyperbolicRotateShader()
             end
             if batch==Asset.playerFocusBatch or batch==Asset.playerBatch then -- player and focus are not rotated

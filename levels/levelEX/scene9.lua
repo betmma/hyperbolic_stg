@@ -44,7 +44,7 @@ return {
         end
         local latestFairy,latestKilledSignal
         local function summon(x,y)
-            local fairy=Enemy{x=x,y=y,mainEnemy=false,maxhp=300}
+            local fairy=Enemy{x=x,y=y,mainEnemy=false,maxhp=300,sprite=Asset.fairy.red}
             latestFairy=fairy
             local spawner
             local dangle
