@@ -42,24 +42,89 @@ return {
                 spawnRef(self)
             end
         end
+
+        local getSpawners={
+            function(x,y,color)
+                local spawner
+                local dangle
+                spawner=BulletSpawner{x=x,y=y,period=60,frame=0,lifeFrame=9999,bulletNumber=15,bulletLifeFrame=500,range=0,angle='player',bulletSpeed=60,spawnSFXVolume=0.3,bulletSprite=BulletSprites.note[color],bulletEvents={
+                    function(cir,args)
+                        local index=args.index
+                        if index==1 then
+                            -- local distance=Shape.distanceObj(cir,player)
+                            local angle=Shape.toObj(player,cir)
+                            dangle=-player.speed*math.sin(player.direction-angle)/cir.speed
+                        end
+                        cir.direction=cir.direction+dangle+(index%3-1)*0.1+(index-8)*0.01*math.sign(dangle)
+                        cir.speed=cir.speed-2*index
+                    end
+                },}
+                return spawner
+            end,
+            function(x,y,color)
+                local spawner
+                spawner=BulletSpawner{x=x,y=y,period=60,frame=0,lifeFrame=9999,bulletNumber=15,bulletLifeFrame=500,range=2,angle='player',bulletSpeed=40,spawnSFXVolume=0.3,bulletSprite=BulletSprites.note[color],bulletEvents={
+                    function(cir,args)
+                        cir.speed=math.eval(cir.speed,20)
+                    end
+                },bulletExtraUpdate={
+                    function(cir)
+                        cir.direction=math.eval(cir.direction,math.pi*0.03)
+                    end
+                }}
+                return spawner
+            end,
+            function(x,y,color)
+                local spawner
+                spawner=BulletSpawner{x=x,y=y,period=60,frame=0,lifeFrame=9999,bulletNumber=15,bulletLifeFrame=500,range=math.pi,angle='player',bulletSpeed=60,spawnSFXVolume=0.3,bulletSprite=BulletSprites.note[color],bulletExtraUpdate={
+                    function(cir)
+                        local t=cir.frame
+                        if t%60==30 then
+                            cir.speed=0
+                            cir:changeSprite(BulletSprites.rest[color])
+                        elseif t%60==0 then
+                            cir.speed=60
+                            cir:changeSprite(BulletSprites.note[color])
+                        end
+                    end
+                }}
+                return spawner
+            end,
+            function(x,y,color)
+                local spawner
+                spawner=BulletSpawner{x=x,y=y,period=60,frame=0,lifeFrame=9999,bulletNumber=15,bulletLifeFrame=500,range=math.pi*2,angle='0+999',bulletSpeed=60,spawnSFXVolume=0.3,bulletSprite=BulletSprites.note[color],bulletExtraUpdate={
+                    function(cir)
+                        local t=cir.frame
+                        if t<120 then
+                            cir.direction=cir.direction+math.pi*0.02
+                        end
+                    end
+                }}
+                return spawner
+            end,
+            function(x,y,color)
+                local spawner
+                spawner=BulletSpawner{x=x,y=y,period=5,frame=-20,lifeFrame=9999,bulletNumber=2,bulletLifeFrame=500,range=math.pi*2,angle=math.eval(0,999),bulletSpeed=60,spawnSFXVolume=0.3,bulletSprite=BulletSprites.note[color],bulletExtraUpdate={
+                    function(cir)
+                        cir.direction=cir.direction+math.eval(0.02,0.005)
+                    end
+                }}
+                Event.LoopEvent{
+                    obj=spawner,period=1,executeFunc=function()
+                        spawner.angle=spawner.angle-0.03
+                    end
+                }
+                return spawner
+            end
+        }
+
         local latestFairy,latestKilledSignal
         local function summon(x,y)
-            local fairy=Enemy{x=x,y=y,mainEnemy=false,maxhp=300,sprite=Asset.fairy.red}
+            local colors={'blue','red','green','black','white'}
+            local index=math.random(1,#colors)
+            local fairy=Enemy{x=x,y=y,mainEnemy=false,maxhp=200,sprite=Asset.fairy[colors[index]]}
             latestFairy=fairy
-            local spawner
-            local dangle
-            spawner=BulletSpawner{x=x,y=y,period=60,frame=0,lifeFrame=9999,bulletNumber=15,bulletLifeFrame=500,range=0,angle='player',bulletSpeed=60,spawnSFXVolume=0.3,bulletSprite=BulletSprites.note.blue,bulletEvents={
-                function(cir,args)
-                    local index=args.index
-                    if index==1 then
-                        -- local distance=Shape.distanceObj(cir,player)
-                        local angle=Shape.toObj(player,cir)
-                        dangle=-player.speed*math.sin(player.direction-angle)/cir.speed
-                    end
-                    cir.direction=cir.direction+dangle+(index%3-1)*0.1+(index-8)*0.01*math.sign(dangle)
-                    cir.speed=cir.speed-2*index
-                end
-            },}
+            local spawner=getSpawners[index](x,y,colors[index])
             wrapDistance(spawner)
             Event.LoopEvent{
                 obj=spawner,period=1,executeFunc=function()
