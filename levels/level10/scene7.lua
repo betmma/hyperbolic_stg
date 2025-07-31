@@ -134,7 +134,7 @@ return {
                 local sum=amp1 * math.sin(phase1) + amp2 * math.sin(phase2)
                 sum = sum / (amp1 + amp2) * 0.5 + 0.5
                 if sum>thereshold+0.01 then
-                    EventManager.post('playerHit', player, 1)
+                    EventManager.post(EventManager.EVENTS.PLAYER_HIT, player, 1)
                 end
             end
         }

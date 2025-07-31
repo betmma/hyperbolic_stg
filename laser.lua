@@ -166,11 +166,11 @@ function LaserUnit:checkHitPlayer()
         end
         for key, player in pairs(Player.objects) do
             if grazeFunction(player) and not self.grazed then
-                EventManager.post('playerGraze',player)
+                EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player)
                 self.grazed=true
             end
             if player.invincibleTime<=0 and hitFunction(player) then
-                EventManager.post('playerHit',player,self.damage or 1)
+                EventManager.post(EventManager.EVENTS.PLAYER_HIT,player,self.damage or 1)
             end
         end
     end

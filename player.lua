@@ -579,7 +579,7 @@ function Player:grazeEffect(amount)
     self.hp=math.clamp(self.hp+self.grazeHpRegen*amount,0,self.maxhp)
     self.grazeCount=self.grazeCount+amount
 end
-EventManager.listenTo('playerGraze',Player.grazeEffect)
+EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 
 -- it's hit effect, not hp = 0 effect
 function Player:hitEffect(damage)
@@ -598,7 +598,7 @@ function Player:hitEffect(damage)
     Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
     SFX:play('dead',true)
 end
-EventManager.listenTo('playerHit',Player.hitEffect)
+EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,Player.hitEffect)
 
 function Player:useInvertShader()
     return self.dieFrame and self.frame-self.dieFrame<60

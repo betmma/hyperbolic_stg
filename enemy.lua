@@ -144,6 +144,7 @@ function Enemy:dieEffect()
             ScreenshotManager.preSave(levelID)
         end
         Effect.Shockwave{x=self.x,y=self.y,canRemove={bullet=true,bulletSpawner=true,invincible=true}}
+        G.preWin=true
         Event.LoopEvent{
             times=1,
             period=60,

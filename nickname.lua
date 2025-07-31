@@ -30,7 +30,7 @@ function Nickname:new(args)
         local ret=self:eventFunc(...)
         if ret and G.save.nicknameUnlock[self.name]~=true then
             G.save.nicknameUnlock[self.name]=true
-            EventManager.post('NicknameGet',self.ID)
+            EventManager.post(EventManager.EVENTS.NICKNAME_GET,self.ID)
         end
     end)
 end
@@ -62,7 +62,7 @@ local function nicknameGet(id)
     --     end
     -- }
 end
-EventManager.listenTo('NicknameGet',nicknameGet)
+EventManager.listenTo(EventManager.EVENTS.NICKNAME_GET,nicknameGet)
 
 -- this is to draw notice box when a nickname is unlocked
 function Nickname:drawText()
@@ -103,14 +103,14 @@ ProgressedNickname{
         local passed,all=G:countPassedSceneNum()
         return passed/all
     end,
-    eventName='winLevel'
+    eventName=EventManager.EVENTS.WIN_LEVEL,
 }
 ProgressedNickname{
     name='Pass1Scene',
     progressFunc=function()
         return G:countPassedSceneNum()
     end,
-    eventName='winLevel'
+    eventName=EventManager.EVENTS.WIN_LEVEL,
 }
 ProgressedNickname{
     name='Lose100Times',
@@ -118,7 +118,7 @@ ProgressedNickname{
         G.save.statistics.loseCount=G.save.statistics.loseCount or 0
         return G.save.statistics.loseCount/100
     end,
-    eventName='loseLevel',
+    eventName=EventManager.EVENTS.LOSE_LEVEL,
     eventFunc=function()
         G.save.statistics.loseCount=(G.save.statistics.loseCount or 0)+1
         return G.save.statistics.loseCount/100>=1
@@ -130,7 +130,7 @@ DetailedNickname{
         local maxDamageTaken=G.save.statistics.maxDamageTaken or {levelData={level=0,scene=0},amount=0}
         return Localize{'nickname',self.name,'detail',level=maxDamageTaken.levelData.level,scene=maxDamageTaken.levelData.scene,amount=maxDamageTaken.amount}
     end,
-    eventName='playerHit',
+    eventName=EventManager.EVENTS.PLAYER_HIT,
     eventFunc=function(self,player)
         local maxDamageTaken=G.save.statistics.maxDamageTaken or {levelData={level=0,scene=0},amount=0}
         local damage=player.damageTaken
@@ -150,7 +150,7 @@ DetailedNickname{
         local fastestWin=G.save.statistics.fastestWin or {levelData={level=0,scene=0},time=999}
         return Localize{'nickname',self.name,'detail',level=fastestWin.levelData.level,scene=fastestWin.levelData.scene,time=string.format("%.2f",fastestWin.time)}
     end,
-    eventName='winLevel',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
         local usedTime=(G.levelRemainingFrameMax-G.levelRemainingFrame)/60
         local fastestWin=G.save.statistics.fastestWin or {levelData={level=0,scene=0},time=math.huge}
@@ -162,13 +162,24 @@ DetailedNickname{
         return fastestWin.time<15
     end,
 }
+Nickname{
+    name='ThisIsTouhou',
+    eventName=EventManager.EVENTS.LOSE_LEVEL,
+    eventFunc=function(self)
+        if G.preWin then
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
 ProgressedNickname{
     name='PerfectAllScenes',
     progressFunc=function()
         local passed,all,perfect=G:countPassedSceneNum()
         return perfect/all
     end,
-    eventName='winLevel',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
     isSecret=true,
 }
 

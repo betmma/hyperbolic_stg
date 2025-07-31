@@ -32,7 +32,7 @@ return {
                 easeFrame=10
             }
         end
-        EventManager.listenTo('playerHit',move,'leaveLevel')
+        EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,move,'leaveLevel')
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         local poses={}

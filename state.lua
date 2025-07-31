@@ -466,7 +466,7 @@ G={
                     local condition=Localize{'nickname',v.name,'condition'}
                     local description=Localize{'nickname',v.name,'description'}
                     local unlocked=G.save.nicknameUnlock[v.name]
-                    if not v.isSecret then
+                    if not v.isSecret or unlocked then
                         if unlocked then
                             love.graphics.setColor(1,1,0.5) -- yellow for unlocked nicknames
                         else
@@ -478,7 +478,7 @@ G={
                     love.graphics.setColor(1,1,1,1)
                     if index==self.currentUI.chosen then
                         love.graphics.rectangle("line",x,y,gridSize,gridSize)
-                        if v.isSecret then
+                        if v.isSecret and not unlocked then
                             goto continue
                         end
                         SetFont(24)
@@ -886,6 +886,7 @@ G={
                 self.levelRemainingFrame=nil
                 self.levelRemainingFrameMax=nil
                 self.levelIsTimeoutSpellcard=false
+                self.preWin=false -- when main enemy dies, it will be set to true. to track if player loses before the win animation ends
                 self.UseHypRotShader=true
                 self.foregroundTransparency=1
                 LevelData[level][scene].make()
@@ -1602,7 +1603,7 @@ G.win=function(self)
     if saveData.firstPerfect==0 and winLevel==2 then
         saveData.firstPerfect=saveData.tryCount
     end
-    EventManager.post('winLevel',{id=levelID,level=level,scene=scene},Player.objects[1],winLevel==2)
+    EventManager.post(EventManager.EVENTS.WIN_LEVEL,{id=levelID,level=level,scene=scene},Player.objects[1],winLevel==2)
     self:saveData()
 end
 G.lose=function(self)
@@ -1612,7 +1613,7 @@ G.lose=function(self)
         return -- don't change savedata and other things
     end
     self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
-    EventManager.post('loseLevel',self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+    EventManager.post(EventManager.EVENTS.LOSE_LEVEL,self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)

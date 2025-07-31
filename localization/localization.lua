@@ -1430,6 +1430,20 @@ return {
                 zh_cn = '最快无伤通过: {level}-{scene}，{time} 秒',
             }
         },
+        ThisIsTouhou = {
+            name = {
+                en_us = 'This is Touhou',
+                zh_cn = '这就是东方',
+            },
+            condition = {
+                en_us = 'Lose after main enemy has been defeated',
+                zh_cn = '击破撞',
+            },
+            description = {
+                en_us = 'The HP design is to reduce such situation...! So unlucky of you.',
+                zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
+            },
+        },
         PerfectAllScenes = {
             name = {
                 en_us = 'Hyperbolic Indigenous',

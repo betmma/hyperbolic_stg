@@ -151,11 +151,11 @@ function Circle:checkHitPlayer()
             local dis=Shape.distance(player.x,player.y,self.x,self.y)
             local radi=player.radius+self.radius
             if dis<radi+player.radius*player.grazeRadiusFactor and not self.grazed then
-                EventManager.post('playerGraze',player,(self.lifeFrame<3 or self.frame<3) and 0.05 or 1)
+                EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player,(self.lifeFrame<3 or self.frame<3) and 0.05 or 1)
                 self.grazed=true
             end
             if player.invincibleTime<=0 and dis<radi then
-                EventManager.post('playerHit',player,self.damage or 1)
+                EventManager.post(EventManager.EVENTS.PLAYER_HIT,player,self.damage or 1)
             end
         end
     end
