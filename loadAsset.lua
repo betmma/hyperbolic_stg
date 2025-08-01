@@ -130,10 +130,10 @@ end
 Batches are used to seperate different draw layers. Generally, order should be:
 
 Background (backgroundPattern class)
-Enemy with HP bar (boss, currently it's drawn as a circle so actually niy)
+Enemy with HP bar (boss)
 Player bullets
-Player (niy)
-Enemy without HP bar (probably won't appear)
+Player
+Enemy without HP bar
 Items (niy)
 Enemy bullets highlighted (add blend mode)
 Enemy bullets

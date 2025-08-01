@@ -215,8 +215,8 @@ function MainMenuTesselation:randomize()
     end
 end
 
-local testImage = love.graphics.newImage( "assets/test.png" )
-testImage:setWrap("repeat", "repeat") -- set texture to repeat so that it can be used in shader
+-- local testImage = love.graphics.newImage( "assets/test.png" )
+-- testImage:setWrap("repeat", "repeat") -- set texture to repeat so that it can be used in shader
 function MainMenuTesselation:draw()
     local ay=Shape.axisY
     Shape.axisY=-2
