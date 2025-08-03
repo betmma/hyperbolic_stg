@@ -31,6 +31,7 @@ local Asset=...
 ---giant: spectrum, lightRound: spectrum, largeOrb: spectrum, largeMagatama: spectrum, \
 ---lotus: spectrum2, darkLotus: spectrum2, explosion: spectrum2, shockwave: spectrum2, \
 ---butterfly: spectrum, flame: spectrum, human: spectrum, dog: spectrum, dogMirrored: spectrum, bird: spectrum, frog: spectrum, note: spectrum, \
+---snake: spectrum, \
 ---rest: spectrum, fog: spectrum, \
 ---moon: Sprite, anchor: Sprite, playerFocus: Sprite, \
 ---nuke: Sprite}
@@ -110,6 +111,12 @@ matrix{
 }:addToAsset()
 setCenterPosition('flame',16,12)
 setCenterPosition('note',16,25)
+spectrum{
+    unit=gifSingle{sizeX=16,sizeY=112,frameCount=3,frameTime=10,frameOffsetFunc=simpleOffsetFunc(0,112),name='snake'},
+    colors=colors,
+    offsetFunc=simpleOffsetFunc(16,0),
+    baseX=16*12,baseY=16*19
+}:addToAsset()
 spectrum{
     unit=single{sizeX=32,sizeY=32,name='rest'},
     colors=colors,

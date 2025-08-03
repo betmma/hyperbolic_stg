@@ -31,6 +31,8 @@ Player.moveModes={
 ---@field spread number spread of each bullet (angle between bullets)
 ---@field readyFrame number? if nil, the damage is [damage] from the beginning. if not, damage begins with 0 and increases to [damage] in [readyFrame]. 
 
+local shootSprite='snake'
+
 ---@type ShootType[]
 --- the order does matter, because for each direction, each bullet is arranged from center to edge (front and back) or from up to down (side). so changing order will change the order of bullets, like if 2 front straights before 2 front homings, 4 rows will be H S S H, but if 2 front homings before 2 front straights, they are S H H S.
 Player.shootRows={
@@ -39,7 +41,7 @@ Player.shootRows={
         mode='straight',
         num=4,
         damage=3,
-        sprite=BulletSprites.darkdot.cyan,
+        sprite=BulletSprites[shootSprite].cyan,
         spread=0
     },
     {
@@ -47,7 +49,7 @@ Player.shootRows={
         mode='homing',
         num=0,
         damage=3,
-        sprite=BulletSprites.darkdot.red,
+        sprite=BulletSprites[shootSprite].red,
         spread=0
     },
     {
@@ -55,7 +57,7 @@ Player.shootRows={
         mode='straight',
         num=0,
         damage=3,
-        sprite=BulletSprites.darkdot.blue,
+        sprite=BulletSprites[shootSprite].blue,
         spread=0
     },
     {
@@ -63,7 +65,7 @@ Player.shootRows={
         mode='straight',
         num=0,
         damage=6,
-        sprite=BulletSprites.darkdot.purple,
+        sprite=BulletSprites[shootSprite].purple,
         spread=0
     }
 }
@@ -105,7 +107,7 @@ function Player:new(args)
 
     self.shootRows=copy_table(Player.shootRows)
     self.shootRadius=0.5
-    self.shootTransparency=0.5
+    self.shootTransparency=0.1
     self.shootInterval=3
     self.canShootDuringInvincible=false
 
@@ -368,10 +370,15 @@ function Player:testRotate(angle,restore)
 end
 -- pos is like: -3, -2, -1, 1, 2, 3
 function Player:shootDirStraight(pos,shootType,theta)
-    local damage,sprite=shootType.damage,shootType.sprite or BulletSprites.darkdot.cyan
+    local damage,sprite=shootType.damage,shootType.sprite or BulletSprites[shootSprite].cyan
     local x,y,r=Shape.getCircle(self.x,self.y,self.radius)
     local dx,dy=r*2,r*(math.abs(pos)*2-1)*(pos<0 and -1 or 1)
     local cir=Circle({x=self.x+dx*math.cos(theta)-dy*math.sin(theta), y=self.y+dx*math.sin(theta)+dy*math.cos(theta), radius=self.shootRadius, lifeFrame=shootType.lifeFrame or 60, sprite=sprite, batch=Asset.playerBulletBatch, spriteTransparency=self.shootTransparency})
+    Event.DelayEvent{
+        obj=cir,delayFrame=3,executeFunc=function()
+            cir.spriteTransparency=0.5
+        end
+    }
     cir.fromPlayer=true
     cir.safe=true
     cir.direction=theta+shootType.spread*pos
