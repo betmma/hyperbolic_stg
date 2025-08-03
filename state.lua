@@ -758,16 +758,16 @@ G={
                     SFX:play('select')
                     self.save.levelData[levelID].passed=math.min(self.save.levelData[levelID].passed+1,2)
                 end
-                local digits={'1','2','3','4','5','6','7','8','9'}
-                for i=1,#digits do
-                    if isPressed(digits[i])then
+                local digits={['1']=1,['2']=2,['3']=3,['4']=4,['5']=5,['6']=6,['7']=7,['8']=8,['9']=9,['0']=10,['-']=11,['=']=12}
+                for key,value in pairs(digits) do
+                    if isPressed(key)then
                         SFX:play('select')
-                        self.currentUI.chosenLevel=math.clamp(tonumber(digits[i]),1,levelNum)
+                        self.currentUI.chosenLevel=math.clamp(value,1,levelNum)
                         self.currentUI.chosenScene=1
                     end
-                    if isPressed('kp'..digits[i]) then
+                    if isPressed('kp'..key) then
                         SFX:play('select')
-                        self.currentUI.chosenScene=math.clamp(tonumber(digits[i]),1,sceneNum)
+                        self.currentUI.chosenScene=math.clamp(value,1,sceneNum)
                     end
                 end
                 local transparency=G.UIDEF.CHOOSE_LEVELS.transparency or 1
