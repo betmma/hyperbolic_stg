@@ -16,7 +16,7 @@ local player    = require "player"
 
 local replayManager={}
 replayManager.REPLAY_NUM_PER_PAGE=25
-replayManager.PAGES=4
+replayManager.PAGES=8
 replayManager.MAX_NAME_LENGTH=20
 local dir='replay'
 love.filesystem.createDirectory(dir)

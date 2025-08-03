@@ -24,7 +24,7 @@ Escape/X to go back.
 1-9 (above qwerty) to choose that level. '0' chooses 10, '-' chooses 11 (current EX).
 numpad 1-9 to choose that scene in current level.
 ###### In Load Replay Menu:
-Enter two digits (you can use both set of number keys) to choose that replay number.
+Enter three digits (you can use both set of number keys) to choose that replay number.
 ##### In Replay:
 LShift to slow down by 0.5x.
 LCtrl to speed up by 1x.

@@ -1125,6 +1125,10 @@ return {
             en_us = 'Get nickname:',
             zh_cn = '获得称号:',
         },
+        replayDigitsEntered = {
+            en_us = 'Digits entered: {digits}',
+            zh_cn = '已输入数字: {digits}',
+        }
     },
     musicData = {
         title = {

@@ -1225,11 +1225,16 @@ G={
                         if not self.currentUI.firstDigit then
                             self.currentUI.firstDigit=index
                             slot=index
-                        else
+                        elseif not self.currentUI.secondDigit then
+                            self.currentUI.secondDigit=index
                             slot=self.currentUI.firstDigit*10+index
+                        else
+                            slot=self.currentUI.firstDigit*100+self.currentUI.secondDigit*10+index
+                            slot=math.clamp(slot,1,ReplayManager.REPLAY_NUM_PER_PAGE*ReplayManager.PAGES)
                             self.currentUI.firstDigit=nil
+                            self.currentUI.secondDigit=nil
                         end
-                        if slot==0 then slot=100 end
+                        if slot==0 then slot=1 end
                         self.currentUI.page=math.floor((slot+24)/25)
                         self.currentUI.chosen=(slot-1)%25+1
                     end
@@ -1268,6 +1273,15 @@ G={
                     ReplayManager.monospacePrint(replayDesc,10,145,50+(i-1)%25*20)
                 end
                 love.graphics.rectangle("line",140,30+self.currentUI.chosen*20,520,20)
+
+                -- digits entered
+                local baseX,baseY=650,580
+                local digits=''..(self.currentUI.firstDigit or '')..(self.currentUI.secondDigit or '')
+                if digits~='' then
+                    SetFont(17)
+                    local text=Localize{'ui','replayDigitsEntered',digits=digits}
+                    love.graphics.print(text,baseX,baseY,0,1,1)
+                end
 
                 love.graphics.setColor(color[1],color[2],color[3])
             end
