@@ -959,6 +959,16 @@ return {
                     zh_cn = '石头在旋转后神秘地变大了。',
                 }
             },
+            [110] = {
+                spellName = {
+                    en_us = 'Wave Sign "Eigenstate in the Quantum Well"',
+                    zh_cn = '波符「量子阱的本征态」',
+                },
+                quote = {
+                    en_us = 'Sine waves are oscillating around me! What a messy quantum well.',
+                    zh_cn = '正弦波在我周围振荡！真是混乱的量子阱。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {

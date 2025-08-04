@@ -156,6 +156,16 @@ function Shape.distanceToLine(xc,yc,x1,y1,x2,y2)
     return Shape.distance(xc,yc,nearest[1],nearest[2])
 end
 
+--- calculate the signed distance from point xc,yc to line [x1,y1 to x2,y2]. left to line -> positive. Uses nearestToLine.
+function Shape.distanceToLineSigned(xc,yc,x1,y1,x2,y2)
+    local nearest=Shape.nearestToLine(xc,yc,x1,y1,x2,y2)
+    local d=Shape.distance(xc,yc,nearest[1],nearest[2])
+    if Shape.leftToLine(xc,yc,x1,y1,x2,y2) then
+        return d
+    end
+    return -d
+end
+
 --- reflect a point xc,yc by line [x1,y1 to x2,y2]. when drawing flipped object, besides using this function to calculate the new position, also need to horizontally flip the object.
 ---@param xs coordinate
 ---@param ys coordinate
