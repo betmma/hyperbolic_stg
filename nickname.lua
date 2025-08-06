@@ -173,6 +173,39 @@ Nickname{
     end,
     isSecret=true,
 }
+Nickname{
+    name='HurrySickness',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if not player.keyEverPressed['lshift'] then
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
+Nickname{
+    name='VerticalThinking',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if not player.keyEverPressed['left'] and not player.keyEverPressed['right'] then
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
+Nickname{
+    name='LateralThinking',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if not player.keyEverPressed['up'] and not player.keyEverPressed['down'] then
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
 ProgressedNickname{
     name='PerfectAllScenes',
     progressFunc=function()

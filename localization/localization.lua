@@ -1458,6 +1458,48 @@ return {
                 zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
             },
         },
+        HurrySickness = {
+            name = {
+                en_us = 'Hurry Sickness',
+                zh_cn = '急躁症',
+            },
+            condition = {
+                en_us = 'Clear a scene without focusing (pressing LShift)',
+                zh_cn = '低速封印（不按LShift）通过一个场景',
+            },
+            description = {
+                en_us = 'To show the eccentricity of hyperbolic geometry, macrododging is more preferred in spellcard designs. So I suppose this nickname is not that hard to get.',
+                zh_cn = '为了展示双曲几何的特性，大范围移动在符卡设计中更受欢迎。所以我想这个称号并不难获得。',
+            },
+        },
+        VerticalThinking = {
+            name = {
+                en_us = 'Vertical Thinking',
+                zh_cn = '纵向思维',
+            },
+            condition = {
+                en_us = 'Clear a scene without pressing left or right',
+                zh_cn = '左右封印（不按←/→）通过一个场景',
+            },
+            description = {
+                en_us = 'Did you try to find a scene designed for this nickname...',
+                zh_cn = '你试着找为这个称号设计的场景……',
+            },
+        },
+        LateralThinking = {
+            name = {
+                en_us = 'Lateral Thinking',
+                zh_cn = '横向思维',
+            },
+            condition = {
+                en_us = 'Clear a scene without pressing up or down',
+                zh_cn = '上下封印（不按↑/↓）通过一个场景',
+            },
+            description = {
+                en_us = 'Or just try easiest scene?',
+                zh_cn = '还是试试最简单的场景？',
+            },
+        },
         PerfectAllScenes = {
             name = {
                 en_us = 'Hyperbolic Indigenous',

@@ -921,12 +921,12 @@ G={
                     elseif self.viewMode.mode==self.VIEW_MODES.FOLLOW then
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
-                elseif isPressed('e') and Player.objects[1] and Player.objects[1].unlockDiskModels==true then
+                elseif isPressed('e') and (Player.objects[1] and Player.objects[1].unlockDiskModels==true or G.replay) then
                     G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
                     SFX:play('select')
                 end
 
-                if not G.UseHypRotShader or not (Player.objects[1] and Player.objects[1].unlockDiskModels==true) then
+                if not G.UseHypRotShader or not (Player.objects[1] and Player.objects[1].unlockDiskModels==true or G.replay) then
                     G.viewMode.hyperbolicModel=G.HYPERBOLIC_MODELS.UHP -- without shader only UHP is supported
                 end
                 

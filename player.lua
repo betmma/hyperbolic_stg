@@ -120,6 +120,7 @@ function Player:new(args)
         self:setReplaying()
     end
     self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32,x=64}
+    self.keyEverPressed={} -- to check restriction nicknames like no focus
     self.keyIsDown=love.keyboard.isDown
     self.realCreatedTime=os.date('%Y-%m-%d %H:%M:%S')
 end
@@ -144,6 +145,7 @@ function Player:update(dt)
         local keyVal=0
         for key, value in pairs(self.key2Value) do
             if self.keyIsDown(key)then
+                self.keyEverPressed[key]=true
                 keyVal=keyVal+value
             end
         end
