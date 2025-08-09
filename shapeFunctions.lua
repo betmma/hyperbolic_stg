@@ -421,6 +421,12 @@ function Shape.rThetaPosPolarAngle(x,y,r,theta)
     return finaltheta+div*math.pi*2
 end
 
+function Shape.lerp(x1, y1, x2, y2, t)
+    local distance = Shape.distance(x1, y1, x2, y2)
+    distance = distance * t
+    return Shape.rThetaPos(x1, y1, distance, Shape.to(x1, y1, x2, y2))
+end
+
 
 --- Calculates the coordinates of the vertices of a Schwarz triangle (p,q,r)
 --- in the Upper Half-Plane model. vertices are ordered in counter-clockwise direction.

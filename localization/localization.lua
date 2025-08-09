@@ -969,6 +969,16 @@ return {
                     zh_cn = '正弦波在我周围振荡！真是混乱的量子阱。',
                 }
             },
+            [111] = {
+                spellName = {
+                    en_us = 'Triangular Shape "Triangle Creature"',
+                    zh_cn = '三角形「三角生物」',
+                },
+                quote = {
+                    en_us = 'Triangle creatures walk by flipping their sides. Would they be confused which vertex walks to the front?',
+                    zh_cn = '三角生物通过翻转它们的边走动。它们会搞混哪个顶点走在前面吗？',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {
