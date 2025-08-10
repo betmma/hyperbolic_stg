@@ -69,11 +69,9 @@ function Enemy:drawSprite()
     if sprite.key=='fairy' then
         local x0,y0=self.x,self.y
         local orientation=0
-        if G.UseHypRotShader and self.testRotateRef then -- due to enemy used to only be boss and always contains hpbar and hexagram which needs testRotate, now i keep testRotate on enemy, but for fairy sprite original pos is needed
-            x0,y0=self.testRotateRef[1],self.testRotateRef[2]
-            orientation=self.testRotateRef[3]-self.direction -- for circles, since orientation is based on direction, the angle difference from distance to player it's automatically set. but for fairies orientation should always be upwards, not related to speed direction. so angle difference is manually set 
+        if G.UseHypRotShader then -- ideally fairies should always face upwards (of screen). but inside different hyperbolic models, "upwards" is different. for UHP it can be calculated using difference of direction after "rotate" in player.testRotate (which won't be called when using UseHypRotShader so extra work). omit for now
+        
         end
-        local player=Player.objects[1]
         local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.3)
         Asset.fairyBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.fairy.width/2,Asset.fairy.height/2)
     end
@@ -161,7 +159,6 @@ end
 
 function Enemy:draw()
     local shader=love.graphics.getShader()
-    Asset.setHyperbolicRotateShader() -- contains G.UseHypRotShader check
     local color={love.graphics.getColor()}
     if self.mainEnemy then
         self:drawHexagram()

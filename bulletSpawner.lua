@@ -109,7 +109,7 @@ function BulletSpawner:update(dt)
         end
     end
     local player=Player.objects[1]
-    if player.canHitFamiliar and G.mainEnemy then
+    if player and player.canHitFamiliar and G.mainEnemy then
         Enemy.checkHitByPlayer(self,G.mainEnemy,player.hitFamiliarDamageFactor)
     end
 end

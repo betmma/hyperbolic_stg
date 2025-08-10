@@ -237,9 +237,13 @@ function Player:moveUpdate(dt)
         -- 3. A paradox? We know that this hyperbolic space H² is isotropic, but in this implementation the naturalDirection only changes when player's x coordinate changes, so that x and y aren't equal. The reason is probably that the projection used to map H² to E² (half-plane model) is not isotropic, and the coordinates to store objects are actually in E², not H².
         self.direction=Shape.to(xref,yref,self.x,self.y)
         local dtheta=-moveDistance/self:getMoveRadius()
-        -- rightDir=rightDir-moveDistance/self.moveRadius
+        
+        if love.keyboard.isDown('[') then --debug use
+            self.naturalDirection=self.naturalDirection-0.03
+        elseif love.keyboard.isDown(']') then
+            self.naturalDirection=self.naturalDirection+0.03
+        end
         self.naturalDirection=(self.naturalDirection+dtheta)%(math.pi*2)
-        -- self:testRotate(self.naturalDirection)
     end
 end
 -- calculate which player sprite to use (normal, moveTransition and moving). Specifically, when not moving, loop through 8 normal sprites for each 8 frames. when moving, loop through 4 moveTransition sprites for each 2 frames, and after it loop through 8 moving sprites for each 8 frames. Use [tilt] to record.
@@ -338,7 +342,7 @@ function Player:testRotate(angle,restore)
     end
     local list={BulletSpawner,Enemy,Circle,Laser} -- due to different implementation, PolyLine has to be handled separately. not ideal
     if G.UseHypRotShader then
-        list={Enemy} -- sprites don't need to be rotated
+        list={} -- sprites don't need to be rotated
     end
     for k,cls in pairs(list)do
         for k2,obj in pairs(cls.objects)do
@@ -362,7 +366,7 @@ function Player:testRotate(angle,restore)
             end
         end
     end
-    if G.backgroundPattern:is(BackgroundPattern.FixedTesselation) or G.backgroundPattern:is(BackgroundPattern.FollowingTesselation) then
+    if (G.backgroundPattern:is(BackgroundPattern.FixedTesselation) or G.backgroundPattern:is(BackgroundPattern.FollowingTesselation)) and not G.UseHypRotShader then
         local pattern=G.backgroundPattern
         for i=1,#pattern.sidesTable do
             rotate(pattern.sidesTable[i][1])
