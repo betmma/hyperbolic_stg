@@ -66,6 +66,7 @@ function Circle:draw()
     end
     -- Formula: center (x,y) and radius r should be drawn as center (x,y*cosh(r)) and radius y*sinh(r)
     -- Shape.drawCircle(self.x,self.y,self.radius)
+    -- Shape.drawCircle(self.x,self.y,self.radius/2^0.5)
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
 end
 
@@ -111,18 +112,31 @@ function Circle:drawLargeSprite(num)
     local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
     local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
     x,y,w,h=x/W,y/H,w/W,h/H
-    local meshVertices={{self.x,self.y,x+w/2,y+h/2, 1, 1, 1, 1}} -- center point
-    local r=self.radius*Circle.spriteSizeFactor*1.41
+    local fanMeshVertices={{self.x,self.y,x+w/2,y+h/2, 1, 1, 1, 1}} -- center point
+    local rInner=self.radius -- radius of hitbox
+    local data=self.sprite.data
+    local rOuter=rInner/data.hitRadius*Circle.spriteSizeFactor*data.sizeX/2 -- radius of whole sprite
+    local ratio=rInner/rOuter
     local direction=self.direction+math.pi/2+(self.spriteExtraDirection or 0)
+    local selfx,selfy=self.x,self.y
+    local ringMeshVertices={}
     for i=0,num-1 do
         local angle=i/num*math.pi*2
-        local nx,ny=Shape.rThetaPos(self.x,self.y,r,direction+angle)
-        table.insert(meshVertices,{nx,ny,x+w/2*(1+math.cos(angle)),y+h/2*(1+math.sin(angle)), 1, 1, 1, 1})
+        local nx,ny=Shape.rThetaPos(selfx,selfy,rInner,direction+angle)
+        table.insert(fanMeshVertices,{nx,ny,x+w/2*(1+math.cos(angle)*ratio),y+h/2*(1+math.sin(angle)*ratio), 1, 1, 1, 1})
+        nx,ny=Shape.rThetaPos(selfx,selfy,rOuter,direction+angle)
+        table.insert(ringMeshVertices,{nx,ny,x+w/2*(1+math.cos(angle)),y+h/2*(1+math.sin(angle)), 1, 1, 1, 1})
+        table.insert(ringMeshVertices,fanMeshVertices[#fanMeshVertices]) -- inner vertex
     end
-    table.insert(meshVertices,meshVertices[2]) -- close the fan
-    local mesh=love.graphics.newMesh(meshVertices,'fan')
+    table.insert(fanMeshVertices,fanMeshVertices[2]) -- close the fan
+    table.insert(ringMeshVertices,ringMeshVertices[1]) -- close the ring
+    table.insert(ringMeshVertices,ringMeshVertices[2]) -- close the ring
+    local mesh=love.graphics.newMesh(fanMeshVertices,'fan')
     mesh:setTexture(Asset.bulletImage)
     table.insert(Asset.bigBulletMeshes,mesh)
+    local ringMesh=love.graphics.newMesh(ringMeshVertices,'strip')
+    ringMesh:setTexture(Asset.bulletImage)
+    table.insert(Asset.bigBulletMeshes,ringMesh)
 end
 
 function Circle:checkShockwaveRemove()
