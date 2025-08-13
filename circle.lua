@@ -108,7 +108,7 @@ end
 -- for large sprites, normal quad (2 triangles) will cause huge distortion, so we use mesh (fan triangles)
 ---@param num integer|nil number of vertices on the circle
 function Circle:drawLargeSprite(num)
-    num=num or math.ceil(math.clamp(self.radius,6,32))
+    num=num or math.ceil(math.clamp(self.radius*0.6,6,128))
     local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
     local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
     x,y,w,h=x/W,y/H,w/W,h/H

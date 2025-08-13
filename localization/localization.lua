@@ -979,6 +979,16 @@ return {
                     zh_cn = '三角生物通过翻转它们的边走动。它们会搞混哪个顶点走在前面吗？',
                 }
             },
+            [112] = {
+                spellName = {
+                    en_us = 'Giant Star "Dense Stellaris"',
+                    zh_cn = '巨星「致密星云」',
+                },
+                quote = {
+                    en_us = 'Hugest bullets I have ever seen! The whole area is filled with them.',
+                    zh_cn = '我见过的最大子弹！整个区域都被它们填满了。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {

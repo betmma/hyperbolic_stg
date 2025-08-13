@@ -240,6 +240,25 @@ function Shape.moveTowards(movingObj,aimObj,step,stopAtReach,ratioStep)
     movingObj.y=y
 end
 
+--- move the object [obj] to the aim [aim] in [frame] frames
+--- @param obj {x: number, y:number}
+--- @param aim {x: number, y:number}
+--- @param frame integer
+--- @return nil
+function Shape.moveToInTime(obj,aim,frame)
+    local step=Shape.distanceObj(obj,aim)/frame
+    Event.LoopEvent{
+        obj=obj,period=1,times=frame,
+        executeFunc=function()
+            Shape.moveTowards(obj,aim,step,true)
+        end,
+        afterFunc=function()
+            obj.x=aim.x
+            obj.y=aim.y
+        end
+    }
+end
+
 function Shape.drawSegment(x1,y1,x2,y2,segNum)
     if math.abs(x1-x2)<Shape.EPS then -- vertical -> line
         love.graphics.line(x1,y1,x2,y2)

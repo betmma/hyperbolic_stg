@@ -19,6 +19,15 @@ function math.rTheta2xy(r,theta)
     return r*math.cos(theta),r*math.sin(theta)
 end
 
+---@param a number
+---@param b number
+---@param t number
+---@return number
+-- linear interpolation between a and b with t in [0,1]. t=0 returns a, t=1 returns b.
+function math.interpolate(a,b,t)
+    return a*(1-t)+b*t
+end
+
 -- returns random number in [0,1]. sometimes (especially particle system) random numbers are needed each frame. The bad part of using math.random is it easily break every replay on slightest change of a particle. So use this function instead. seeds can be (obj, seed2) which expands to (obj.x, seed2, obj.y, obj.frame). seed2 is to generate different numbers for same obj at same frame.
 -- and warning: the distribution is not even since it uses sin function.
 function math.pseudoRandom(seed1,seed2,seed3,seed4)

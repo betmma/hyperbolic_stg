@@ -16,7 +16,7 @@ Event.modes={
 Event.Event=Event -- for convenience as without it LoopEvent and EaseEvent need "Event." but base Event doesn't
 
 -- conditionFunc, executeFunc, times, mode: Event.modes, obj
--- when update checks if [conditionFunc(self,dt)] returns true, then execute [executeFunc(self,dt,obj)]. after executed [times] times or executeFunc returns false or obj.removed is true it's removed. [mode] can be Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple
+-- when update checks if [conditionFunc(self,dt)] returns true, then execute [executeFunc(self,dt,obj)]. after executed [times] times or obj.removed is true it's removed. if executed [times] times, [afterFunc(self)] will be called. [mode] can be Event.modes.oneFrameOnce or Event.modes.oneFrameMultiple
 -- if [activated] is false the event won't update.
 -- you can set [time] and check it in [conditionFunc] to do same thing as LoopEvent
 function Event:new(args)
@@ -30,6 +30,7 @@ function Event:new(args)
     local conditionFunc=args.conditionFunc or function(self,dt)return true end
     self.conditionFunc=function(self,dt)return self.obj.removed~=true and conditionFunc(self,dt)end
     self.executeFunc=args.executeFunc or function(self,_,_)return true end
+    self.afterFunc=args.afterFunc or function(self)end
     self.activated=args.activated or true
 end
 
@@ -46,7 +47,9 @@ function Event:update(dt)
             self.executedTimes=self.executedTimes+1
         end
         if self.executedTimes>=self.times or self.obj.removed then
-            -- print(self.frame,self.obj.frame)
+            if self.executedTimes>=self.times then
+                self:afterFunc()
+            end
             self:remove()
             return
         end
@@ -136,8 +139,8 @@ function EaseEvent:new(args)
         end
         if self.frame==self.period then
             self.times=0
-            self:afterFunc()
-            self:remove()
+            -- self:afterFunc()
+            -- self:remove()
         end
         self.lastProgress=newProgress
     end
