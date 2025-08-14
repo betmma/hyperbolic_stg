@@ -145,6 +145,7 @@ local function loadLevels(levelStr,sceneStrList)
             table.insert(levels,level)
         end
     end
+    levels.levelStr=levelStr
     return levels
 end
 --[[
@@ -178,6 +179,15 @@ local levelData={
     loadLevels(10,{'1','2','3','4','5','6','7','8'}),
     loadLevels('EX',{'1','2','5','6','7','8','9',}),
 }
+
+---@param level integer
+---@return string 
+--- get the level string of a level, like EX is stored as level 11 but displayed as "EX"
+levelData.getLevelStr=function(level)
+    ---@type {levelStr:string}
+    local levelData=levelData[level]
+    return levelData and levelData.levelStr or ''..level
+end
 
 ---@type {id:{level:number,scene:number}}
 local ID2LevelScene={}

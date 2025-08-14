@@ -791,7 +791,8 @@ G={
                 love.graphics.translate(-leftOffset,0) -- left part begins
                 -- print Level x and Scene x (left part)
                 SetFont(36)
-                love.graphics.print(Localize{'ui','level',level=level},100,50,0,1,1)
+                local levelStr=LevelData.getLevelStr(level)
+                love.graphics.print(Localize{'ui','level',level=levelStr},100,50,0,1,1)
                 SetFont(30)
                 for index, value in ipairs(LevelData[level]) do
                     local levelID=LevelData[level][index].ID
@@ -801,7 +802,7 @@ G={
                     elseif self.save.levelData[levelID].passed==2 then
                         love.graphics.setColor(1,1,0.5)
                     end
-                    love.graphics.print(level.."-"..index,100,100+index*40,0,1,1)
+                    love.graphics.print(levelStr.."-"..index,100,100+index*40,0,1,1)
                 end
                 -- draw rectangle to mark current selected scene (left part)
                 love.graphics.setColor(1,1,1)

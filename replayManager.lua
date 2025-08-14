@@ -216,7 +216,7 @@ replayManager.getDescriptionString=function(slot,replay)
     -- Format each component
     local slotStr = string.format("No.%03d", slot)
     local nameStr = string.format("%-" .. nameWidth .. "s", replay.name):sub(1, nameWidth) -- Pad or truncate name
-    local levelSceneStr = string.format("%d-%d", replay.level, replay.scene)
+    local levelSceneStr = string.format("%s-%d", LevelData.getLevelStr(replay.level), replay.scene)
     local dateStr = replay.time
 
     -- Combine into a fixed-length string
