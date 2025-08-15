@@ -612,13 +612,14 @@ end
 BackgroundPattern.Fractal=Fractal
 
 -- tessellation on H^2 is calculated similar to main menu tessellation: calculate schwarz triangle vertices and send this fundamental triangle to shader. after flip, flip count and barycenter coordinates are used to calculate color and height.
+-- due to high computation cost, this could only fit ending / credits
 local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
 local H3Terrain=Shader:extend()
 function H3Terrain:new()
     H3Terrain.super.new(self)
     self.shader=H3TerrainShader
     self.cam_translation={0,0,1}
-    self.cam_pitch=-0.3
+    self.cam_pitch=-0.5
     self.cam_yaw=0
     self.cam_roll=0
     self.p,self.q,self.r=3,6,6
@@ -626,7 +627,7 @@ function H3Terrain:new()
     local length=Shape.distance(V0[1],V0[2],V1[1],V1[2])
     self.length=length
     self.moveLength=0.01
-    local autoMove=true
+    local autoMove=false
     self.paramSendFunction=function(self,shader)
         local l=length-self.moveLength
         local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
@@ -639,7 +640,7 @@ function H3Terrain:new()
         shader:send("V0", V0)
         shader:send("V1", V1)
         shader:send("V2", V2)
-        -- shader:send("time", self.frame/60*3)
+        shader:send("time", self.frame/60*1.8)
         local trans=self.cam_translation or {0,0,0}
         if autoMove then
             trans[3]=math.cos(self.frame/200)*-0.5+1.5

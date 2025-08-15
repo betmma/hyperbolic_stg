@@ -16,6 +16,10 @@ uniform float cam_roll = 0.0;              // Optional: No roll
 
 uniform vec3 cam_translation = vec3(0.0, 0.0, 1.0); // Default: Boost along Z-axis
 
+// --- Added: road width and travel speed ---
+uniform float path_half_width = 0.5;      // Half-width of straight path along x=0
+uniform float cam_travel_speed = 0.35;    // Forward speed along +X
+
 UHPGeodesic G01 = make_geodesic_segment(V0, V1);
 UHPGeodesic G12 = make_geodesic_segment(V1, V2);
 UHPGeodesic G20 = make_geodesic_segment(V2, V0);
@@ -86,6 +90,10 @@ float terrainFunc(vec2 pos_xy_embedding, float time) {
     if (flat_) {
         return 0.0; // If flat_, return 0 for performance
     }
+    // Flatten a straight path along x=0
+    if (abs(pos_xy_embedding.x) < path_half_width) {
+        return -0.02; // Slightly below zero to make the road visible
+    }
     vec2 shifted_pos = shift_pos(pos_xy_embedding, time);
     flipData fd = flip(shifted_pos);
     if (fd.flipCount < 0) { 
@@ -97,35 +105,96 @@ float terrainFunc(vec2 pos_xy_embedding, float time) {
     return (bx*bx*bx) * 0.6; 
 }
 
-// deprecated
-float random(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123); }
-float noise2D(vec2 st) { vec2 i=floor(st); vec2 f=fract(st); float a=random(i); float b=random(i+vec2(1,0)); float c=random(i+vec2(0,1)); float d=random(i+vec2(1,1)); vec2 u=f*f*(3.0-2.0*f); return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.y*u.x; }
-// Fractional Brownian Motion (fBm) for more natural terrain
-float fbm(vec2 st) {
-    float value = 0.0;
-    float amplitude = 0.8;
-    float frequency = 0.6;
-    const int octaves = 5; // Number of noise layers
-
-    for (int i = 0; i < octaves; i++) {
-        value += amplitude * noise2D(frequency * st);
-        frequency *= 2.0; // Lacunarity: how much detail is added each octave
-        amplitude *= 0.5; // Persistence/Gain: how much each octave contributes
-    }
-    return value;
+// --- Hyperbolic helpers and tree SDFs ---
+float mdot4(vec4 a, vec4 b) { return -dot(a.xyz, b.xyz) + a.w*b.w; }
+float acosh1(float x) { return log(x + sqrt(max(0.0, x*x - 1.0))); }
+float hdist(vec4 a, vec4 b) { return acosh1(max(1.0, mdot4(a,b))); }
+vec4 lift_to_H(vec3 xyz) { return vec4(xyz, sqrt(1.0 + dot(xyz, xyz))); }
+vec4 spacelike_up(vec4 p_H) {
+    // Build a spacelike unit vector orthogonal to p_H, roughly pointing +Z
+    vec4 ez = vec4(0.0, 0.0, 1.0, 0.0);
+    float alpha = mdot4(ez, p_H); // since mdot4(p_H,p_H)=1
+    vec4 v = ez - alpha * p_H;
+    float n2 = -mdot4(v,v);
+    return v / sqrt(max(n2, 1e-8));
+}
+// Added: asinh and a generic spacelike direction from a Cartesian axis
+float asinh1(float x) { return log(x + sqrt(x*x + 1.0)); }
+vec4 spacelike_from_axis(vec4 p_H, vec3 axis) {
+    vec4 e = vec4(axis, 0.0);
+    float alpha = mdot4(e, p_H);
+    vec4 v = e - alpha * p_H;
+    float n2 = -mdot4(v,v);
+    return v / sqrt(max(n2, 1e-8));
 }
 
-float terrainFunc_(vec2 pos_xy_embedding, float time) {
-    return 0;
+float treeSDF_H(vec4 p_H, float time, out float nearestRadiusH) {
+    // Trees: go from origin along +Y by varying hyperbolic distances (axis),
+    // then from each axis point go along ±X by a fixed hyperbolic offset.
+    const float spacingH       = 1.1;  // hyperbolic spacing along +Y axis
+    const float lateralOffsetH = 0.55; // fixed hyperbolic offset to left/right from axis
 
-    // Shift coordinates based on time for movement
-    vec2 shifted_pos = shift_pos(pos_xy_embedding, time);
-    
-    float height_val = fbm(shifted_pos) * 0.8; // Base height variation
-    
-    // Lower the average terrain height so camera is above it
-    height_val -= 0.6; 
-    return height_val;
+    float bestD = 1e9;
+    nearestRadiusH = 0.0;
+
+    // Axis origin anchored near the path center (x=0). Use terrain at (0,0) for base height.
+    float baseZ = terrainFunc(vec2(0.0, 0.0), time);
+    vec4 p_axis0 = lift_to_H(vec3(0.0, 0.0, baseZ));
+    vec4 v_axis  = spacelike_from_axis(p_axis0, vec3(0.0, 1.0, 0.0)); // +Y direction on the axis
+
+    // Project sample to axis coordinate (s satisfies mdot(p_H, v_axis) = sinh(s))
+    float s0 = asinh1(mdot4(p_H, v_axis));
+    int k0 = int(floor(s0 / spacingH));
+
+    // Check a few neighbors around k0
+    for (int dk = -5; dk <= 1; ++dk) {
+        float s = float(k0 + dk) * spacingH + mod(time*0.1,spacingH); // slight upward drift over time
+        vec4 c_axis = p_axis0 * cosh(s) + v_axis * sinh(s);
+
+        // Lateral ±X direction at this axis point
+        vec4 v_lat = spacelike_from_axis(c_axis, vec3(1.0, 0.0, 0.0));
+
+        // Two sides: left (-) and right (+) along v_lat by fixed hyperbolic distance
+        for (int side = -1; side <= 1; side += 2) {
+            float sign = float(side);
+            vec4 c_side = c_axis * cosh(lateralOffsetH) + (sign * v_lat) * sinh(lateralOffsetH);
+
+            // Stack three spheres upward from this lateral point via hyperbolic "up"
+            vec4 v_up = spacelike_up(c_side);
+            float rH = 0.30;     // base hyperbolic radius
+            float scale = 0.82;  // shrink per layer
+            float s_up = rH;     // offset to first center so it rests on c_side
+
+            for (int i = 0; i < 3; ++i) {
+                vec4 c_H = c_side * cosh(s_up) + v_up * sinh(s_up);
+                float d = hdist(p_H, c_H) - rH;
+                if (d < bestD) { bestD = d; nearestRadiusH = rH; }
+                float rH_next = rH * scale;
+                s_up += rH + rH_next; // make adjacent spheres touch in H^3
+                rH = rH_next;
+            }
+        }
+    }
+    return bestD;
+}
+
+float treeSDF_H_only(vec4 p_H, float time) {
+    float r; return treeSDF_H(p_H, time, r);
+}
+
+vec3 treeNormal_H(vec4 p_H, float time) {
+    float e = 0.002;
+    vec4 px1 = lift_to_H(p_H.xyz + vec3(e,0,0));
+    vec4 px2 = lift_to_H(p_H.xyz - vec3(e,0,0));
+    vec4 py1 = lift_to_H(p_H.xyz + vec3(0,e,0));
+    vec4 py2 = lift_to_H(p_H.xyz - vec3(0,e,0));
+    vec4 pz1 = lift_to_H(p_H.xyz + vec3(0,0,e));
+    vec4 pz2 = lift_to_H(p_H.xyz - vec3(0,0,e));
+    float rTmp;
+    float dx = treeSDF_H(px1, time, rTmp) - treeSDF_H(px2, time, rTmp);
+    float dy = treeSDF_H(py1, time, rTmp) - treeSDF_H(py2, time, rTmp);
+    float dz = treeSDF_H(pz1, time, rTmp) - treeSDF_H(pz2, time, rTmp);
+    return normalize(vec3(dx,dy,dz));
 }
 
 vec3 getTerrainNormal(vec4 p_H, float time, float epsilon_normal) {
@@ -159,9 +228,15 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
     hit_terrain = false;
     vec3 sky_color = vec3(0.35, 0.55, 0.85); // Sky color
 
-    const int MAX_STEPS = 64;
-    const float MAX_DIST_HYPERBOLIC = 30.0; // Max hyperbolic distance
+    const int MAX_STEPS = 32;
+    const float MAX_DIST_HYPERBOLIC = 5.0; // Max hyperbolic distance
     float step_coeff=0.6;
+
+    // Cache previous step's probe SDFs to halve calls
+    bool hasCache = false;
+    float cachedDistTerrain = 0.0;
+    float cachedDistTree = 0.0;
+    float cachedTreeRadius = 0.0;
 
     for (int i = 0; i < MAX_STEPS; i++) {
         vec4 current_pos_H = cam_pos_H * cosh(t) + ray_dir_H * sinh(t);
@@ -170,69 +245,101 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
             break; 
         }
 
-        float dist_to_surface_approx = sceneSDF(current_pos_H, time);
-        float epsilon = 0.01 * max(1.0, current_pos_H.w * 0.5); 
+        // Distances to terrain (embedding-z SDF) and trees (hyperbolic SDF)
+        float dist_terrain;
+        float dist_tree;
+        float nearestRadiusH;
+        if (hasCache) {
+            dist_terrain = cachedDistTerrain;
+            dist_tree = cachedDistTree;
+            nearestRadiusH = cachedTreeRadius;
+            hasCache = false; // consume cache
+        } else {
+            dist_terrain = sceneSDF(current_pos_H, time);
+            dist_tree = treeSDF_H(current_pos_H, time, nearestRadiusH);
+        }
 
-        if (dist_to_surface_approx < epsilon) {
-            hit_terrain = true;
+        // Decide step based on closest SDF
+        float dist_to_scene = min(dist_terrain, dist_tree);
+        float dt = abs(dist_to_scene) * step_coeff / max(1.0, current_pos_H.w);
+        step_coeff = step_coeff * 1.06; // for far away terrain, increase step size to let ray reach further
+        dt = max(0.005, dt);
+
+        // Probe forward using the same dt we plan to advance (enables caching next loop)
+        float dt_probe = dt;
+        vec4 probe_pos_H = cam_pos_H * cosh(t + dt_probe) + ray_dir_H * sinh(t + dt_probe);
+        float dist_terrain_probe = sceneSDF(probe_pos_H, time);
+        float probeTreeRadius;
+        float dist_tree_probe = treeSDF_H(probe_pos_H, time, probeTreeRadius);
+
+        // Hit thresholds (tuned to avoid sky tinting)
+        float eps_terrain = 0.01;
+        float eps_tree    = 0.03;
+
+        bool approaching_terrain = dist_terrain_probe < dist_terrain;
+        bool approaching_tree    = dist_tree_probe    < dist_tree;
+
+        bool terrain_candidate = (t > 0.02) && approaching_terrain && (dist_terrain < eps_terrain);
+        bool tree_candidate    = (t > 0.02) && approaching_tree    && (dist_tree    < eps_tree);
+
+        if (terrain_candidate || tree_candidate) {
+            bool hit_tree = tree_candidate && (!terrain_candidate || dist_tree <= dist_terrain);
+            hit_terrain = !hit_tree;
             
-            // --- Terrain Base Color ---
-            vec3 terrain_color_base = vec3(0.45, 0.35, 0.25); 
-            float height_factor = smoothstep(-0.8, 0.2, current_pos_H.z); 
-            terrain_color_base = mix(vec3(0.2, 0.15, 0.1), vec3(0.7, 0.65, 0.55), height_factor);
-            
-            vec2 shifted_pos_tex = shift_pos(current_pos_H.xy, time); // Use a different name for clarity
-            terrain_color_base *= (0.9 + 0.1 * sin(shifted_pos_tex.x*5.0 + shifted_pos_tex.y*3.0));
+            // --- Base color ---
+            vec3 base_color;
+            if (hit_tree) {
+                // Brown-to-green based on sphere hyperbolic radius (smaller -> greener)
+                float leafness = clamp((0.35 - nearestRadiusH) * 3.0, 0.0, 1.0);
+                base_color = mix(vec3(0.35, 0.25, 0.12), vec3(0.15, 0.50, 0.18), leafness);
+            } else {
+                vec2 shifted_pos_tex = shift_pos(current_pos_H.xy, time);
+                base_color = colorFunc(shifted_pos_tex, time).rgb;
+                base_color *= (0.9 + 0.1 * sin(shifted_pos_tex.x*5.0 + shifted_pos_tex.y*3.0));
+            }
 
-            terrain_color_base=colorFunc(shifted_pos_tex, time).rgb; // Use the colorFunc to get the terrain color
+            // --- Normal ---
+            vec3 normal_emb;
+            if (hit_tree) {
+                normal_emb = treeNormal_H(current_pos_H, time);
+            } else {
+                float normal_calc_eps = 0.001;
+                normal_emb = getTerrainNormal(current_pos_H, time, normal_calc_eps);
+            }
 
-            // --- Enhanced Lighting Calculation ---
-            float normal_calc_eps = 0.001; // Epsilon for normal calculation finite differences
-            vec3 normal_emb = getTerrainNormal(current_pos_H, time, normal_calc_eps);
+            // --- Lighting ---
+            vec3 ambient_light_color = vec3(0.25, 0.25, 0.10);
+            vec3 directional_light_color = vec3(0.9, 0.85, 0.75);
+            vec3 light_dir_emb = normalize(vec3(0.5, 0.5, 0.707));
+            float shininess = 48.0;
+            float specular_strength = 0.45;
 
-            // Lighting parameters
-            vec3 ambient_light_color = vec3(0.25, 0.25, 0.10);    // Cool ambient light
-            vec3 directional_light_color = vec3(0.9, 0.85, 0.75); // Warm sunlight color
-            vec3 light_dir_emb = normalize(vec3(0.5, 0.5, 0.707)); // Light from top-right-ish (normalize for direction)
-            float shininess = 48.0;                              // Shininess for specular highlights
-            float specular_strength = 0.45;                      // Strength of specular highlights
-
-            // View direction calculation
             // Tangent vector of the geodesic ray at the hit point current_pos_H
             vec4 ray_tangent_at_hit_H = cam_pos_H * sinh(t) + ray_dir_H * cosh(t);
-            // View direction is opposite to the ray's propagation direction (spatial part)
             vec3 view_dir_emb = -normalize(ray_tangent_at_hit_H.xyz);
 
-            // Ambient component
-            vec3 ambient = ambient_light_color * terrain_color_base;
-
-            // Diffuse component
+            vec3 ambient = ambient_light_color * base_color;
             float NdotL = max(0.0, dot(normal_emb, light_dir_emb));
-            vec3 diffuse = directional_light_color * terrain_color_base * NdotL;
-
-            // Specular component (Blinn-Phong)
+            vec3 diffuse = directional_light_color * base_color * NdotL;
             vec3 halfway_dir = normalize(light_dir_emb + view_dir_emb);
             float NdotH = max(0.0, dot(normal_emb, halfway_dir));
             vec3 specular = directional_light_color * specular_strength * pow(NdotH, shininess);
-            
-            // Ensure specular is not applied if the surface is facing away from the light
-            if (NdotL <= 0.0) {
-                specular = vec3(0.0);
-            }
+            if (NdotL <= 0.0) specular = vec3(0.0);
 
-            vec3 lit_terrain_color = ambient + diffuse + specular;
-            // --- End of Lighting Calculation ---
+            vec3 lit_color = ambient + diffuse + specular;
 
             // Fog effect based on hyperbolic distance t
-            float fog_density = 0.18; 
+            float fog_density = 0.25; 
             float fog_factor = exp(-t * fog_density);
-            return mix(sky_color, lit_terrain_color, fog_factor);
+            return mix(sky_color, lit_color, fog_factor);
         }
 
-        float dt = abs(dist_to_surface_approx) * step_coeff / max(1.0, current_pos_H.w);
-        step_coeff=step_coeff*1.06; // for far away terrain, increase step size to let ray reach further
-        dt = max(0.005, dt); 
-        
+        // No hit: cache probe distances for next iteration and march forward
+        cachedDistTerrain = dist_terrain_probe;
+        cachedDistTree    = dist_tree_probe;
+        cachedTreeRadius  = probeTreeRadius;
+        hasCache = true;
+
         t += dt;
 
         if (t > MAX_DIST_HYPERBOLIC) {
