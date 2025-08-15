@@ -61,6 +61,38 @@ function Enemy:calculateMovingTransitionSprite()
     end
 end
 
+-- to calculate to make the sprite upward, how much to rotate the sprite. calculation is similar to modelsTrans.glsl
+local function upwardDeltaOrientation(x,y)
+    if G.viewMode.mode==G.VIEW_MODES.NORMAL then
+        return 0
+    end
+    local obj=G.viewMode.object
+    local xo,yo=obj.x,obj.y
+    local rotateAngle=obj.naturalDirection or 0
+    local x1,y1=Shape.rotateAround(x,y,-rotateAngle,xo,yo)
+    local deltaOrientation=-Shape.to(x1,y1,xo,yo)+Shape.to(x,y,xo,yo)
+    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+        return deltaOrientation
+    end
+    local ax,ay=WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y
+    -- move and zoom xo,yo to ax,ay
+    local axisY=Shape.axisY
+    local zoom=(ay-axisY)/(yo-axisY)
+    local dx=ax-xo*zoom
+    local x2,y2=x1*zoom+dx,(y1-axisY)*zoom+axisY
+    -- convert to disk
+    local zx,zy=x2,y2-axisY
+    local z0x,z0y=WINDOW_WIDTH/2,WINDOW_HEIGHT/2-axisY
+    local z0cx,z0cy=z0x,-z0y
+    local numex,numey=zx-z0x,zy-z0y
+    local denox,denoy=zx-z0cx,zy-z0cy
+    local denosq=denox*denox+denoy*denoy
+    local wx,wy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
+    -- poincare disk and klein disk have same delta orientation
+    deltaOrientation=-math.atan2(wy,wx)+math.pi/2+Shape.to(x,y,xo,yo)
+    return deltaOrientation
+end
+
 function Enemy:drawSprite()
     local sprite=self.sprite
     if not sprite then
@@ -69,8 +101,8 @@ function Enemy:drawSprite()
     if sprite.key=='fairy' then
         local x0,y0=self.x,self.y
         local orientation=0
-        if G.UseHypRotShader then -- ideally fairies should always face upwards (of screen). but inside different hyperbolic models, "upwards" is different. for UHP it can be calculated using difference of direction after "rotate" in player.testRotate (which won't be called when using UseHypRotShader so extra work). omit for now
-        
+        if G.UseHypRotShader then -- fairies should always face upwards (of screen). but inside different hyperbolic models, "upwards" is different. need a function to calculate the delta orientation
+            orientation=upwardDeltaOrientation(x0,y0)
         end
         local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.3)
         Asset.fairyBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.fairy.width/2,Asset.fairy.height/2)
