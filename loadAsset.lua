@@ -227,11 +227,11 @@ Asset.drawBatches=function(self)
             if batch==Asset.placeholderBossBatch then -- though hypRotShader has been activated in G.CONSTANTS.DRAW before calling GameObject:drawAll, activating again here to make sure
                 Asset.setHyperbolicRotateShader()
             end
-            if batch==Asset.playerFocusBatch or batch==Asset.playerBatch then -- player and focus are not rotated
-                shader:send("rotation_angle",0)
-            else
+            -- if batch==Asset.playerFocusBatch or batch==Asset.playerBatch then -- player and focus are not rotated
+            --     shader:send("rotation_angle",0)
+            -- else
                 shader:send("rotation_angle",-object.naturalDirection)
-            end
+            -- end
         end
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.push()

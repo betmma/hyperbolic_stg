@@ -44,7 +44,7 @@ return {
         local function objReflection(obj,x1,y1,x2,y2)
             local xs,ys=obj.x,obj.y
             local xReflection,yReflection,deltaOrientation=Shape.reflectByLine(xs,ys,x1,y1,x2,y2)
-            local fakeObj={x=xReflection,y=yReflection,orientation=deltaOrientation-(obj.orientation or 0),sprite=obj.sprite} 
+            local fakeObj={x=xReflection,y=yReflection,orientation=deltaOrientation-(obj.orientation or 0),sprite=obj.sprite,naturalDirection=-(obj.naturalDirection or 0)} 
             return fakeObj
         end
 
@@ -93,7 +93,7 @@ return {
                     local pi=border.points[i]
                     local pi2=border.points[i%#border.points+1]
                     local x1,y1,x2,y2
-                    if pi.testRotateRef and extraNote=='bullet' and G.UseHypRotShader then
+                    if pi.testRotateRef and G.UseHypRotShader then
                         x1,y1=pi.testRotateRef[1],pi.testRotateRef[2]
                         x2,y2=pi2.testRotateRef[1],pi2.testRotateRef[2]
                     else

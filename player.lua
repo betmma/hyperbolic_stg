@@ -359,7 +359,7 @@ function Player:testRotate(angle,restore)
         end
     end
 
-    if not(PolyLine.useMesh == true and G.UseHypRotShader) then
+    if not(G.UseHypRotShader) then
         for k2,obj in pairs(PolyLine.objects)do
             for k,point in pairs(obj.points) do
                 rotate(point)
@@ -512,7 +512,7 @@ function Player:draw()
     love.graphics.setColor(color[1],color[2],color[3],color[4])
     -- love.graphics.circle("line", self.x, self.y, 1) -- center point
     -- love.graphics.print(tostring(self.hp),self.x-5,self.y-8)
-    local orientation=self.orientation or 0
+    local orientation=(self.orientation or 0)+(G.UseHypRotShader and self.naturalDirection or 0)
     local horizontalFlip=self.horizontalFlip or false
     
     -- x and y is the actual position on screen
