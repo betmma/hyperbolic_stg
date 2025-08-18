@@ -176,7 +176,8 @@ local levelData={
     loadLevels(7,{'1','2','3','4','5','6','7','8'}),
     loadLevels(8,{'1','2','3','4','5','6','7','8'}),
     loadLevels(9,{'1','2','3','4','5','6','7','8','9'}),
-    loadLevels(10,{'1','2','3','4','5','6','7','8'}),
+    loadLevels(10,{'1'}),
+    loadLevels(11,{'1','2','3','4','5','6','7','8'}),
     loadLevels('EX',{'1','2','5','6','7','8','9',}),
 }
 
@@ -205,7 +206,7 @@ for i,level in ipairs(levelData) do
 end
 levelData.ID2LevelScene=ID2LevelScene
 
-levelData.needPass={3,6,9,12,16,22,30,40,50,60,70,80}
+levelData.needPass={3,6,9,12,16,22,30,40,50,60,70,80,85}
 levelData.defaultQuote='What will happen here?'
 
 ---@return string

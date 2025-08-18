@@ -24,6 +24,9 @@ function Circle:new(args)
         self.radius=self.radius/Circle.sizeFactor*data.hitRadius
     end
     self.extraUpdate=args.extraUpdate or {}
+    if type(self.extraUpdate)=='function' then
+        self.extraUpdate={self.extraUpdate}
+    end
     -- safe means won't hit player 
     self.safe=args.safe or false
     -- fromPlayer means can hit enemy

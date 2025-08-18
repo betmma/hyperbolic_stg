@@ -185,6 +185,10 @@ return {
                 en_us = 'Yatsuhashi Tsukumo',
                 zh_cn = '九十九八桥',
             },
+            asama = {
+                en_us = 'Yuiman Asama',
+                zh_cn = '维缦·浅间',
+            },
         },
         spellcards = {
             -- level 1
@@ -987,6 +991,17 @@ return {
                 quote = {
                     en_us = 'Hugest bullets I have ever seen! The whole area is filled with them.',
                     zh_cn = '我见过的最大子弹！整个区域都被它们填满了。',
+                }
+            },
+            -- level 10
+            [113] = {
+                spellName = {
+                    en_us = 'Serpent Sign "Ouroborous\'s Feast"',
+                    zh_cn = '蛇符「衔尾蛇的盛宴」',
+                },
+                quote = {
+                    en_us = 'Snake reborns itself by eating its own tail. Too similar to ecdysis?',
+                    zh_cn = '蛇通过吃掉自己的尾巴来重生。和蜕皮太像了吧？',
                 }
             },
             -- boss spellcards
