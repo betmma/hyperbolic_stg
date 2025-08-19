@@ -1004,6 +1004,16 @@ return {
                     zh_cn = '蛇通过吃掉自己的尾巴来重生。和蜕皮太像了吧？',
                 }
             },
+            [114] = {
+                spellName = {
+                    en_us = 'Crowd Sign "Bitstream"',
+                    zh_cn = '群符「比特流」',
+                },
+                quote = {
+                    en_us = 'Merging streams of data into a single piece, it would be cool as a download animation, much better than flying papers.',
+                    zh_cn = '将数据流合并为一个整体，作为下载动画会很酷，比纸张飞来飞去好得多。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {

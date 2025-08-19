@@ -84,7 +84,9 @@ return {
                         basePos.x,basePos.y=Shape.rThetaPos(self.center.x,self.center.y,self.r0*rRatio,self.centerDirection)
                     end
                     -- local mouthRatio=t1>=turnTime and (self.lifeFrame-self.frame)/(self.lifeFrame-straightTime-turnTime) or 1
-                    self.x,self.y=Shape.rThetaPos(basePos.x,basePos.y,(offDis or math.sin(count/turnTime*math.pi*10)*3)*rRatio*math.min(1,self.frame/10),basePos.direction+(offDir or math.pi/2))
+                    local dis=(offDis or 0)+ math.sin(self.frame/5)*3*math.min(1,count/10)
+                    dis=dis*rRatio*math.min(1,self.frame/10) -- shrinking & prevent generation point varying
+                    self.x,self.y=Shape.rThetaPos(basePos.x,basePos.y,dis,basePos.direction+(offDir or math.pi/2))
                     self.direction=basePos.direction
                     if isFirst and self.frame==self.lifeFrame then
                         SFX:play('enemyShot',true)
