@@ -10,7 +10,7 @@ return {
         local en
         local player=Player{x=400,y=600}
         local circle
-        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=8400,hpSegments={0.5},hpSegmentsFunc=function(self,hpLevel)
+        en=Enemy{x=400,y=300,sprite=Asset.boss.asama,mainEnemy=true,maxhp=8400,hpSegments={0.5},hpSegmentsFunc=function(self,hpLevel)
             Enemy.hpSegmentsFuncShockwave(self,hpLevel)
             SFX:play('enemyCharge',true)
             en:addHPProtection(600,10)

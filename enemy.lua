@@ -28,7 +28,21 @@ function Enemy:new(args)
     self.hpSegmentsFunc=args.hpSegmentsFunc or function(self,hpLevel)end 
     self.damageResistance=1
     self._hpLevel=self:getHPLevel()
-    self.sprite=args.sprite or Asset.placeholderBoss
+    self.sprite=args.sprite
+    if not self.sprite then -- try find boss sprite based on levelData.user
+        local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+        local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+        if level and scene and LevelData[level] and LevelData[level][scene] and LevelData[level][scene].user then
+            local user=LevelData[level][scene].user
+            if Asset.boss[user] then
+                self.sprite=Asset.boss[user]
+            else
+                self.sprite=Asset.boss.placeholder
+            end
+        else
+            self.sprite=Asset.boss.placeholder
+        end
+    end
 end
 
 function Enemy:update(dt)
@@ -53,7 +67,7 @@ function Enemy:calculateMovingTransitionSprite()
     if not self.sprite then
         return
     end
-    if self.sprite.key=='fairy' or self.sprite.key=='placeholderBoss'then -- calculate whether enemy is moving left or right relative to player is kinda complex, so just use normal sprites
+    if self.sprite.key=='fairy' or self.sprite.key=='boss'then -- calculate whether enemy is moving left or right relative to player is kinda complex, so just use normal sprites
         local sprites=self.sprite.normal
         local t=self.time
         local index=math.floor(t/0.2)%#sprites+1
@@ -106,14 +120,14 @@ function Enemy:drawSprite()
         end
         local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.3)
         Asset.fairyBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.fairy.width/2,Asset.fairy.height/2)
-    elseif sprite.key=='placeholderBoss' then
+    elseif sprite.key=='boss' then
         local x0,y0=self.x,self.y
         local orientation=0
         if G.UseHypRotShader then
             orientation=upwardDeltaOrientation(x0,y0)
         end
         local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.6)
-        Asset.placeholderBossBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.placeholderBoss.width/2,Asset.placeholderBoss.height/2)
+        Asset.bossBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.boss.width/2,Asset.boss.height/2)
     end
 end
 

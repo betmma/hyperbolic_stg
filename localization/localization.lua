@@ -1014,6 +1014,16 @@ return {
                     zh_cn = '将数据流合并为一个整体，作为下载动画会很酷，比纸张飞来飞去好得多。',
                 }
             },
+            [115] = {
+                spellName = {
+                    en_us = 'Void Sign "Purge Algorithm"',
+                    zh_cn = '虚符「清除算法」',
+                },
+                quote = {
+                    en_us = 'A way to remove impurities in her memory. But there is always a bit not touched.',
+                    zh_cn = '一种清除她记忆中杂质的方法。但总有一部分没有被触及。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {

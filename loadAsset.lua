@@ -127,13 +127,18 @@ for i,color in pairs(Asset.fairyColors) do
     end
 end
 
-local placeholderBossImage = love.graphics.newImage( "assets/placeholderBossSprite.png" )
-Asset.placeholderBossImage=placeholderBossImage
-Asset.placeholderBoss={key='placeholderBoss',width=64,height=64,normal={}}
+local bossImage = love.graphics.newImage( "assets/placeholderBossSprite.png" )
+Asset.bossImage=bossImage
 local bossWidth,bossHeight=64,64
-Asset.placeholderBoss.width,Asset.placeholderBoss.height=bossWidth,bossHeight
+Asset.boss={}
+Asset.boss.width,Asset.boss.height=bossWidth,bossHeight
+Asset.boss.placeholder={key='boss',width=64,height=64,normal={}}
 for i=1,4 do
-    Asset.placeholderBoss.normal[i]=love.graphics.newQuad((i-1)*bossWidth,0,bossWidth,bossHeight,placeholderBossImage:getWidth(),placeholderBossImage:getHeight())
+    Asset.boss.placeholder.normal[i]=love.graphics.newQuad((i-1)*bossWidth,0,bossWidth,bossHeight,bossImage:getWidth(),bossImage:getHeight())
+end
+Asset.boss.asama={key='boss',width=64,height=64,normal={}}
+for i=1,2 do
+    Asset.boss.asama.normal[i]=love.graphics.newQuad((i-1)*bossWidth,bossHeight,bossWidth,bossHeight,bossImage:getWidth(),bossImage:getHeight())
 end
 
 --[[
@@ -157,7 +162,7 @@ Dialogue Characters (niy)
 Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title screen
 
 Asset.fairyBatch=love.graphics.newSpriteBatch(fairyImage,100,'stream')
-Asset.placeholderBossBatch=love.graphics.newSpriteBatch(placeholderBossImage,5,'stream')
+Asset.bossBatch=love.graphics.newSpriteBatch(bossImage,5,'stream')
 Asset.playerBatch=love.graphics.newSpriteBatch(playerImage, 5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.bigBulletMeshes={}
@@ -168,7 +173,7 @@ Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
 Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.Batches={
-    Asset.placeholderBossBatch,
+    Asset.bossBatch,
     Asset.fairyBatch,
     Asset.playerBatch,
     Asset.playerBulletBatch,
@@ -224,7 +229,7 @@ Asset.drawBatches=function(self)
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader then
             local object=G.viewMode.object
             local shader=G.hyperbolicRotateShader
-            if batch==Asset.placeholderBossBatch then -- though hypRotShader has been activated in G.CONSTANTS.DRAW before calling GameObject:drawAll, activating again here to make sure
+            if batch==Asset.bossBatch then -- though hypRotShader has been activated in G.CONSTANTS.DRAW before calling GameObject:drawAll, activating again here to make sure
                 Asset.setHyperbolicRotateShader()
             end
             -- if batch==Asset.playerFocusBatch or batch==Asset.playerBatch then -- player and focus are not rotated

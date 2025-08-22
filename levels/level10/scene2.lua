@@ -78,6 +78,9 @@ return {
                         subcir.direction=cir.direction+subcir.deltaDir*(1-cir.frame/alignTime)
                         subcir.x,subcir.y=Shape.rThetaPos(cir.x,cir.y,subcir.dist*(1-cir.frame/alignTime),subcir.angle)
                     else
+                        if cir.frame==alignTime+1 then
+                            SFX:play('enemyShot',true,2)
+                        end
                         subcir.x,subcir.y,subcir.direction=cir.x,cir.y,cir.direction
                     end
                 end
