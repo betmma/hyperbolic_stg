@@ -96,7 +96,7 @@ Event.DelayEvent=DelayEvent
 
 -- smooth both start and stop (sin((x-0.5)*pi)*0.5+0.5)
 Event.sineIOProgressFunc=function(x)return math.sin((x-0.5)*math.pi)*0.5+0.5 end
--- smooth start (sin(x*pi/2))
+-- smooth stop (sin(x*pi/2))
 Event.sineOProgressFunc=function(x)return math.sin(x*math.pi/2) end
 -- go back to initial (sin(x*pi))
 Event.sineBackProgressFunc=function(x)return math.sin(x*math.pi) end

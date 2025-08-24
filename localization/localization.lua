@@ -1024,6 +1024,16 @@ return {
                     zh_cn = '一种清除她记忆中杂质的方法。但总有一部分没有被触及。',
                 }
             },
+            [116] = {
+                spellName = {
+                    en_us = 'Fan Sign "Purifying Breeze"',
+                    zh_cn = '扇符「净化之风」',
+                },
+                quote = {
+                    en_us = 'A breeze that purifies everything in its path. Snapping open the fan is cool.',
+                    zh_cn = '一阵净化一切的微风。猛地打开扇子真是太酷了。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {
