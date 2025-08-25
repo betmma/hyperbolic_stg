@@ -189,6 +189,10 @@ return {
                 en_us = 'Yuiman Asama',
                 zh_cn = '维缦·浅间',
             },
+            toyohime = {
+                en_us = 'Watatsuki no Toyohime',
+                zh_cn = '绵月丰姬',
+            }
         },
         spellcards = {
             -- level 1

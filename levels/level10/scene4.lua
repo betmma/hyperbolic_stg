@@ -79,7 +79,7 @@ return {
                 if fanPolyline and fanPolyline:inside(self.x,self.y) then
                     self:removeEffect()
                     self:remove()
-                    local hplevel=en.getHPLevel()
+                    local hplevel=en:getHPLevel()
                     BulletSpawner{x=self.x,y=self.y,period=1,lifeFrame=2,bulletSprite=BulletSprites.round[self.sprite.data.color],bulletSpeed=0,bulletLifeFrame=600,bulletNumber=hplevel==1 and 5 or 3,angle='0+999',range=math.pi*2,fogEffect=true,fogTime=30,bulletEvents={
                         function(cir,args,self)
                             local speedRef=math.eval(20,10)
