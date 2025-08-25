@@ -177,7 +177,7 @@ Nickname{
     name='HurrySickness',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
-        if not player.keyEverPressed['lshift'] then
+        if not player.keyEverPressed['lshift'] and perfect then
             return true
         end
         return false
@@ -188,7 +188,7 @@ Nickname{
     name='VerticalThinking',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
-        if not player.keyEverPressed['left'] and not player.keyEverPressed['right'] then
+        if not player.keyEverPressed['left'] and not player.keyEverPressed['right'] and perfect then
             return true
         end
         return false
@@ -199,7 +199,7 @@ Nickname{
     name='LateralThinking',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
-        if not player.keyEverPressed['up'] and not player.keyEverPressed['down'] then
+        if not player.keyEverPressed['up'] and not player.keyEverPressed['down'] and perfect then
             return true
         end
         return false
