@@ -1,4 +1,4 @@
-VERSION="0.6.12.2"
+VERSION="0.7.0"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -6,9 +6,11 @@ end
 io.stdout:setvbuf("no")
 love.window.setTitle('Hyperbolic Domain'..' '..VERSION)
 require'misc'
-
+shove = require "import.shove"
 local input = require "input"
 function love.load()
+    shove.setResolution(800, 600, {fitMethod = "aspect", renderMode = "layer"})
+    shove.setWindowMode(800, 600, {resizable = true})
     Object,GameObject = unpack(require "classic")
     ---@type ShaderScan
     ShaderScan = (require 'shaderScan')()
@@ -36,6 +38,9 @@ function love.load()
     ReplayManager=require"replayManager"
     Nickname=require"nickname"
     Complex,Mobius=unpack(require"mobius")
+
+    shove.createLayer("main")
+    shove.addEffect('main',Player.invertShader)
 end
 function love.keypressed(key, scancode, isrepeat)
     input.keypressed(key, scancode, isrepeat)
@@ -88,9 +93,10 @@ function love.update(dt)
         profi:writeReport( 'MyProfilingReport.txt' )
     end
 end
-
 function love.draw()
+  shove.beginDraw()
     G:draw()
+    shove.beginLayer('nickname')
     Nickname:drawText() -- nickname is an individual system 
     -- for i = 50, 600, 50 do
     -- if CIM then
@@ -101,4 +107,6 @@ function love.draw()
     --     love.graphics.print(r..', '..theta,300,100)
     --     love.graphics.print(nx..', '..ny,300,130)
     -- end
+    shove.endLayer()
+  shove.endDraw()
 end

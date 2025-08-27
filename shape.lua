@@ -39,7 +39,7 @@ function Shape:update(dt)
     if self.frame>self.lifeFrame then
         self:remove()
     end
-    if self.x<-self.removeDistance+150 or self.x>self.removeDistance+love.graphics.getWidth()-150 or math.abs(self.y-Shape.axisY)<50/math.log(self.removeDistance,10) or self.y<-self.removeDistance or self.y>self.removeDistance+love.graphics.getHeight() then
+    if self.x<-self.removeDistance+150 or self.x>self.removeDistance+WINDOW_WIDTH-150 or math.abs(self.y-Shape.axisY)<50/math.log(self.removeDistance,10) or self.y<-self.removeDistance or self.y>self.removeDistance+WINDOW_HEIGHT then
         self:remove()
     end
     self:updateMove(dt)

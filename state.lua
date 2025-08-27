@@ -816,11 +816,11 @@ G={
                 -- show screenshot
                 if ScreenshotManager.data[levelID].batch then
                     local x0,y0=325,25
-                    local ratio=0.75
                     local width,height=500,600
                     local data=ScreenshotManager.data[levelID]
+                    local ratio=0.75
                     data.batch:clear()
-                    data.batch:add(data.quad,x0,y0,0,ratio,ratio,0,0)
+                    data.batch:add(data.quad,x0,y0,0,ratio/data.zoom,ratio/data.zoom,0,0)
                     data.batch:flush()
                     love.graphics.draw(data.batch)
                     love.graphics.rectangle("line",x0,y0,width*ratio,height*ratio)
@@ -1451,7 +1451,7 @@ G.viewMode={
     object=...,
 }
 
-local lume = require "lume"
+local lume = require "import.lume"
 G.saveData=function(self)
     local data = {}
     data=self.save or {}
@@ -1689,9 +1689,9 @@ end
 G.hyperbolicRotateShader=ShaderScan:load_shader("shaders/hyperbolicRotateM.glsl")
 local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT,{msaa=8})
 G.draw=function(self)
-    love.graphics.setCanvas(canvas)
-    love.graphics.clear({0,0,0,1})
-
+    -- love.graphics.setCanvas(canvas)
+    -- love.graphics.clear({0,0,0,1})
+    shove.beginLayer('main')
     self.currentUI=self.UIDEF[self.STATE]
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         self:_drawBatches()
@@ -1716,14 +1716,18 @@ G.draw=function(self)
         love.graphics.pop()
     end
 
-    love.graphics.setCanvas()
+    -- love.graphics.setCanvas()
     if Player.objects[1] and not Player.objects[1].removed then
-        Player.objects[1]:invertShader()
+        Player.objects[1]:invertShaderEffect()
+    else
+        Player:invertShaderEffect()
     end
-    love.graphics.draw(canvas, 0, 0)
+    -- love.graphics.draw(canvas, 0, 0)
     love.graphics.setShader()
-
+    shove.endLayer()
+    shove.beginLayer('text')
     self.currentUI.drawText(self)
+    shove.endLayer()
 end
 G._drawBatches=function(self)
     if not self.backgroundPattern.noZoom or G.viewMode.mode==G.VIEW_MODES.NORMAL then

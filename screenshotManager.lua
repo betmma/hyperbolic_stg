@@ -6,6 +6,7 @@ local screenshotManager={}
 ---@class ScreenShot
 ---@field image love.Image
 ---@field quad love.Quad
+---@field zoom number -- zoom ratio of screenshot relative to 500x600. should be divided when drawing
 ---@field batch love.SpriteBatch
 ---@type ScreenShot[]
 screenshotManager.data={}
@@ -19,6 +20,21 @@ local function path(id)
 end
 local function prePath(id)
     return screenshotDir..'/scr_pre_'..id..'.png'
+end
+--- func description: get the quad for drawing the real area of a screenshot image
+---@param image love.Image
+---@return love.Quad,number zoom
+local function getQuad(image)
+    local width,height=image:getWidth(),image:getHeight()
+    -- window size can vary, so screenshot size can vary too. the real area is 500x600 at center of viewport size 800x600
+    local realWidth,realHeight=500,600
+    local viewportWidth,viewportHeight=800,600
+    local zoom=math.min(width/viewportWidth,height/viewportHeight)
+    local xOffset=(width-viewportWidth*zoom)/2
+    local yOffset=(height-viewportHeight*zoom)/2 -- the offset to viewport
+    xOffset=xOffset+(viewportWidth-realWidth)/2*zoom -- the offset to real area
+    yOffset=yOffset+(viewportHeight-realHeight)/2*zoom
+    return love.graphics.newQuad(xOffset,yOffset,realWidth*zoom,realHeight*zoom,width,height),zoom
 end
 for id,value in pairs(levelData.ID2LevelScene) do
     local data={}
@@ -37,7 +53,7 @@ for id,value in pairs(levelData.ID2LevelScene) do
             goto continue
         end
     end
-    data.quad=love.graphics.newQuad(150,0,500,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
+    data.quad,data.zoom=getQuad(data.image)
     data.batch=love.graphics.newSpriteBatch(data.image,5,'stream')
     ::continue::
 end
@@ -57,7 +73,7 @@ function screenshotManager.save(levelID)
     love.filesystem.remove(pre_path)
     local data=screenshotManager.data[levelID]
     data.image=love.graphics.newImage(path)
-    data.quad=love.graphics.newQuad(150,0,500,data.image:getHeight(),data.image:getWidth(),data.image:getHeight())
+    data.quad,data.zoom=getQuad(data.image)
     data.batch=love.graphics.newSpriteBatch(data.image,5,'stream')
 end
 return screenshotManager

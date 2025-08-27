@@ -5,6 +5,7 @@ local PolyLine=require"polyline"
 local BackgroundPattern = require "backgroundPattern"
 local invertShader = love.graphics.newShader("shaders/circleInvert.glsl")
 local Player = Shape:extend()
+Player.invertShader=invertShader
 Player.moveModes={
     -- North Pole (player.x, Shape.axisY). Move directions are same as Polar Coordinate System in Euclid space, that is Up / Down -> close to / away from pole. Left / Right -> along the arc centered at North Pole.
     -- Up & Down: not in hyperbolic line.
@@ -618,11 +619,15 @@ function Player:useInvertShader()
 end
 
 -- part of hit effect so based on dieFrame not invincibleTime
-function Player:invertShader()
+function Player:invertShaderEffect()
     -- if self.invincibleTime<=0 then return end
-    if not (self.dieFrame and self.frame-self.dieFrame<60) then return end
+    if not (self.dieFrame and self.frame-self.dieFrame<60) then
+        invertShader:send("radiusInner",0)
+        invertShader:send("radiusOuter",0)
+        return
+    end
     local t=1-(self.frame-self.dieFrame)/60
-    love.graphics.setShader(invertShader)
+    -- love.graphics.setShader(invertShader)
     local x,y=self.x,self.y
     if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
         if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
