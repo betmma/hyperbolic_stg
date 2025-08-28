@@ -9,7 +9,7 @@
 ---@field time string The time when the run started.
 ---@field version string game version of the run.
 
-local lume=require"lume"
+local lume=require"import.lume"
 local bit=require"bit"
 local levelData = require "levelData"
 local player    = require "player"

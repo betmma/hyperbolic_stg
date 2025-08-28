@@ -1030,12 +1030,22 @@ return {
             },
             [116] = {
                 spellName = {
-                    en_us = 'Fan Sign "Purifying Breeze"',
-                    zh_cn = '扇符「净化之风」',
+                    en_us = 'Fan Sign "Destructive Breeze"',
+                    zh_cn = '扇符「破坏之风」',
                 },
                 quote = {
-                    en_us = 'A breeze that purifies everything in its path. Snapping open the fan is cool.',
-                    zh_cn = '一阵净化一切的微风。猛地打开扇子真是太酷了。',
+                    en_us = 'A breeze that purifies bullets in its path. Snapping open the fan is cool.',
+                    zh_cn = '一阵净化子弹的微风。猛地打开扇子真是太酷了。',
+                }
+            },
+            [117] = {
+                spellName = {
+                    en_us = 'Boundary Sign "Landscape of Mountain and Sea"',
+                    zh_cn = '境符「山海之景」',
+                },
+                quote = {
+                    en_us = 'A beautiful landscape painting depicting the harmony between mountains and seas... if the danmaku is not this dense.',
+                    zh_cn = '一幅美丽的风景画，描绘了山与海之间的和谐……如果弹幕没有这么密的话。',
                 }
             },
             -- boss spellcards
