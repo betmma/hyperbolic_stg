@@ -129,16 +129,16 @@ end
 
 local bossImage = love.graphics.newImage( "assets/placeholderBossSprite.png" )
 Asset.bossImage=bossImage
-local bossWidth,bossHeight=64,64
+local bossWidth,bossHeight=64,80
+---@type {width:number,height:number,[string]:{key:string,width:number,height:number,normal:love.Quad[]}}
 Asset.boss={}
 Asset.boss.width,Asset.boss.height=bossWidth,bossHeight
-Asset.boss.placeholder={key='boss',width=64,height=64,normal={}}
-for i=1,4 do
-    Asset.boss.placeholder.normal[i]=love.graphics.newQuad((i-1)*bossWidth,0,bossWidth,bossHeight,bossImage:getWidth(),bossImage:getHeight())
-end
-Asset.boss.asama={key='boss',width=64,height=64,normal={}}
-for i=1,2 do
-    Asset.boss.asama.normal[i]=love.graphics.newQuad((i-1)*bossWidth,bossHeight,bossWidth,bossHeight,bossImage:getWidth(),bossImage:getHeight())
+local bossImagePoses={{name='placeholder',num=4},{name='asama',num=2},{name='toyohime',num=4}}
+for i,info in pairs(bossImagePoses) do
+    Asset.boss[info.name]={key='boss',width=bossWidth,height=bossHeight,normal={}}
+    for j=1,info.num do
+        Asset.boss[info.name].normal[j]=love.graphics.newQuad((j-1)*bossWidth,(i-1)*bossHeight,bossWidth,bossHeight,bossImage:getWidth(),bossImage:getHeight())
+    end
 end
 
 --[[

@@ -126,6 +126,8 @@ function Enemy:drawSprite()
         if G.UseHypRotShader then
             orientation=upwardDeltaOrientation(x0,y0)
         end
+        local offDistance=math.sin(self.time)*1 -- slightly floating
+        x0,y0=Shape.rThetaPos(x0,y0,offDistance,orientation+math.pi/2)
         local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.6)
         Asset.bossBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.boss.width/2,Asset.boss.height/2)
     end

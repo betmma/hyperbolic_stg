@@ -48,7 +48,7 @@ local function wrapLevelMake(levelData)
                 progressFunc=Event.sineOProgressFunc
             }
         end
-        -- show user name
+        -- show user (boss) name
         do
             local name=Localize{'levelData','names',levelData.user}
             local fontSize=72
@@ -81,6 +81,32 @@ local function wrapLevelMake(levelData)
                 aimValue=0.5,
                 progressFunc=function(x)return math.sin(x*math.pi) end
             }
+        end
+        -- show boss sprite if exists
+        do
+            local user=levelData.user
+            local sprite=Asset.boss[user]
+            if sprite then
+                local distance=300
+                local frame,moveFrame=120,30
+                local angle=-math.pi/9
+                local x0,y0=WINDOW_WIDTH/2+distance*math.cos(angle),WINDOW_HEIGHT/2+distance*math.sin(angle)
+                local dummyShape=Shape{x=x0,y=y0,speed=distance/moveFrame,direction=0,lifeFrame=frame}
+                dummyShape.updateMove=function(self)
+                    if self.frame>=moveFrame and self.frame<frame-moveFrame then
+                        return
+                    end
+                    self.x = self.x - self.speed*math.cos(angle)
+                    self.y = self.y - self.speed*math.sin(angle)
+                end
+                dummyShape.drawText=function(self)
+                    local x,y=self.x,self.y
+                    local r,g,b,a=love.graphics.getColor()
+                    love.graphics.setColor(1,1,1,math.sin(self.frame/frame*math.pi)*0.7)
+                    love.graphics.draw(Asset.bossImage,sprite.normal[1],x,y,0,8,8,Asset.boss.width/2,Asset.boss.height/2)
+                    love.graphics.setColor(r,g,b,a)
+                end
+            end
         end
         makeLevelRef()
         -- show timeout spellcard text
