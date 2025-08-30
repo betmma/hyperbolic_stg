@@ -159,6 +159,25 @@ UI (left half and right half foreground)
 Dialogue (niy)
 Dialogue Characters (niy)
 ]]
+local meshBatch=Object:extend()
+function meshBatch:new()
+    self.meshes={}
+end
+function meshBatch:add(mesh)
+    self.meshes[#self.meshes+1]=mesh
+end
+function meshBatch:clear()
+    self.meshes={}
+end
+function meshBatch:flush()
+    -- do nothing
+end
+function meshBatch:draw()
+    for i, mesh in pairs(self.meshes) do
+        love.graphics.draw(mesh)
+    end
+end
+
 Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title screen
 
 Asset.fairyBatch=love.graphics.newSpriteBatch(fairyImage,100,'stream')
@@ -170,6 +189,8 @@ Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'str
 Asset.laserMeshes={}
 Asset.bulletBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
+Asset.playerFocusMeshes={}
+-- deprecated, use meshes for higher quality. maybe useful if a level has thousands of focus points and lags for meshes
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
 Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.Batches={
@@ -182,6 +203,7 @@ Asset.Batches={
     Asset.laserMeshes,
     Asset.bulletBatch,
     Asset.effectBatch,
+    Asset.playerFocusMeshes,
     Asset.playerFocusBatch,
     -- G.afterExtraDraw here, not an element of batches
     Asset.foregroundBatch,

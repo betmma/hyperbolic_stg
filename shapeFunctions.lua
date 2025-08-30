@@ -322,6 +322,71 @@ function Shape.regularPolygonCoordinates(x,y,r,n,theta,xyindex)
     end
     return points
 end
+
+-- calculate fan mesh for drawing large sprite to reduce distortion
+---@param posX coordinate "x of object"
+---@param posY coordinate "y of object"
+---@param posR number "radius of object"
+---@param quad love.Quad "quad of sprite"
+---@param image love.Image "image of sprite"
+---@param n integer "number of vertices on the circle"
+---@param color number[]|nil "color RGBA, each in [0,1]"
+---@return love.Mesh "fan mesh"
+function Shape.fanMesh(posX,posY,posR,orientation,quad,image,n,color)
+    color=color or {1,1,1,1}
+    local x,y,w,h=quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local imgW,imgH=image:getDimensions()
+    x,y,w,h=x/imgW,y/imgH,w/imgW,h/imgH
+    local vertices={}
+    vertices[1]={posX,posY,x+w/2,y+h/2,color[1],color[2],color[3],color[4]}
+    for i=0,n do
+        local angle=math.pi*2/n*i
+        local x2,y2=Shape.rThetaPos(posX,posY,posR,angle+orientation)
+        local u,v=(math.cos(angle)+1)/2,(math.sin(angle)+1)/2
+        vertices[i+2]={x2,y2,x+u*w,y+v*h,color[1],color[2],color[3],color[4]}
+    end
+    local mesh=love.graphics.newMesh(vertices,'fan')
+    mesh:setTexture(image)
+    return mesh
+end
+
+-- calculate double layered ring+fan mesh for drawing large sprite to reduce distortion
+---@param posX coordinate "x of object"
+---@param posY coordinate "y of object"
+---@param innerR number "inner radius of ring"
+---@param outerR number "outer radius of ring"
+---@param orientation angle "orientation of object"
+---@param quad love.Quad "quad of sprite"
+---@param image love.Image "image of sprite"
+---@param n integer "number of vertices on the circle"
+---@param color number[]|nil "color RGBA, each in [0,1]"
+---@return love.Mesh "ring mesh"
+---@return love.Mesh "fan mesh"
+function Shape.ringFanMesh(posX,posY,innerR,outerR,orientation,quad,image,n,color)
+    color=color or {1,1,1,1}
+    local x,y,w,h=quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
+    local imgW,imgH=image:getDimensions()
+    x,y,w,h=x/imgW,y/imgH,w/imgW,h/imgH
+    local ratio=innerR/outerR
+    local ringMeshVertices={}
+    local fanMeshVertices={{posX,posY,x+w/2,y+h/2,color[1],color[2],color[3],color[4]}}
+    for i=0,n do
+        local angle=math.pi*2/n*i
+        local x2,y2=Shape.rThetaPos(posX,posY,outerR,angle+orientation)
+        local u,v=(math.cos(angle)+1)/2,(math.sin(angle)+1)/2
+        ringMeshVertices[i*2+1]={x2,y2,x+u*w,y+v*h,color[1],color[2],color[3],color[4]}
+        fanMeshVertices[i+2]=ringMeshVertices[i*2+1]
+        local x3,y3=Shape.rThetaPos(posX,posY,innerR,angle+orientation)
+        u,v=(math.cos(angle)*ratio+1)/2,(math.sin(angle)*ratio+1)/2
+        ringMeshVertices[i*2+2]={x3,y3,x+u*w,y+v*h,color[1],color[2],color[3],color[4]}
+    end
+    local ringMesh=love.graphics.newMesh(ringMeshVertices,'strip')
+    ringMesh:setTexture(image)
+    local fanMesh=love.graphics.newMesh(fanMeshVertices,'fan')
+    fanMesh:setTexture(image)
+    return ringMesh,fanMesh
+end
+
 --- hyperbolic rotate a point (x1,y1) around (ox,oy) by angle. Uses inlined mobius transformation.
 ---@param x1 coordinate
 ---@param y1 coordinate

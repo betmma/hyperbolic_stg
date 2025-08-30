@@ -521,8 +521,16 @@ function Player:draw()
     
     --draw hit point
     local focusSizeFactor=0.5
-    Asset.playerFocusBatch:setColor(1,1,1,(self.focusPointTransparency or 1)*color[4])
-    Asset.playerFocusBatch:add(BulletSprites.playerFocus.quad,x,y,self.time+orientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,32,32)
+    local focusOrientation=self.time+orientation
+    local drawColor={1,1,1,(self.focusPointTransparency or 1)*color[4]}
+    if self.forceQuadDraw then -- for now nowhere uses old method. 10-2 17 players do not lagging
+        Asset.playerFocusBatch:setColor(unpack(drawColor))
+        Asset.playerFocusBatch:add(BulletSprites.playerFocus.quad,x,y,focusOrientation,r*focusSizeFactor*(horizontalFlip and -1 or 1),r*focusSizeFactor,32,32)
+    else
+        local fanMesh=Shape.fanMesh(self.x,self.y,self.drawRadius*16,focusOrientation,BulletSprites.playerFocus.quad,Asset.bulletImage,8,drawColor) -- *16 is because sprite half width 32 * focusSizeFactor 0.5 = 16. 8 is number of triangles
+        -- table.insert(Asset.playerFocusMeshes,ringMesh)
+        table.insert(Asset.playerFocusMeshes,fanMesh)
+    end
     local spriteSizeFactor=0.53
     if self.sprite then
         Asset.playerBatch:setColor(1,1,1,color[4])
