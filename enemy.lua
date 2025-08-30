@@ -128,8 +128,10 @@ function Enemy:drawSprite()
         end
         local offDistance=math.sin(self.time)*1 -- slightly floating
         x0,y0=Shape.rThetaPos(x0,y0,offDistance,orientation+math.pi/2)
-        local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.6)
-        Asset.bossBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.boss.width/2,Asset.boss.height/2)
+        local mesh=Shape.fanMesh(x0,y0,(self.drawRadius or 0.6)*Asset.boss.width/2,orientation,self.currentSprite or sprite.normal[1],Asset.bossImage,16,{1,1,1,1}) -- 16 is number of triangles
+        table.insert(Asset.bossMeshes,mesh)
+        -- local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.6)
+        -- Asset.bossMeshes:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.boss.width/2,Asset.boss.height/2)
     end
 end
 

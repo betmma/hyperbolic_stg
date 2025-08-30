@@ -129,7 +129,7 @@ end
 
 local bossImage = love.graphics.newImage( "assets/placeholderBossSprite.png" )
 Asset.bossImage=bossImage
-local bossWidth,bossHeight=64,80
+local bossWidth,bossHeight=80,80
 ---@type {width:number,height:number,[string]:{key:string,width:number,height:number,normal:love.Quad[]}}
 Asset.boss={}
 Asset.boss.width,Asset.boss.height=bossWidth,bossHeight
@@ -159,29 +159,11 @@ UI (left half and right half foreground)
 Dialogue (niy)
 Dialogue Characters (niy)
 ]]
-local meshBatch=Object:extend()
-function meshBatch:new()
-    self.meshes={}
-end
-function meshBatch:add(mesh)
-    self.meshes[#self.meshes+1]=mesh
-end
-function meshBatch:clear()
-    self.meshes={}
-end
-function meshBatch:flush()
-    -- do nothing
-end
-function meshBatch:draw()
-    for i, mesh in pairs(self.meshes) do
-        love.graphics.draw(mesh)
-    end
-end
 
 Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title screen
 
 Asset.fairyBatch=love.graphics.newSpriteBatch(fairyImage,100,'stream')
-Asset.bossBatch=love.graphics.newSpriteBatch(bossImage,5,'stream')
+Asset.bossMeshes={}
 Asset.playerBatch=love.graphics.newSpriteBatch(playerImage, 5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.bigBulletMeshes={}
@@ -194,7 +176,7 @@ Asset.playerFocusMeshes={}
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
 Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
 Asset.Batches={
-    Asset.bossBatch,
+    Asset.bossMeshes,
     Asset.fairyBatch,
     Asset.playerBatch,
     Asset.playerBulletBatch,
@@ -251,7 +233,7 @@ Asset.drawBatches=function(self)
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader then
             local object=G.viewMode.object
             local shader=G.hyperbolicRotateShader
-            if batch==Asset.bossBatch then -- though hypRotShader has been activated in G.CONSTANTS.DRAW before calling GameObject:drawAll, activating again here to make sure
+            if batch==Asset.bossMeshes then -- though hypRotShader has been activated in G.CONSTANTS.DRAW before calling GameObject:drawAll, activating again here to make sure
                 Asset.setHyperbolicRotateShader()
             end
             -- if batch==Asset.playerFocusBatch or batch==Asset.playerBatch then -- player and focus are not rotated
