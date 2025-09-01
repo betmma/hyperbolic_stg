@@ -99,7 +99,7 @@ end
 
 --[[
 params: 
-[point]: where pattern begins. [angle]: direction of first line. [sideNum]: how many sides do each polygon have. [angleNum]: how many sides are connected to each point. [iteCount]: currently only to check if it's first point. [centerPoint]: input nil. [toDrawNum]: how many lines to draw (an approximation). If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
+[point]: where pattern begins. [angle]: direction of first line. [sideNum]: how many sides do each polygon have. [angleNum]: how many sides are connected to each point. [iteCount]: input 0, currently only to check if it's first point. [centerPoint]: input nil. [toDrawNum]: how many lines to draw. If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
 returns: 
 adjacentPoints,angles,sidesTable. [adjacentPoints]: adjacent points to centerPoint (inputted point). [angles]: angles from each adjacent point to center point. I knew it's only used to update center point while keeping the pattern same, so angle should be to center point. [sidesTable]: all sides that are drawn. Each side is a table {point1,point2,index}. index is the index of the side in the sidesTable.
 the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) is added to prevent the side drawn 0 or 2 times.
@@ -163,6 +163,8 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
 
     return adjacentPoints,angles,sidesTable
 end
+
+BackgroundPattern.tesselation=tesselation
 
 -- this function isn't used in main menu cuz sometimes random parameters gets laggy
 local function randomSideNumAndAngleNum()

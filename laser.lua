@@ -49,9 +49,17 @@ function LaserUnit:extractCoordinates()
     local poses = {}
     local unit = self
     while unit and not unit.removed do
+        local nextUnit=unit.next
+        local the
+        if nextUnit then
+            the=Shape.toObj(unit,nextUnit)-math.pi/2
+        elseif unit.previous then
+            the=Shape.toObj(unit,unit.previous)+math.pi/2
+        else
+            the=unit.direction+math.pi/2+(unit.deltaOrientation or 0)
+        end
         local x1, y1, r1 = Shape.getCircle(unit.x, unit.y, unit.radius)
         r1 = self.sprite.data.sizeX / 2 * r1 / self.sprite.data.hitRadius
-        local the=unit.direction+math.pi/2+(unit.deltaOrientation or 0)
         table.insert(poses, {x1+r1*math.cos(the),y1+r1*math.sin(the)})
         table.insert(poses, {x1-r1*math.cos(the),y1-r1*math.sin(the)})
         unit = unit.next
@@ -223,7 +231,7 @@ function Laser:new(args)
             table.insert(self.units,cir)
             -- table.insert(ret,cir)
             for key, func in pairs(self.bulletEvents) do
-                func(cir,args)
+                func(cir,args,self)
             end
         end
     }

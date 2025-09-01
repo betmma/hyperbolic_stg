@@ -30,7 +30,7 @@ function BulletSpriteSingle:new(args)
 end
 function BulletSpriteSingle:getSprite()
     local name=self.name
-    local spriteData={sizeX=self.sizeX,sizeY=self.sizeY,hitRadius=getHitRadius(name,self.sizeX),key=name,isLaser=name=='laser'}
+    local spriteData={sizeX=self.sizeX,sizeY=self.sizeY,hitRadius=getHitRadius(name,self.sizeX),key=name,isLaser=name=='laser'or name=='laserDark'}
     return Asset.Sprite(quad(self.baseX,self.baseY,self.sizeX,self.sizeY),spriteData)
     -- Asset.SpriteData[Asset.bulletSprites[name]]=spriteData
 end

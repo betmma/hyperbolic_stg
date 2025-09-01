@@ -3,9 +3,9 @@ local Circle=require'circle'
 local Event=require"event"
 
 local Enemy=Shape:extend()
-Enemy.hpSegmentsFuncShockwave=function(self,hpLevel)
+Enemy.hpSegmentsFuncShockwave=function(self,hpLevel,canRemove)
     SFX:play('enemyCharge',true)
-    Effect.Shockwave{x=self.x,y=self.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=true}}
+    Effect.Shockwave{x=self.x,y=self.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove=canRemove or {bullet=true,invincible=true}}
 end
 
 -- parameters: [maxhp], [hp] (defaulted as maxhp), [mainEnemy] if true, killing it wins the scene. [hpSegments] a table of hp levels that triggers special effects. [hpSegmentsFunc] a function that triggers special effects when hp reaches a certain level. note that the hpLevel parameter passed to hpSegmentsFunc is 1-based. (hplevel 1->2 sends 1)

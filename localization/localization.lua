@@ -1030,8 +1030,8 @@ return {
             },
             [116] = {
                 spellName = {
-                    en_us = 'Fan Sign "Destructive Breeze"',
-                    zh_cn = '扇符「破坏之风」',
+                    en_us = 'Fan Sign "Purifying Breeze"',
+                    zh_cn = '扇符「净化之风」',
                 },
                 quote = {
                     en_us = 'A breeze that purifies bullets in its path. Snapping open the fan is cool.',
@@ -1046,6 +1046,16 @@ return {
                 quote = {
                     en_us = 'A beautiful landscape painting depicting the harmony between mountains and seas... if the danmaku is not this dense.',
                     zh_cn = '一幅美丽的风景画，描绘了山与海之间的和谐……如果弹幕没有这么密的话。',
+                }
+            },
+            [118] = {
+                spellName = {
+                    en_us = 'Divine Sea "Crystal on the Pure Land"',
+                    zh_cn = '神海「净土之晶」',
+                },
+                quote = {
+                    en_us = 'The crystal suddenly arranges water into ordered pattern. A mesmerizing sight.',
+                    zh_cn = '晶体突然将水排列成有序的图案。令人着迷的景象。',
                 }
             },
             -- boss spellcards

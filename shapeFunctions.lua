@@ -658,7 +658,7 @@ function Shape.flipIntoTriangle(x,y,x1,y1,x2,y2,x3,y3,flipLimit)
     return x,y, deltaOrientationSum, flipCount, false
 end
 
---- given a segment with endpoints (x1,y1) and (x2,y2), return equally spaced points on the segment, with distance <= step but number of points <= maxPoints.
+--- given a segment with endpoints (x1,y1) and (x2,y2), return equally spaced points on the segment including endpoints, with distance <= step but number of points <= maxPoints.
 ---@param x1 coordinate
 ---@param y1 coordinate
 ---@param x2 coordinate

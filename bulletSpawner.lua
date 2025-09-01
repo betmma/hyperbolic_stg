@@ -133,9 +133,12 @@ end
 ---@field radius number|nil defaults to 1
 
 ---@param args fogArgs
----@param func function to be called after fog disappears. usually Circle
+---@param func function|nil to be called after fog disappears. defaults to Circle
 ---@param wrapping boolean|nil if true, will call func(args), otherwise only func() (so you need to wrap it to send args)
 function BulletSpawner.wrapFogEffect(args, func, wrapping)
+    if not func then
+        func,wrapping=Circle,true
+    end
     local color=args.color or (args.sprite and args.sprite.data.color) or 'red'
     local fogTime=args.fogTime or 60
     local x=args.x
