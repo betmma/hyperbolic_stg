@@ -63,7 +63,7 @@ return {
             shader:send("axisY", Shape.axisY)
 
             shader:send("player_pos", {player.x, player.y})
-            shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y})
+            shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y})
             shader:send("rotation_angle",-player.naturalDirection)
             shader:send("hyperbolic_model", G.viewMode.hyperbolicModel)
             shader:send("r_factor", G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)

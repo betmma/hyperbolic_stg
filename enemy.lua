@@ -75,20 +75,23 @@ function Enemy:calculateMovingTransitionSprite()
     end
 end
 
--- to calculate to make the sprite upward, how much to rotate the sprite. calculation is similar to modelsTrans.glsl
+-- to calculate to make the sprite upward, how much to rotate the sprite. calculation is similar to modelsTrans.glsl. basic idea is delta = - screen geodesic angle (different models) + world geodesic angle (Shape.to(x,y,viewObject.x,viewObject.y))
 local function upwardDeltaOrientation(x,y)
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         return 0
     end
     local obj=G.viewMode.object
     local xo,yo=obj.x,obj.y
+    if xo==x and yo==y then
+        return 0
+    end
     local rotateAngle=obj.naturalDirection or 0
     local x1,y1=Shape.rotateAround(x,y,-rotateAngle,xo,yo)
     local deltaOrientation=-Shape.to(x1,y1,xo,yo)+Shape.to(x,y,xo,yo)
     if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
         return deltaOrientation
     end
-    local ax,ay=WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y
+    local ax,ay=WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y
     -- move and zoom xo,yo to ax,ay
     local axisY=Shape.axisY
     local zoom=(ay-axisY)/(yo-axisY)
@@ -104,7 +107,7 @@ local function upwardDeltaOrientation(x,y)
     local wx,wy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
     -- poincare disk and klein disk have same delta orientation
     deltaOrientation=-math.atan2(wy,wx)+math.pi/2+Shape.to(x,y,xo,yo)
-    return deltaOrientation
+    return deltaOrientation -- currently incorrect when viewOffset is nonzero
 end
 
 function Enemy:drawSprite()

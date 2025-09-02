@@ -130,7 +130,7 @@ return {
                 local t=en.frame
                 local theta=amplitude*math.sin(-t/period*math.pi*2)
                 dx,dy=r*math.sin(theta),r*(math.cos(theta)-1)
-                G.viewOffset.x, G.viewOffset.y=dx,dy
+                G.viewMode.viewOffset.x, G.viewMode.viewOffset.y=dx,dy
                 local naturalDirection=player.naturalDirection
                 dx2,dy2=dx*math.cos(naturalDirection)-dy*math.sin(naturalDirection),dx*math.sin(naturalDirection)+dy*math.cos(naturalDirection)
                 if t%(period)==0 or t%(period)==period/2 then

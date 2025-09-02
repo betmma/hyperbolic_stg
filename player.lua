@@ -636,18 +636,13 @@ function Player:invertShaderEffect()
     end
     local t=1-(self.frame-self.dieFrame)/60
     -- love.graphics.setShader(invertShader)
-    local x,y=self.x,self.y
-    if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
-        if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
-            x,y=WINDOW_WIDTH/2+G.viewOffset.x,WINDOW_HEIGHT/2+G.viewOffset.y
-        else
-            x,y=WINDOW_WIDTH/2,WINDOW_HEIGHT/2
-            invertShader:send("centerInner",{x,y})
-            invertShader:send("radiusInner",y*t*0.5)
-            invertShader:send("centerOuter",{x,y})
-            invertShader:send("radiusOuter",y*t)
-            return
-        end
+    local x,y=Shape.screenPosition(self.x,self.y)
+    if G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.viewMode.hyperbolicModel~=G.HYPERBOLIC_MODELS.UHP then
+        invertShader:send("centerInner",{x,y})
+        invertShader:send("radiusInner",y*t*0.5)
+        invertShader:send("centerOuter",{x,y})
+        invertShader:send("radiusOuter",y*t)
+        return
     end
     local r=t*50
     local x1,y1,r1=Shape.getCircle(x,y,r)

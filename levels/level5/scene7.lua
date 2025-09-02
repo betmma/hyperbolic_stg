@@ -19,7 +19,7 @@ return {
         local border=PolyLine(poses,false)
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        -- G.viewOffset.y=-200
+        -- G.viewMode.viewOffset.y=-200
         -- record LR sequences below current position, to know which side will you get if you leave from bottom. For example, if you go upper right, then upper left, it should track so that when you go bottom twice, you will appear from left, then right.
         local branch=0
         local UPPERLEFT,UPPERRIGHT,RIGHT,BOTTOM,LEFT=1,2,3,4,5

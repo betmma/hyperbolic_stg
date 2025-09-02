@@ -192,6 +192,10 @@ return {
             toyohime = {
                 en_us = 'Watatsuki no Toyohime',
                 zh_cn = '绵月丰姬',
+            },
+            ariya = {
+                en_us = 'Ariya Iwanaga',
+                zh_cn = '磐永阿梨夜',
             }
         },
         spellcards = {

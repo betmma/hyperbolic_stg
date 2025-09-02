@@ -69,7 +69,7 @@ return {
             obj=en,delayFrame=60,executeFunc=function() -- give a broader view of backside
                 SFX:play('enemyPowerfulShot')
                 Event.EaseEvent{
-                    obj=en,aimTable=G.viewOffset,aimKey='y',aimValue=-200,easeFrame=180,progressFunc=Event.sineIOProgressFunc
+                    obj=en,aimTable=G.viewMode.viewOffset,aimKey='y',aimValue=-200,easeFrame=180,progressFunc=Event.sineIOProgressFunc
                 }
                 Event.EaseEvent{
                     obj=en,aimTable=Shape,aimKey='axisY',aimValue=-50,easeFrame=180,progressFunc=Event.sineIOProgressFunc

@@ -1,6 +1,7 @@
 -- helper functions for hyperbolic geometry
 ---@alias angle number
 ---@alias coordinate number
+---@alias pos {x: coordinate, y: coordinate}
 
 local math=math
 
@@ -11,8 +12,8 @@ function Shape.distance(x1,y1,x2,y2)
 end
 
 --  get distance between two objects with x,y coordinates
----@param obj1 table "{x,y}"
----@param obj2 table "{x,y}"
+---@param obj1 pos
+---@param obj2 pos
 ---@return number distance (hyperbolic) distance between obj1 and obj2
 function Shape.distanceObj(obj1,obj2)
     return Shape.distance(obj1.x,obj1.y,obj2.x,obj2.y)
@@ -683,4 +684,88 @@ function Shape.segmentPoints(x1,y1,x2,y2,step,maxPoints)
         points[i+1]={x=x,y=y}
     end
     return points
+end
+
+--- return screen position of x,y after hyperbolicRotateShader transforming (rotating by -G.viewMode.object.naturalDirection, moving G.viewMode.object to {WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y}, then transform to different hyperbolic models)
+---@param x coordinate
+---@param y coordinate
+---@return coordinate "x of screen position"
+---@return coordinate "y of screen position"
+function Shape.screenPosition(x,y)
+    local object=G.viewMode.object
+    if not object or G.viewMode.mode~=G.VIEW_MODES.FOLLOW then
+        return x,y
+    end
+    local xo,yo=object.x,object.y
+    local rotateAngle=object.naturalDirection or 0
+    local x1,y1=Shape.rotateAround(x,y,-rotateAngle,xo,yo)
+    local ax,ay=WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y
+    -- move and zoom xo,yo to ax,ay
+    local axisY=Shape.axisY
+    local zoom=(ay-axisY)/(yo-axisY)
+    local dx=ax-xo*zoom
+    local x2,y2=x1*zoom+dx,(y1-axisY)*zoom+axisY
+    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+        return x2,y2
+    end
+    -- convert to Poincare disk model
+    local zx,zy=x2,y2-axisY
+    local z0x,z0y=WINDOW_WIDTH/2,WINDOW_HEIGHT/2-axisY
+    local z0cx,z0cy=z0x,-z0y
+    local numex,numey=zx-z0x,zy-z0y
+    local denox,denoy=zx-z0cx,zy-z0cy
+    local denosq=denox*denox+denoy*denoy
+    local wx,wy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
+    wx,wy=-wy,wx
+    local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
+    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
+        local ww=wx*wx+wy*wy
+        ww=2/(1+ww)
+        wx,wy=wx*ww,wy*ww
+    end
+    return wx*r+WINDOW_WIDTH/2, wy*r+WINDOW_HEIGHT/2
+end
+
+--- inverse of Shape.screenPosition. Given screen position x,y, return the hyperbolic position before hyperbolicRotateShader transforming.
+---@param x coordinate
+---@param y coordinate
+---@return coordinate "x of coordinate system position"
+---@return coordinate "y of coordinate system position"
+function Shape.inverseScreenPosition(x,y)
+    local object=G.viewMode.object
+    if not object or G.viewMode.mode~=G.VIEW_MODES.FOLLOW then
+        return x,y
+    end
+    local hyperbolicModel=G.viewMode.hyperbolicModel
+    if hyperbolicModel~=G.HYPERBOLIC_MODELS.UHP then -- convert from disk models to UHP
+        local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[hyperbolicModel] or 1)
+        local wx,wy=(x-WINDOW_WIDTH/2)/r,(y-WINDOW_HEIGHT/2)/r
+        local ww=wx*wx+wy*wy
+        if ww>1 then -- outside the disk
+            return 0,1e20 -- return a point at infinity
+        end
+        if hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
+            ww=(1-math.sqrt(1-ww))/ww
+            wx,wy=wx*ww,wy*ww
+        end
+        wx,wy=wy,-wx
+
+        local z0x,z0y=WINDOW_WIDTH/2,WINDOW_HEIGHT/2-Shape.axisY
+        local z0cx,z0cy=z0x,-z0y
+        local numex,numey=-wx*z0cx+wy*z0cy+z0x, -wx*z0cy-wy*z0cx+z0y
+        local denox,denoy=1-wx,-wy
+        local denosq=denox*denox+denoy*denoy
+        local zx,zy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
+        x,y=zx,zy+Shape.axisY
+    end
+    local ax,ay=WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y
+    local xo,yo=object.x,object.y
+    -- move and zoom ax,ay to xo,yo
+    local axisY=Shape.axisY
+    local zoom=(yo-axisY)/(ay-axisY)
+    local dx=xo-ax*zoom
+    local x1,y1=x*zoom+dx,(y-axisY)*zoom+axisY
+    local rotateAngle=object.naturalDirection or 0
+    local x2,y2=Shape.rotateAround(x1,y1,rotateAngle,xo,yo)
+    return x2,y2
 end

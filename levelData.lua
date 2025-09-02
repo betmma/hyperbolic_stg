@@ -22,7 +22,7 @@ local function wrapLevelMake(levelData)
         G.randomseed=seed
         Shape.timeSpeed=1
         G.viewMode.mode=G.VIEW_MODES.NORMAL
-        G.viewOffset={x=0,y=0}
+        G.viewMode.viewOffset={x=0,y=0}
         -- show spellcard name
         do
             if not levelData.spellName then
@@ -202,7 +202,7 @@ local levelData={
     loadLevels(7,{'1','2','3','4','5','6','7','8'}),
     loadLevels(8,{'1','2','3','4','5','6','7','8'}),
     loadLevels(9,{'1','2','3','4','5','6','7','8','9'}),
-    loadLevels(10,{'1','2','3','4','5','6'}),
+    loadLevels(10,{'1','2','3','4','5','6',}),
     loadLevels(11,{'1','2','3','4','5','6','7','8'}),
     loadLevels('EX',{'1','2','5','6','7','8','9',}),
 }

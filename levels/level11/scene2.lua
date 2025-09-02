@@ -225,8 +225,8 @@ return {
             obj=en,
             period=1,
             executeFunc=function()
-                G.viewOffset.x=(player.x-400)*0.1
-                G.viewOffset.y=(player.y-300)*0.1
+                G.viewMode.viewOffset.x=(player.x-400)*0.1
+                G.viewMode.viewOffset.y=(player.y-300)*0.1
                 local frame=en.frame
                 local testing=0
                 if frame==20 then

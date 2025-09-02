@@ -1438,17 +1438,21 @@ G={
 G:switchState(G.STATES.MAIN_MENU)
 G.frame=0
 G.sceneTempObjs={}
+---@enum VIEW_MODE
 G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
+---@enum HYPERBOLIC_MODEL
 G.HYPERBOLIC_MODELS={UHP=0,P_DISK=1,K_DISK=2} -- use number is because it will be sent to shader
 G.DISK_RADIUS_BASE={
     [G.HYPERBOLIC_MODELS.P_DISK]=1, -- Poincare disk
     [G.HYPERBOLIC_MODELS.K_DISK]=1, -- Klein disk
 }
 G.HYPERBOLIC_MODELS_COUNT=3
+---@type {mode: VIEW_MODE, hyperbolicModel: HYPERBOLIC_MODEL, object: GameObject|nil, viewOffset: pos}
 G.viewMode={
     mode=G.VIEW_MODES.NORMAL,
     hyperbolicModel=G.HYPERBOLIC_MODELS.UHP,
     object=...,
+    viewOffset={x=0,y=0}
 }
 
 local lume = require "import.lume"
@@ -1742,9 +1746,9 @@ G.followModeTransform=function(self, getParams)
     end
     local screenWidth, screenHeight = love.graphics.getDimensions()
     local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
-    if G.viewOffset then
-        wantedX=wantedX+G.viewOffset.x
-        wantedY=wantedY+G.viewOffset.y
+    if G.viewMode.viewOffset then
+        wantedX=wantedX+G.viewMode.viewOffset.x
+        wantedY=wantedY+G.viewMode.viewOffset.y
     end
     local scale=(wantedY-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local translateX,translateY=wantedX-G.viewMode.object.x*scale,wantedY-G.viewMode.object.y*scale
@@ -1762,9 +1766,9 @@ G.antiFollowModeTransform=function(self)
     local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local screenWidth, screenHeight = love.graphics.getDimensions()
     local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
-    if G.viewOffset then
-        wantedX=wantedX+G.viewOffset.x
-        wantedY=wantedY+G.viewOffset.y
+    if G.viewMode.viewOffset then
+        wantedX=wantedX+G.viewMode.viewOffset.x
+        wantedY=wantedY+G.viewMode.viewOffset.y
     end
     love.graphics.scale(1/scale)
     love.graphics.translate(-(wantedX-G.viewMode.object.x*scale),-(wantedY-G.viewMode.object.y*scale))

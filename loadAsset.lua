@@ -218,11 +218,12 @@ Asset.setHyperbolicRotateShader=function()
         return
     end
     local object=G.viewMode.object
+    object.naturalDirection=object.naturalDirection or 0
     local shader=G.hyperbolicRotateShader
     love.graphics.setShader(shader)
     shader:send("player_pos", {object.x, object.y})
-    shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewOffset.x, WINDOW_HEIGHT/2+G.viewOffset.y})
-    shader:send("rotation_angle",-object.naturalDirection or 0)
+    shader:send("aim_pos", {WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y})
+    shader:send("rotation_angle",-object.naturalDirection)
     shader:send("shape_axis_y", Shape.axisY)
     shader:send("hyperbolic_model", G.viewMode.hyperbolicModel)
     shader:send("r_factor", G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
