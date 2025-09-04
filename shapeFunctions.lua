@@ -741,9 +741,6 @@ function Shape.inverseScreenPosition(x,y)
         local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[hyperbolicModel] or 1)
         local wx,wy=(x-WINDOW_WIDTH/2)/r,(y-WINDOW_HEIGHT/2)/r
         local ww=wx*wx+wy*wy
-        if ww>1 then -- outside the disk
-            return 0,1e20 -- return a point at infinity
-        end
         if hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
             ww=(1-math.sqrt(1-ww))/ww
             wx,wy=wx*ww,wy*ww

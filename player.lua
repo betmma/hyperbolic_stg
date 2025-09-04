@@ -123,17 +123,23 @@ function Player:new(args)
     self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32,x=64}
     self.keyEverPressed={} -- to check restriction nicknames like no focus
     self.keyIsDown=love.keyboard.isDown
+    self.keyIsPressed=isPressed -- check if current frame is the first frame that key be pressed down. only used for switching hyperbolic model (X key)
     self.realCreatedTime=os.date('%Y-%m-%d %H:%M:%S')
 end
 function Player:setReplaying()
     self.replaying=true
-    self.keyIsDown=function(key)
-        local record=self.keyRecord[self.frame+1] --this is because when recording keys first frame is stored at index 1 (by table.insert), while when playing at first frame key value is loaded from keyRecord before update, so self.frame=0
+    self.keyIsDown=function(key,frame)
+        local record=self.keyRecord[(frame or self.frame)+1] --this is because when recording keys first frame is stored at index 1 (by table.insert), while when playing at first frame key value is loaded from keyRecord before update, so self.frame=0
         local val=self.key2Value[key]
         if record and val then
             return record%(val*2)>=val
         end
         return false
+    end
+    self.keyIsPressed=function(key)
+        local currentDown=self.keyIsDown(key)
+        local lastDown=self.keyIsDown(key,self.frame-1)
+        return currentDown and not lastDown
     end
 end
 

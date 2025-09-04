@@ -903,11 +903,12 @@ G={
                 end
                 self.backgroundPattern:update(dt)
                 GameObject:updateAll(dt)
+                local player=Player.objects[1]
                 if isPressed('escape') then
                     SFX:play('select')
                     -- self:removeAll()
                     self:switchState(self.STATES.PAUSE)
-                elseif (isPressed('r')or isPressed('w')) and (not Player.objects[1] or Player.objects[1].frame>10)then
+                elseif (isPressed('r')or isPressed('w')) and (not player or player.frame>10)then
                     if self.replay then -- if in "replay" replay "replay" (why so strange)
                         self:leaveLevel()
                         ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
@@ -916,18 +917,18 @@ G={
                         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
                     end
                 elseif isPressed('q')then
-                    if self.viewMode.mode==self.VIEW_MODES.NORMAL and Player.objects[1] then
+                    if self.viewMode.mode==self.VIEW_MODES.NORMAL and player then
                         self.viewMode.mode=self.VIEW_MODES.FOLLOW
-                        self.viewMode.object=Player.objects[1]
+                        self.viewMode.object=player
                     elseif self.viewMode.mode==self.VIEW_MODES.FOLLOW then
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
-                elseif isPressed('e') and (Player.objects[1] and Player.objects[1].unlockDiskModels==true or G.replay) then
+                elseif (player and player.keyIsPressed('x') or isPressed('x')) and (player and player.unlockDiskModels==true or G.replay) then -- note that this A and B or C clause is not equal to B if A else C, since B can be false. in replay mode pressing x still works
                     G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
                     SFX:play('select')
                 end
 
-                if not G.UseHypRotShader or not (Player.objects[1] and Player.objects[1].unlockDiskModels==true or G.replay) then
+                if not G.UseHypRotShader or not (player and player.unlockDiskModels==true or G.replay) then
                     G.viewMode.hyperbolicModel=G.HYPERBOLIC_MODELS.UHP -- without shader only UHP is supported
                 end
                 

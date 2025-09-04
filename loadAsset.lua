@@ -190,6 +190,12 @@ Asset.Batches={
     -- G.afterExtraDraw here, not an element of batches
     Asset.foregroundBatch,
 }
+--- batch:{before:fun()|nil,after:fun()|nil}
+Asset.batchExtraActions={
+}
+for i,batch in pairs(Asset.Batches) do
+    Asset.batchExtraActions[batch]={}
+end
 local isHighlightBatch={}
 isHighlightBatch[Asset.playerBulletBatch]=true
 isHighlightBatch[Asset.bigBulletMeshes]=true
@@ -250,6 +256,9 @@ Asset.drawBatches=function(self)
         if isHighlightBatch[batch] then
             love.graphics.setBlendMode("add")
         end
+        if self.batchExtraActions[batch] and self.batchExtraActions[batch].before then
+            self.batchExtraActions[batch].before()
+        end
         if type(batch)=='table' then -- laser batch that is actually a table of laser meshes
             for i, mesh in pairs(batch) do
                 love.graphics.draw(mesh)
@@ -257,17 +266,15 @@ Asset.drawBatches=function(self)
         else
             love.graphics.draw(batch)
         end
+        if self.batchExtraActions[batch] and self.batchExtraActions[batch].after then
+            self.batchExtraActions[batch].after()
+        end
         love.graphics.setBlendMode('alpha') -- default mode
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.playerFocusBatch and G.UseHypRotShader then
             love.graphics.setShader()
         end
         if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.pop()
-        end
-        if batch==Asset.playerFocusBatch then
-            if G.extraAfterDraw then
-                G.extraAfterDraw()
-            end
         end
     end
 end

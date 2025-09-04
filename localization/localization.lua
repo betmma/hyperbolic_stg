@@ -1062,6 +1062,16 @@ return {
                     zh_cn = '晶体突然将水排列成有序的图案。令人着迷的景象。',
                 }
             },
+            [119] = {
+                spellName = {
+                    en_us = 'Permanence Sign "Invariance Over Eons"',
+                    zh_cn = '恒符「超越万古的恒久」',
+                },
+                quote = {
+                    en_us = 'Over eons, fossils are even moving, but her stones remain unchanged.',
+                    zh_cn = '超越万古，化石甚至在移动，但她的石头保持不变。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {
@@ -1452,8 +1462,8 @@ return {
                 zh_cn = '圆盘模型',
             },
             description = {
-                en_us = 'Unlock Poincare Disk and Klein Disk models. Press E in level to switch model.',
-                zh_cn = '解锁庞加莱圆盘和克莱因圆盘模型。在关卡中按E键切换模型。',
+                en_us = 'Unlock Poincare Disk and Klein Disk models. Press X in level to switch model.',
+                zh_cn = '解锁庞加莱圆盘和克莱因圆盘模型。在关卡中按X键切换模型。',
             },
         }
     },
@@ -1469,8 +1479,8 @@ return {
                 zh_cn = '通过所有场景',
             },
             description = {
-                en_us = 'Congratulations! You have mastered the hyperbolic domain and all its challenges!',-- Hit Z to see the ending screen.',
-                zh_cn = '恭喜你！你已经掌握了双曲域及其所有挑战！',--按Z键查看结局画面。',
+                en_us = 'Congratulations! You have mastered the hyperbolic domain and all its spellcards!',-- Hit Z to see the ending screen.',
+                zh_cn = '恭喜你！你已经掌握了双曲域及其所有符卡！',--按Z键查看结局画面。',
             },
         },
         Pass1Scene = {
@@ -1483,8 +1493,8 @@ return {
                 zh_cn = '通过1个场景',
             },
             description = {
-                en_us = 'The adventure begins here. Be prepared for mindblowing challenges ahead!',
-                zh_cn = '冒险从这里开始。准备好迎接令人震撼的挑战吧！',
+                en_us = 'The adventure begins here. Be prepared for mindblowing spellcards ahead!',
+                zh_cn = '冒险从这里开始。准备好迎接震撼的符卡吧！',
             },
         },
         Lose100Times = {
@@ -1497,8 +1507,8 @@ return {
                 zh_cn = '满身疮痍100次',
             },
             description = {
-                en_us = '100 times is just beginning. Come on and try again!',
-                zh_cn = '100次只是开始。再来一次吧！',
+                en_us = '100 times is just beginning. Come on and try again?',
+                zh_cn = '100次只是开始。再来一次吧？',
             },
         },
         Take10DamageIn1Scene = {

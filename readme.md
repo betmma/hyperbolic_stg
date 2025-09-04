@@ -21,7 +21,7 @@ Arrow keys to move between options.
 Z to choose an option.
 Escape/X to go back.
 ###### In Choose Level Menu:
-1-9 (above qwerty) to choose that level. '0' chooses 10, '-' chooses 11 (current EX).
+1-9 (above qwerty) to choose that level. '0' chooses 10, '-' chooses 11, '=' chooses 12 (current EX).
 numpad 1-9 to choose that scene in current level.
 ###### In Load Replay Menu:
 Enter three digits (you can use both set of number keys) to choose that replay number.

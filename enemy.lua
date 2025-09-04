@@ -87,27 +87,81 @@ local function upwardDeltaOrientation(x,y)
     end
     local rotateAngle=obj.naturalDirection or 0
     local x1,y1=Shape.rotateAround(x,y,-rotateAngle,xo,yo)
-    local deltaOrientation=-Shape.to(x1,y1,xo,yo)+Shape.to(x,y,xo,yo)
     if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+        local deltaOrientation=-Shape.to(x1,y1,xo,yo)+Shape.to(x,y,xo,yo)
         return deltaOrientation
     end
-    local ax,ay=WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y
-    -- move and zoom xo,yo to ax,ay
-    local axisY=Shape.axisY
-    local zoom=(ay-axisY)/(yo-axisY)
-    local dx=ax-xo*zoom
-    local x2,y2=x1*zoom+dx,(y1-axisY)*zoom+axisY
-    -- convert to disk
-    local zx,zy=x2,y2-axisY
-    local z0x,z0y=WINDOW_WIDTH/2,WINDOW_HEIGHT/2-axisY
-    local z0cx,z0cy=z0x,-z0y
-    local numex,numey=zx-z0x,zy-z0y
-    local denox,denoy=zx-z0cx,zy-z0cy
-    local denosq=denox*denox+denoy*denoy
-    local wx,wy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
-    -- poincare disk and klein disk have same delta orientation
-    deltaOrientation=-math.atan2(wy,wx)+math.pi/2+Shape.to(x,y,xo,yo)
-    return deltaOrientation -- currently incorrect when viewOffset is nonzero
+    local screenx,screeny=Shape.screenPosition(x,y)
+    local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
+    local screenObjx,screenObjy=Shape.screenPosition(xo,yo)
+    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then --geodesic is straight line
+        return -math.atan2(screenObjy-screeny,screenObjx-screenx)+Shape.to(x,y,xo,yo)
+    end
+    -- poincare disk
+    local wx,wy=(screenx-WINDOW_WIDTH/2)/r,(screeny-WINDOW_HEIGHT/2)/r
+    local wox,woy=(screenObjx-WINDOW_WIDTH/2)/r,(screenObjy-WINDOW_HEIGHT/2)/r
+    -- calculate direction from wx,wy to wox,woy along geodesic
+    
+    local start_mag_sq = wx * wx + wy * wy
+    local epsilon = 1e-10
+
+    -- CASE 1: The geodesic is a diameter of the disk.
+    -- This occurs when the start point, end point, and the origin (0,0) are collinear.
+    -- We check this using the 2D cross-product. If it's zero, they are collinear.
+    local cross_product = wx * woy - wy * wox
+    if math.abs(cross_product) < epsilon then
+        -- The direction is simply the Euclidean vector from start to end.
+        local dx = wox - wx
+        local dy = woy - wy
+        return -math.atan2(dy, dx) + Shape.to(x, y, xo, yo)
+    end
+
+    -- CASE 2: The geodesic is a circular arc orthogonal to the unit circle.
+    -- We need to find the center of this circle. The circle passes through
+    -- the start point P(wx, wy), the end point Q(wox, woy), and the inversion
+    -- of the start point P* with respect to the unit circle.
+
+    -- 1. Calculate the inversion of the start point P.
+    local inv_wx = wx / start_mag_sq
+    local inv_wy = wy / start_mag_sq
+
+    -- 2. Find the center (cx, cy) of the circle passing through P, Q, and P*.
+    -- This is the circumcenter of the triangle PQP*.
+    local p = { x = wx, y = wy }
+    local q = { x = wox, y = woy }
+    local p_inv = { x = inv_wx, y = inv_wy }
+
+    local p_sq = p.x^2 + p.y^2   -- This is just start_mag_sq
+    local q_sq = q.x^2 + q.y^2   -- This is just end_mag_sq
+    local p_inv_sq = p_inv.x^2 + p_inv.y^2
+
+    local D = 2 * (p.x * (q.y - p_inv.y) + q.x * (p_inv.y - p.y) + p_inv.x * (p.y - q.y))
+
+    local cx = (p_sq * (q.y - p_inv.y) + q_sq * (p_inv.y - p.y) + p_inv_sq * (p.y - q.y)) / D
+    local cy = (p_sq * (p_inv.x - q.x) + q_sq * (p.x - p_inv.x) + p_inv_sq * (q.x - p.x)) / D
+
+    -- 3. The tangent direction is perpendicular to the radius from the center (cx, cy)
+    -- to the start point P(wx, wy).
+    local radius_x = wx - cx
+    local radius_y = wy - cy
+
+    -- The two possible perpendicular tangent vectors are (-radius_y, radius_x) and (radius_y, -radius_x).
+    local tangent_x = -radius_y
+    local tangent_y = radius_x
+
+    -- 4. Choose the correct tangent direction. The correct one will have a positive
+    -- dot product with the vector from the start point to the end point (PQ).
+    local pq_x = wox - wx
+    local pq_y = woy - wy
+
+    local dot_product = tangent_x * pq_x + tangent_y * pq_y
+    if dot_product < 0 then
+        -- We chose the wrong perpendicular vector, so we flip it.
+        tangent_x = -tangent_x
+        tangent_y = -tangent_y
+    end
+
+    return -math.atan2(tangent_y, tangent_x) + Shape.to(x, y, xo, yo)
 end
 
 function Enemy:drawSprite()

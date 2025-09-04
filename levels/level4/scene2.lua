@@ -129,7 +129,7 @@ return {
             love.graphics.setBlendMode("alpha")
             love.graphics.setShader()
         end
-        G.extraAfterDraw=afterDraw
+        Asset.batchExtraActions[Asset.playerFocusBatch].after=afterDraw
         local playerx,playery=player.x,player.y
         Event.LoopEvent{
             obj=en,
@@ -151,6 +151,6 @@ return {
         }
     end,
     leave=function()
-        G.extraAfterDraw=nil
+        Asset.batchExtraActions[Asset.playerFocusBatch].after=nil
     end
 }
