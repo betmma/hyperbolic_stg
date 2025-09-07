@@ -125,9 +125,7 @@ end
 function PolyLine:drawMesh(poses)
     poses=poses or self:getMeshPoses()
     local vertices={}
-    local x,y,w,h=self.sprite.quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
-    local W,H=Asset.bulletImage:getWidth(),Asset.bulletImage:getHeight()
-    x,y,w,h=x/W,y/H,w/W,h/H
+    local x,y,w,h=love.graphics.getQuadXYWHOnImage(self.sprite.quad,Asset.bulletImage)
     for i=1,#poses,2 do
         table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, self.spriteTransparency or 1})
         table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})

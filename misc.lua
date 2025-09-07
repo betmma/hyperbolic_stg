@@ -322,3 +322,12 @@ function pprint(t)
     result = result:sub(1, -3) -- Remove the last comma and space
     return result .. "}"
 end
+
+--- get quad x,y,w,h on the image, return as ratio in [0,1]
+---@param quad love.Quad
+---@param image love.Image
+function love.graphics.getQuadXYWHOnImage(quad, image)
+    local x, y, w, h = quad:getViewport()
+    local iw, ih = image:getDimensions()
+    return x / iw, y / ih, w / iw, h / ih
+end

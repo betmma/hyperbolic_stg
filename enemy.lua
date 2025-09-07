@@ -61,6 +61,7 @@ function Enemy:update(dt)
         self._hpLevel=hpLevel
     end
     self:calculateMovingTransitionSprite()
+    self.orientation=Enemy.upwardDeltaOrientation(self.x,self.y)
 end
 
 function Enemy:calculateMovingTransitionSprite()
@@ -76,7 +77,7 @@ function Enemy:calculateMovingTransitionSprite()
 end
 
 -- to calculate to make the sprite upward, how much to rotate the sprite. calculation is similar to modelsTrans.glsl. basic idea is delta = - screen geodesic angle (different models) + world geodesic angle (Shape.to(x,y,viewObject.x,viewObject.y))
-local function upwardDeltaOrientation(x,y)
+function Enemy.upwardDeltaOrientation(x,y)
     if G.viewMode.mode==G.VIEW_MODES.NORMAL then
         return 0
     end
@@ -173,7 +174,7 @@ function Enemy:drawSprite()
         local x0,y0=self.x,self.y
         local orientation=0
         if G.UseHypRotShader then -- fairies should always face upwards (of screen). but inside different hyperbolic models, "upwards" is different. need a function to calculate the delta orientation
-            orientation=upwardDeltaOrientation(x0,y0)
+            orientation=self.orientation
         end
         local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.3)
         Asset.fairyBatch:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.fairy.width/2,Asset.fairy.height/2)
@@ -181,7 +182,7 @@ function Enemy:drawSprite()
         local x0,y0=self.x,self.y
         local orientation=0
         if G.UseHypRotShader then
-            orientation=upwardDeltaOrientation(x0,y0)
+            orientation=self.orientation
         end
         local offDistance=math.sin(self.time)*1 -- slightly floating
         x0,y0=Shape.rThetaPos(x0,y0,offDistance,orientation+math.pi/2)
@@ -275,6 +276,7 @@ end
 function Enemy:draw()
     local shader=love.graphics.getShader()
     local color={love.graphics.getColor()}
+    self.orientation=self.orientation or Enemy.upwardDeltaOrientation(self.x,self.y)
     if self.mainEnemy then
         self:drawHexagram()
     end
@@ -305,14 +307,29 @@ function Enemy:drawCircleHPBar()
     local ratio=self.hp/self.maxhp
     local yellowRatio=(self.damageResistance or 1)^0.5
     love.graphics.setColor(1,1,1/yellowRatio,self.hpBarTransparency)
-    for i=31,32,0.5 do
-        Shape.drawArc(self.x,self.y,i,math.pi*(1.5-2*ratio),math.pi*(1.5),100)
+    local vertices={}
+    local angle0=self.orientation+math.pi*(1.5-2*ratio)
+    local num=50
+    local X,Y,W,H=love.graphics.getQuadXYWHOnImage(BulletSprites.laser.white.quad,Asset.bulletImage)
+    for i=0,num do
+        local angle=angle0+i/num*math.pi*2*ratio
+        local x1,y1=Shape.rThetaPos(self.x,self.y,30.5,angle)
+        local x2,y2=Shape.rThetaPos(self.x,self.y,32.5,angle)
+        table.insert(vertices,{x1,y1,X,Y,1,1,1/yellowRatio,self.hpBarTransparency})
+        table.insert(vertices,{x2,y2,X+W,Y,1,1,1/yellowRatio,self.hpBarTransparency})
     end
+    if not self.circleHPBarMesh then
+        self.circleHPBarMesh=love.graphics.newMesh(vertices,'strip')
+        self.circleHPBarMesh:setTexture(Asset.bulletImage)
+    else
+        self.circleHPBarMesh:setVertices(vertices)
+    end
+    table.insert(Asset.laserMeshes,self.circleHPBarMesh)
     -- love.graphics.setColor(1,0.3,0.3,self.hpBarTransparency)
     for i,ratio in pairs(self.hpSegments) do
         local rin,rout=29.5,33.5
-        local x1,y1=Shape.rThetaPos(self.x,self.y,rin,math.pi*(1.5-2*ratio))
-        local x2,y2=Shape.rThetaPos(self.x,self.y,rout,math.pi*(1.5-2*ratio))
+        local x1,y1=Shape.rThetaPos(self.x,self.y,rin,self.orientation+math.pi*(1.5-2*ratio))
+        local x2,y2=Shape.rThetaPos(self.x,self.y,rout,self.orientation+math.pi*(1.5-2*ratio))
         Shape.drawSegment(x1,y1,x2,y2)
     end
     -- SetFont(12)
