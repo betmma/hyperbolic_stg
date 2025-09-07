@@ -8,7 +8,8 @@ function LaserUnit:new(args)
     self.radiusRef=self.radius
     self.previous=nil
     self.next=nil
-    self.meshLimit=args.meshLimit
+    self.interpolateLimit=args.interpolateLimit
+    self.meshVerticesInitSize=100
 end
 local function sigmoid(x)
     return 1/(1+2.718^-x)
@@ -97,7 +98,7 @@ function LaserUnit:extractCoordinates()
             local xc1,yc1,xc2,yc2=0.5*(x1+x3),0.5*(y1+y3),0.5*(x2+x4),0.5*(y2+y4)
             local dis=Shape.distance(xc1,yc1,xc2,yc2)
             local splitLength=10
-            local segMax=self.meshLimit or 10 -- at most self.meshLimit or 10 points
+            local segMax=self.interpolateLimit or 10 -- at most self.interpolateLimit or 10 points
             -- if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
             --     local viewer=G.viewMode.object
             --     local toViewerDistance=Shape.distance(xc1,yc1,viewer.x,viewer.y)
@@ -140,9 +141,12 @@ function LaserUnit:drawMesh(poses)
         table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})
     end
     if #vertices<4 then return end
-    local mesh=love.graphics.newMesh(vertices,'strip')
-    mesh:setTexture(Asset.bulletImage)
-    table.insert(Asset.laserMeshes,mesh)
+    if not self.mesh then
+        self.mesh=ExpandingMesh(self.meshVerticesInitSize,'strip')
+        self.mesh:setTexture(Asset.bulletImage)
+    end
+    self.mesh:setVertices(vertices)
+    table.insert(Asset.laserMeshes,self.mesh.mesh)
     -- love.graphics.draw(mesh)
 end
 

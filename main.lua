@@ -1,4 +1,4 @@
-VERSION="0.7.4.1"
+VERSION="0.7.4.2"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -12,8 +12,9 @@ function love.load()
     shove.setResolution(800, 600, {fitMethod = "aspect", renderMode = "layer"})
     shove.setWindowMode(800, 600, {resizable = true})
     Object,GameObject = unpack(require "classic")
+    ExpandingMesh = require "import.expandingMesh"
     ---@type ShaderScan
-    ShaderScan = (require 'shaderScan')()
+    ShaderScan = (require 'import.shaderScan')()
     EventManager = require "eventManager"
     EM = EventManager
     Shape = require "shape"
@@ -37,7 +38,7 @@ function love.load()
     ScreenshotManager=require"screenshotManager"
     ReplayManager=require"replayManager"
     Nickname=require"nickname"
-    Complex,Mobius=unpack(require"mobius")
+    Complex,Mobius=unpack(require"import.mobius")
 
     shove.createLayer("main")
     shove.addEffect('main',Player.invertShader)
