@@ -128,12 +128,13 @@ for i,color in pairs(Asset.fairyColors) do
 end
 
 local bossImage = love.graphics.newImage( "assets/placeholderBossSprite.png" )
+bossImage:setFilter("nearest", "nearest")
 Asset.bossImage=bossImage
 local bossWidth,bossHeight=80,80
 ---@type {width:number,height:number,[string]:{key:string,width:number,height:number,normal:love.Quad[]}}
 Asset.boss={}
 Asset.boss.width,Asset.boss.height=bossWidth,bossHeight
-local bossImagePoses={{name='placeholder',num=4},{name='asama',num=2},{name='toyohime',num=4}}
+local bossImagePoses={{name='placeholder',num=4},{name='asama',num=2},{name='toyohime',num=4},{name='ariya',num=4}}
 for i,info in pairs(bossImagePoses) do
     Asset.boss[info.name]={key='boss',width=bossWidth,height=bossHeight,normal={}}
     for j=1,info.num do

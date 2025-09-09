@@ -196,6 +196,7 @@ return {
                             cir.speed=math.clamp(cir.speed+0.5,30,60)
                             if times==0 then
                                 if hpLevel==1 and cir.frame%20==0 then
+                                    SFX:play('enemyShot')
                                     for i=-9,9 do
                                         if i==0 then
                                         goto continue 

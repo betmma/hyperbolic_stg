@@ -332,8 +332,9 @@ end
 ---@param image love.Image "image of sprite"
 ---@param n integer "number of vertices on the circle"
 ---@param color number[]|nil "color RGBA, each in [0,1]"
+---@param square boolean|nil "if true, vertices are calculated on a square instead of a circle (for square sprites)"
 ---@return love.Mesh "fan mesh"
-function Shape.fanMesh(posX,posY,posR,orientation,quad,image,n,color)
+function Shape.fanMesh(posX,posY,posR,orientation,quad,image,n,color,square)
     color=color or {1,1,1,1}
     local x,y,w,h=quad:getViewport() -- like 100, 100, 50, 50 so needs to divide width and height
     local imgW,imgH=image:getDimensions()
@@ -342,8 +343,12 @@ function Shape.fanMesh(posX,posY,posR,orientation,quad,image,n,color)
     vertices[1]={posX,posY,x+w/2,y+h/2,color[1],color[2],color[3],color[4]}
     for i=0,n do
         local angle=math.pi*2/n*i
-        local x2,y2=Shape.rThetaPos(posX,posY,posR,angle+orientation)
-        local u,v=(math.cos(angle)+1)/2,(math.sin(angle)+1)/2
+        local rRatio=1
+        if square then
+            rRatio=1/math.cos((angle+math.pi/4)%(math.pi/2)-math.pi/4)
+        end
+        local x2,y2=Shape.rThetaPos(posX,posY,posR*rRatio,angle+orientation)
+        local u,v=(math.cos(angle)*rRatio+1)/2,(math.sin(angle)*rRatio+1)/2
         vertices[i+2]={x2,y2,x+u*w,y+v*h,color[1],color[2],color[3],color[4]}
     end
     local mesh=love.graphics.newMesh(vertices,'fan')

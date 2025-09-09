@@ -1064,12 +1064,22 @@ return {
             },
             [119] = {
                 spellName = {
-                    en_us = 'Permanence Sign "Invariance Over Eons"',
+                    en_us = 'Invariant Sign "Permanence Over Eons"',
                     zh_cn = '恒符「超越万古的恒久」',
                 },
                 quote = {
                     en_us = 'Over eons, fossils are even moving, but her stones remain unchanged.',
                     zh_cn = '超越万古，化石甚至在移动，但她的石头保持不变。',
+                }
+            },
+            [120] = {
+                spellName = {
+                    en_us = 'Stop Sign "Chronostasis of Evolution"',
+                    zh_cn = '止符「进化停滞的错觉」',
+                },
+                quote = {
+                    en_us = 'Stopped time seems that I have plenty of time to dodge, but new bullets will come soon! Ruthless competition of species evolution.',
+                    zh_cn = '时间停止似乎让我有充足的时间躲避，但新一轮子弹很快就会到来！是在说物种进化中的无情竞争吧。',
                 }
             },
             -- boss spellcards
