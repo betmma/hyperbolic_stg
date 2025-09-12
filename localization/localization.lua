@@ -1082,6 +1082,16 @@ return {
                     zh_cn = '时间停止似乎让我有充足的时间躲避，但新一轮子弹很快就会到来！是在说物种进化中的无情竞争吧。',
                 }
             },
+            [121] = {
+                spellName = {
+                    en_us = 'Rejection Sign "Iwakura Amids Shifting Seasons"',
+                    zh_cn = '拒符「四季流转的磐座」',
+                },
+                quote = {
+                    en_us = 'Crazy danmaku representing four seasons is swirling around, while the Iwakura remains the only safe place.',
+                    zh_cn = '象征四季的疯狂弹幕在肆虐，而磐座是唯一的安全之地。',
+                }
+            },
             -- boss spellcards
             [101] = {
                 spellName = {

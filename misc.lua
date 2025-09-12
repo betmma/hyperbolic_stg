@@ -91,6 +91,12 @@ function math.modClamp(val,center,radius)
     return center+(val-center+radius)%(radius*2)-radius
 end
 
+-- return the smallest absolute angle difference between angle1 and angle2, in [0,pi]
+function math.angleDiff(angle1, angle2)
+    local diff = (angle2 - angle1 + math.pi) % (2 * math.pi) - math.pi
+    return math.abs(diff)
+end
+
 ---@param a number|string|table
 ---@param b? number
 ---@return number
