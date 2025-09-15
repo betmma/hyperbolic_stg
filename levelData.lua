@@ -134,12 +134,10 @@ local function wrapLevelMake(levelData)
         end
 
         -- apply upgrades
-        local options=G.UIDEF.UPGRADES.options
-        for k,value in ipairs(options) do
-            for i,option in pairs(value) do
-                if option.upgrade and G.save.upgrades[i] and G.save.upgrades[i][k] and G.save.upgrades[i][k].bought==true then
-                    G.UIDEF.UPGRADES.upgrades[option.upgrade].executeFunc()
-                end
+        local upgrades=Upgrades.upgradesData
+        for k,v in pairs(upgrades) do
+            if G.save.upgrades[k] and G.save.upgrades[k].bought then
+                v.executeFunc()
             end
         end
     end

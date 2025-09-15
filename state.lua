@@ -1,6 +1,5 @@
 BulletSpawner=require"bulletSpawner"
 BackgroundPattern=require"backgroundPattern"
-local upgrades=require"upgrades"
 local function keyBindValueCalc(self,addKey,subKey,valueName,valueMax)
     if isPressed(addKey)then
         self.currentUI[valueName]=self.currentUI[valueName]%valueMax+1
@@ -520,17 +519,18 @@ G={
             enter=function(self)
                 self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
             end,
-            upgrades=upgrades.upgradesData,
-            -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use self.currentUI.options[chosen[2]][chosen[1]]. However in save it's stored in order of (x, y), so to get if an upgrade is bought use self.save.upgrades[chosen[1]][chosen[2]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
+            upgrades=Upgrades.upgradesData,
+            -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use Upgrades.upgradesTree[chosen[2]][chosen[1]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
             -- need is also (x, y)
-            options=upgrades.upgradesTree,
+            options=Upgrades.upgradesTree,
             chosen={1,1},
             needSatisfied=function(self,option)
                 if not option.need then
                     return true
                 end
+                local options=self.currentUI.options
                 for key, value in pairs(option.need) do
-                    if self.save.upgrades[value[1]][value[2]].bought==false then
+                    if self.save.upgrades[value].bought==false then
                         return false
                     end
                 end
@@ -550,7 +550,7 @@ G={
                 for k,value in ipairs(options) do
                     for i=1,#value do
                         local option=value[i]
-                        if option.upgrade and self.save.upgrades[i][k].bought then
+                        if option.upgrade and self.save.upgrades[option.upgrade].bought then
                             xp=xp-self.currentUI.upgrades[option.upgrade].cost
                         end
                     end
@@ -559,7 +559,8 @@ G={
             end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
-                local options=self.currentUI.options
+                local options=Upgrades.upgradesTree
+                local upgrades=Upgrades.upgradesData
                 local chosen=self.currentUI.chosen
                 local option=options[chosen[2]][chosen[1]]
                 local dirValues={down={0,1},up={0,-1},left={-1,0},right={1,0}}
@@ -579,32 +580,31 @@ G={
                     self:saveData()
                 elseif isPressed('d') then
                     SFX:play('cancel',true)
-                    for k,value in ipairs(options) do
-                        for i=1,#value do
-                            self.save.upgrades[i][k].bought=false
-                        end
+                    for k,value in pairs(upgrades) do
+                        self.save.upgrades[k].bought=false
                     end
                     self.currentUI.chosen={1,1}
                 elseif isPressed('z') then
                     local restXP=self.currentUI.calculateRestXP(self)
                     if option.upgrade then
-                        local upgrade=self.currentUI.upgrades[option.upgrade]
-                        local bought=self.save.upgrades[chosen[1]][chosen[2]].bought
+                        local upgrade=upgrades[option.upgrade]
+                        local bought=self.save.upgrades[option.upgrade].bought
                         if bought then
-                            self.save.upgrades[chosen[1]][chosen[2]].bought=false
+                            self.save.upgrades[option.upgrade].bought=false
                             SFX:play('select')
                             -- need to cancel all upgrades related to this upgrade
                             local function recursiveCancel(x,y)
+                                local cancelledUpgrade=options[y][x].upgrade
                                 for k,value in ipairs(options) do
                                     for i=1,#value do
                                         local option=value[i]
                                         local need=option.need
-                                        if not need then
+                                        if not need or not option.upgrade then
                                             goto continue
                                         end
-                                        for key, value in pairs(need) do
-                                            if x==value[1] and y==value[2] and self.save.upgrades[i][k].bought==true then
-                                                self.save.upgrades[i][k].bought=false
+                                        for key, neededUpgrade in pairs(need) do
+                                            if cancelledUpgrade==neededUpgrade and self.save.upgrades[option.upgrade].bought==true then
+                                                self.save.upgrades[option.upgrade].bought=false
                                                 recursiveCancel(i,k)
                                                 break
                                             end
@@ -618,7 +618,7 @@ G={
                         elseif restXP<upgrade.cost then
                             SFX:play('cancel',true)
                         else
-                            self.save.upgrades[chosen[1]][chosen[2]].bought=true
+                            self.save.upgrades[option.upgrade].bought=true
                             SFX:play('select')
                         end
                     end
@@ -652,7 +652,7 @@ G={
                             if not option.upgrade then
                                 goto continue
                             end
-                            local bought=self.save.upgrades[x][y].bought
+                            local bought=self.save.upgrades[option.upgrade].bought
                             if bought then
                                 love.graphics.setColor(1,1,1)
                             else
@@ -1467,7 +1467,7 @@ end
 ---@class Save
 ---@field levelData {[integer]: {passed: integer, tryCount: integer, firstPass: integer, firstPerfect: integer}}
 ---@field options {master_volume: integer, music_volume: integer, sfx_volume: integer, language: string}
----@field upgrades {[integer]: {[integer]: {bought: boolean}}}
+---@field upgrades {[string]: {bought: boolean}}}
 ---@field defaultName string
 ---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
 ---@field extraUnlock {[integer]: boolean} -- secret level unlocks, format not decided
@@ -1533,16 +1533,24 @@ G.loadData=function(self)
     if not self.save.upgrades then
         self.save.upgrades={}
     end
-    local options=self.UIDEF.UPGRADES.options
-    local sizeX,sizeY=#options[1],#options
-    for x=1,sizeX do
-        if not self.save.upgrades[x] then
-            self.save.upgrades[x]={}
-        end
-        for y=1,sizeY do
-            if not self.save.upgrades[x][y] then
-                self.save.upgrades[x][y]={bought=false}
+    local upgradesData=Upgrades.upgradesData
+    if self.save.upgrades[1] and type(self.save.upgrades[1])=='table' then
+        local newUpgrades={}
+        local data=self.save
+        for x=1,#data.upgrades do
+            for y=1,#data.upgrades[x] do
+                local bought=data.upgrades[x][y].bought
+                local upgrade=Upgrades.upgradesTree[y] and Upgrades.upgradesTree[y][x] and Upgrades.upgradesTree[y][x].upgrade
+                if upgrade then
+                    newUpgrades[upgrade]={bought=bought}
+                end
             end
+        end
+        self.save.upgrades=newUpgrades
+    end
+    for key,value in pairs(upgradesData) do
+        if not self.save.upgrades[key] then
+            self.save.upgrades[key]={bought=false}
         end
     end
 

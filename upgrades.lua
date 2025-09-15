@@ -20,7 +20,7 @@
 ---@class UpgradeTreeCell
 ---@field upgrade string|nil key of the upgrade in upgrades table. if nil, then this cell is only a path connecting other cells, not assigned to any upgrade
 ---@field connect Connect|nil table of connections to other cells. if nil, this cell is pure empty
----@field need Pos[]|nil table of positions of the cells that are needed to make this cell visible
+---@field need string[]|nil table of upgrade names that are needed to make this cell visible
 
 local upgrades={}
 
@@ -266,22 +266,22 @@ local upgradesTree={
         {
             upgrade='regenerate',
             connect={down=true,left=true,right=true},
-            need={{1,1}}
+            need={'increaseHP'}
         },
         {
             upgrade='acrobat',
             connect={left=true,right=true},
-            need={{2,1}}
+            need={'regenerate'}
         },
         {
             upgrade='flashbomb',
             connect={left=true,right=true},
-            need={{3,1}}
+            need={'acrobat'}
         },
         {
             upgrade='vortex',
             connect={left=true},
-            need={{4,1}}
+            need={'flashbomb'}
         },
         {},
         {}
@@ -294,7 +294,7 @@ local upgradesTree={
         {
             upgrade='unyielding',
             connect={up=true,},
-            need={{2,1}}
+            need={'regenerate'}
         },
         {},
         {},
@@ -310,31 +310,31 @@ local upgradesTree={
         },
         {
             connect={left=true,right=true,down=true},
-            need={{1,3}}
+            need={'homingShot'}
         },
         {
             upgrade='sideShot',
             connect={left=true,right=true},
-            need={{1,3}}
+            need={'homingShot'}
         },
         {
             upgrade='familiarShot',
             connect={left=true,down=true,right=true},
-            need={{3,3},{3,4}}
+            need={'sideShot', 'backShot'}
         },
         {
             connect={down=true,left=true,right=true},
-            need={{4,3}}
+            need={'familiarShot'}
         },
         {
             upgrade='homingShotII',
             connect={left=true,right=true},
-            need={{4,3}}
+            need={'familiarShot'}
         },
         {
             upgrade='counterShot',
             connect={left=true,down=true},
-            need={{6,3},{6,4},{6,5}}
+            need={'homingShotII', 'sideShotII', 'backShotII'}
         }
     },
     {
@@ -344,29 +344,29 @@ local upgradesTree={
         },
         {
             connect={up=true,right=true},
-            need={{1,3}}
+            need={'homingShot'}
         },
         {
             upgrade='backShot',
             connect={left=true,right=true},
-            need={{1,3}}
+            need={'homingShot'}
         },
         {
             connect={up=true,left=true},
-            need={{3,4}}
+            need={'backShot'}
         },
         {
             connect={up=true,down=true,right=true},
-            need={{4,3}}
+            need={'familiarShot'}
         },
         {
             upgrade='sideShotII',
             connect={left=true,right=true},
-            need={{4,3}}
+            need={'familiarShot'}
         },
         {
             connect={left=true,up=true,down=true},
-            need={{6,3},{6,4},{6,5}}
+            need={'homingShotII', 'sideShotII', 'backShotII'}
         }
     },
     {
@@ -378,30 +378,30 @@ local upgradesTree={
         {
             upgrade='fixedHPDisplay',
             connect={left=true,right=true,down=true},
-            need={{1,5}}
+            need={'amulet'}
         },
         {
             upgrade='clairvoyance',
             connect={left=true,right=true},
-            need={{2,5}}
+            need={'fixedHPDisplay'}
         },
         {
             upgrade='diskModels',
             connect={left=true},
-            need={{3,5}}
+            need={'clairvoyance'}
         },
         {
             connect={up=true,right=true},
-            need={{4,3}}
+            need={'familiarShot'}
         },
         {
             upgrade='backShotII',
             connect={left=true,right=true},
-            need={{4,3}}
+            need={'familiarShot'}
         },
         {
             connect={left=true,up=true},
-            need={{6,3},{6,4},{6,5}}
+            need={'homingShotII', 'sideShotII', 'backShotII'}
         }
     },
     {
@@ -409,7 +409,7 @@ local upgradesTree={
         {
             upgrade='diagonalMover',
             connect={up=true},
-            need={{2,5}}
+            need={'fixedHPDisplay'}
         },
         {},
         {},

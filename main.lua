@@ -1,4 +1,4 @@
-VERSION="0.7.6"
+VERSION="0.7.6.1"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -33,6 +33,7 @@ function love.load()
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     Player = require "player"
     LevelData = require "levelData"
+    Upgrades = require "upgrades"
     G=require"state"
     BGM:play('title')
     ScreenshotManager=require"screenshotManager"

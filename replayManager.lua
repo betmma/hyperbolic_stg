@@ -100,7 +100,7 @@ end
 
 --- replace old replay (use level and scene to determine spellcard) with new replay data (use ID to determine spellcard)
 --- @param slot number The slot number of the replay.
-replayManager.replaceOldReplay=function(slot)
+replayManager.replaceOldReplayID=function(slot)
     local path=savePath(slot)
     local file=love.filesystem.read(path)
     local data = lume.deserialize(file)
@@ -110,6 +110,28 @@ replayManager.replaceOldReplay=function(slot)
     for i=0,#data.hash-1 do
         data.keyRecord[len-i]=data.hash[#data.hash-i]
     end
+    local serialized = lume.serialize(data)
+    love.filesystem.write(savePath(slot), serialized)
+    return data
+end
+
+--- replace old replay's upgrades (use x and y in upgrade tree) with new upgrades structure (use upgrade name as key)
+--- @param slot number The slot number of the replay.
+replayManager.replaceOldReplayUpgrades=function(slot)
+    local path=savePath(slot)
+    local file=love.filesystem.read(path)
+    local data = lume.deserialize(file)
+    local newUpgrades={}
+    for x=1,#data.upgrades do
+        for y=1,#data.upgrades[x] do
+            local bought=data.upgrades[x][y].bought
+            local upgrade=Upgrades.upgradesTree[y] and Upgrades.upgradesTree[y][x] and Upgrades.upgradesTree[y][x].upgrade
+            if upgrade then
+                newUpgrades[upgrade]={bought=bought}
+            end
+        end
+    end
+    data.upgrades=newUpgrades
     local serialized = lume.serialize(data)
     love.filesystem.write(savePath(slot), serialized)
     return data
@@ -125,7 +147,10 @@ replayManager.loadReplay=function(slot)
     end
     local data = lume.deserialize(file)
     if not data.ID then
-        data=replayManager.replaceOldReplay(slot)
+        data=replayManager.replaceOldReplayID(slot)
+    end
+    if data.upgrades and #data.upgrades>0 then
+        data=replayManager.replaceOldReplayUpgrades(slot)
     end
 
     -- check if the replay is valid
