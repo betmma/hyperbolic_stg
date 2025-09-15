@@ -125,7 +125,7 @@ replayManager.replaceOldReplayUpgrades=function(slot)
     for x=1,#data.upgrades do
         for y=1,#data.upgrades[x] do
             local bought=data.upgrades[x][y].bought
-            local upgrade=Upgrades.upgradesTree[y] and Upgrades.upgradesTree[y][x] and Upgrades.upgradesTree[y][x].upgrade
+            local upgrade=Upgrades.upgradesTree[x] and Upgrades.upgradesTree[x][y] and Upgrades.upgradesTree[x][y].upgrade
             if upgrade then
                 newUpgrades[upgrade]={bought=bought}
             end

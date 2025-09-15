@@ -519,57 +519,23 @@ G={
             enter=function(self)
                 self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
             end,
-            upgrades=Upgrades.upgradesData,
-            -- note that: options below are line first, but chosen are coordinates where x is first. So to get an option use Upgrades.upgradesTree[chosen[2]][chosen[1]]. (this seems silly but when drawing upgrades x and y are aligned to real x and y (x go up means moving right))
-            -- need is also (x, y)
+            upgrades=Upgrades.data,
             options=Upgrades.upgradesTree,
             chosen={1,1},
-            needSatisfied=function(self,option)
-                if not option.need then
-                    return true
-                end
-                local options=self.currentUI.options
-                for key, value in pairs(option.need) do
-                    if self.save.upgrades[value].bought==false then
-                        return false
-                    end
-                end
-                return true
-            end,
-            calculateRestXP=function(self)
-                local xp=0
-                for id,value in pairs(LevelData.ID2LevelScene) do
-                    local pass=self.save.levelData[id].passed
-                    if pass==1 then
-                        xp=xp+10
-                    elseif pass==2 then
-                        xp=xp+12
-                    end
-                end
-                local options=self.currentUI.options
-                for k,value in ipairs(options) do
-                    for i=1,#value do
-                        local option=value[i]
-                        if option.upgrade and self.save.upgrades[option.upgrade].bought then
-                            xp=xp-self.currentUI.upgrades[option.upgrade].cost
-                        end
-                    end
-                end
-                return xp
-            end,
             update=function(self,dt)
                 self.backgroundPattern:update(dt)
                 local options=Upgrades.upgradesTree
-                local upgrades=Upgrades.upgradesData
+                local upgrades=Upgrades.data
                 local chosen=self.currentUI.chosen
-                local option=options[chosen[2]][chosen[1]]
+                local option=options[chosen[1]][chosen[2]]
                 local dirValues={down={0,1},up={0,-1},left={-1,0},right={1,0}}
                 for key, dir in pairs(dirValues) do
                     if isPressed(key) then
-                        local dx,dy=dir[1],dir[2]
-                        local newx,newy=chosen[1]+dx,chosen[2]+dy
-                        if option.connect[key] and(self.currentUI.needSatisfied(self,options[newy][newx])~=false) then
-                            self.currentUI.chosen={newx,newy} 
+                        local newUpgrade=Upgrades.moveToNode(option.upgrade,key)
+                        local newx,newy=Upgrades.nodes[newUpgrade].pos.x,Upgrades.nodes[newUpgrade].pos.y
+                        self.currentUI.chosen={newx,newy}
+                        if newUpgrade~=option.upgrade then
+                            SFX:play('select')
                         end
                         break
                     end
@@ -585,7 +551,7 @@ G={
                     end
                     self.currentUI.chosen={1,1}
                 elseif isPressed('z') then
-                    local restXP=self.currentUI.calculateRestXP(self)
+                    local restXP=Upgrades.calculateRestXP()
                     if option.upgrade then
                         local upgrade=upgrades[option.upgrade]
                         local bought=self.save.upgrades[option.upgrade].bought
@@ -593,28 +559,19 @@ G={
                             self.save.upgrades[option.upgrade].bought=false
                             SFX:play('select')
                             -- need to cancel all upgrades related to this upgrade
-                            local function recursiveCancel(x,y)
-                                local cancelledUpgrade=options[y][x].upgrade
-                                for k,value in ipairs(options) do
-                                    for i=1,#value do
-                                        local option=value[i]
-                                        local need=option.need
-                                        if not need or not option.upgrade then
-                                            goto continue
+                            local function recursiveCancel(cancelledUpgrade)
+                                for name,value in pairs(upgrades) do
+                                    local requires=Upgrades.nodes[name].requires
+                                    for key, neededUpgrade in pairs(requires) do
+                                        if cancelledUpgrade==neededUpgrade and self.save.upgrades[name].bought==true then
+                                            self.save.upgrades[name].bought=false
+                                            recursiveCancel(name)
+                                            break
                                         end
-                                        for key, neededUpgrade in pairs(need) do
-                                            if cancelledUpgrade==neededUpgrade and self.save.upgrades[option.upgrade].bought==true then
-                                                self.save.upgrades[option.upgrade].bought=false
-                                                recursiveCancel(i,k)
-                                                break
-                                            end
-                                        end
-                                        
-                                        ::continue::
                                     end
                                 end
                             end
-                            recursiveCancel(chosen[1],chosen[2])
+                            recursiveCancel(option.upgrade)
                         elseif restXP<upgrade.cost then
                             SFX:play('cancel',true)
                         else
@@ -635,41 +592,38 @@ G={
                 local xbegin,ybegin=50,80
                 local dx,size=50,30
                 local gap=(dx-size)/2
-                local sizeX,sizeY=#self.currentUI.options[1],#self.currentUI.options
-                local dirValues={down={0,1},up={0,-1},left={-1,0},right={1,0}}
-                for x=1,sizeX do
-                    for y=1,sizeY do
-                        local option=options[y][x]
-                        if self.currentUI.needSatisfied(self,option) then
-                            if option.connect then
-                                for key, value in pairs(option.connect) do
-                                    local dirValue=dirValues[key]
-                                    local nx,ny=x+dirValue[1]/2,y+dirValue[2]/2
-                                    love.graphics.setColor(1,1,1)
-                                    love.graphics.line(dx/2+xbegin+dx*x,dx/2+ybegin+dx*y,dx/2+xbegin+dx*nx,dx/2+ybegin+dx*ny)
-                                end
-                            end
-                            if not option.upgrade then
-                                goto continue
-                            end
-                            local bought=self.save.upgrades[option.upgrade].bought
-                            if bought then
-                                love.graphics.setColor(1,1,1)
-                            else
-                                love.graphics.setColor(.8,.8,.8)
-                            end
-                            love.graphics.rectangle(bought and "fill" or "line",gap+xbegin+dx*x,gap+ybegin+dx*y,size,size)
-                            
-                            local upgrade=option.upgrade
-                            local spritePos=self.currentUI.upgrades[upgrade].spritePos
-                            love.graphics.draw(Asset.upgradeIconsImage, Asset.upgradeIcons[spritePos.x][spritePos.y], gap+xbegin+dx*x,gap+ybegin+dx*y,0,1,1)
-                        end
-                        ::continue::
+                for name,node in pairs(Upgrades.nodes) do
+                    local pos=node.pos
+                    local x,y=pos.x,pos.y
+                    local upgrade=self.currentUI.upgrades[name]
+                    -- lines
+                    local requires=node.requires
+                    local isNeedSatisfied=Upgrades.needSatisfied(name)
+                    if not isNeedSatisfied then
+                        goto continue
                     end
+                    for i,req in ipairs(requires) do
+                        local reqPos=Upgrades.nodes[req].pos
+                        local reqX,reqY=reqPos.x,reqPos.y
+                        love.graphics.setColor(1,1,1)
+                        love.graphics.line(dx/2+xbegin+dx*x,dx/2+ybegin+dx*y,dx/2+xbegin+dx*reqX,dx/2+ybegin+dx*reqY)
+                    end
+                    local bought=self.save.upgrades[name].bought
+                    -- box
+                    if bought then
+                        love.graphics.setColor(1,1,1)
+                    else
+                        love.graphics.setColor(.8,.8,.8)
+                    end
+                    love.graphics.rectangle(bought and "fill" or "line",gap+xbegin+dx*x,gap+ybegin+dx*y,size,size)
+                    -- icon
+                    local spritePos=upgrade.spritePos
+                    love.graphics.draw(Asset.upgradeIconsImage, Asset.upgradeIcons[spritePos.x][spritePos.y], gap+xbegin+dx*x,gap+ybegin+dx*y,0,1,1)
+                    ::continue::
                 end
                 -- draw chosen (a bigger square around the chosen upgrade)
                 local chosen=self.currentUI.chosen
-                local chosenOption=options[chosen[2]][chosen[1]]
+                local chosenOption=options[chosen[1]][chosen[2]]
                 local x,y=chosen[1],chosen[2]
                 love.graphics.setColor(1,1,1)
                 love.graphics.rectangle("line",xbegin+dx*x,ybegin+dx*y,dx,dx)
@@ -695,7 +649,7 @@ G={
                 -- show "X: return"
                 SetFont(18)
                 love.graphics.printf(Localize{'ui','upgradesUIHint'},100,570,380,"left",0,1,1)
-                love.graphics.printf(Localize{'ui','upgradesCurrentXP',xp=self.currentUI.calculateRestXP(self)},500,570,380,"left",0,1,1)
+                love.graphics.printf(Localize{'ui','upgradesCurrentXP',xp=Upgrades.calculateRestXP()},500,570,380,"left",0,1,1)
 
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end,
@@ -1533,14 +1487,14 @@ G.loadData=function(self)
     if not self.save.upgrades then
         self.save.upgrades={}
     end
-    local upgradesData=Upgrades.upgradesData
+    local upgradesData=Upgrades.data
     if self.save.upgrades[1] and type(self.save.upgrades[1])=='table' then
         local newUpgrades={}
         local data=self.save
         for x=1,#data.upgrades do
             for y=1,#data.upgrades[x] do
                 local bought=data.upgrades[x][y].bought
-                local upgrade=Upgrades.upgradesTree[y] and Upgrades.upgradesTree[y][x] and Upgrades.upgradesTree[y][x].upgrade
+                local upgrade=Upgrades.upgradesTree[x] and Upgrades.upgradesTree[x][y] and Upgrades.upgradesTree[x][y].upgrade
                 if upgrade then
                     newUpgrades[upgrade]={bought=bought}
                 end

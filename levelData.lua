@@ -134,7 +134,7 @@ local function wrapLevelMake(levelData)
         end
 
         -- apply upgrades
-        local upgrades=Upgrades.upgradesData
+        local upgrades=Upgrades.data
         for k,v in pairs(upgrades) do
             if G.save.upgrades[k] and G.save.upgrades[k].bought then
                 v.executeFunc()

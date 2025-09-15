@@ -4,12 +4,6 @@
 
 ---@alias Pos number[]
 
----@class Connect
----@field left boolean|nil is connected to the left cell
----@field right boolean|nil 
----@field up boolean|nil
----@field down boolean|nil
-
 ---@class Upgrade
 ---@field cost number exp needed to buy it
 ---@field executeFunc fun():nil function to execute when entering a level
@@ -17,15 +11,18 @@
 ---@field name string|nil name of this upgrade (actual value is in localization file, so not needed)
 ---@field description string|nil description of this upgrade (same as above)
 
+---@class UpgradeNode stores data of an upgrade in the upgrade tree
+---@field pos PosXY position of this upgrade in the upgrade tree
+---@field requires string[] list of upgrade names that are prerequisite for this upgrade
+---@field connect table<string,boolean> table of upgrade names that are connected to this cell (one requires the other). automatically generated.
+
 ---@class UpgradeTreeCell
----@field upgrade string|nil key of the upgrade in upgrades table. if nil, then this cell is only a path connecting other cells, not assigned to any upgrade
----@field connect Connect|nil table of connections to other cells. if nil, this cell is pure empty
----@field need string[]|nil table of upgrade names that are needed to make this cell visible
+---@field upgrade string key of the upgrade in upgrades table.
 
 local upgrades={}
 
 ---@type table<string,Upgrade>
-local upgradesData = {
+local data = {
     -- Warning: real texts are in localization.lua. Following texts are for coding reference only.
     increaseHP={
         name='Increase HP',
@@ -253,171 +250,129 @@ local upgradesData = {
         spritePos={x=2,y=2}
     }
 }
-upgrades.upgradesData=upgradesData
+upgrades.data=data
 
----@type UpgradeTreeCell[][]
-local upgradesTree={
-    {
-        {
-            upgrade='increaseHP',
-            connect={down=true,right=true},
-            need={}
-        },
-        {
-            upgrade='regenerate',
-            connect={down=true,left=true,right=true},
-            need={'increaseHP'}
-        },
-        {
-            upgrade='acrobat',
-            connect={left=true,right=true},
-            need={'regenerate'}
-        },
-        {
-            upgrade='flashbomb',
-            connect={left=true,right=true},
-            need={'acrobat'}
-        },
-        {
-            upgrade='vortex',
-            connect={left=true},
-            need={'flashbomb'}
-        },
-        {},
-        {}
-    },
-    {
-        {
-            connect={up=true,down=true},
-            need={}
-        },
-        {
-            upgrade='unyielding',
-            connect={up=true,},
-            need={'regenerate'}
-        },
-        {},
-        {},
-        {},
-        {},
-        {}
-    },
-    {
-        {
-            upgrade='homingShot',
-            connect={up=true,right=true,down=true},
-            need={}
-        },
-        {
-            connect={left=true,right=true,down=true},
-            need={'homingShot'}
-        },
-        {
-            upgrade='sideShot',
-            connect={left=true,right=true},
-            need={'homingShot'}
-        },
-        {
-            upgrade='familiarShot',
-            connect={left=true,down=true,right=true},
-            need={'sideShot', 'backShot'}
-        },
-        {
-            connect={down=true,left=true,right=true},
-            need={'familiarShot'}
-        },
-        {
-            upgrade='homingShotII',
-            connect={left=true,right=true},
-            need={'familiarShot'}
-        },
-        {
-            upgrade='counterShot',
-            connect={left=true,down=true},
-            need={'homingShotII', 'sideShotII', 'backShotII'}
-        }
-    },
-    {
-        {
-            connect={up=true,down=true},
-            need={}
-        },
-        {
-            connect={up=true,right=true},
-            need={'homingShot'}
-        },
-        {
-            upgrade='backShot',
-            connect={left=true,right=true},
-            need={'homingShot'}
-        },
-        {
-            connect={up=true,left=true},
-            need={'backShot'}
-        },
-        {
-            connect={up=true,down=true,right=true},
-            need={'familiarShot'}
-        },
-        {
-            upgrade='sideShotII',
-            connect={left=true,right=true},
-            need={'familiarShot'}
-        },
-        {
-            connect={left=true,up=true,down=true},
-            need={'homingShotII', 'sideShotII', 'backShotII'}
-        }
-    },
-    {
-        {
-            upgrade='amulet',
-            connect={up=true,right=true},
-            need={}
-        },
-        {
-            upgrade='fixedHPDisplay',
-            connect={left=true,right=true,down=true},
-            need={'amulet'}
-        },
-        {
-            upgrade='clairvoyance',
-            connect={left=true,right=true},
-            need={'fixedHPDisplay'}
-        },
-        {
-            upgrade='diskModels',
-            connect={left=true},
-            need={'clairvoyance'}
-        },
-        {
-            connect={up=true,right=true},
-            need={'familiarShot'}
-        },
-        {
-            upgrade='backShotII',
-            connect={left=true,right=true},
-            need={'familiarShot'}
-        },
-        {
-            connect={left=true,up=true},
-            need={'homingShotII', 'sideShotII', 'backShotII'}
-        }
-    },
-    {
-        {},
-        {
-            upgrade='diagonalMover',
-            connect={up=true},
-            need={'fixedHPDisplay'}
-        },
-        {},
-        {},
-        {},
-        {},
-        {}
-    }
+
+--- it seems that below data can be placed in upgrades.data. but if there is second character with different upgrade tree while reusing some upgrades, then split upgrades data and tree data is good.
+---@type table<string, UpgradeNode>
+local nodes = {
+    increaseHP =  {connect = {}, pos = {x=1, y=1}, requires = {} },
+    regenerate =  {connect = {}, pos = {x=2, y=1}, requires = {'increaseHP'} },
+    unyielding =  {connect = {}, pos = {x=2, y=2}, requires = {'regenerate'} },
+    acrobat =     {connect = {}, pos = {x=3, y=1}, requires = {'regenerate'} },
+    flashbomb =   {connect = {}, pos = {x=4, y=1}, requires = {'acrobat'} },
+    vortex =      {connect = {}, pos = {x=5, y=1}, requires = {'flashbomb'} },
+    homingShot =  {connect = {}, pos = {x=1, y=3}, requires = {} },
+    sideShot =    {connect = {}, pos = {x=3, y=3}, requires = {'homingShot'} },
+    backShot =    {connect = {}, pos = {x=3, y=4}, requires = {'homingShot'} },
+    familiarShot = {connect = {}, pos = {x=4, y=3}, requires = {'sideShot', 'backShot'} },
+    homingShotII = {connect = {}, pos = {x=6, y=3}, requires = {'familiarShot'} },
+    sideShotII =   {connect = {}, pos = {x=6, y=4}, requires = {'familiarShot'} },
+    backShotII =   {connect = {}, pos = {x=6, y=5}, requires = {'familiarShot'} },
+    counterShot =  {connect = {}, pos = {x=7, y=3}, requires = {'homingShotII', 'sideShotII', 'backShotII'} },
+    amulet =         {connect = {}, pos = {x=1, y=5}, requires = {} },
+    fixedHPDisplay = {connect = {}, pos = {x=2, y=5}, requires = {'amulet'} },
+    clairvoyance =   {connect = {}, pos = {x=3, y=5}, requires = {'fixedHPDisplay'} },
+    diskModels =     {connect = {}, pos = {x=4, y=5}, requires = {'clairvoyance'} },
+    diagonalMover =  {connect = {}, pos = {x=2, y=6}, requires = {'fixedHPDisplay'} },
 }
+
+upgrades.nodes = nodes
+
+---@type UpgradeTreeCell[][] for convenience of finding upgrade by position
+local upgradesTree={}
+for name,node in pairs(nodes) do
+    local x,y=node.pos.x,node.pos.y
+    upgradesTree[x]=upgradesTree[x] or {}
+    upgradesTree[x][y]=upgradesTree[x][y] or {}
+    upgradesTree[x][y].upgrade=name
+end
+for name,node in pairs(nodes) do
+    local requires=node.requires
+    for i,req in ipairs(requires) do
+        local reqNode=nodes[req]
+        -- add connection in both cells
+        node.connect[req]=true
+        reqNode.connect[name]=true
+    end
+end
+
 upgrades.upgradesTree=upgradesTree
+
+-- helper functions
+
+--- check if all prerequisite upgrades are bought
+---@param upgrade string key of the upgrade in upgrades.data
+---@return boolean true if all prerequisite upgrades are bought
+upgrades.needSatisfied=function(upgrade)
+    local node=Upgrades.nodes[upgrade]
+    for key, value in pairs(node.requires) do
+        if G.save.upgrades[value].bought==false then
+            return false
+        end
+    end
+    return true
+end
+
+--- calculate current available XP (total earned XP - total spent XP)
+---@return number available XP
+upgrades.calculateRestXP=function()
+    local xp=0
+    for id,value in pairs(LevelData.ID2LevelScene) do
+        local pass=G.save.levelData[id].passed
+        if pass==1 then
+            xp=xp+10
+        elseif pass==2 then
+            xp=xp+12
+        end
+    end
+    for name,upgrade in pairs(Upgrades.data) do
+        if G.save.upgrades[name].bought then
+            xp=xp-upgrade.cost
+        end
+    end
+    return xp
+end
+
+
+---@param upgrade string key of the upgrade in upgrades.data
+---@param dir 'up'|'down'|'left'|'right'
+---@return string nextUpgrade the upgrade moved to
+upgrades.moveToNode=function(upgrade,dir)
+    local currentNode=upgrades.nodes[upgrade]
+    local x,y=currentNode.pos.x,currentNode.pos.y
+    local dirx,diry=DirectionName2Dxy(dir)
+    local bestFitUpgrade,bestFitValue=upgrade,-500
+    -- 
+    for name,node in pairs(upgrades.nodes) do
+        if name==upgrade then -- dont recalculate self
+            goto continue
+        end
+        if not upgrades.needSatisfied(name) then -- can't go to an upgrade that is not available
+            goto continue
+        end
+        local nx,ny=node.pos.x,node.pos.y
+        local deltax, deltay = nx-x, ny-y
+        local isConnected=node.connect[name]
+        local score=0
+        if isConnected then
+            score=score+2.5 -- prefer connected nodes
+        end
+        local distance=math.sqrt(deltax*deltax+deltay*deltay)
+        score=score-distance*2 -- prefer closer nodes
+        local angle=math.angleDiff(math.atan2(deltay,deltax),math.atan2(diry,dirx))
+        if angle>math.pi*0.49 then
+            score=score-1000 -- don't go backwards (worse than staying still). pi*0.49 is to prevent /0 below
+        else
+            score=score-5/math.cos(angle)
+        end
+        if score>bestFitValue then
+            bestFitValue=score
+            bestFitUpgrade=name
+        end
+        ::continue::
+    end
+    return bestFitUpgrade
+end
 
 return upgrades
