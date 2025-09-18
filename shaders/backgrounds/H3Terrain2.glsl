@@ -48,7 +48,7 @@ flipData flip(vec2 pos_xy_embedding) {
         if (!is_on_correct_side_of_edge(p_in_fundamental, G12, V0)) {
             p_in_fundamental = reflect_point(p_in_fundamental, G12);
             reflected_in_iter = true;
-            // flipCount++; // intended to make colored shape become quadrilateral
+            // flipCount++; // if commented, can make colored shape (flipCount%2) become quadrilateral
         }
         if (!is_on_correct_side_of_edge(p_in_fundamental, G20, V1)) {
             p_in_fundamental = reflect_point(p_in_fundamental, G20);
@@ -74,15 +74,33 @@ flipData flip(vec2 pos_xy_embedding) {
 }
 
 vec4 colorFunc(vec2 pos_xy_embedding, float time) {
+    float onRoadRatio = (abs(pos_xy_embedding.x) - path_half_width)*-10;
+    onRoadRatio = exp(onRoadRatio)/(1.0+exp(onRoadRatio))*0.9;
+    
+    // return vec4(0.2, 0.2, 0.8, 1.0); // dont calculate tessellation color for performance
     flipData fd = flip(pos_xy_embedding);
+    vec2 p_in_fundamental = fd.p_in_fundamental;
+    vec3 bary_coords = get_hyperbolic_barycentric_coords(p_in_fundamental, V0, V1, V2);
     int flipCount = fd.flipCount;
     if (flipCount < 0) { 
         return vec4(1.0, 0.0, 1.0, 1.0); // Magenta for non-convergence
     }
-    if (mod(flipCount,2)==0) { 
-        return vec4(0.8, 0.2, 0.2, 1.0);
+    vec4 ret=vec4(0.2, 0.2, 0.8, 1.0);
+    int toMod=flipCount;
+    if (mod(bary_coords.x+sin(time)*0.1,0.2)<0.10) { 
+        toMod+=1;
     }
-    return vec4(0.2, 0.2, 0.8, 1.0);
+    if (mod(toMod,2)==1) { 
+        ret=vec4(0.8, 0.2, 0.2, 1.0);
+    }
+    // if(onRoad){
+        ret=ret*(onRoadRatio)+vec4(0.3,0.3,0.0,1.0)*(1-onRoadRatio); // pattern is more visible on road
+    // }else{
+    //     float ex=exp(-pos_xy_embedding.y-1);
+    //     float ratio=ex/(1.0+ex);
+    //     ret=ret*(1-ratio)+vec4(0.1,0.6,0.1,1.0)*ratio;
+    // }
+    return ret;
 }
 
 // returns embedding z. not perfectly hyperbolic, so value should be close to 0 and small 
@@ -132,7 +150,7 @@ float treeSDF_H(vec4 p_H, float time, out float nearestRadiusH) {
     // Trees: go from origin along +Y by varying hyperbolic distances (axis),
     // then from each axis point go along ±X by a fixed hyperbolic offset.
     const float spacingH       = 1.1;  // hyperbolic spacing along +Y axis
-    const float lateralOffsetH = 0.55; // fixed hyperbolic offset to left/right from axis
+    const float lateralOffsetH = 0.95; // fixed hyperbolic offset to left/right from axis
 
     float bestD = 1e9;
     nearestRadiusH = 0.0;
@@ -144,35 +162,36 @@ float treeSDF_H(vec4 p_H, float time, out float nearestRadiusH) {
 
     // Project sample to axis coordinate (s satisfies mdot(p_H, v_axis) = sinh(s))
     float s0 = asinh1(mdot4(p_H, v_axis));
+    float drift = mod(time * 0.1, spacingH)-spacingH*0.6;
     int k0 = int(floor(s0 / spacingH));
 
     // Check a few neighbors around k0
-    for (int dk = -5; dk <= 1; ++dk) {
-        float s = float(k0 + dk) * spacingH + mod(time*0.1,spacingH); // slight upward drift over time
+    for (int dk = -1; dk <= 1; ++dk) {
+        float s = float(-k0 + dk) * spacingH + drift; // -k0 is correct instead of +k0. result shows that
         vec4 c_axis = p_axis0 * cosh(s) + v_axis * sinh(s);
 
         // Lateral ±X direction at this axis point
         vec4 v_lat = spacelike_from_axis(c_axis, vec3(1.0, 0.0, 0.0));
 
+        int side=-1;
+        if (p_H.x > 0.0) { side=1; } // only check one side based on p_H.x sign
         // Two sides: left (-) and right (+) along v_lat by fixed hyperbolic distance
-        for (int side = -1; side <= 1; side += 2) {
-            float sign = float(side);
-            vec4 c_side = c_axis * cosh(lateralOffsetH) + (sign * v_lat) * sinh(lateralOffsetH);
+        float sign = float(side);
+        vec4 c_side = c_axis * cosh(lateralOffsetH) + (sign * v_lat) * sinh(lateralOffsetH);
 
-            // Stack three spheres upward from this lateral point via hyperbolic "up"
-            vec4 v_up = spacelike_up(c_side);
-            float rH = 0.30;     // base hyperbolic radius
-            float scale = 0.82;  // shrink per layer
-            float s_up = rH;     // offset to first center so it rests on c_side
+        // Stack three spheres upward from this lateral point via hyperbolic "up"
+        vec4 v_up = spacelike_up(c_side);
+        float rH = 0.30;     // base hyperbolic radius
+        float scale = 0.82;  // shrink per layer
+        float s_up = rH*0.5;     // offset to first center so it rests on c_side
 
-            for (int i = 0; i < 3; ++i) {
-                vec4 c_H = c_side * cosh(s_up) + v_up * sinh(s_up);
-                float d = hdist(p_H, c_H) - rH;
-                if (d < bestD) { bestD = d; nearestRadiusH = rH; }
-                float rH_next = rH * scale;
-                s_up += rH + rH_next; // make adjacent spheres touch in H^3
-                rH = rH_next;
-            }
+        for (int i = 0; i < 3; ++i) {
+            vec4 c_H = c_side * cosh(s_up) + v_up * sinh(s_up);
+            float d = hdist(p_H, c_H) - rH;
+            if (d < bestD) { bestD = d; nearestRadiusH = rH; }
+            float rH_next = rH * scale;
+            s_up += (rH + rH_next)*0.8; // toggle 0.8 to adjust spacing (1.0 means tangent)
+            rH = rH_next;
         }
     }
     return bestD;
@@ -403,6 +422,6 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     bool terrain_was_hit;
     vec3 fragment_color = rayMarch(final_cam_pos_H, final_ray_dir_H, time, terrain_was_hit);
 
-    return vec4(fragment_color, 1.0);
+    return vec4(fragment_color, 1.0)*color;
 }
 

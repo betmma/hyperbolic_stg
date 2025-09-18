@@ -528,13 +528,24 @@ function Shader:new(args)
     self.shader=args.shader
     self.frame=0
     self.paramSendFunction=args.paramSendFunction or function(self,shader) end
+    self.color={1,1,1}
+    self.darkColor={0.5,0.5,0.5}
+    self.autoDark=false -- if true, color will be lerped to darkColor when not G.preWin (enemy exists, during spellcard) (for very bright shaders)
 end
 function Shader:update(dt)
     self.frame=self.frame+1
+    if self.autoDark then
+        local ratio=0.02
+        if G.preWin then
+            self.color={self.color[1]*(1-ratio)+1*ratio,self.color[2]*(1-ratio)+1*ratio,self.color[3]*(1-ratio)+1*ratio}
+        else
+            self.color={self.color[1]*(1-ratio)+self.darkColor[1]*ratio,self.color[2]*(1-ratio)+self.darkColor[2]*ratio,self.color[3]*(1-ratio)+self.darkColor[3]*ratio}
+        end
+    end
 end
 function Shader:draw()
     local colorref={love.graphics.getColor()}
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(self.color[1],self.color[2],self.color[3])
     -- love.graphics.rectangle('fill',0,0,800,600)
     love.graphics.setShader(self.shader)
     self:paramSendFunction(self.shader) -- send parameters to shader
@@ -619,19 +630,22 @@ local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.gls
 local H3Terrain=Shader:extend()
 function H3Terrain:new()
     H3Terrain.super.new(self)
+    self.autoDark=true
     self.shader=H3TerrainShader
-    self.cam_translation={0,0,1}
-    self.cam_pitch=-0.5
+    self.cam_translation={0,1.5,0.5}
+    self.cam_pitch=-0.9
     self.cam_yaw=0
     self.cam_roll=0
     self.p,self.q,self.r=3,6,6
     local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
-    local length=Shape.distance(V0[1],V0[2],V1[1],V1[2])
-    self.length=length
+    local length01=Shape.distance(V0[1],V0[2],V1[1],V1[2])
+    local length02=Shape.distance(V0[1],V0[2],V2[1],V2[2])
+    local length12=Shape.distance(V1[1],V1[2],V2[1],V2[2])
+    self.length=length01*2
     self.moveLength=0.01
     local autoMove=false
     self.paramSendFunction=function(self,shader)
-        local l=length-self.moveLength
+        local l=length01-self.moveLength
         local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
         -- dir=dir+(l>0 and math.pi or 0)
         local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
@@ -660,9 +674,11 @@ function H3Terrain:new()
     end
 end
 H3Terrain.update=function(self,dt)
-    local xyRange=1.5
-    local xyStep=0.9*dt
-    self.moveLength=(self.moveLength+0.3/(1+self.cam_translation[1]^2))%(self.length*2)
+    H3Terrain.super.update(self,dt)
+    local xRange,yRange=0.3,0.0
+    local xCenter,yCenter=0,1.5
+    local xyStep=0.2*dt
+    self.moveLength=(self.moveLength+0.3/(1+self.cam_translation[1]^2))%(self.length)
     self.frame=self.frame+1
     local keyIsDown=love.keyboard.isDown
     if keyIsDown("n") then
@@ -690,19 +706,19 @@ H3Terrain.update=function(self,dt)
         self.cam_translation[3] = self.cam_translation[3] - dt
     end
     if Player.objects[1] then
-        keyIsDown=Player.objects[1].keyIsDown -- nmhjyu aren't recorded in player, so these keys use love.keyboard.isDown. arrow keys use player to restore in replay
+        keyIsDown=Player.objects[1].keyIsDown -- nmhjyuik aren't recorded in player, so these keys use love.keyboard.isDown. arrow keys use player to restore in replay
     end
     if keyIsDown("right") then
-        self.cam_translation[1] = math.clamp(self.cam_translation[1] + xyStep,-xyRange,xyRange)
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] + xyStep,-xRange+xCenter,xRange+xCenter)
     end
     if keyIsDown("left") then
-        self.cam_translation[1] = math.clamp(self.cam_translation[1] - xyStep,-xyRange,xyRange)
+        self.cam_translation[1] = math.clamp(self.cam_translation[1] - xyStep,-xRange+xCenter,xRange+xCenter)
     end
     if keyIsDown("up") then
-        self.cam_translation[2] = math.clamp(self.cam_translation[2] - xyStep,-xyRange,xyRange)
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] - xyStep,-yRange+yCenter,yRange+yCenter)
     end
     if keyIsDown("down") then
-        self.cam_translation[2] = math.clamp(self.cam_translation[2] + xyStep,-xyRange,xyRange)
+        self.cam_translation[2] = math.clamp(self.cam_translation[2] + xyStep,-yRange+yCenter,yRange+yCenter)
     end
 end
 BackgroundPattern.H3Terrain=H3Terrain

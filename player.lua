@@ -527,7 +527,7 @@ function Player:draw()
     
     --draw hit point
     local focusSizeFactor=0.5
-    local focusOrientation=self.time+orientation
+    local focusOrientation=self.time*4+orientation
     local drawColor={1,1,1,(self.focusPointTransparency or 1)*color[4]}
     if self.forceQuadDraw then -- for now nowhere uses old method. 10-2 17 players do not lagging
         Asset.playerFocusBatch:setColor(unpack(drawColor))
