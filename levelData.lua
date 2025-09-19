@@ -191,7 +191,7 @@ level EX: not categorized spell cards (temporary). EX-1 remilia (original 3-1), 
 -- some other idea: pun on the game name "soukyokuiki", where "soukyo" could be "壮挙", "soukyoku" could be "箏曲""双極", "kyokuiki" could be "局域". "箏曲域" can cue the mastermind is related to koto (yatsuhashi tsukumo), and "双極" relates to tsukumo sisters. nice idea. "奏曲""葬曲" are also good.
 -- th20's new characters are interesting, and it's such a coincidence that th20 is related to a place called "seiiki", so the plot could be related to it. 
 local levelData={
-    loadLevels(1,{'1','2','3','4','5','6','Test'}),
+    loadLevels(1,{'1','2','3','4','5','6'}),
     loadLevels(2,{'1','2','3','4','5','6'}),
     loadLevels(3,{'1','2','3','4','5','6','7'}),
     loadLevels(4,{'1','2','3','4','5','6','7','8'}),
@@ -248,6 +248,9 @@ end
 
 --- get the default background class of a level-scene
 levelData.getDefaultBackground=function(level,scene)
+    if level<=2 then
+        return BackgroundPattern.DreamWorld
+    end
     if level>=3 and level<=4 then
         return BackgroundPattern.H3Terrain
     end

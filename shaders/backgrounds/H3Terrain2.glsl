@@ -18,7 +18,6 @@ uniform vec3 cam_translation = vec3(0.0, 0.0, 1.0); // Default: Boost along Z-ax
 
 // --- Added: road width and travel speed ---
 uniform float path_half_width = 0.5;      // Half-width of straight path along x=0
-uniform float cam_travel_speed = 0.35;    // Forward speed along +X
 
 UHPGeodesic G01 = make_geodesic_segment(V0, V1);
 UHPGeodesic G12 = make_geodesic_segment(V1, V2);

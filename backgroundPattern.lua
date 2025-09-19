@@ -636,16 +636,19 @@ function H3Terrain:new()
     self.cam_pitch=-0.9
     self.cam_yaw=0
     self.cam_roll=0
+    self.camMoveRange={0.3,0.0}
+    self.camMoveSpeed=0.2
     self.p,self.q,self.r=3,6,6
     local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
     local length01=Shape.distance(V0[1],V0[2],V1[1],V1[2])
     local length02=Shape.distance(V0[1],V0[2],V2[1],V2[2])
     local length12=Shape.distance(V1[1],V1[2],V2[1],V2[2])
-    self.length=length01*2
-    self.moveLength=0.01
+    self.tesseLoopLength=length01*2 -- based on pqr, the loop length has many possibilities. other possible values include (L01+L02+L12)*2, (L01+L02)*2
+    self.tesseDistance=0.01 -- distance of tessellation moved along the path. not camera
+    self.tesseMoveSpeed=0.3
     local autoMove=false
     self.paramSendFunction=function(self,shader)
-        local l=length01-self.moveLength
+        local l=length01-self.tesseDistance
         local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
         -- dir=dir+(l>0 and math.pi or 0)
         local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
@@ -675,10 +678,13 @@ function H3Terrain:new()
 end
 H3Terrain.update=function(self,dt)
     H3Terrain.super.update(self,dt)
-    local xRange,yRange=0.3,0.0
-    local xCenter,yCenter=0,1.5
-    local xyStep=0.2*dt
-    self.moveLength=(self.moveLength+0.3/(1+self.cam_translation[1]^2))%(self.length)
+    local xRange,yRange=self.camMoveRange[1],self.camMoveRange[2]
+    if not self.camMoveCenter then
+        self.camMoveCenter={self.cam_translation[1],self.cam_translation[2]}
+    end
+    local xCenter,yCenter=self.camMoveCenter[1],self.camMoveCenter[2]
+    local xyStep=self.camMoveSpeed*dt
+    self.tesseDistance=(self.tesseDistance+self.tesseMoveSpeed/(1+self.cam_translation[1]^2))%(self.tesseLoopLength)
     self.frame=self.frame+1
     local keyIsDown=love.keyboard.isDown
     if keyIsDown("n") then
@@ -723,4 +729,26 @@ H3Terrain.update=function(self,dt)
 end
 BackgroundPattern.H3Terrain=H3Terrain
 
+
+local dreamWorldShader=ShaderScan:load_shader('shaders/backgrounds/dreamWorld.glsl')
+local DreamWorld=H3Terrain:extend()
+function DreamWorld:new(args)
+    DreamWorld.super.new(self,args)
+    self.shader=dreamWorldShader
+    self.cam_translation={0.1,0,0.35}
+    self.cam_pitch=math.pi*-0.2
+    self.p,self.q,self.r=5,2,4
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
+    local length01=Shape.distance(V0[1],V0[2],V1[1],V1[2])
+    local length02=Shape.distance(V0[1],V0[2],V2[1],V2[2])
+    local length12=Shape.distance(V1[1],V1[2],V2[1],V2[2])
+    self.tesseLoopLength=(length01+length02)*2
+    self.debug=false
+    if self.debug then -- a debug mode where pattern doesnt move and camera move range is increased
+        self.camMoveRange={-1,1}
+        self.camMoveSpeed=0.5
+        self.tesseMoveSpeed=0
+    end
+end
+BackgroundPattern.DreamWorld=DreamWorld
 return BackgroundPattern
