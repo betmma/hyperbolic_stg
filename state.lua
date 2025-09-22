@@ -1606,7 +1606,7 @@ end
 G.leaveLevel=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    EventManager:post('leaveLevel',level,scene)
+    EventManager.post(EventManager.EVENTS.LEAVE_LEVEL,level,scene)
     if LevelData[level][scene].leave then
         LevelData[level][scene].leave()
     end

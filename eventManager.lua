@@ -5,6 +5,7 @@ EventManager.EVENTS={
     NICKNAME_GET='nicknameGet',
     WIN_LEVEL='winLevel',
     LOSE_LEVEL='loseLevel',
+    LEAVE_LEVEL='leaveLevel'
 }
 
 EventManager.listeners = {}
@@ -43,6 +44,7 @@ end
 -- first arg: main object (if listener is a method, it will be the self)
 -- second arg: quantity
 -- third arg: string to tell different source 
+---@param eventName string
 function EventManager.post(eventName, ...)
     if EventManager.listeners[eventName] then
         for _, func in ipairs(EventManager.listeners[eventName]) do

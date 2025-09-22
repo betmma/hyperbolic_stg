@@ -79,7 +79,7 @@ return {
         local autoEvict=function()
             evict(getRadius())
         end
-        EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,autoEvict,'leaveLevel')
+        EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,autoEvict,EventManager.EVENTS.LEAVE_LEVEL)
 
         local function circleEffect(cir)
             Event.LoopEvent{
