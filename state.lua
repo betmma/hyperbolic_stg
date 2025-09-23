@@ -845,11 +845,6 @@ G={
                 self.UseHypRotShader=true
                 self.foregroundTransparency=1
                 LevelData[level][scene].make()
-                self.levelRemainingFrame=self.levelRemainingFrame or 3600
-                self.levelRemainingFrameMax=self.levelRemainingFrame
-                if self.replay then
-                    ReplayManager.replayTweak(self.replay)
-                end
             end,
             update=function(self,dt)
                 if isPressed('v') then
@@ -886,23 +881,25 @@ G={
                     G.viewMode.hyperbolicModel=G.HYPERBOLIC_MODELS.UHP -- without shader only UHP is supported
                 end
                 
-                -- rest time calculation
-                self.levelRemainingFrame=self.levelRemainingFrame-1
-                if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
-                    SFX:play('timeout',true,2)
-                end
-                local levelID=G.UIDEF.CHOOSE_LEVELS.levelID
-                if self.levelIsTimeoutSpellcard and not G.replay and self.levelRemainingFrame==60 then -- for normal levels it's done by enemy:dieEffect
-                    ScreenshotManager.preSave(levelID)
-                end
-                if self.levelRemainingFrame==0 then
-                    if self.levelIsTimeoutSpellcard then
-                        if not G.replay then 
-                            ScreenshotManager.save(levelID)
+                if self.levelRemainingFrame then
+                    -- rest time calculation
+                    self.levelRemainingFrame=self.levelRemainingFrame-1
+                    if self.levelRemainingFrame<=600 and self.levelRemainingFrame%60==0 then
+                        SFX:play('timeout',true,2)
+                    end
+                    local levelID=G.UIDEF.CHOOSE_LEVELS.levelID
+                    if self.levelIsTimeoutSpellcard and not G.replay and self.levelRemainingFrame==60 then -- for normal levels it's done by enemy:dieEffect
+                        ScreenshotManager.preSave(levelID)
+                    end
+                    if self.levelRemainingFrame==0 then
+                        if self.levelIsTimeoutSpellcard then
+                            if not G.replay then 
+                                ScreenshotManager.save(levelID)
+                            end
+                            self:win()
+                        else
+                            self:lose()
                         end
-                        self:win()
-                    else
-                        self:lose()
                     end
                 end
             end,
@@ -941,10 +938,11 @@ G={
                 else
                     xt,yt=560,5
                 end
-                love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', xt, yt)
-                SetFont(18,Fonts.en_us)
-                love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), xt+dx, yt+dy)
-                
+                if self.levelRemainingFrame then
+                    love.graphics.print(string.format('%03d',math.floor(self.levelRemainingFrame/60))..'.', xt, yt)
+                    SetFont(18,Fonts.en_us)
+                    love.graphics.print(string.format('%02d',math.floor(self.levelRemainingFrame%60*100/60)), xt+dx, yt+dy)
+                end
             end
         },
         PAUSE={

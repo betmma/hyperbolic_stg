@@ -2,7 +2,8 @@
 ---@field ID number unique ID of this level. It's to make a map between ID and level-scene, which is used to look up replay level-scene and localizations. Will raise an error if not assigned or not unique.
 -- (further elaboration: the relationship between level-scene and ID is calculated after loading all levels in the definition of levelData below)
 ---@field user string the character of this scene. Is used to look up name in localization file.
----@field make fun():nil core of level
+---@field dialogue string|nil key in localization.dialogues, if exists, dialogue will be shown before the level starts
+---@field make fun():nil core of level (danmaku)
 ---@field leave fun():nil | nil do things when leaving the level, like recover modified global things, or secret unlocks
 ---@field quote string | nil After implementation of localization, this field is not used in game. It's only for coding reference.
 ---@field spellName string | nil Same as above
@@ -15,7 +16,7 @@ local Text=require"text"
 ---@param levelData LevelData
 local function wrapLevelMake(levelData)
     local makeLevelRef=levelData.make
-    levelData.make=function()
+    local makeLevelWrapped=function()
         local replay=G.replay or {}
         local seed = replay.seed or math.floor(os.time()+os.clock()*1337)
         math.randomseed(seed)
@@ -139,6 +140,20 @@ local function wrapLevelMake(levelData)
             if G.save.upgrades[k] and G.save.upgrades[k].bought then
                 v.executeFunc()
             end
+        end
+
+        G.levelRemainingFrame=G.levelRemainingFrame or 3600
+        G.levelRemainingFrameMax=G.levelRemainingFrame
+        if G.replay then
+            ReplayManager.replayTweak(G.replay)
+        end
+    end
+    levelData.make=function()
+        if levelData.dialogue and not G.replay then
+            local dialogueController=DialogueController{key=levelData.dialogue}
+            dialogueController.afterFunc=makeLevelWrapped
+        else
+            makeLevelWrapped()
         end
     end
 end

@@ -1,4 +1,4 @@
-VERSION="0.7.9.1"
+VERSION="0.8.0"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -10,7 +10,7 @@ shove = require "import.shove"
 local input = require "input"
 function love.load()
     shove.setResolution(800, 600, {fitMethod = "aspect", renderMode = "layer"})
-    shove.setWindowMode(800, 600, {resizable = true})
+    shove.setWindowMode(800*2/1.25, 600*2/1.25, {resizable = true})
     Object,GameObject = unpack(require "classic")
     ExpandingMesh = require "import.expandingMesh"
     ---@type ShaderScan
@@ -33,6 +33,7 @@ function love.load()
     BulletSprites,BulletBatch,SpriteData=Asset.bulletSprites,Asset.bulletBatch,Asset.SpriteData
     Player = require "player"
     LevelData = require "levelData"
+    DialogueController=require"localization.dialogue"
     Upgrades = require "upgrades"
     G=require"state"
     BGM:play('title')

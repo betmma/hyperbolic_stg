@@ -1637,5 +1637,85 @@ return {
                 zh_cn = '不可能！你在双曲域中达到了完美！请在社交媒体上告诉我“我是双曲域的原住民”。',
             },
         },
+    },
+    dialogues = {
+        doremyDialogue1_1 = {
+            whereAmI = {
+                en_us = 'Ugh... where am I now?',
+                zh_cn = '唔……这是什么地方？',
+            },
+            thisIsDreamWorld = {
+                en_us = 'Where else? You\'re in the dream world, Shrine Maiden of Gensokyo.',
+                zh_cn = '还能是哪儿？这里是梦境世界啊，幻想乡的巫女。',
+            },
+            itLooksStrange = {
+                en_us = 'The dream world, huh. It feels... distorted. Unstable. Not like last time I was here.',
+                zh_cn = '梦境世界吗。感觉有点……扭曲，不稳定。和我上次来时不一样。',
+            },
+            thereIsReason = {
+                en_us = 'Sharp as ever. That distortion is precisely why I\'ve brought you here.',
+                zh_cn = '观察力还是那么敏锐。你所感觉到的扭曲，正是我带你来的原因。',
+            },
+            gensokyoIsInDanger = {
+                en_us = 'This distortion... Gensokyo is in danger, I can sense it.',
+                zh_cn = '这种扭曲……幻想乡有危险，我能感觉到。',
+            },
+            whatDanger = {
+                en_us = 'What danger?',
+                zh_cn = '什么危险？',
+            },
+            theWorldIsVeryStrangeNow = {
+                en_us = 'For my world to be this affected, the very space of Gensokyo must be in chaos.',
+                zh_cn = '能对我的世界产生这么大的影响，说明幻想乡的空间本身已经陷入混乱了。',
+            },
+            dulyNotedCanILeaveNow = {
+                en_us = 'Alright, I get it. Send me back so I can take care of it.',
+                zh_cn = '行了，我明白了。快送我回去，我好去解决。',
+            },
+            notSoFast = {
+                en_us = 'Not so fast.',
+                zh_cn = '别着急。',
+            },
+            youWillGetLostIfLeaveNow = {
+                en_us = 'If you leave like this, you won\'t just get lost. You might not even find your way off your own shrine\'s porch.',
+                zh_cn = '你就这样回去，可不只是会迷路。说不定你连自家神社的台阶都走不下去。',
+            },
+            okSoWhat = {
+                en_us = '... Fine. Then what do you suggest I do?',
+                zh_cn = '……好吧。那我要怎么做？',
+            },
+            danmakuIsBetterExplanation = {
+                en_us = 'Let\'s use a language you understand. A little Danmaku should help you get your bearings!',
+                zh_cn = '那就用你最能听懂的语言吧。来一场弹幕游戏，你就能找到感觉了！',
+            },
+            welcomeToThisGame = {
+                en_us = 'Welcome to "Hyperbolic Domain"!',
+                zh_cn = '欢迎来到「东方双曲域」！',
+            },
+            spaceIsStrange = {
+                en_us = 'As Doremy mentioned, the space structure of Gensokyo is distorted.',
+                zh_cn = '正如哆来咪所提到的，幻想乡的空间结构被扭曲了。',
+            },
+            upperThingsAppearSmaller = {
+                en_us = 'Things above appear smaller, and things below appear larger.',
+                zh_cn = '上方的东西看起来更小，下方的东西看起来更大。',
+            },
+            forThisSpellcard = {
+                en_us = 'For this spellcard, stay at the upper part of the screen is the only way to dodge.',
+                zh_cn = '在这个符卡中，待在屏幕上部才能躲避哦。',
+            },
+            finalHint = {
+                en_us = 'Finally, a hint for those not familiar with touhou games:',
+                zh_cn = '最后，提示一下不熟悉东方游戏的玩家：',
+            },
+            controlsIntroduction = {
+                en_us = 'Use arrow keys to move, hold LShift to move slowly, and hold Z to shoot.',
+                zh_cn = '使用方向键移动，按住左Shift慢速移动，按住Z键射击。',
+            },
+            haveFun = {
+                en_us = 'Have fun!',
+                zh_cn = '祝你玩得开心！',
+            },
+        }
     }
 }
