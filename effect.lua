@@ -171,7 +171,7 @@ function FlashBomb:draw()
     if #meshVertices<4 then return end
     local mesh=love.graphics.newMesh(meshVertices,'fan')
     mesh:setTexture(Asset.bulletImage)
-    table.insert(Asset.laserMeshes,mesh)
+    Asset.laserMeshes:add(mesh)
 end
 
 return Effect

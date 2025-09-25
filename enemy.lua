@@ -187,7 +187,7 @@ function Enemy:drawSprite()
         local offDistance=math.sin(self.time)*1 -- slightly floating
         x0,y0=Shape.rThetaPos(x0,y0,offDistance,orientation+math.pi/2)
         local mesh=Shape.fanMesh(x0,y0,(self.drawRadius or 0.6)*Asset.boss.width/2,orientation,self.currentSprite or sprite.normal[1],Asset.bossImage,16,{1,1,1,1},true) -- 16 is number of triangles
-        table.insert(Asset.bossMeshes,mesh)
+        Asset.bossMeshes:add(mesh)
         -- local x,y,r=Shape.getCircle(x0,y0,self.drawRadius or 0.6)
         -- Asset.bossMeshes:add(self.currentSprite or sprite.normal[1],x,y,orientation,r,r,Asset.boss.width/2,Asset.boss.height/2)
     end
@@ -324,7 +324,7 @@ function Enemy:drawCircleHPBar()
     else
         self.circleHPBarMesh:setVertices(vertices)
     end
-    table.insert(Asset.laserMeshes,self.circleHPBarMesh)
+    Asset.laserMeshes:add(self.circleHPBarMesh)
     -- love.graphics.setColor(1,0.3,0.3,self.hpBarTransparency)
     for i,ratio in pairs(self.hpSegments) do
         local rin,rout=29.5,33.5

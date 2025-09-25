@@ -146,7 +146,7 @@ function LaserUnit:drawMesh(poses)
         self.mesh:setTexture(Asset.bulletImage)
     end
     self.mesh:setVertices(vertices)
-    table.insert(Asset.laserMeshes,self.mesh.mesh)
+    Asset.laserMeshes:add(self.mesh.mesh)
     -- love.graphics.draw(mesh)
 end
 

@@ -142,6 +142,24 @@ for i,info in pairs(bossImagePoses) do
     end
 end
 
+
+
+local portraitsImage=love.graphics.newImage('assets/portraits.png')
+local portraitWidth=512
+local portraitHeight=512
+Asset.portraitWidth,Asset.portraitHeight=portraitWidth,portraitHeight
+---@type table<string,table<string,love.Quad>> speaker -> expression -> quad
+Asset.portraitQuads={}
+local speakerExpressionList={
+    reimu={'angry','frustrated','happy','normal','sad','surprised'},
+}
+for speaker,expressionList in pairs(speakerExpressionList) do
+    Asset.portraitQuads[speaker]={}
+    for i,expression in ipairs(expressionList) do
+        Asset.portraitQuads[speaker][expression]=love.graphics.newQuad((i-1)*portraitWidth,0,portraitWidth,portraitHeight,portraitsImage:getDimensions())
+    end
+end
+
 --[[
 Batches are used to seperate different draw layers. Generally, order should be:
 
@@ -157,25 +175,63 @@ Effects
 Player spell (niy)
 Player focus 
 UI (left half and right half foreground)
-Dialogue (niy)
-Dialogue Characters (niy)
+Dialogue 
+Dialogue Characters 
 ]]
+local SpecialBatch=Object:extend()
+function SpecialBatch:new(type)
+    self.type=type
+    self.contents={}
+end
+function SpecialBatch:add(item)
+    self.contents[#self.contents+1]=item
+end
+function SpecialBatch:clear()
+    self.contents={}
+end
+function SpecialBatch:flush()
+end
+function SpecialBatch:draw()
+end
+
+local MeshBatch=SpecialBatch:extend()
+function MeshBatch:new()
+    MeshBatch.super.new(self,'mesh')
+end
+function MeshBatch:draw()
+    for i, mesh in pairs(self.contents) do
+        love.graphics.draw(mesh)
+    end
+end
+
+--- for love.graphics function calls
+local FunctionBatch=SpecialBatch:extend()
+function FunctionBatch:new()
+    FunctionBatch.super.new(self,'function')
+end
+function FunctionBatch:draw()
+    for i, func in pairs(self.contents) do
+        func()
+    end
+end
 
 Asset.titleBatch=love.graphics.newSpriteBatch(titleImage,1,'stream') -- title screen
 
+Asset.bossMeshes=MeshBatch()
 Asset.fairyBatch=love.graphics.newSpriteBatch(fairyImage,100,'stream')
-Asset.bossMeshes={}
 Asset.playerBatch=love.graphics.newSpriteBatch(playerImage, 5,'stream')
 Asset.playerBulletBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
-Asset.bigBulletMeshes={}
+Asset.bigBulletMeshes=MeshBatch()
 Asset.bulletHighlightBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
-Asset.laserMeshes={}
+Asset.laserMeshes=MeshBatch()
 Asset.bulletBatch = love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
 Asset.effectBatch=love.graphics.newSpriteBatch(bulletImage, 2000,'stream')
-Asset.playerFocusMeshes={}
+Asset.playerFocusMeshes=MeshBatch()
 -- deprecated, use meshes for higher quality. maybe useful if a level has thousands of focus points and lags for meshes
 Asset.playerFocusBatch=love.graphics.newSpriteBatch(bulletImage, 5,'stream')
 Asset.foregroundBatch=love.graphics.newSpriteBatch(bgImage,5,'stream')
+Asset.portraitBatch=love.graphics.newSpriteBatch(portraitsImage,2)
+Asset.dialogueBatch=FunctionBatch()
 Asset.Batches={
     Asset.bossMeshes,
     Asset.fairyBatch,
@@ -190,6 +246,8 @@ Asset.Batches={
     Asset.playerFocusBatch,
     -- G.afterExtraDraw here, not an element of batches
     Asset.foregroundBatch,
+    Asset.portraitBatch,
+    Asset.dialogueBatch,
 }
 --- batch:{before:fun()|nil,after:fun()|nil}
 Asset.batchExtraActions={
@@ -204,20 +262,12 @@ isHighlightBatch[Asset.bulletHighlightBatch]=true
 isHighlightBatch[Asset.laserMeshes]=true
 Asset.clearBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        if type(batch)=='table' then -- laser batch that is actually a table of laser meshes
-            for key in pairs(batch) do
-                batch[key] = nil
-            end
-        else
-            batch:clear()
-        end
+        batch:clear()
     end
 end
 Asset.flushBatches=function(self)
     for key, batch in pairs(self.Batches) do
-        if batch.flush then
-            batch:flush()
-        end
+        batch:flush()
     end
 end
 Asset.setHyperbolicRotateShader=function()
@@ -260,10 +310,8 @@ Asset.drawBatches=function(self)
         if self.batchExtraActions[batch] and self.batchExtraActions[batch].before then
             self.batchExtraActions[batch].before()
         end
-        if type(batch)=='table' then -- laser batch that is actually a table of laser meshes
-            for i, mesh in pairs(batch) do
-                love.graphics.draw(mesh)
-            end
+        if batch.draw then -- special batch
+            batch:draw()
         else
             love.graphics.draw(batch)
         end

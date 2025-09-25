@@ -143,13 +143,13 @@ function Circle:drawLargeSprite(num)
         self._fanMesh:setTexture(Asset.bulletImage)
     end
     self._fanMesh:setVertices(fanMeshVertices)
-    table.insert(Asset.bigBulletMeshes,self._fanMesh.mesh)
+    Asset.bigBulletMeshes:add(self._fanMesh.mesh)
     if not self.ringMesh then
         self.ringMesh=ExpandingMesh(200,'strip')
         self.ringMesh:setTexture(Asset.bulletImage)
     end
     self.ringMesh:setVertices(ringMeshVertices)
-    table.insert(Asset.bigBulletMeshes,self.ringMesh.mesh)
+    Asset.bigBulletMeshes:add(self.ringMesh.mesh)
 end
 
 function Circle:checkShockwaveRemove()
