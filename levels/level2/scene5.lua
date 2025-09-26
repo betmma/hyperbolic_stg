@@ -42,7 +42,7 @@ return {
                         if player.y<100 then
                             direction=Shape.to(nx,ny,player.x,player.y)
                         end
-                        local cir=self:spawnBulletFunc{x=nx,y=ny,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,limit=limit}
+                        local cir=self:spawnBulletFunc{x=nx,y=ny,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,limit=limit,sprite=self.bulletSprite}
                         if player.y<100 and cir then
                             cir.flag=true
                         end

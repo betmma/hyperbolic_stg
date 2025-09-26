@@ -22,7 +22,7 @@ return {
                                 cir.direction=math.eval(0,3.14)
                                 cir.speed=math.eval(20,5)
                             end
-                            if cir.frame%20==0 then
+                            if cir.frame%40==0 then
                                 local rand= math.eval(0.0,1.0)
                                 local angle=math.pi/3
                                 local prob=0.2

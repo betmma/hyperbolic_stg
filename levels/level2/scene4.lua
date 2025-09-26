@@ -17,6 +17,7 @@ return {
                     local spd=cir.speed
                     local dir=d0+(math.pi/2)*(b.spawnEvent.executedTimes%2)+(en.frame%20)/20*math.pi+cir.direction
                     cir.speed=0
+                    local t0=en.frame
                     Event.Event{
                         times=1,
                         conditionFunc=function()
@@ -32,6 +33,13 @@ return {
                                 aimValue=0,
                                 easeFrame=120,
                                 afterFunc=function()
+                                    if t0%3~=0 then
+                                        Event.EaseEvent{
+                                            obj=cir,aimKey='spriteTransparency',aimValue=0,easeFrame=math.eval(30,10),afterFunc=function()
+                                                cir:remove()
+                                            end
+                                        }
+                                    end
                                     cir.direction=dir
                                     Event.EaseEvent{
                                         obj=cir,

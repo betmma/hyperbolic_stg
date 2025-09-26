@@ -4,7 +4,15 @@ return {
     user='nemuno',
     spellName='Blade Exhaustion Sign "Killing Grid"',
     make=function()
-        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=4800,speed=5}
+        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800,speed=2}
+        Event.LoopEvent{
+            obj=en,
+            period=300,
+            frame=270,
+            executeFunc=function()
+                Effect.Charge{obj=en,x=en.x,y=en.y,animationFrame=90}
+            end
+        }
         local a=BulletSpawner{x=400,y=300,period=300,frame=180,lifeFrame=10000,bulletNumber=0,bulletSpeed=10,angle='0+9999',bulletSprite=BulletSprites.knife.red,fogEffect=true,fogTime=60,bulletEvents={
             function(cir,args)
                 local spd=cir.speed
@@ -64,7 +72,7 @@ return {
             executeFunc=function()
                 en.direction=Shape.to(en.x,en.y,Player.objects[1].x,Player.objects[1].y)
                 a.x=en.x;a.y=en.y
-                a.bulletNumber=20+math.floor(20*(1-en.hp/en.maxhp))
+                a.bulletNumber=10+math.floor(10*(1-en.hp/en.maxhp))
                 if Shape.distance(a.x,a.y,Player.objects[1].x,Player.objects[1].y)<10 and a.frame%30==0 then
                     local num
                     local range=math.eval(a.range)

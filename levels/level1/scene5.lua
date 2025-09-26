@@ -13,7 +13,7 @@ return {
             end
         }
         local player=Player{x=400,y=600}
-        local b=BulletSpawner{x=400,y=200,period=600,frame=540,lifeFrame=10000,bulletNumber=120,bulletSpeed=30,angle='0+9999',bulletSprite=BulletSprites.round.yellow,bulletEvents={
+        local b=BulletSpawner{x=400,y=200,period=600,frame=540,lifeFrame=10000,bulletNumber=20,bulletSpeed=30,angle='0+9999',bulletSprite=BulletSprites.round.yellow,bulletEvents={
             function(cir,args)
                 local key=args.index
                 Event.LoopEvent{

@@ -6,7 +6,7 @@ return {
     make=function()
         local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7200}
         local player=Player{x=400,y=600}
-        local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=30,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.bill.green,spawnBatchFunc=function(self)
+        local b=BulletSpawner{x=400,y=300,period=60,lifeFrame=10000,bulletNumber=10,bulletSpeed='10+3',bulletLifeFrame=10000,angle='0+3.14',bulletSprite=BulletSprites.bill.green,spawnBatchFunc=function(self)
             SFX:play('enemyShot',true)
             local num=math.eval(self.bulletNumber)
             local range=math.eval(self.range)
@@ -35,7 +35,7 @@ return {
             love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
         end
         local a
-        a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=16,bulletSpeed='30',bulletLifeFrame=10000,angle=-0.5,range=math.pi*2,bulletSprite=BulletSprites.dot.cyan,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=3,frame=0,lifeFrame=10000,bulletNumber=8,bulletSpeed='30',bulletLifeFrame=10000,angle=-0.5,range=math.pi*2,bulletSprite=BulletSprites.dot.cyan,bulletEvents={
             function(cir)
                 Event.DelayEvent{
                     obj=cir,
@@ -107,13 +107,13 @@ return {
                 local pe=1800
                 local t=a.frame%(pe*2)
                 if t==2 then
-                    a.bulletNumber=12
+                    a.bulletNumber=6
                     a.bulletSpeed=20
                     a.range=math.pi*2
                 end
                 if t==180 then
                     a.bulletSpeed=30
-                    a.bulletNumber=8
+                    a.bulletNumber=4
                     a.range=math.pi/2
                 end
                 if t<180 then

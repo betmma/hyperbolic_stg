@@ -9,12 +9,19 @@ return {
         local b
         local a=BulletSpawner{x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSprite=BulletSprites.blackrice.blue,bulletEvents={
             function(cir,args)
-                local key=args.index
+                local t0=en.frame
                 Event{
                     obj=cir,
                     times=1,
                     conditionFunc=function(self)return b.flag end,
                     executeFunc=function(self)
+                        if t0%3~=0 then
+                            Event.EaseEvent{
+                                obj=cir,aimKey='spriteTransparency',aimValue=0,easeFrame=math.eval(30,10),afterFunc=function()
+                                    cir:remove()
+                                end
+                            }
+                        end
                         cir.direction=cir.direction+math.eval(0,999)
                         Event.EaseEvent{
                             obj=cir,

@@ -26,7 +26,11 @@ return {
                         return math.sin(x*math.pi*2)
                     end,
                     afterFunc=function(self)
-                        cir:remove()
+                        Event.EaseEvent{
+                            obj=cir,aimKey='spriteTransparency',aimValue=0,easeFrame=math.eval(30,10),afterFunc=function()
+                                cir:remove()
+                            end
+                        }
                     end
                 }
                 Event.DelayEvent{
@@ -48,11 +52,11 @@ return {
             executeFunc=function()
                 local per=en.hp/en.maxhp
                 if per<0.33 then
-                    s.bulletNumber,c.bulletNumber=512,512
+                    s.bulletNumber,c.bulletNumber=192,192
                 elseif per<0.67 then
-                    s.bulletNumber,c.bulletNumber=384,384
+                    s.bulletNumber,c.bulletNumber=128,128
                 else
-                    s.bulletNumber,c.bulletNumber=256,256
+                    s.bulletNumber,c.bulletNumber=96,96
                 end
             end
         }

@@ -38,7 +38,7 @@ return {
                                             cir:remove()
                                         end 
                                         if not(cir.x>150 and cir.x<650 and cir.y>0 and cir.y<600) then
-                                            return cir.sprite==BulletSprites.laser.blue and cir.index%10==0 
+                                            return cir.sprite==BulletSprites.laser.blue and cir.index%50==0 
                                         end
                                     end,
                                     executeFunc=function(self)
