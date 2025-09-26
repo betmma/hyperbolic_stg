@@ -202,8 +202,8 @@ return {
             -- level 1
             [11] = {
                 quote = {
-                    en_us = 'In this world things appear smaller when closer to top.',
-                    zh_cn = '在这个世界里，靠近顶部的东西看起来会更小。',
+                    en_us = 'How on earth do things appear smaller when closer to top?',
+                    zh_cn = '靠近顶部的东西为什么会看起来更小？',
                 },
                 spellName = {
                     en_us = 'Dream Sign "Permeable Wall"',
@@ -232,8 +232,8 @@ return {
             },
             [14] = {
                 quote = {
-                    en_us = 'Moving through this "square" grid is so difficult.',
-                    zh_cn = '穿过这个"方"阵真是太困难了。',
+                    en_us = 'It\'s clear that the grid is not uniform. What would a uniform grid look like?',
+                    zh_cn = '网格显然是不均匀的。均匀的网格会是什么样子？',
                 },
                 spellName = {
                     en_us = 'Blade Exhaustion Sign "Killing Grid"',
@@ -242,8 +242,8 @@ return {
             },
             [15] = {
                 quote = {
-                    en_us = 'The shape reminds me of the Moriya maiden. Maybe Takane learned this from her.',
-                    zh_cn = '这个形状让我想起了守矢的巫女。也许高岭是从她那里学来的。',
+                    en_us = 'Shouldn\'t this spellcard belong to Moriya maiden? Well it\'s in dream world so fine I guess.',
+                    zh_cn = '这个符卡不应该属于守矢的巫女吗？不过在梦世界里也无所谓了。',
                 },
                 spellName = {
                     en_us = 'Leaf Skill "Green Heptagram"',

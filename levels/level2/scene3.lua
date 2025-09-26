@@ -66,15 +66,22 @@ return {
                             elseif cir.x>650 then
                                 cir.x=150
                                 table.insert(greenLines.items,{150,cir.y,650,cir.y,5})
-                            elseif not polyline:insideOne(cir.x,cir.y,1) then
-                                local ny=Shape.lineX2Y(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x)
-                                -- print(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x,ny)
-                                table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
-                                cir.y=ny
-                            elseif not polyline:insideOne(cir.x,cir.y,3) then
-                                local ny=Shape.lineX2Y(polyline.points[1].x,polyline.points[1].y,polyline.points[2].x,polyline.points[2].y,cir.x)
-                                table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
-                                cir.y=ny
+                            elseif cir.y<0 then
+                                cir.y=600
+                                table.insert(greenLines.items,{cir.x,0,cir.x,600,5})
+                            elseif cir.y>600 then
+                                cir.y=0
+                                table.insert(greenLines.items,{cir.x,0,cir.x,600,5})
+                            -- below is for original polyline border
+                            -- elseif not polyline:insideOne(cir.x,cir.y,1) then
+                            --     local ny=Shape.lineX2Y(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x)
+                            --     -- print(polyline.points[3].x,polyline.points[3].y,polyline.points[4].x,polyline.points[4].y,cir.x,ny)
+                            --     table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
+                            --     cir.y=ny
+                            -- elseif not polyline:insideOne(cir.x,cir.y,3) then
+                            --     local ny=Shape.lineX2Y(polyline.points[1].x,polyline.points[1].y,polyline.points[2].x,polyline.points[2].y,cir.x)
+                            --     table.insert(greenLines.items,{cir.x,cir.y,cir.x,ny,5})
+                            --     cir.y=ny
                             else
                                 flag=false
                             end

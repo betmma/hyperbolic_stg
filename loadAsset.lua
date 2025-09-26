@@ -187,7 +187,9 @@ function SpecialBatch:add(item)
     self.contents[#self.contents+1]=item
 end
 function SpecialBatch:clear()
-    self.contents={}
+    for i=1,#self.contents do
+        self.contents[i]=nil
+    end
 end
 function SpecialBatch:flush()
 end

@@ -11,7 +11,7 @@ return {
         }}
         local a=BulletSpawner{x=650,y=0,period=12,frame=-1800,lifeFrame=10000,bulletNumber=10,bulletSpeed='40',angle='0+112',bulletSprite=BulletSprites.round.blue,bulletEvents={
         }}
-        local b=BulletSpawner{x=400,y=600,period=120,frame=60,lifeFrame=10000,bulletNumber=60,bulletSpeed=1.5,bulletSprite=BulletSprites.star.red,bulletEvents={
+        local b=BulletSpawner{x=400,y=630,period=120,frame=60,lifeFrame=10000,bulletNumber=60,bulletSpeed=1.5,bulletSprite=BulletSprites.star.red,bulletEvents={
             function(cir,args)
                 local key=args.index
                 Event.LoopEvent{

@@ -9,6 +9,7 @@ shaders/hyperbolicRotate.glsl
 shaders/triangleTextureDrawer.glsl
 shaders/triangleTextureDrawerVertex.glsl
 shaders/backgrounds/H3TerrainFailed.glsl
+shaders/backgrounds/Honeycomb.glsl
 *.txt
 profi
 *sceneTest.lua

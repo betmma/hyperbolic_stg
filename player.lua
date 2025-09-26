@@ -85,15 +85,18 @@ function Player:new(args)
     self.drawRadius=0.5
     -- orientation determines extra rotation of player sprite and focus sprite. since player sprite faces up, orientation is normally 0. It's not 0 in rare cases, like when calculating mirrored player sprite in 7-4.
     self.orientation=0
-    local minx=150
-    local maxx=650
-    local miny=0
-    local maxy=540
-    
+
     if args.noBorder then
         self.border=nil
     else
-        self.border=PolyLine({{minx,miny},{maxx,miny},{maxx,maxy},{minx,maxy}})
+        -- rectangle border, only used in level 1 and 2. very spaghetti i know
+        self.border={
+            inside=function(_,x,y)
+                return x>=150 and x<=650 and y>=0 and y<=600
+            end,
+            default=true,
+            remove=function()end
+        }
     end
 
     self.maxhp=3
@@ -112,7 +115,7 @@ function Player:new(args)
     self.shootInterval=3
     self.canShootDuringInvincible=false
 
-    self.moveMode=Player.moveModes.Bipolar
+    self.moveMode=Player.moveModes.Euclid
     self.dieShockwaveRadius=2
 
     self.keyRecord={}
@@ -216,6 +219,16 @@ function Player:getKeyboardMoveSpeed()
 end
 
 function Player:limitInBorder()
+    if self.border.default then
+        local miny=10
+        local maxy=580
+        self.y=math.clamp(self.y,miny,maxy)
+        local minx=150
+        local maxx=650
+        local bias=20*(self.y-Shape.axisY)/(maxy-Shape.axisY) -- when y=Shape.axisY, bias=0, when y=maxy, bias=20
+        self.x=math.clamp(self.x,minx+bias,maxx-bias)
+        return
+    end
     local count=0
     while self.border and count<10 and not self.border:inside(self.x,self.y) do
         count=count+1

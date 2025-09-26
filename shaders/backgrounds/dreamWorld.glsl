@@ -48,7 +48,7 @@ uniform float star_halo_px     = 1.5;    // halo radius in pixels
 UHPGeodesic G01 = make_geodesic_segment(V0, V1);
 UHPGeodesic G12 = make_geodesic_segment(V1, V2);
 UHPGeodesic G20 = make_geodesic_segment(V2, V0);
-const int MAX_REFLECTIONS = 10;
+const int MAX_REFLECTIONS = 6;
 
 // ---------- Small helpers ----------
 float mdot4(vec4 a, vec4 b) { return -dot(a.xyz, b.xyz) + a.w*b.w; }

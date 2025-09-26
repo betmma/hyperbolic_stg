@@ -4,7 +4,7 @@ return {
     user='cirno',
     spellName='Freeze Sign "Rime Ice"',
     make=function()
-        local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=4800}
+        local en=Enemy{x=400,y=50,mainEnemy=true,maxhp=4800}
         local player=Player{x=400,y=600}
         local circPeriod=5
         local circRad=60
