@@ -138,18 +138,12 @@ function Circle:drawLargeSprite(num)
     table.insert(fanMeshVertices,fanMeshVertices[2]) -- close the fan
     table.insert(ringMeshVertices,ringMeshVertices[1]) -- close the ring
     table.insert(ringMeshVertices,ringMeshVertices[2]) -- close the ring
-    if not self._fanMesh then
-        self._fanMesh=ExpandingMesh(100,'fan')
-        self._fanMesh:setTexture(Asset.bulletImage)
-    end
-    self._fanMesh:setVertices(fanMeshVertices)
-    Asset.bigBulletMeshes:add(self._fanMesh.mesh)
-    if not self.ringMesh then
-        self.ringMesh=ExpandingMesh(200,'strip')
-        self.ringMesh:setTexture(Asset.bulletImage)
-    end
-    self.ringMesh:setVertices(ringMeshVertices)
-    Asset.bigBulletMeshes:add(self.ringMesh.mesh)
+    local mesh=love.graphics.newMesh(fanMeshVertices,'fan')
+    mesh:setTexture(Asset.bulletImage)
+    Asset.bigBulletMeshes:add(mesh)
+    local ringMesh=love.graphics.newMesh(ringMeshVertices,'strip')
+    ringMesh:setTexture(Asset.bulletImage)
+    Asset.bigBulletMeshes:add(ringMesh)
 end
 
 function Circle:checkShockwaveRemove()

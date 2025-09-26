@@ -141,13 +141,9 @@ function LaserUnit:drawMesh(poses)
         table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})
     end
     if #vertices<4 then return end
-    if not self.mesh then
-        self.mesh=ExpandingMesh(self.meshVerticesInitSize,'strip')
-        self.mesh:setTexture(Asset.bulletImage)
-    end
-    self.mesh:setVertices(vertices)
-    Asset.laserMeshes:add(self.mesh.mesh)
-    -- love.graphics.draw(mesh)
+    local mesh=love.graphics.newMesh(vertices,'strip')
+    mesh:setTexture(Asset.bulletImage)
+    Asset.laserMeshes:add(mesh)
 end
 
 -- use the line segment between self and self.previous to check if player is hit by laser. Circle check can cause safe spot inside laser.

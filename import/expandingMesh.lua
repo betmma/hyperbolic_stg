@@ -4,6 +4,7 @@
 ---@field drawMode love.DrawMode The drawing mode for the mesh (e.g., "quads", "triangles").
 ---@field usageHint love.MeshUsage The usage hint for the mesh (e.g., "stream", "dynamic").
 ---@field texture love.Texture | nil The texture applied to the mesh.
+--- much much worse than creating new mesh every frame. will cause periodically lag that becomes very severe after like 2 minutes. yay anti-optimization
 local ExpandingMesh = Object:extend()
 
 --- Creates a new auto-expanding mesh.
