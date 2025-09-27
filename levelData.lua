@@ -48,6 +48,13 @@ local function wrapLevelMake(levelData)
                 aimValue=1,
                 progressFunc=Event.sineOProgressFunc
             }
+            Event.LoopEvent{
+                obj=txt,period=1,frame=-120,executeFunc=function(self) -- after above ease events
+                    if G.viewMode.mode==G.VIEW_MODES.NORMAL and Player.objects[1] then
+                        txt.color[4]=math.clamp(math.abs(txt.y-Player.objects[1].y)/75,0.2,1)
+                    end
+                end
+            }
         end
         -- show user (boss) name
         do
