@@ -43,8 +43,8 @@ Perfectly completed (without being harmed) scenes display as golden and give 12 
 
 ##### Todo:
 1. ~~Rearrange levels~~
-2. Nickname system
-3. Dialogue system
+2. ~~Nickname system~~
+3. ~~Dialogue system~~
 4. Story
 
 
@@ -58,6 +58,8 @@ Bullet sprites and Reimu sprites (bullets.png and player.png) used in this proje
 Background and transition image in level (bg.png) is created with [Make Hyperbolic Tilings of Images](https://www.malinc.se/m/ImageTiling.php) using *Color triangle* by Vassily Kandinsky (Public Domain).
 
 Title image (title.png) and upgrades icons (upgrades.png) are drawn by myself.
+
+Enemy portraits in dialogue and small portraits in level are drawn by myself.
 
 #### Audio
 

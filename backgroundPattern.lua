@@ -751,4 +751,31 @@ function DreamWorld:new(args)
     end
 end
 BackgroundPattern.DreamWorld=DreamWorld
+
+local honeycombShader=ShaderScan:load_shader('shaders/backgrounds/honeycomb.glsl')
+local Honeycomb=H3Terrain:extend()
+function Honeycomb:new(args)
+    Honeycomb.super.new(self,args)
+    self.shader=honeycombShader
+    self.cam_translation={0,0,0}
+    self.cam_pitch=math.pi*-0.4
+    local autoMove=false
+    self.paramSendFunction=function(self,shader)
+        shader:send("time", self.frame/60*1.8)
+        local trans=self.cam_translation or {0,0,0}
+        if autoMove then
+            trans[3]=math.cos(self.frame/200)*-0.5+1.5
+        end
+        shader:send("cam_translation", trans)
+        local pitch=self.cam_pitch or 0
+        if autoMove then
+            pitch=math.cos(self.frame/200)*-0.3-0.3
+        end
+        shader:send("cam_pitch", pitch)
+        shader:send("cam_yaw", self.cam_yaw or 0)
+        local roll=self.cam_roll or 0
+        shader:send("cam_roll", roll)
+    end
+end
+BackgroundPattern.Honeycomb=Honeycomb
 return BackgroundPattern
