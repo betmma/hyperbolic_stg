@@ -757,25 +757,45 @@ local Honeycomb=H3Terrain:extend()
 function Honeycomb:new(args)
     Honeycomb.super.new(self,args)
     self.shader=honeycombShader
-    self.cam_translation={0,0,0}
+    self.cam_translation={0,0,0.3}
     self.cam_pitch=math.pi*-0.4
-    local autoMove=false
+    self.camMoveRange={0.45,0.0}
+    self.autoMove=true
+    self.autoForwardSpeed=0.15
+    self.autoForwardWrap=1.06
+    self.autoForwardValue=self.cam_translation[3]
+    self.manualForwardOffset=0.0
+    self.manualForwardLimit=0.3
     self.paramSendFunction=function(self,shader)
         shader:send("time", self.frame/60*1.8)
-        local trans=self.cam_translation or {0,0,0}
-        if autoMove then
-            trans[3]=math.cos(self.frame/200)*-0.5+1.5
-        end
-        shader:send("cam_translation", trans)
-        local pitch=self.cam_pitch or 0
-        if autoMove then
-            pitch=math.cos(self.frame/200)*-0.3-0.3
-        end
-        shader:send("cam_pitch", pitch)
+        local trans=self.cam_translation
+        shader:send("cam_translation", {trans[3], trans[1], trans[2]}) -- first component is applied first, so it must be autoforward axis. otherwize, like if apply camMove first then the teleportation will not be smooth
+        shader:send("cam_pitch", self.cam_pitch or 0)
         shader:send("cam_yaw", self.cam_yaw or 0)
-        local roll=self.cam_roll or 0
-        shader:send("cam_roll", roll)
+        shader:send("cam_roll", self.cam_roll or 0)
     end
 end
+
+function Honeycomb:update(dt)
+    Honeycomb.super.update(self,dt)
+    if not self.autoMove then
+        return
+    end
+    local wrap = self.autoForwardWrap
+    if wrap < 1e-4 then
+        wrap = 1.0
+    end
+    local manualOffset = math.clamp(self.cam_translation[3] - self.autoForwardValue, -self.manualForwardLimit, self.manualForwardLimit)
+    self.manualForwardOffset = manualOffset
+    self.autoForwardValue = self.autoForwardValue + (self.autoForwardSpeed or 0.0) * dt
+    local span = wrap * 2.0
+    if self.autoForwardValue > wrap then
+        self.autoForwardValue = self.autoForwardValue - span
+    elseif self.autoForwardValue < -wrap then
+        self.autoForwardValue = self.autoForwardValue + span
+    end
+    self.cam_translation[3] = self.autoForwardValue + self.manualForwardOffset
+end
+
 BackgroundPattern.Honeycomb=Honeycomb
 return BackgroundPattern

@@ -37,7 +37,7 @@ const float CELL_SHELL_DIST = 0.5 * (CELL_INRADIUS + CELL_CIRCUMRADIUS);
 const float MAX_HYP_DIST = 9.5;
 const float STEP_MIN = 0.02;
 const float STEP_MAX = 0.9;
-const float STEP_FACTOR = 0.62;
+const float STEP_FACTOR = 0.72;
 
 float mdot4(vec4 a, vec4 b) {
     return -dot(a.xyz, b.xyz) + a.w*b.w;
@@ -78,24 +78,35 @@ void renormalize_state(inout vec4 pos, inout vec4 dir) {
     dir = normalize_spacelike(dir);
 }
 
+void wrap_inside_cell(inout vec4 pos, inout vec4 dir) {
+    for (int iteration = 0; iteration < 4; ++iteration) {
+        bool adjusted = false;
+        for (int i = 0; i < FACE_COUNT; ++i) {
+            if (plane_signed(pos, FACE_NORMALS[i]) <= 0.0) {
+                pos = reflect_plane(pos, FACE_NORMALS[i]);
+                dir = reflect_plane(dir, FACE_NORMALS[i]);
+                adjusted = true;
+            }
+        }
+        dir = project_to_tangent(pos, dir);
+        dir = normalize_spacelike(dir);
+        if (!adjusted) {
+            break;
+        }
+    }
+}
+
 vec3 honeycomb_shade(vec4 pos, vec4 dir, float travel, float time);
 
 vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) {
     hit_terrain = false;
     vec4 pos = cam_pos_H;
     vec4 dir = normalize_spacelike(project_to_tangent(pos, ray_dir_H));
-
-    for (int i = 0; i < FACE_COUNT; ++i) {
-        float s = plane_signed(pos, FACE_NORMALS[i]);
-        if (s <= 0.0) {
-            pos = reflect_plane(pos, FACE_NORMALS[i]);
-        }
-    }
-    dir = normalize_spacelike(project_to_tangent(pos, dir));
+    wrap_inside_cell(pos, dir);
 
     vec3 accum = vec3(0.08, 0.09, 0.14);
     float travel = 0.0;
-    for (int step = 0; step < 96; ++step) {
+    for (int step = 0; step < 72; ++step) {
         float shellDist = acosh1(max(pos.w, 1.0));
         if (shellDist > CELL_SHELL_DIST) {
             break;
@@ -168,28 +179,14 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
 }
 
 vec3 honeycomb_shade(vec4 pos, vec4 dir, float travel, float time) {
-    // float nearest = 1e9;
-    // float secondNearest = 1e9;
-    // for (int i = 0; i < FACE_COUNT; ++i) {
-    //     float s = max(0.0, plane_signed(pos, FACE_NORMALS[i]));
-    //     if (s < nearest) {
-    //         secondNearest = nearest;
-    //         nearest = s;
-    //     } else if (s < secondNearest) {
-    //         secondNearest = s;
-    //     }
-    // }
-    // float edgeGlow = exp(-1.8 * nearest);
     float distanceToCenter = acosh1(max(pos.w, 1.0));
     vec3 normalxyz = pos.xyz / sinh(distanceToCenter) * cosh(distanceToCenter);
     vec4 normal = vec4(normalxyz, sinh(distanceToCenter));
     float edgeGlow = 0.5*(1.0 + dot(dir, normal));
-    // float ridge = exp(-1.1 * (secondNearest - nearest));
     float wave = 0.5 + 0.5 * sin(time * 0.45 + travel * 1.2 + pos.w * 0.6);
     vec3 base = mix(vec3(0.05, 0.09, 0.15), vec3(0.82, 0.68, 0.44), edgeGlow);
-    // base += ridge * vec3(0.08, 0.12, 0.18);
     base += 0.15 * wave * vec3(0.2, 0.35, 0.6);
-    return base*exp(-0.25*travel);
+    return base*exp(-0.45*travel);
 }
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
