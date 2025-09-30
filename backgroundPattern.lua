@@ -624,6 +624,7 @@ function Fractal:new(args)
 end
 BackgroundPattern.Fractal=Fractal
 
+local build_lorentz_mat4=require('import.H3math').build_lorentz_mat4
 -- tessellation on H^2 is calculated similar to main menu tessellation: calculate schwarz triangle vertices and send this fundamental triangle to shader. after flip, flip count and barycenter coordinates are used to calculate color and height.
 -- due to high computation cost, this could only fit ending / credits
 local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
@@ -757,22 +758,29 @@ local Honeycomb=H3Terrain:extend()
 function Honeycomb:new(args)
     Honeycomb.super.new(self,args)
     self.shader=honeycombShader
-    self.cam_translation={0,0,0.3}
-    self.cam_pitch=math.pi*-0.4
+    self.inverse=true
+    self.cam_translation={0.0001,0.4,0.3} -- when inverse, y=0.4 to avoid moving into ball at origin
+    self.cam_pitch=self.inverse and -math.pi/2 or 0
+    self.cam_yaw=-math.pi/2
     self.camMoveRange={0.45,0.0}
     self.autoMove=true
     self.autoForwardSpeed=0.15
-    self.autoForwardWrap=1.06
+    self.autoForwardWrap=1.06 -- currently should be distance from center to center of a side. 
     self.autoForwardValue=self.cam_translation[3]
     self.manualForwardOffset=0.0
     self.manualForwardLimit=0.3
     self.paramSendFunction=function(self,shader)
         shader:send("time", self.frame/60*1.8)
         local trans=self.cam_translation
-        shader:send("cam_translation", {trans[3], trans[1], trans[2]}) -- first component is applied first, so it must be autoforward axis. otherwize, like if apply camMove first then the teleportation will not be smooth
-        shader:send("cam_pitch", self.cam_pitch or 0)
-        shader:send("cam_yaw", self.cam_yaw or 0)
-        shader:send("cam_roll", self.cam_roll or 0)
+        -- shader:send("cam_translation", {trans[3], trans[1], trans[2]}) -- first component is applied first, so it must be autoforward axis. otherwize, like if apply camMove first then the teleportation will not be smooth
+        -- shader:send("cam_pitch", self.cam_pitch or 0)
+        -- shader:send("cam_yaw", self.cam_yaw or 0)
+        -- shader:send("cam_roll", self.cam_roll or 0)
+        local changed=self.inverse and {trans[3], trans[1], trans[2]} or {trans[3], trans[2], trans[1]} -- auto move component must be first. rest two order is to let fixed component moving away from ball at origin or edge
+        local mat4=build_lorentz_mat4({1,0,0}, self.cam_pitch, {0,1,0}, self.cam_yaw, {0,0,1}, self.cam_roll, changed)
+        shader:send("cam_mat4", mat4)
+        shader:send("inverse",self.inverse)
+        shader:send("SHELL_RATIO",self.inverse and 2 or 0.5)
     end
 end
 
