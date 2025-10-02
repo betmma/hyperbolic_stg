@@ -1716,6 +1716,56 @@ return {
                 en_us = 'Have fun!',
                 zh_cn = '祝你玩得开心！',
             },
+        },
+        monologue3_1 = {
+            wakeUp = {
+                en_us = 'Ugh... I\'m awake now. That was a strange dream...',
+                zh_cn = '唔……我醒了。真是个奇怪的梦……',
+            },
+            omgShesRight = {
+                en_us = 'Wait... she was right! The space of Gensokyo is absolutely wrong.',
+                zh_cn = '等等……她说得没错！幻想乡的空间绝对是错乱了。',
+            },
+            pathLooksInfiniteLong = {
+                en_us = 'The visiting path looks infinitely long, and what are those weird patterns on it?',
+                zh_cn = '参拜的道路看不到尽头，上面那些奇怪的图案又是怎么回事？',
+            },
+            whateverIShouldLeave = {
+                en_us = 'Whatever, I should leave my shrine and find out what\'s going on.',
+                zh_cn = '不管了，我得离开我的神社，找出到底是怎么回事。',
+            },
+            tryToNotTripOver = {
+                en_us = 'My head is dizzy. I should try not to trip over anything.',
+                zh_cn = '头有点晕。要小心别被什么东西绊倒。',
+            },
+            iSeeSomeone = {
+                en_us = 'I see someone up ahead... with a bellicose look. Ready for a fight, I guess.',
+                zh_cn = '前面好像有人，带着好斗的表情。准备好战斗了吗？',
+            },
+            congratulationsOnEscapingDreamWorld = {
+                en_us = 'Congratulations on escaping the dream world.',
+                zh_cn = '恭喜你逃离了梦境世界。',
+            },
+            dreamWorldIsSmaller = {
+                en_us = 'The dream world is much smaller than Gensokyo, so...',
+                zh_cn = '梦境世界相比幻想乡可小多了，所以……',
+            },
+            furtherScenesLargerAreas = {
+                en_us = 'Further scenes will have larger gameplay areas.',
+                zh_cn = '后续场景将拥有更大的游戏区域。',
+            },
+            reimuIsAlwaysDisplayedAtCenter = {
+                en_us = 'Reimu is always displayed at the center of the screen.',
+                zh_cn = '灵梦总是显示在屏幕中央。',
+            },
+            youWillAdaptSoon = {
+                en_us = 'You will adapt to this new style of camera soon.',
+                zh_cn = '你很快就会适应这种新的视角。',
+            },
+            goodLuck = {
+                en_us = 'Good luck!',
+                zh_cn = '祝你好运！',
+            }
         }
     }
 }

@@ -187,9 +187,31 @@ local doremyDialogue1_1={
     }
 }
 
+local monologue3_1={
+    name='monologue3_1',
+    defaultSpeakerPosition={
+        reimu='left',
+    },
+    lines={
+        line('reimu','normal','wakeUp'),
+        line('reimu','surprised','omgShesRight'),
+        line('reimu','surprised','pathLooksInfiniteLong'),
+        line('reimu','frustrated','whateverIShouldLeave'),
+        line('reimu','frustrated','tryToNotTripOver'),
+        line('reimu','normal','iSeeSomeone'),
+        line('system','normal','congratulationsOnEscapingDreamWorld'),
+        line('system','normal','dreamWorldIsSmaller'),
+        line('system','normal','furtherScenesLargerAreas'),
+        line('system','normal','reimuIsAlwaysDisplayedAtCenter'),
+        line('system','normal','youWillAdaptSoon'),
+        line('system','normal','goodLuck'),
+    }
+}
+
 ---@type table<string,Dialogue>
 Dialogue.data={
     doremyDialogue1_1=doremyDialogue1_1,
+    monologue3_1=monologue3_1,
 }
 
 

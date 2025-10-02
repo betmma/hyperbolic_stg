@@ -276,6 +276,12 @@ levelData.getDefaultBackground=function(level,scene)
     if level>=3 and level<=4 then
         return BackgroundPattern.H3Terrain
     end
+    if level>=8 and level<=9 then
+        return function() return BackgroundPattern.Honeycomb{inverse=true} end
+    end
+    if level>=10 and level<=11 then
+        return BackgroundPattern.Honeycomb
+    end
     return BackgroundPattern.FollowingTesselation
 end
 return levelData

@@ -1,5 +1,6 @@
 return {
     ID=132,
+    dialogue='monologue3_1',
     user='seiran',
     spellName='Bullet Sign "Eagle\'s Volley Fire"',
     make=function()
@@ -34,6 +35,9 @@ return {
                         Event.DelayEvent{
                             delayFrame=i*5+(index*3%10)*15,
                             executeFunc=function()
+                                if i==1 and j==1 then
+                                    SFX:play('enemyShot',true)
+                                end
                                 self:spawnBulletFunc{x=x,y=y,direction=dir,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=15,sprite=self.bulletSprite}
                             end
                         }
