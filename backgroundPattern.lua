@@ -758,7 +758,10 @@ local Honeycomb=H3Terrain:extend()
 function Honeycomb:new(args)
     Honeycomb.super.new(self,args)
     self.shader=honeycombShader
-    self.inverse=true
+    self.inverse=args and args.inverse or false
+    if not self.inverse then
+        self.darkColor={0.3,0.3,0.3}
+    end
     self.cam_translation={0.0001,0.4,0.3} -- when inverse, y=0.4 to avoid moving into ball at origin
     self.cam_pitch=self.inverse and -math.pi/2 or 0
     self.cam_yaw=-math.pi/2
@@ -771,14 +774,15 @@ function Honeycomb:new(args)
     self.manualForwardLimit=0.3
     self.reflectCount=0
     self.paramSendFunction=function(self,shader)
-        shader:send("time", self.autoForwardValue/self.autoForwardWrap*math.pi*2) -- make the pattern loop when autoForwardValue goes from -autoForwardWrap to +autoForwardWrap
+        shader:send("time", self.frame/60)
         local trans=self.cam_translation
-        -- the reflect implementation causes color to be not continuous when wrapping back.
+        local pitch,yaw,roll=self.cam_pitch,self.cam_yaw,self.cam_roll
         local changed=self.inverse and {trans[3], trans[1], trans[2]} or {trans[3], trans[2], trans[1]} -- auto move component must be first. rest two order is to let fixed component moving away from ball at origin or edge
-        local mat4=build_lorentz_mat4({1,0,0}, self.cam_pitch, {0,1,0}, self.cam_yaw, {0,0,1}, self.cam_roll, changed)
+        local mat4=build_lorentz_mat4(pitch, yaw, roll, changed)
         shader:send("cam_mat4", mat4)
         shader:send("inverse",self.inverse)
         shader:send("SHELL_RATIO",self.inverse and 2 or 0.5)
+        shader:send("reflect_count",self.reflectCount)
     end
 end
 
@@ -800,17 +804,6 @@ function Honeycomb:update(dt)
         self.reflectCount = self.reflectCount + 1
     end
     self.cam_translation[3] = self.autoForwardValue + self.manualForwardOffset
-end
-
-function Honeycomb:draw()
-    Honeycomb.super.draw(self)
-    if 1 then
-        love.graphics.setColor(1,0,0)
-        love.graphics.print('x:'..string.format('%.3f',self.cam_translation[1])..', y:'..string.format('%.3f',self.cam_translation[2])..', z:'..string.format('%.3f',self.cam_translation[3]),110,10)
-        love.graphics.print('pitch:'..string.format('%.3f',self.cam_pitch)..', yaw:'..string.format('%.3f',self.cam_yaw)..', roll:'..string.format('%.3f',self.cam_roll),110,30)
-        love.graphics.print('autoForwardValue:'..string.format('%.3f',self.autoForwardValue)..', manualOffset:'..string.format('%.3f',self.manualForwardOffset),110,50)
-        love.graphics.setColor(1,1,1)
-    end
 end
 
 BackgroundPattern.Honeycomb=Honeycomb

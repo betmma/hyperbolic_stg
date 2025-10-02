@@ -219,7 +219,7 @@ function Player:getKeyboardMoveSpeed()
 end
 
 function Player:limitInBorder()
-    if self.border.default then
+    if self.border and self.border.default then
         local miny=10
         local maxy=580
         self.y=math.clamp(self.y,miny,maxy)

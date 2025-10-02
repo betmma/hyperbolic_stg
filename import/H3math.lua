@@ -126,14 +126,12 @@ end
 -- cam_rotation_axis1/2/3: {x,y,z}
 -- cam_pitch/yaw/roll: radians
 -- cam_translation: {bx, by, bz} interpreted as rapidities along x,y,z axes
-local function build_lorentz_mat4(cam_rotation_axis1, cam_pitch,
-                                  cam_rotation_axis2, cam_yaw,
-                                  cam_rotation_axis3, cam_roll,
-                                  cam_translation)
+local function build_lorentz_mat4(cam_pitch,cam_yaw,cam_roll,cam_translation)
+  local axis1,axis2,axis3={1,0,0},{0,1,0},{0,0,1}
   -- Rotation component: R2(yaw) * R1(pitch) * R3(roll)
-  local R2 = create_rotation_lorentz_matrix(cam_rotation_axis2, cam_yaw)
-  local R1 = create_rotation_lorentz_matrix(cam_rotation_axis1, cam_pitch)
-  local R3 = create_rotation_lorentz_matrix(cam_rotation_axis3, cam_roll)
+  local R2 = create_rotation_lorentz_matrix(axis2, cam_yaw)
+  local R1 = create_rotation_lorentz_matrix(axis1, cam_pitch)
+  local R3 = create_rotation_lorentz_matrix(axis3, cam_roll)
   local M_rotation = mmul(mmul(R2, R1), R3)
 
   -- Boost component: B(x, tx) * B(y, ty) * B(z, tz)

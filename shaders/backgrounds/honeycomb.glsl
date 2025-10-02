@@ -8,6 +8,7 @@ uniform float time=0.0;
 uniform mat4 cam_mat4; // combined rotation and boost matrix
 
 uniform float SHELL_RATIO = 0.5; // 0.38 for small gap at edge
+uniform int reflect_count = 0; // times of camera reflection. flip coords in shade to keep continuity
 float CELL_SHELL_DIST = SHELL_RATIO * CELL_INRADIUS + (1-SHELL_RATIO) * CELL_CIRCUMRADIUS;
 const float MAX_HYP_DIST = 9.5;
 const float STEP_MIN = 0.02;
@@ -173,6 +174,10 @@ void geoFacet(vec3 N, float meridians, float parallels, float grout,
 // -------------------- Disco-ball shading replacement ----------------------
 
 vec3 honeycomb_shade(vec4 pos, vec4 dir, float travel, float time) {
+    if (mod(reflect_count, 2) == 1){ 
+        pos.xy = -pos.xy;
+        dir.xy = -dir.xy;
+    }
     float decay = inverse ? 0.18 : 0.38;
     // Hyperbolic distance to origin on the hyperboloid
     float d = acosh1(max(pos.w, 1.0));
@@ -260,6 +265,6 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
 
     bool terrain_was_hit;
     vec3 fragment_color = rayMarch(final_cam_pos_H, final_ray_dir_H, time, terrain_was_hit);
-
+    fragment_color = clamp(fragment_color, 0.0, 1.0);
     return vec4(fragment_color, 1.0) * color;
 }
