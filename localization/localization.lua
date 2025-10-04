@@ -196,7 +196,11 @@ return {
             ariya = {
                 en_us = 'Ariya Iwanaga',
                 zh_cn = '磐永阿梨夜',
-            }
+            },
+            nina = {
+                en_us = 'Nina Watari',
+                zh_cn = '渡里贝子',
+            },
         },
         spellcards = {
             -- level 1
@@ -1121,6 +1125,17 @@ return {
                 quote = {
                     en_us = 'After funeral procession leaves, the soul wanders around, trying to find the way home.',
                     zh_cn = '送葬队伍离开后，灵魂徘徊在四周，试图找到回家的路。',
+                }
+            },
+            -- ex spellcards
+            [122] = {
+                spellName = {
+                    en_us = 'Truth "Moon Landing Studio"',
+                    zh_cn = '真实「登月摄影棚」',
+                },
+                quote = {
+                    en_us = 'Yeah, stage lights are needed in a sound stage. But this bright is surely excessive.',
+                    zh_cn = '是啊，摄影棚里需要灯光。但这亮度实在是过于夸张了。',
                 }
             }
         },
