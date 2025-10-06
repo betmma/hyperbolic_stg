@@ -6,7 +6,7 @@
 
 ---@class Upgrade
 ---@field cost number exp needed to buy it
----@field executeFunc fun():nil function to execute when entering a level
+---@field executeFunc fun(player):nil function to execute when entering a level
 ---@field spritePos PosXY position of the sprite in upgrades.png
 ---@field name string|nil name of this upgrade (actual value is in localization file, so not needed)
 ---@field description string|nil description of this upgrade (same as above)
@@ -28,8 +28,8 @@ local data = {
         name='Increase HP',
         description='Increase HP by 1',
         cost=30,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.hp=player.hp+1
             player.maxhp=player.maxhp+1
         end,
@@ -39,8 +39,8 @@ local data = {
         name='Regenerate',
         description='Increase HP by 0.024 per second',
         cost=40,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.hpRegen=player.hpRegen+0.024
         end,
         spritePos={x=1,y=0}
@@ -49,8 +49,8 @@ local data = {
         name='Unyielding',
         description='Shockwave when you are hit is bigger',
         cost=30,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.dieShockwaveRadius=player.dieShockwaveRadius+1
         end,
         spritePos={x=2,y=0}
@@ -59,8 +59,8 @@ local data = {
         name='Acrobat',
         description='Each graze gives 0.005 HP',
         cost=40,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.grazeHpRegen=player.grazeHpRegen+0.005
         end,
         spritePos={x=3,y=0}
@@ -69,8 +69,8 @@ local data = {
         name='Flash Bomb',
         description='Release a flash bomb for every 100 grazes',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.enableFlashbomb=true
             player.grazeCountForFlashbomb=100
             player.flashbombWidth=5
@@ -81,8 +81,8 @@ local data = {
         name='Amulet',
         description='Player hitbox is 25% smaller',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.radius = player.radius*0.75
         end,
         spritePos={x=5,y=0}
@@ -91,8 +91,8 @@ local data = {
         name='Homing Shot',
         description='2 rows of your shot become homing',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             local frontStraight=player:findShootType('front','straight')
             frontStraight.num=frontStraight.num-2
             local frontHoming=player:findShootType('front','homing')
@@ -104,8 +104,8 @@ local data = {
         name='Side Shot',
         description='Add 4 rows of side shot (on each side)',
         cost=30,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             local sideStraight=player:findShootType('side','straight')
             sideStraight.num=sideStraight.num+4
         end,
@@ -115,8 +115,8 @@ local data = {
         name='Back Shot',
         description='Add 4 rows of back shot that do double damage',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             local backStraight=player:findShootType('back','straight')
             backStraight.num=backStraight.num+4
         end,
@@ -126,8 +126,8 @@ local data = {
         name='Familiar Shot',
         description='Your shots can hit enemy\'s familiars and do 1/4 damage',
         cost=40,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.canHitFamiliar=true
             player.hitFamiliarDamageFactor=0.25
         end,
@@ -137,8 +137,8 @@ local data = {
         name='Vortex',
         description='A vortex rounding you that can absorb bullets',
         cost=60,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             Event.LoopEvent{
                 obj=player,
                 period=1,
@@ -184,8 +184,8 @@ local data = {
         name='Diagonal Mover',
         description='You move faster when moving diagonally',
         cost=30,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.diagonalSpeedAddition=true
         end,
         spritePos={x=5,y=1}
@@ -194,8 +194,8 @@ local data = {
         name='Homing Shot II',
         description='2 more rows of your shot become homing, but homing effect is reduced',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             local frontStraight=player:findShootType('front','straight')
             frontStraight.num=frontStraight.num-2
             local frontHoming=player:findShootType('front','homing')
@@ -209,8 +209,8 @@ local data = {
         name='Side Shot II',
         description='Increase side shot damage by 50%, but they spread more',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             local sideStraight=player:findShootType('side','straight')
             sideStraight.damage=sideStraight.damage*1.5
             sideStraight.spread=sideStraight.spread+0.1
@@ -221,8 +221,8 @@ local data = {
         name='Back Shot II',
         description='Increase back shot damage by 50%, but they do less damage if you are close to enemy',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             local backStraight=player:findShootType('back','straight')
             backStraight.damage=backStraight.damage*1.5
             backStraight.readyFrame=30
@@ -233,8 +233,8 @@ local data = {
         name='Counter Shot',
         description='You can shoot during invincible time after being hit',
         cost=70,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.canShootDuringInvincible=true
         end,
         spritePos={x=1,y=2}
@@ -243,8 +243,8 @@ local data = {
         name='Disk Models',
         description='Unlock Poincare Disk and Klein Disk models. Press E in level to switch models.',
         cost=50,
-        executeFunc=function()
-            local player=Player.objects[1]
+        executeFunc=function(player)
+            player= player or Player.objects[1]
             player.unlockDiskModels=true
         end,
         spritePos={x=2,y=2}

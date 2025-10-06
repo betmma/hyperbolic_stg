@@ -22,8 +22,8 @@ return {
         G.viewMode.object=player
         local relativeUpdate=function(self)
             if self.core.removed then
-                for speed=0,hpLevel==1 and 60 or 30,10 do
-                    Circle{x=self.x,y=self.y,direction=self.direction,speed=speed,sprite=self.sprite,lifeFrame=300,highlight=false,extraUpdate={function(self)
+                for speed=0,hpLevel==1 and 60 or 10,10 do
+                    Circle{x=self.x,y=self.y,direction=Shape.toObj(self.core,self),speed=speed,sprite=self.sprite,lifeFrame=300,highlight=false,extraUpdate={function(self)
                         self.direction=self.direction+math.eval(0,0.005)
                         self.speed=self.speed*0.95+80*0.05
                     end}}

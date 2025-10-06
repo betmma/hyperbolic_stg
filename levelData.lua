@@ -225,7 +225,7 @@ local levelData={
     loadLevels(10,{'1','2','3','4','5','6','7','8','9'}),
     loadLevels(11,{'1','2','3','4','5','6','7','8'}),
     loadLevels(12,{'7','8','9',}),
-    loadLevels('EX',{'1','2','3','4','5'}),
+    loadLevels('EX',{'1','2','3','4','5','6'}),
 }
 
 ---@param level integer
@@ -279,7 +279,7 @@ levelData.getDefaultBackground=function(level,scene)
     if level>=8 and level<=9 then
         return function() return BackgroundPattern.Honeycomb{inverse=true} end
     end
-    if level>=10 and level<=11 then
+    if level>=10 and level<=11 or level==13 then
         return BackgroundPattern.Honeycomb
     end
     return BackgroundPattern.FollowingTesselation

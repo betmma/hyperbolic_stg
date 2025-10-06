@@ -1137,7 +1137,17 @@ return {
                     en_us = 'Yeah, stage lights are needed in a sound stage. But this bright is surely excessive.',
                     zh_cn = '是啊，摄影棚里需要灯光。但这亮度实在是过于夸张了。',
                 }
-            }
+            },
+            [123] = {
+                spellName = {
+                    en_us = 'Truth "Simulation Theory"',
+                    zh_cn = '真实「模拟理论」',
+                },
+                quote = {
+                    en_us = 'I see many myselves, each controlling another! Though, doesn\'t the headache of controlling them prove multiple simulations can\'t possibly exist?',
+                    zh_cn = '我看到了许多自己，每个都在控制另一个！不过，控制它们的艰难岂不是证明了多重模拟难以存在吗？',
+                }
+            },
         },
     },
     ui = {

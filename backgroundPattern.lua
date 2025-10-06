@@ -640,7 +640,7 @@ function H3Terrain:new()
     self.camMoveRange={0.3,0.0}
     self.camMoveSpeed=0.2
     self.p,self.q,self.r=3,6,6
-    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,-1},0)
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{0,Shape.axisY+100-1},0)
     local length01=Shape.distance(V0[1],V0[2],V1[1],V1[2])
     local length02=Shape.distance(V0[1],V0[2],V2[1],V2[2])
     local length12=Shape.distance(V1[1],V1[2],V2[1],V2[2])
@@ -650,7 +650,7 @@ function H3Terrain:new()
     local autoMove=false
     self.paramSendFunction=function(self,shader)
         local l=length01-self.tesseDistance
-        local x,y,dir=Shape.rThetaPosT(0,-99,l,0)
+        local x,y,dir=Shape.rThetaPosT(0,Shape.axisY+1,l,0)
         -- dir=dir+(l>0 and math.pi or 0)
         local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{x,y},dir)
         local axisY=Shape.axisY

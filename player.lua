@@ -90,7 +90,7 @@ function Player:new(args)
         self.border=nil
     else
         -- rectangle border, only used in level 1 and 2. very spaghetti i know
-        self.border={
+        self.border=args.border or {
             inside=function(_,x,y)
                 return x>=150 and x<=650 and y>=0 and y<=600
             end,
@@ -115,7 +115,7 @@ function Player:new(args)
     self.shootInterval=3
     self.canShootDuringInvincible=false
 
-    self.moveMode=Player.moveModes.Euclid
+    self.moveMode=args.moveMode or Player.moveModes.Euclid
     self.dieShockwaveRadius=2
 
     self.keyRecord={}
