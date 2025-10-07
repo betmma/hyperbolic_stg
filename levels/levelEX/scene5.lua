@@ -88,6 +88,7 @@ return {
             end
         end
         local function rocket(x,y,angle,ratio)
+            SFX:play('enemyPowerfulShot')
             local core=Circle{x=x,y=y,direction=angle,sprite=BulletSprites.round.red,speed=0,lifeFrame=1000,invincible=true}
             hpLevel=en:getHPLevel()
             local range=hpLevel==1 and 2 or 1
@@ -106,6 +107,7 @@ return {
                     }
                     Event.LoopEvent{
                         obj=core,period=2,times=120,executeFunc=function()
+                            SFX:play('enemyShot',true)
                             local r=math.eval(0,10)
                             local x,y,dir=Shape.rThetaPosT(core.x,core.y,r,core.direction-math.pi/2)
                             local args={x=x,y=y,direction=dir-math.pi/2,speed=math.eval(70,20),sprite=BulletSprites.flame.red,lifeFrame=200,fogTime=10,radius=2}

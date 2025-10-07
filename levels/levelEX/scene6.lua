@@ -106,6 +106,7 @@ return {
         end
         Event.LoopEvent{
             obj=player0,period=180,frame=140,executeFunc=function()
+                SFX:play('enemyShot')
                 local y=y0/zoomRatio^(maxIndex-currentIndex)/2
                 local currentPlayer=players[currentIndex]
                 local args={x=0,y=y,direction=Shape.to(0,y,currentPlayer.x,currentPlayer.y),speed=30,lifeFrame=3000,sprite=BulletSprites.giant.red,fogTime=20,spriteTransparency=0.1,extraUpdate=function(self)
