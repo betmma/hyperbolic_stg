@@ -22,23 +22,30 @@ return {
             local basex=base*xratio
             return {{-basex,y0},{basex,y0},{basex*zoomRatio,y0+base},{-basex*zoomRatio,y0+base}},y0+base*0.9,base
         end
-        local function arrowCircle(x,y,dir,radius)
+        local function arrowCircle(x,y,dir,radius,controller)
+            local function changeColorFunc(self)
+                if Shape.distance(x,y,controller.x,controller.y)<radius then
+                    self.sprite=BulletSprites.round.green
+                else
+                    self.sprite=BulletSprites.round.red
+                end
+            end
             local n=16
             for i=1,n do
                 local angle=(i-1)/n*math.pi*2+dir
                 local x1,y1,dir1=Shape.rThetaPosT(x,y,radius,angle)
-                Circle{x=x1,y=y1,speed=0,direction=dir1,lifeFrame=99999,sprite=BulletSprites.round.red,highlight=true,safe=true,spriteTransparency=0.5}
+                Circle{x=x1,y=y1,speed=0,direction=dir1,lifeFrame=99999,sprite=BulletSprites.round.red,highlight=true,safe=true,spriteTransparency=0.5,extraUpdate=changeColorFunc}
             end
             local gap=radius/4
             local x1,y1,dir1
             for i=-2,2 do
                 x1,y1,dir1=Shape.rThetaPosT(x,y,gap*i,dir)
-                Circle{x=x1,y=y1,speed=0,direction=dir1,lifeFrame=99999,sprite=BulletSprites.round.red,highlight=true,safe=true,spriteTransparency=0.5}
+                Circle{x=x1,y=y1,speed=0,direction=dir1,lifeFrame=99999,sprite=BulletSprites.round.red,highlight=true,safe=true,spriteTransparency=0.5,extraUpdate=changeColorFunc}
             end
             for sign=-1,1,2 do
                 for i=1,2 do
                     local x2,y2,dir2=Shape.rThetaPosT(x1,y1,gap*i,dir+sign*math.pi*3/4)
-                    Circle{x=x2,y=y2,speed=0,direction=dir2,lifeFrame=99999,sprite=BulletSprites.round.red,highlight=true,safe=true,spriteTransparency=0.5}
+                    Circle{x=x2,y=y2,speed=0,direction=dir2,lifeFrame=99999,sprite=BulletSprites.round.red,highlight=true,safe=true,spriteTransparency=0.5,extraUpdate=changeColorFunc}
                 end
             end
         end
@@ -50,7 +57,7 @@ return {
             for dir,angle in pairs(angles) do
                 local x,y,dir1=Shape.rThetaPosT(0,y,r*2,angle)
                 poses[dir]={x=x,y=y,dir=dir1}
-                arrowCircle(x,y,dir1,r)
+                arrowCircle(x,y,dir1,r,controller)
             end
             local function isPressed(key)
                 local data=poses[key]
@@ -87,7 +94,7 @@ return {
 
             players[currentIndex-1]=player
             addControl(currentIndex,players[currentIndex],player)
-            G.viewMode.object=player
+            -- G.viewMode.object=player
             player.drawText=function()end
             player.time=player0.time
             local upgrades=Upgrades.data
@@ -103,6 +110,10 @@ return {
             end
             player0.invincibleTime=0.5 -- prevent hit right after new layer
             en.y=y0/zoomRatio^(maxIndex-currentIndex)/2
+            local x1,y1,x2,y2=players[maxIndex-1].x,players[maxIndex-1].y,players[maxIndex].x,players[maxIndex].y
+            local dx,dy=x2-x1,y2-y1
+            local ratio=(y1-Shape.axisY)/Shape.curvature
+            G.viewMode.viewOffset={ x=dx/ratio*3, y=dy/ratio*3 }
         end
         Event.LoopEvent{
             obj=player0,period=180,frame=140,executeFunc=function()
@@ -145,8 +156,15 @@ return {
                             newLayer()
                         end
                     }
-                    Event.EaseEvent{
-                        obj=player0,aimTable=G.viewMode.viewOffset,aimKey='y',aimValue=offsets[currentIndex-1],easeFrame=60
+                    Event.LoopEvent{
+                        obj=player0,period=1,frame=60,executeFunc=function(self,times,maxTimes)
+                            G.viewMode.viewOffset.x=G.viewMode.viewOffset.x*0.97
+                            G.viewMode.viewOffset.y=G.viewMode.viewOffset.y*0.97
+                            if times==maxTimes-1 then
+                                G.viewMode.viewOffset.x=0
+                                G.viewMode.viewOffset.y=0
+                            end
+                        end,
                     }
                 end
             }
