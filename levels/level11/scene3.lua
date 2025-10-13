@@ -128,7 +128,7 @@ return {
             }
             }
         end
-        local phase4EnteredInner=false
+        G.phase4EnteredInner=false
         local function bulletLine(from,to,gap,trigger,life)
             local distance=Shape.distance(from.x,from.y,to.x,to.y)
             local dir=Shape.to(from.x,from.y,to.x,to.y)
@@ -138,7 +138,7 @@ return {
                 if trigger then
                     Event.LoopEvent{
                         obj=cir,
-                        period=1,times=1,conditionFunc=function(self)return phase4EnteredInner end,
+                        period=1,times=1,conditionFunc=function(self)return G.phase4EnteredInner end,
                         executeFunc=function(self)
                             cir.direction=cir.direction+math.eval(math.pi,0.2)
                             cir.speed=math.eval(85,80)
@@ -158,7 +158,7 @@ return {
         local function injectBulletSpawnDistance(bulletSpawner)
             Event.LoopEvent{
                 obj=bulletSpawner,
-                period=1,times=1,conditionFunc=function(self)return phase4EnteredInner end,
+                period=1,times=1,conditionFunc=function(self)return G.phase4EnteredInner end,
                 executeFunc=function(self)
                     if type(bulletSpawner.angle)=="number" then 
                         bulletSpawner.angle=bulletSpawner.angle+math.pi
@@ -171,6 +171,11 @@ return {
                     return
                 end
                 spawnBatchFuncRef(self)
+            end
+        end
+        local function fadeUpdate(self)
+            if self.frame+20>self.lifeFrame then
+                self.spriteTransparency=self.spriteTransparency-0.05
             end
         end
         phases={ -- first 3 phases are just tutorial, phase 4 is the real deal
@@ -193,7 +198,7 @@ return {
                             end
                         }
                     end
-                }}
+                },bulletExtraUpdate=fadeUpdate}
             end,
             function()
                 BulletSpawner{x=en.x,y=en.y,period=40,frame=0,lifeFrame=50,bulletNumber=24,bulletSpeed=30,bulletLifeFrame=70,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.giant.yellow,bulletEvents={
@@ -214,7 +219,7 @@ return {
                             end
                         }
                     end
-                }}
+                },bulletExtraUpdate=fadeUpdate}
                 BulletSpawner{x=en.x,y=en.y,period=40,frame=20,lifeFrame=50,bulletNumber=72,bulletSpeed=80,bulletLifeFrame=60,spawnCircleRadius=30,angle=0,range=math.pi*2,bulletSprite=BulletSprites.giant.blue,bulletEvents={
                     function(cir,args,self)
                         local index=args.index
@@ -241,7 +246,7 @@ return {
                             end
                         }
                     end
-                }}
+                },bulletExtraUpdate=fadeUpdate}
                 local staticCircle=function(cir,radius,number,angle,size,life)
                     BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=life or 6000,angle=angle,bulletSprite=BulletSprites.scale.green,bulletSize=size or 1,
                     -- fogEffect=true,fogTime=120,
@@ -261,8 +266,12 @@ return {
                 }
             end,
             function()
-                BulletSpawner{x=en.x,y=en.y,period=150,frame=0,lifeFrame=5000,bulletNumber=3,bulletSpeed=30,bulletLifeFrame=700,angle='player',range=math.pi/6,bulletSprite=BulletSprites.ellipse.yellow,bulletEvents={
+                BulletSpawner{x=en.x,y=en.y,period=250,frame=0,lifeFrame=5000,bulletNumber=3,bulletSpeed=30,bulletLifeFrame=700,angle='player',range=math.pi/6,bulletSprite=BulletSprites.ellipse.yellow,bulletEvents={
                     function(cir,args,self)
+                        if en:getHPLevel()>3 then
+                            self:remove()
+                            return
+                        end
                         circleEffect(cir)
                     end
                 }}
@@ -318,15 +327,16 @@ return {
                                 local type=math.random(1,4) -- 4 types of sentries
                                 local color
                                 if type==1 then
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=30,frame=0,lifeFrame=15000,bulletNumber=4,bulletSpeed=90,bulletLifeFrame=300,angle='player',range=math.pi/2,bulletSprite=BulletSprites.ellipse.yellow,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=30,frame=0,lifeFrame=15000,bulletNumber=4,bulletSpeed=40,bulletLifeFrame=300,angle='player',range=math.pi/2,bulletSprite=BulletSprites.ellipse.yellow,bulletEvents={
                                         function(cir,args,self)
                                             local index=args.index
                                             local delta=math.eval(0,0.2)
-                                            
                                             cir.direction=cir.direction+delta
                                             circleEffect(cir)
                                         end
-                                    }}
+                                    },bulletExtraUpdate=function(self)
+                                        self.speed=self.speed+0.5
+                                    end}
                                     injectBulletSpawnDistance(bs)
                                     color='yellow'
                                 elseif type==2 then
@@ -342,13 +352,13 @@ return {
                                     injectBulletSpawnDistance(bs)
                                     color='blue'
                                 elseif type==3 then
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=120,frame=0,lifeFrame=15000,bulletNumber=3,bulletSpeed=360,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.green,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=180,frame=0,lifeFrame=15000,bulletNumber=3,bulletSpeed=360,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.green,bulletEvents={
                                         function(cir2,args,self)
                                             local delay=math.eval('5+5')
                                             Event.DelayEvent{
                                                 obj=cir2,delayFrame=delay,
                                                 executeFunc=function()
-                                                    rotatingCircle(cir2,5,60,nil,nil,2,120)
+                                                    rotatingCircle(cir2,5,60,nil,nil,2,180)
                                                     Event.EaseEvent{
                                                         obj=cir2,
                                                         easeFrame=30,
@@ -356,7 +366,7 @@ return {
                                                         aimKey='speed',
                                                         aimValue=0,
                                                         afterFunc=function()
-                                                            rotatingCircle(cir2,5,60,nil,nil,2,120)
+                                                            rotatingCircle(cir2,5,60,nil,nil,2,180)
                                                             cir2:remove()
                                                         end
                                                     }
@@ -367,7 +377,7 @@ return {
                                     injectBulletSpawnDistance(bs)
                                     color='green'
                                 else
-                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=120,frame=0,lifeFrame=15000,bulletNumber=3,bulletSpeed=180,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.red,bulletEvents={
+                                    local bs=BulletSpawner{x=reachOut.x,y=reachOut.y,period=180,frame=0,lifeFrame=15000,bulletNumber=3,bulletSpeed=180,bulletLifeFrame=600,angle=reachOut.theta,range=math.pi/2,bulletSprite=BulletSprites.giant.red,bulletEvents={
                                         function(cir2,args,self)
                                             local delay=math.eval('3+3')
                                             Event.DelayEvent{
@@ -376,7 +386,7 @@ return {
                                                     local toPlayerAngle=Shape.to(cir2.x,cir2.y,player.x,player.y)
                                                     Event.LoopEvent{
                                                         obj=cir2,period=3,times=10,executeFunc=function ()
-                                                            local cir3=Circle{x=cir2.x,y=cir2.y,direction=math.modClamp(cir2.direction+math.pi/2,toPlayerAngle,math.pi/2),speed=0,sprite=Asset.bulletSprites.knife.red,lifeFrame=120}
+                                                            local cir3=Circle{x=cir2.x,y=cir2.y,direction=math.modClamp(cir2.direction+math.pi/2,toPlayerAngle,math.pi/2),speed=0,sprite=Asset.bulletSprites.knife.red,lifeFrame=180}
                                                             circleEffect(cir3)
                                                         end
                                                     }
@@ -432,10 +442,10 @@ return {
                         generate(8,95,angleInner)
                         Event.LoopEvent{
                             obj=player,period=1,times=1,
-                            conditionFunc=function(self)return Shape.distance(player.x,player.y,en.x,en.y)<185 end,
+                            conditionFunc=function(self)return Shape.distance(player.x,player.y,en.x,en.y)<180 end,
                             executeFunc=function(self)
                                 SFX:play('enemyPowerfulShot',true)
-                                phase4EnteredInner=true
+                                G.phase4EnteredInner=true
                                 local en2player=Shape.to(en.x,en.y,player.x,player.y)
                                 local cx,cy=Shape.rThetaPos(en.x,en.y,215,en2player)
                                 local circle=Circle{x=cx,y=cy,direction=Shape.to(cx,cy,player.x,player.y),speed=20,sprite=Asset.bulletSprites.heart.red,lifeFrame=6000,radius=2,invincible=true}

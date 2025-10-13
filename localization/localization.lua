@@ -1606,6 +1606,20 @@ return {
                 zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
             },
         },
+        MaginotLine = {
+            name = {
+                en_us = 'Maginot Line',
+                zh_cn = '马奇诺防线',
+            },
+            condition = {
+                en_us = 'Clear 11-3 without entering the last fortress',
+                zh_cn = '不进入最后要塞通过11-3',
+            },
+            description = {
+                en_us = 'Now you realize familiar shot isn\'t that useless.',
+                zh_cn = '现在你意识到使魔射击并不是那么无用。',
+            },
+        },
         HurrySickness = {
             name = {
                 en_us = 'Hurry Sickness',

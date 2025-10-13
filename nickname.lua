@@ -174,6 +174,17 @@ Nickname{
     isSecret=true,
 }
 Nickname{
+    name='MaginotLine',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==75 and not G.phase4EnteredInner then -- yukari Fortress spellcard
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
+Nickname{
     name='HurrySickness',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
