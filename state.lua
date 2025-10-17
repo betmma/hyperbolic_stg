@@ -235,6 +235,15 @@ G={
                     {text='English',value='en_us'},
                     {text='简体中文',value='zh_cn'},
                 },value='language'},
+                {
+                ---@type {text:string,value:{width:integer,height:integer}}[]
+                options={
+                    {text="800x600",value={width=800,height=600}},
+                    {text="1024x768",value={width=1024,height=768}},
+                    {text="1280x720",value={width=1280,height=720}},
+                    {text="1600x1200",value={width=1600,height=1200}},
+                    {text="1920x1080",value={width=1920,height=1080}},
+                },value='resolution'},
                 {text='Exit',value='EXIT'},
             },
             chosen=1,
@@ -261,6 +270,24 @@ G={
                     elseif isPressed('left') then
                         self.save.options[optionKey]=self.currentUI.options[self.currentUI.chosen].options[(index-2)%#self.currentUI.options[self.currentUI.chosen].options+1].value
                         self.language=self.save.options.language
+                        SFX:play('select')
+                    end
+                elseif optionKey=='resolution' then
+                    local index=0
+                    local currentResolution=self.save.options.resolution
+                    for i=1,#self.currentUI.options[self.currentUI.chosen].options do
+                        if TableEqual(self.currentUI.options[self.currentUI.chosen].options[i].value,currentResolution) then
+                            index=i
+                            break
+                        end
+                    end
+                    if isPressed('right') then
+                        self.save.options[optionKey]=self.currentUI.options[self.currentUI.chosen].options[index%#self.currentUI.options[self.currentUI.chosen].options+1].value
+                        shove.setWindowMode(self.save.options.resolution.width,self.save.options.resolution.height, {resizable = true})
+                        SFX:play('select')
+                    elseif isPressed('left') then
+                        self.save.options[optionKey]=self.currentUI.options[self.currentUI.chosen].options[(index-2)%#self.currentUI.options[self.currentUI.chosen].options+1].value
+                        shove.setWindowMode(self.save.options.resolution.width,self.save.options.resolution.height, {resizable = true})
                         SFX:play('select')
                     end
                 elseif optionKey~='EXIT' then
@@ -291,13 +318,14 @@ G={
                 for index, value in ipairs(self.currentUI.options) do
                     local name=Localize{'ui',value.value}
                     love.graphics.print(name,100,index<#self.currentUI.options and 100+index*50 or 500,0,1,1)
-                    if value.value~='EXIT' then
-                        local toPrint=self.save.options[value.value]
-                        if value.value=='language' then
-                            local languageIndex=0
-                            local currentLanguage=self.save.options.language
+                    local key=value.value
+                    if key~='EXIT' then
+                        local toPrint=self.save.options[key]
+                        if key=='language' or key=='resolution' then
+                            local languageIndex=1
+                            local currentLanguage=self.save.options[key]
                             for i=1,#self.currentUI.options[index].options do
-                                if self.currentUI.options[index].options[i].value==currentLanguage then
+                                if TableEqual(self.currentUI.options[index].options[i].value,currentLanguage) then
                                     languageIndex=i
                                     break
                                 end
@@ -1418,7 +1446,7 @@ end
 -- an example of its structure
 ---@class Save
 ---@field levelData {[integer]: {passed: integer, tryCount: integer, firstPass: integer, firstPerfect: integer}}
----@field options {master_volume: integer, music_volume: integer, sfx_volume: integer, language: string}
+---@field options {master_volume: integer, music_volume: integer, sfx_volume: integer, language: string, resolution: {width: integer, height: integer}}
 ---@field upgrades {[string]: {bought: boolean}}}
 ---@field defaultName string
 ---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
@@ -1469,6 +1497,7 @@ G.loadData=function(self)
         music_volume=100,
         sfx_volume=100,
         language='en_us',
+        resolution={width=WINDOW_WIDTH,height=WINDOW_HEIGHT},
     }
     if not self.save.options then
         self.save.options=defaultOptions

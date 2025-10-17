@@ -1203,6 +1203,10 @@ return {
             en_us = 'Language',
             zh_cn = '语言',
         },
+        resolution = {
+            en_us = 'Resolution',
+            zh_cn = '分辨率',
+        },
         upgrades = {
             en_us = 'Upgrades',
             zh_cn = '升级',

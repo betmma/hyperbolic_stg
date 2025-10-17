@@ -337,3 +337,25 @@ function love.graphics.getQuadXYWHOnImage(quad, image)
     local iw, ih = image:getDimensions()
     return x / iw, y / ih, w / iw, h / ih
 end
+
+function TableEqual(t1, t2)
+    if type(t1) ~= "table" or type(t2) ~= "table" then
+        return t1 == t2 -- Compare non-table values directly
+    end
+
+    -- Check if keys and values match
+    for k, v in pairs(t1) do
+        if not TableEqual(v, t2[k]) then
+            return false
+        end
+    end
+
+    -- Check for extra keys in t2
+    for k, v in pairs(t2) do
+        if t1[k] == nil then
+            return false
+        end
+    end
+
+    return true
+end
