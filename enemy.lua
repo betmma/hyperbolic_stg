@@ -239,6 +239,8 @@ function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
             objToReduceHp.hp=objToReduceHp.hp-(circ.damage or 1)*damageFactor/(objToReduceHp.damageResistance or 1)
             circ:remove()
             SFX:play('damage')
+            -- hit visual effect. at bullet position
+            Effect.Larger{x=circ.x,y=circ.y,speed=10+5*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=3,growSpeed=1,animationFrame=20,spriteTransparency=0.3}
             -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
             --     self.presaved=true
             -- end

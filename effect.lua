@@ -27,6 +27,7 @@ function Larger:new(args)
     self.growSpeed=args.growSpeed or 1.2
     self.drawScale=args.drawScale or 1
     self.animationFrame=args.animationFrame or 30
+    self.spriteTransparency=args.spriteTransparency or 1
     self.batch=Asset.effectBatch
 end
 

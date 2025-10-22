@@ -416,7 +416,7 @@ return {
                 local function generateInner1frame(number,radius,angle)
                     local last
                     local first
-                    BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=1,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=1,spawnCircleRadius=radius,bulletSize=2,spawnCircleAngle=angle or '0+999',angle=1.57,range=math.pi*2,bulletSprite=BulletSprites.giant.red,bulletEvents={
+                    BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=1,bulletNumber=number,bulletSpeed=0,bulletLifeFrame=1,spawnCircleRadius=radius,bulletSize=2,spawnCircleAngle=angle or '0+999',angle=1.57,range=math.pi*2,bulletSprite=BulletSprites.giant.red,spawnSFXVolume=0,bulletEvents={
                         function(cir,args,self)
                             cir.invincible=true
                             if not last then
