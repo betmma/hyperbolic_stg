@@ -201,6 +201,10 @@ return {
                 en_us = 'Nina Watari',
                 zh_cn = '渡里贝子',
             },
+            byakuren = {
+                en_us = 'Byakuren Hijiri',
+                zh_cn = '圣白莲',
+            }
         },
         spellcards = {
             -- level 1
@@ -1148,6 +1152,16 @@ return {
                     zh_cn = '我看到了许多自己，每个都在控制另一个！不过，控制它们的艰难岂不是证明了多重模拟难以存在吗？',
                 }
             },
+            [103] = {
+                spellName = {
+                    en_us = '"Flying Dharmachakra of Mount Shigi"',
+                    zh_cn = '「信贵山的飞空法轮」',
+                },
+                quote = {
+                    en_us = 'Huge wheels appear from far away and roll towards me. Though, are they really circles?',
+                    zh_cn = '巨大的轮子从远处出现，向我滚来。不过，它们真的是圆形的吗？',
+                }
+            }
         },
     },
     ui = {
