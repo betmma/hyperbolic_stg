@@ -19,6 +19,7 @@ return {
         G.viewMode.mode=G.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local function rotateBase(cir,sign)
+            cir.forceDrawNormalSprite=true
             cir.spriteExtraDirection=math.eval(0,999)
             cir.sign=math.mod2Sign(sign) or 1
             cir.extraUpdate[#cir.extraUpdate+1]=function (self)

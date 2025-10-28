@@ -2,6 +2,7 @@ return {
     ID=71,
     quote='?',
     user='youmu',
+    dialogue='protagonistsDialogue8_1',
     spellName='Soul-Body Sword "Slash of Echoing Ghost Blade"', 
     make=function()
         G.levelRemainingFrame=7200

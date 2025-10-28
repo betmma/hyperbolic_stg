@@ -2,6 +2,7 @@ return {
     ID=36,
     quote='?',
     user='nitori',
+    dialogue='nitoriDialogue5_1',
     spellName='Battle Machine "Autonomous Sentries"',
     make=function()
         G.levelRemainingFrame=5400

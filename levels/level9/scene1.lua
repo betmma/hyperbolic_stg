@@ -2,6 +2,7 @@ return {
     ID=51,
     quote='?',
     user='utsuho',
+    dialogue='monologue9_1',
     spellName='Explosion Sign "Critical Mass"', -- a pun on nuclear critical mass and the "critical" bullet player needs to identify
     make=function()
         G.levelRemainingFrame=7200

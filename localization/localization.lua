@@ -393,8 +393,8 @@ return {
             },
             [36] = {
                 quote = {
-                    en_us = 'Even she sits in that machine automatically chasing me! Lazy, but effective.',
-                    zh_cn = '连她自己都坐在机器里自动追逐我！懒惰，但有效。',
+                    en_us = 'Besides these sentries, even she sits in that machine automatically chasing me! Lazy, but effective.',
+                    zh_cn = '除了那些哨兵，连她自己都坐在机器里自动追逐我！懒，但有效。',
                 },
                 spellName = {
                     en_us = 'Battle Machine "Autonomous Sentries"',
@@ -1776,7 +1776,7 @@ return {
         },
         monologue3_1 = {
             wakeUp = {
-                en_us = 'Ugh... I\'m awake now. That was a strange dream...',
+                en_us = 'Hmm... I\'m awake. That was a strange dream...',
                 zh_cn = '唔……我醒了。真是个奇怪的梦……',
             },
             omgShesRight = {
@@ -1823,6 +1823,360 @@ return {
                 en_us = 'Good luck!',
                 zh_cn = '祝你好运！',
             }
-        }
-    }
+        },
+        nitoriDialogue5_1 = {
+            reimuYouCame = {
+                en_us = 'Oh, Reimu! Fancy seeing you here.',
+                zh_cn = '呀，是灵梦啊！你怎么来了？',
+            },
+            everyoneKnowsSpaceIsStrange = {
+                en_us = 'Yeah, everyone\'s been talking about how weird space is lately.',
+                zh_cn = '是啊，最近空间变得很奇怪，这事儿大家都知道了。',
+            },
+            butIHaveMoreInformation = {
+                en_us = 'But *I*, of course, have gathered a bit more intel than most.',
+                zh_cn = '不过嘛，我当然掌握了比一般人更多的情报啦。',
+            },
+            howDidYouFindMe = {
+                en_us = 'How did you manage to find me all the way out here?',
+                zh_cn = '不过，你是怎么一路找到这里来的？',
+            },
+            iHaveNoIdea = {
+                en_us = 'Don\'t ask me. I have no idea.',
+                zh_cn = '别问我，我怎么知道。',
+            },
+            mountOfYoukaiShouldBeFar = {
+                en_us = 'The Youkai Mountain should be much farther away.',
+                zh_cn = '妖怪之山应该离得很远才对。',
+            },
+            butIOnlyFlewForShortWhile = {
+                en_us = 'It felt like I only flew for a few minutes.',
+                zh_cn = '但我感觉没飞多久就到了。',
+            },
+            yeahThisIsHowItWorks = {
+                en_us = 'Exactly! That\'s the effect of this whole incident!',
+                zh_cn = '没错！这正是这次异变的效果！',
+            },
+            youKnowThis = {
+                en_us = 'Wait, you know what\'s causing this?',
+                zh_cn = '等等，你知道这是怎么回事？',
+            },
+            ofCourseImEngineer = {
+                en_us = 'Of course I do! I\'m a kappa engineer, after all!',
+                zh_cn = '那当然啦！毕竟我可是个河童工程师！',
+            },
+            doExplain = {
+                en_us = 'Great. Then you can save me the trouble and explain it.',
+                zh_cn = '太好了。那你快解释给我听，也省得我麻烦了。',
+            },
+            itsCalledHyperbolicSpace = {
+                en_us = 'It\'s a phenomenon called "hyperbolic space".',
+                zh_cn = '这是一种叫做「双曲空间」的现象。',
+            },
+            areaExpandsExponentially = {
+                en_us = 'In this kind of space, the area expands exponentially as you move away from a point.',
+                zh_cn = '在这种空间里，面积会随着距离指数级增长。',
+            },
+            soSameDistanceCoversMoreArea = {
+                en_us = 'So, traveling the same distance actually covers a much larger area.',
+                zh_cn = '所以，移动同样的距离，实际上跨越了更大的区域。',
+            },
+            gensokyosAreaDoesntChange = {
+                en_us = 'But Gensokyo\'s total area doesn\'t change, as I know.',
+                zh_cn = '据我所知，幻想乡的总面积并没有变化。',
+            },
+            transportationIsFaster = {
+                en_us = 'Thus distances between locations become shorter, and transportation gets faster!',
+                zh_cn = '因此，地点之间的距离变得更短，交通也变得更快！',
+            },
+            butMuchHarderToNavigate = {
+                en_us = '...but it also makes it impossible to navigate properly.',
+                zh_cn = '……但想找到正确的路也变得更难了。',
+            },
+            anywayAnyInfoOnCulprit = {
+                en_us = 'Anyway, enough theory. Do you have any leads on the culprit?',
+                zh_cn = '行了，理论就到此为止吧。关于犯人有什么线索吗？',
+            },
+            notYetBut = {
+                en_us = 'Not directly... but!',
+                zh_cn = '直接的线索还没有……但是！',
+            },
+            iHaveMadeADeviceCalledHyperCompass = {
+                en_us = 'I\'ve built a device overnight after knowing this occasion! I call it the "Hyper-Compass"!',
+                zh_cn = '我为此连夜做了个装置！我叫它「双曲罗盘」！',
+            },
+            thatPointsToMostDistortedArea = {
+                en_us = 'It points directly to the area with the most severe spatial distortion!',
+                zh_cn = '它能直接指向空间扭曲最严重的地方！',
+            },
+            ohCulpritMustBeThere = {
+                en_us = 'That\'s it! The culprit has to be there.',
+                zh_cn = '就是那儿了！犯人肯定就在那里。',
+            },
+            giveItToMeThen = {
+                en_us = 'Hand it over.',
+                zh_cn = '那快把它给我。',
+            },
+            ofCourseAfterSomeDanmakuPlaying = {
+                en_us = 'I\'d be happy to... after a little "product testing," of course. Let\'s see how you handle my new patterns!',
+                zh_cn = '当然可以……不过得先陪我玩一场弹幕「测试」才行。让我看看你怎么应对我的新发明吧！',
+            },
+        },
+        protagonistsDialogue8_1 = {
+            whyFollowingTheCompassIsThisHard = {
+                en_us = 'Ugh, why is following this compass so difficult?',
+                zh_cn = '唔，跟着这个罗盘走怎么这么难啊？',
+            },
+            flyForAFewSecondsTheDirectionAlmostFlipped = {
+                en_us = 'I fly for a few seconds and the direction nearly flips completely.',
+                zh_cn = '我才飞了几秒钟，方向就快要完全反过来了。',
+            },
+            finallyReachedHere = {
+                en_us = 'Well, I finally made it to... wherever this is.',
+                zh_cn = '总之，总算是到了……这是什么地方啊。',
+            },
+            whatAreAllTheseBalls = {
+                en_us = 'What are all these strange orbs floating around?',
+                zh_cn = '这些飘来飘去的奇怪球体是什么东西？',
+            },
+            iCantFindTheEntranceIJustEntered = {
+                en_us = 'And... I can\'t even find the entrance I just came through. It vanished.',
+                zh_cn = '而且……我刚刚进来的入口呢？怎么不见了。',
+            },
+            haveToProceed = {
+                en_us = 'No point standing around. I have to keep moving forward.',
+                zh_cn = '站在这儿也没用，必须继续前进了。',
+            },
+            iHearSomeVoiceApproaching = {
+                en_us = 'Wait... is that someone approaching?',
+                zh_cn = '嗯？我好像听到了什么声音……',
+            },
+            ReimuYoureHereToo = {
+                en_us = 'Reimu! You\'re here too?',
+                zh_cn = '灵梦！你也在这里？',
+            },
+            yeahTooYouMean = {
+                en_us = '"Too"? What do you mean by that?',
+                zh_cn = '“也”？你的意思是……',
+            },
+            HeheLooksLikeWeAllGotLost = {
+                en_us = 'Heh heh. Looks like we all took a wrong turn somewhere, ze!',
+                zh_cn = '嘿嘿，看来我们都迷路了啊，da ze！',
+            },
+            lostIActivelyFollowedThe = {
+                en_us = 'Lost? I wasn\'t lost! I was following a...',
+                zh_cn = '迷路？我可没迷路！我是一直跟着那个……',
+            },
+            hiReimuWeAreTooLost = {
+                en_us = 'Hello, Reimu. We are, in fact, quite lost.',
+                zh_cn = '你好，灵梦。我们确实是迷路了。',
+            },
+            beforeMetthemIWanderedForDays = {
+                en_us = 'Before I ran into these two, I had been wandering this place for days.',
+                zh_cn = '在遇到她们俩之前，我已经在这里徘徊了好几天了。',
+            },
+            ohThatsBadWhatDidYouDo = {
+                en_us = 'For days? That sounds awful. What did you do before getting here?',
+                zh_cn = '好几天？那也太惨了。你是怎么到这里的？',
+            },
+            buyingFoodForScarletThisMorning = {
+                en_us = 'I was out buying groceries for Scarlet Devil Mansion this morning.',
+                zh_cn = '今天早上我在为红魔馆采购食物。',
+            },
+            walkingForAWhileNotRecognizingSurroundings = {
+                en_us = 'I walked for a short while, then realized my surroundings were completely unfamiliar.',
+                zh_cn = '走了一会儿，就发现周围的环境完全不认识了。',
+            },
+            thenFoundThisPlace = {
+                en_us = 'And before I knew it, I was here.',
+                zh_cn = '然后就莫名其妙地到了这个地方。',
+            },
+            soThisIsNotCulpritsSmallMansion = {
+                en_us = 'So this isn\'t the culprit\'s small hideout...',
+                zh_cn = '所以说，这里不是犯人的小宅邸……',
+            },
+            butAHugeMaze = {
+                en_us = 'It\'s just a giant maze.',
+                zh_cn = '而是一个巨大的迷宫。',
+            },
+            butIHaveHyperCompass = {
+                en_us = 'Well, lucky for all of you, I have a Hyper-Compass!',
+                zh_cn = '不过嘛，我可是有双曲罗盘的！',
+            },
+            fromWhere = {
+                en_us = 'A what-now? Where\'d ya get a cool gadget like that?',
+                zh_cn = '什么玩意儿？你从哪儿弄来的？',
+            },
+            nitoriGaveItToMe = {
+                en_us = 'Nitori gave it to me.',
+                zh_cn = '是荷取给我的。',
+            },
+            successfullyLocatedHere = {
+                en_us = 'It successfully led me all the way here.',
+                zh_cn = '我就是靠它才成功找到这里的。',
+            },
+            ughYouDontNeedACompassToBeLost = {
+                en_us = 'Tch. You don\'t need a fancy compass to get lost. We managed just fine on our own!',
+                zh_cn = '切，迷路哪儿需要什么罗盘啊。我们光靠自己不也照样迷路了嘛！',
+            },
+            butItShouldLeadUsToCulprit = {
+                en_us = 'But if it points to the source, it should lead us to the culprit.',
+                zh_cn = '但它应该能带我们找到犯人。',
+            },
+            weShouldGoTogether = {
+                en_us = 'We should all proceed together.',
+                zh_cn = '我们一起走吧。',
+            },
+            butFirstDanmakuTime = {
+                en_us = 'Good idea! But before we do, it\'s time for a proper warm-up!',
+                zh_cn = '好主意！不过在那之前……先来一场弹幕热身赛吧！',
+            },
+            yeahGettingHeatedUp = {
+                en_us = 'An excellent idea! My hands were starting to get itchy!',
+                zh_cn = '嗯！我也正觉得手痒了呢！',
+            },
+            fineLetsDoIt = {
+                en_us = 'Fine, fine. If it\'ll get us moving, let\'s do it!',
+                zh_cn = '好吧好吧。那就来吧！',
+            },
+        },
+        monologue9_1 = {
+            theDirectionChangedAgain = {
+                en_us = 'There, the direction changed again.',
+                zh_cn = '方向又变了。',
+            },
+            shouldBeThisWayFollowMe = {
+                en_us = 'Alright, it should be this way. Everyone, follow me!',
+                zh_cn = '好了，是这边。都跟上我！',
+            },
+            whatTheyDisappeared = {
+                en_us = 'Huh?! Where did they go?',
+                zh_cn = '嗯？！人呢？',
+            },
+            marisaYoumuSakuya = {
+                en_us = 'Marisa! Youmu! Sakuya!',
+                zh_cn = '魔理沙！妖梦！咲夜！',
+            },
+            dangitTheSpaceIsSoCursed = {
+                en_us = 'Dang it! This space is so twisted...',
+                zh_cn = '可恶！这个空间也太扭曲了……',
+            },
+            shouldntMoveThatFast = {
+                en_us = 'I shouldn\'t have moved so quickly. We must have gotten separated.',
+                zh_cn = '我不该飞得那么快的，肯定是走散了。',
+            },
+            letMeWaitForSomeTime = {
+                en_us = 'Alright, let me just wait here for a moment. Maybe they\'ll catch up.',
+                zh_cn = '唉……先在这里等一会儿吧，说不定她们会跟上来。',
+            },
+            canSomeoneHearMe = {
+                en_us = '...Is anyone there? Can you hear me?',
+                zh_cn = '……有人吗？能听到我说话吗？',
+            },
+            ohSomeoneIsComing = {
+                en_us = 'Oh? Someone\'s coming.',
+                zh_cn = '哦？有人过来了。',
+            },
+            utsuhoUnderworldAlsoConnectsThere = {
+                en_us = 'Utsuho?! Don\'t tell me this place connects to the Underworld, too?',
+                zh_cn = '是阿空？难道这里还连着地底世界吗？',
+            },
+            guessIllMeetManyPeopleBeforeDestination = {
+                en_us = 'Honestly... At this rate, I\'ll have to fight half of Gensokyo before I even find the culprit.',
+                zh_cn = '真是的……照这个样子，在找到犯人之前，我还得先跟一堆熟人打个遍啊。',
+            },
+        },
+        monologue10_1 = {
+            aBuildingFinally = {
+                en_us = 'A building! Finally.',
+                zh_cn = '哦？总算看到一座建筑了。',
+            },
+            culpritShouldBeClose = {
+                en_us = 'The culprit has to be in here. I\'m getting close.',
+                zh_cn = '犯人应该就在里面。总算快到头了。',
+            },
+            sneakInside = {
+                en_us = 'Okay, time to slip inside and see who\'s behind all this.',
+                zh_cn = '好，偷偷溜进去看看情况。',
+            },
+            itLooksLikeACave = {
+                en_us = 'This... doesn\'t look like a building. It\'s more like a cave.',
+                zh_cn = '这……与其说是建筑，不如说是个洞窟。',
+            },
+            ballsShapeAreDugOut = {
+                en_us = 'The rooms are shaped like perfect spheres carved out of the rock...',
+                zh_cn = '墙壁像是被挖出了一个个球形的房间……',
+            },
+            andWallsAreSmoothlyTiled = {
+                en_us = '...and the walls are covered in perfectly smooth tiles?',
+                zh_cn = '……而且还铺着这么光滑的瓷砖？',
+            },
+            whyFlashingColorsOnTheTiles = {
+                en_us = 'And why are the tiles flashing with all these colors? What awful taste.',
+                zh_cn = '瓷砖上这些闪烁的颜色是怎么回事？品味真差。',
+            },
+            andThisPlaceIsStillSoBig = {
+                en_us = 'And of course it\'s still a massive, confusing labyrinth in here. Figures.',
+                zh_cn = '而且这里面也还是大得离谱……真是的。',
+            },
+            andWhoIsInFrontOfMe = {
+                en_us = 'And who\'s that standing in my way now?',
+                zh_cn = '前面那个人又是谁啊？',
+            },
+            ohNoItsAnotherLostPerson = {
+                en_us = 'Oh, for crying out loud. It\'s just another lost person, isn\'t it?',
+                zh_cn = '哦不……看样子又是一个迷路的。',
+            },
+            shouldExpectedThis = {
+                en_us = 'I really should have expected this.',
+                zh_cn = '我早就该想到的。',
+            },
+        },
+        bossDialogue12_1 = {
+            aPerformanceStage = {
+                en_us = 'What is this... a performance stage?',
+                zh_cn = '这是……一个表演舞台？',
+            },
+            theSpotLightsAreOn = {
+                en_us = 'The spotlights are on...',
+                zh_cn = '聚光灯都打开了……',
+            },
+            ohTheShinyColorsMeantDiscos = {
+                en_us = 'Oh... so all those shiny tiles were for a disco hall.',
+                zh_cn = '哦……原来那些闪光的瓷砖，是为了搞一个迪斯科舞厅啊。',
+            },
+            whoAreUnderTheLights = {
+                en_us = 'And who are you two under the lights?',
+                zh_cn = '灯下面的那两个人是谁？',
+            },
+            anotherAudienceMember = {
+                en_us = 'Ah, another audience member has arrived!',
+                zh_cn = '呀，又来了一位观众呢。',
+            },
+            welcomeToOurPerformance = {
+                en_us = 'Welcome to our live performance!',
+                zh_cn = '欢迎来看我们的现场演出！',
+            },
+            youAreBehindThis = {
+                en_us = 'So you\'re the ones behind this incident!',
+                zh_cn = '这次的异变，你们就是幕后黑手吧！',
+            },
+            noWeAreOnTheStageNotBehindIt = {
+                en_us = 'Behind it? Heavens, no. We\'re *on* the stage, not behind it!',
+                zh_cn = '幕后？不不，我们可是在台前，不是在幕后哦。',
+            },
+            iWillStopYou = {
+                en_us = 'Enough with the wordplay! I\'m putting a stop to this!',
+                zh_cn = '少跟我玩文字游戏！我是来阻止你们的！',
+            },
+            enjoyTheShow = {
+                en_us = 'In that case, we hope you enjoy the show!',
+                zh_cn = '那就请好好欣赏吧！',
+            },
+            firstActIsAboutToBegin = {
+                en_us = 'Our first number is about to begin!',
+                zh_cn = '第一支曲目，马上就要开始咯！',
+            },
+        },
+    },
 }

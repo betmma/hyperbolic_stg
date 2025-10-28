@@ -1,6 +1,7 @@
 return {
     ID=113,
     user='asama',
+    dialogue='monologue10_1',
     spellName='Serpent Sign "Ouroborous\'s Feast"',
     make=function()
         G.levelRemainingFrame=7200

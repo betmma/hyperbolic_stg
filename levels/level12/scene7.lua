@@ -2,6 +2,7 @@ return {
     ID=101,
     quote='Music Sign "Sly Musical Score"',
     user='benben',
+    dialogue='bossDialogue12_1',
     spellName='', 
     make=function()
         G.levelRemainingFrame=7200

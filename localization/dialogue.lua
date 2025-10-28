@@ -208,10 +208,152 @@ local monologue3_1={
     }
 }
 
+local nitoriDialogue5_1={
+    name='nitoriDialogue5_1',
+    defaultSpeakerPosition={
+        reimu='left',
+        nitori='right',
+    },
+    lines={
+        line('nitori','surprised','reimuYouCame'),
+        line('nitori','normal','everyoneKnowsSpaceIsStrange'),
+        line('nitori','cunning','butIHaveMoreInformation'),
+        line('nitori','normal','howDidYouFindMe'),
+        line('reimu','frustrated','iHaveNoIdea'),
+        line('reimu','normal','mountOfYoukaiShouldBeFar'),
+        line('reimu','normal','butIOnlyFlewForShortWhile'),
+        line('nitori','happy','yeahThisIsHowItWorks'),
+        line('reimu','surprised','youKnowThis'),
+        line('nitori','happy','ofCourseImEngineer'),
+        line('reimu','happy','doExplain'),
+        line('nitori','normal','itsCalledHyperbolicSpace'),
+        line('nitori','normal','areaExpandsExponentially'),
+        line('nitori','normal','soSameDistanceCoversMoreArea'),
+        line('nitori','normal','gensokyosAreaDoesntChange'),
+        line('nitori','happy','transportationIsFaster'),
+        line('reimu','normal','butMuchHarderToNavigate'),
+        line('reimu','normal','anywayAnyInfoOnCulprit'),
+        line('nitori','frustrated','notYetBut'),
+        line('nitori','normal','iHaveMadeADeviceCalledHyperCompass'),
+        line('nitori','normal','thatPointsToMostDistortedArea'),
+        line('reimu','happy','ohCulpritMustBeThere'),
+        line('reimu','normal','giveItToMeThen'),
+        line('nitori','cunning','ofCourseAfterSomeDanmakuPlaying'),
+    }
+}
+
+local protagonistsDialogue8_1 = {
+    name='protagonistsDialogue8_1',
+    defaultSpeakerPosition={
+        reimu='left',
+        youmu='right',
+        marisa='right',
+        sakuya='right'
+    },
+    lines={
+        line('reimu','sad','whyFollowingTheCompassIsThisHard'),
+        line('reimu','sad','flyForAFewSecondsTheDirectionAlmostFlipped'),
+        line('reimu','normal','finallyReachedHere'),
+        line('reimu','frustrated','whatAreAllTheseBalls'),
+        line('reimu','frustrated','iCantFindTheEntranceIJustEntered'),
+        line('reimu','normal','haveToProceed'),
+        line('reimu','surprised','iHearSomeVoiceApproaching'),
+        line('youmu','surprised','ReimuYoureHereToo'),
+        line('reimu','surprised','yeahTooYouMean'),
+        line('marisa','cunning','HeheLooksLikeWeAllGotLost'),
+        line('reimu','surprised','lostIActivelyFollowedThe'),
+        line('sakuya','normal','hiReimuWeAreTooLost'),
+        line('sakuya','normal','beforeMetthemIWanderedForDays'),
+        line('reimu','sad','ohThatsBadWhatDidYouDo'),
+        line('sakuya','normal','buyingFoodForScarletThisMorning'),
+        line('sakuya','normal','walkingForAWhileNotRecognizingSurroundings'),
+        line('sakuya','normal','thenFoundThisPlace'),
+        line('reimu','normal','soThisIsNotCulpritsSmallMansion'),
+        line('sakuya','normal','butAHugeMaze'),
+        line('reimu','happy','butIHaveHyperCompass'),
+        line('marisa','surprised','fromWhere'),
+        line('reimu','happy','nitoriGaveItToMe'),
+        line('reimu','happy','successfullyLocatedHere'),
+        line('marisa','frustrated','ughYouDontNeedACompassToBeLost'),
+        line('youmu','normal','butItShouldLeadUsToCulprit'),
+        line('youmu','normal','weShouldGoTogether'),
+        line('marisa','cunning','butFirstDanmakuTime'),
+        line('sakuya','happy','yeahGettingHeatedUp'),
+        line('youmu','happy','fineLetsDoIt'),
+    }
+}
+
+local monologue9_1 = {
+    name='monologue9_1',
+    defaultSpeakerPosition={
+        reimu='left',
+    },
+    lines={
+        line('reimu','normal','theDirectionChangedAgain'),
+        line('reimu','normal','shouldBeThisWayFollowMe'),
+        line('reimu','surprised','whatTheyDisappeared'),
+        line('reimu','surprised','marisaYoumuSakuya'),
+        line('reimu','sad','dangitTheSpaceIsSoCursed'),
+        line('reimu','sad','shouldntMoveThatFast'),
+        line('reimu','normal','letMeWaitForSomeTime'),
+        line('reimu','normal','canSomeoneHearMe'),
+        line('reimu','surprised','ohSomeoneIsComing'),
+        line('reimu','surprised','utsuhoUnderworldAlsoConnectsThere'),
+        line('reimu','frustrated','guessIllMeetManyPeopleBeforeDestination'),
+    }
+}
+
+local monologue10_1 = {
+    name='monologue10_1',
+    defaultSpeakerPosition={
+        reimu='left',
+    },
+    lines={
+        line('reimu','surprised','aBuildingFinally'),
+        line('reimu','surprised','culpritShouldBeClose'),
+        line('reimu','cunning','sneakInside'),
+        line('reimu','normal','itLooksLikeACave'),
+        line('reimu','normal','ballsShapeAreDugOut'),
+        line('reimu','normal','andWallsAreSmoothlyTiled'),
+        line('reimu','normal','whyFlashingColorsOnTheTiles'),
+        line('reimu','frustrated','andThisPlaceIsStillSoBig'),
+        line('reimu','frustrated','andWhoIsInFrontOfMe'),
+        line('reimu','sad','ohNoItsAnotherLostPerson'),
+        line('reimu','sad','shouldExpectedThis'),
+    }
+}
+
+local bossDialogue12_1 = {
+    name='bossDialogue12_1',
+    defaultSpeakerPosition={
+        reimu='left',
+        benben='right',
+        yatsuhashi='right'
+    },
+    lines={
+        line('reimu','surprised','aPerformanceStage'),
+        line('reimu','surprised','theSpotLightsAreOn'),
+        line('reimu','normal','ohTheShinyColorsMeantDiscos'),
+        line('reimu','surprised','whoAreUnderTheLights'),
+        line('benben','happy','anotherAudienceMember'),
+        line('yatsuhashi','happy','welcomeToOurPerformance'),
+        line('reimu','angry','youAreBehindThis'),
+        line('benben','cunning','noWeAreOnTheStageNotBehindIt'),
+        line('reimu','angry','iWillStopYou'),
+        line('benben','happy','enjoyTheShow'),
+        line('yatsuhashi','happy','firstActIsAboutToBegin'),
+    }
+}
+
 ---@type table<string,Dialogue>
 Dialogue.data={
     doremyDialogue1_1=doremyDialogue1_1,
     monologue3_1=monologue3_1,
+    nitoriDialogue5_1=nitoriDialogue5_1,
+    protagonistsDialogue8_1=protagonistsDialogue8_1,
+    monologue9_1=monologue9_1,
+    monologue10_1=monologue10_1,
+    bossDialogue12_1=bossDialogue12_1,
 }
 
 
