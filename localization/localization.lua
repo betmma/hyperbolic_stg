@@ -2135,7 +2135,7 @@ return {
         bossDialogue12_1 = {
             aPerformanceStage = {
                 en_us = 'What is this... a performance stage?',
-                zh_cn = '这是……一个表演舞台？',
+                zh_cn = '这是……舞台？',
             },
             theSpotLightsAreOn = {
                 en_us = 'The spotlights are on...',
