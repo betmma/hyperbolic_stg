@@ -34,6 +34,14 @@ return {
             end
         },
         }
+        local function antiGetCircle(x,y,r)
+            -- y=y0*cosh(r0), r=y0*sinh(r0)
+            y=y-Shape.axisY
+            local tanhR0=r/y
+            local r0=math.atanh(tanhR0)
+            local y0=y/math.cosh(r0)
+            return x,y0+Shape.axisY,r0*Shape.curvature
+        end
         local tb={x=400,y=600,period=300,frame=180,lifeFrame=10000,bulletNumber=1,bulletSpeed=0,bulletSprite=BulletSprites.rice.red,bulletEvents={
             function(cir,args)
                 local key=args.index
@@ -69,6 +77,15 @@ return {
                     b.angle=angle-math.pi/2
                     b.x=Player.objects[1].x
                     b.y=math.clamp(Player.objects[1].y,100,560)+r
+                    if r==100 then
+                        local x0,y0,r0=antiGetCircle(b.x,b.y-r,r)
+                        Circle{x=x0,y=y0,sprite=BulletSprites.giant.blue,lifeFrame=120,safe=true,highlight=true,spriteTransparency=0.5,radius=2,extraUpdate={
+                            function(self)
+                                self.spriteTransparency=self.spriteTransparency-0.5/120
+                                self.radius=self.radius*0.98
+                            end
+                        }}
+                    end
                     Event.EaseEvent{
                         obj=b,
                         easeFrame=60,
