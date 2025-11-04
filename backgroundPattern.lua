@@ -807,4 +807,32 @@ function Honeycomb:update(dt)
 end
 
 BackgroundPattern.Honeycomb=Honeycomb
+
+local stageShader=ShaderScan:load_shader('shaders/backgrounds/stage.glsl')
+local Stage=H3Terrain:extend()
+function Stage:new(args)
+    Stage.super.new(self,args)
+    self.cam_translation={0,0.4,0.5}
+    self.shader=stageShader
+    self.p,self.q,self.r=4,4,4
+    self.camMoveRange={-1,1}
+    self.camMoveSpeed=0.5
+    local axisY=Shape.axisY
+    local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{1,axisY+1},0)
+    V0[2]=V0[2]-axisY
+    V1[2]=V1[2]-axisY
+    V2[2]=V2[2]-axisY
+    -- print('triangle: '..V0[1]..','..V0[2]..' ; '..V1[1]..','..V1[2]..' ; '..V2[1]..','..V2[2])
+    self.paramSendFunction=function(self,shader)
+        shader:send("time", self.frame/60)
+        local trans=self.cam_translation
+        local pitch,yaw,roll=self.cam_pitch,self.cam_yaw,self.cam_roll
+        local mat4=build_lorentz_mat4(pitch, yaw, roll, trans)
+        shader:send("cam_mat4", mat4)
+        shader:send("V0", V0)
+        shader:send("V1", V1)
+        shader:send("V2", V2)
+    end
+end
+BackgroundPattern.Stage=Stage
 return BackgroundPattern

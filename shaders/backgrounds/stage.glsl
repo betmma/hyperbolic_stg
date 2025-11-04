@@ -8,7 +8,7 @@ uniform vec2 V1;
 uniform vec2 V2;
 
 const float STAGE_HEIGHT = 0;
-const float STAGE_RADIUS = 1.20;
+const float STAGE_RADIUS = 1.60;
 const float STAGE_THICKNESS = 0.18;
 const float STAGE_EDGE_WIDTH = 0.25;
 
@@ -17,7 +17,7 @@ const int EDGE_LIGHT_COUNT = 14;
 const int SPOT_COUNT = 3;
 
 const float STEP_MIN = 0.01;
-const float STEP_MAX = 0.06;
+const float STEP_MAX = 0.1;
 const float STEP_SCALE = 0.82;
 const float MAX_HYP_DIST = 6.5;
 const float HIT_EPS = 0.0025;
@@ -176,6 +176,11 @@ vec3 accumulateSpotlightFog(vec4 pos_H, float stepLen, float time) {
     return fog * stepLen * 0.9;
 }
 
+vec3 hsv2rgb(vec3 c) {
+    vec3 p = abs(fract(c.xxx + vec3(0,2,1)/3.0)*6.0 - 3.0);
+    return c.z * mix(vec3(1.0), clamp(p-1.0, 0.0, 1.0), c.y);
+}
+
 vec3 tessellationColor(vec2 pos_xy_embedding, float time) {
     flipData fd = flip(pos_xy_embedding);
     if (fd.flipCount < 0) {
@@ -186,6 +191,9 @@ vec3 tessellationColor(vec2 pos_xy_embedding, float time) {
     vec3 paletteA = vec3(0.45, 0.26, 0.72);
     vec3 paletteB = vec3(0.17, 0.32, 0.68);
     vec3 base = mix(paletteA, paletteB, parity);
+    vec3 edgeHighlight = hsv2rgb(vec3(0.75 + 0.15 * parity + time * 0.1 + 0.2 * sin(time * 0.5 + float(fd.flipCount)), 0.6, 0.9));
+    float edgeFactor = smoothstep(0.0, 0.12, min(min(bary.x, bary.y), bary.z));
+    base = mix(edgeHighlight, base, edgeFactor);
     vec3 accent = normalize(vec3(0.6, 0.35, 0.9));
     float shimmer = 0.32 * sin(time * 0.9 + dot(bary, vec3(5.3, 3.7, 4.1)) + float(fd.flipCount));
     base += accent * shimmer;
@@ -208,7 +216,7 @@ vec3 computeEdgeLights(vec3 local, float time) {
         float wobble = 0.7 + 0.3 * sin(time * 0.25 + i);
         float target = 6.283185307179586 * (float(i) / float(EDGE_LIGHT_COUNT)) + time * 0.35;
         float diff = angularDifference(angle, target);
-        float width = 0.18 + 0.04 * sin(time * 0.7 + float(i) * 1.37);
+        float width = 0.1 + 0.04 * sin(time * 0.7 + float(i) * 1.37);
         lights += exp(-pow(diff / width, 2.0)) * wobble;
     }
     lights *= 0.45 * edgeMask * exp(smin_poly(local.z+0.05,0,0.1)*10.0);

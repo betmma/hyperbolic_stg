@@ -26,7 +26,7 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
 
     vec3 accum = vec3(0.08, 0.09, 0.14);
     float travel = 0.0;
-    for (int step = 0; step < 96; ++step) {
+    for (int step = 0; step < 64; ++step) {
         float shellDist = acosh1(max(pos.w, 1.0));
         if (!inverse && shellDist >= CELL_SHELL_DIST || inverse && shellDist <= CELL_SHELL_DIST) {
             break;
