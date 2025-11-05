@@ -217,16 +217,52 @@ return {
                     en_us = 'Dream Sign "Permeable Wall"',
                     zh_cn = '梦符「可渗透的墙」',
                 },
+                hint = {
+                    en_us = 'I have a feeling that stay higher is safer.',
+                    zh_cn = '我觉得待在高处更安全。',
+                }
             },
             [12] = {
                 quote = {
-                    en_us = 'Hyperbolic center of circle is above the Euclidean center.',
-                    zh_cn = '双曲几何的圆心在欧氏圆心的上方。',
+                    en_us = 'The center of the circle seems higher than it actually is. Very strange.',
+                    zh_cn = '圆的中心似乎高于实际位置。真奇怪。',
                 },
                 spellName = {
                     en_us = 'Moon Sign "Cerulean Lunatic Dream"',
                     zh_cn = '月符「蔚蓝色的狂梦」',
                 },
+                hint = {
+                    en_us = 'That shrinking blue orb seems to indicate the safe spot.',
+                    zh_cn = '那个缩小的蓝色球似乎指示着安全点。',
+                }
+            },
+            [23] = {
+                quote = {
+                    en_us = 'Are these things really my memories? I can\'t seem to recall them clearly.',
+                    zh_cn = '这些东西真的是我的记忆吗？我不怎么记得它们了。',
+                },
+                spellName = {
+                    en_us = 'Dream Sign "Lingering Memory"',
+                    zh_cn = '梦符「萦绕的记忆」',
+                },
+                hint = {
+                    en_us = 'These bullets are huge. Upper part gives more space to dodge.',
+                    zh_cn = '这些子弹很大。上半部分提供了更多的闪避空间。',
+                }
+            },
+            [26] = {
+                quote = {
+                    en_us = 'Straight lines curve upwards and appear as arcs. Should be careful when dodging.',
+                    zh_cn = '直线向上弯曲并呈弧形。躲避时要小心。',
+                },
+                spellName = {
+                    en_us = '"Eye of Nightmare"',
+                    zh_cn = '「噩梦之眼」',
+                },
+                hint = {
+                    en_us = 'Inside the eye, there is a large area that lasers can\'t reach.',
+                    zh_cn = '在眼睛内部，有一个激光无法到达的大区域。',
+                }
             },
             [13] = {
                 quote = {
@@ -237,7 +273,26 @@ return {
                     en_us = 'Beckon Sign "Koban Attraction"',
                     zh_cn = '招符「小判吸引」',
                 },
+                hint = {
+                    en_us = 'Don\'t stay too close to the bottom, or there might be no time to react.',
+                    zh_cn = '不要太靠近底部，否则可能没有时间反应。',
+                }
             },
+            [22] = {
+                quote = {
+                    en_us = 'Bullets are waving left and right, similar to how Manekineko waves its paw.',
+                    zh_cn = '子弹左右摇摆，和招财猫挥动爪子的方式类似。'
+                },
+                spellName = {
+                    en_us = 'Invitation Sign "Welcoming Gesture"',
+                    zh_cn = '邀符「欢迎姿态」',
+                },
+                hint = {
+                    en_us = 'It would be very helpful to buy the homing shot upgrade.',
+                    zh_cn = '购买诱导升级会非常有帮助。',
+                }
+            },
+            -- level 2
             [14] = {
                 quote = {
                     en_us = 'It\'s clear that the grid is not uniform. What would a uniform grid look like?',
@@ -268,7 +323,6 @@ return {
                     zh_cn = '铐符「罪人不释之铐」',
                 },
             },
-            -- level 2
             [21] = {
                 quote = {
                     en_us = 'Leaves are teleporting across the screen, or maybe they are just moving fast due to forest qi.',
@@ -277,26 +331,6 @@ return {
                 spellName = {
                     en_us = 'Forest Sign "Folded Forest Region"',
                     zh_cn = '森符「折叠的森域」',
-                },
-            },
-            [22] = {
-                quote = {
-                    en_us = 'Bullets are waving left and right, similar to how Manekineko waves its paw.',
-                    zh_cn = '子弹左右摇摆，和招财猫挥动爪子的方式类似。'
-                },
-                spellName = {
-                    en_us = 'Invitation Sign "Welcoming Gesture"',
-                    zh_cn = '邀符「欢迎姿态」',
-                },
-            },
-            [23] = {
-                quote = {
-                    en_us = 'Moving around can help shake off these bullets.',
-                    zh_cn = '到处跑可以帮助摆脱这些子弹。'
-                }, -- I have a feeling that something will happen if I linger till...'
-                spellName = {
-                    en_us = 'Dream Sign "Lingering Memory"',
-                    zh_cn = '梦符「萦绕的记忆」',
                 },
             },
             [24] = {
@@ -317,16 +351,6 @@ return {
                 spellName = {
                     en_us = 'Crystalization "Supernatural Lattice"',
                     zh_cn = '结晶「超自然晶格」',
-                },
-            },
-            [26] = {
-                quote = {
-                    en_us = 'Straight lines curve upwards and appear as arcs. Should be careful when dodging.',
-                    zh_cn = '直线向上弯曲并呈弧形。躲避时要小心。',
-                },
-                spellName = {
-                    en_us = '"Eye of Nightmare"',
-                    zh_cn = '「噩梦之眼」',
                 },
             },
             [27] = {

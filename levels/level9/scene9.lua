@@ -101,6 +101,7 @@ return {
                     SFX:play('enemyShot',true,2)
                     Event.DelayEvent{
                         obj=en,delayFrame=100,executeFunc=function()
+                            SFX:play('enemyShot',true,2)
                             previousSmall.small=false
                         end
                     }

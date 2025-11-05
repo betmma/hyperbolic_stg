@@ -235,6 +235,8 @@ end
 local localization=require 'localization.localization'
 
 -- get raw localize string containing {}. args is a table of keys, for example {'ui','start'}
+---@return string
+---@return boolean success
 local function getRawLocalizeString(args)
     local lang=G.language or 'en_us'
     local current=localization
@@ -244,25 +246,30 @@ local function getRawLocalizeString(args)
         elseif current['__default__'] then
             current=current['__default__']
         else
-            return 'ERROR'
+            return 'ERROR', false
         end
     end
     if current[lang] then
-        return current[lang]
+        return current[lang], true
     else
-        return current['en_us']
+        return current['en_us'], true
     end
 end
 
 -- localize a string. args example: {'ui', 'upgradesCurrentXP', xp=100}
+---@return string
+---@return boolean success
 function Localize(args)
-    local rawString=getRawLocalizeString(args)
+    local rawString,success=getRawLocalizeString(args)
     local result=rawString
     for key, value in pairs(args) do
         result=result:gsub('{'..key..'}',value)
     end
-    result=result:gsub('{.-}','MISSING VALUE')
-    return result
+    if result:find('{.-}') then
+        success=false
+        result=result:gsub('{.-}','MISSING VALUE')
+    end
+    return result, success
 end
 
 function isVersionSmaller(version1, version2)

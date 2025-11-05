@@ -814,11 +814,18 @@ G={
                 local save=self.save.levelData[levelID]
                 if save.passed>=1 then
                     text=Localize{'levelData','spellcards',LevelData[level][scene].ID,'quote'}--levelData[level][scene].quote or ''
+                elseif save.tryCount>=10 then -- show hint text
+                    local hintText, success=Localize{'levelData','spellcards',LevelData[level][scene].ID,'hint'}
+                    if success then -- some levels may not have hint text
+                        love.graphics.setColor(0.5,1,0.5,transparency)
+                        text=hintText
+                    end
                 end
                 SetFont(18)
                 love.graphics.printf(text,330,510,380,"left",0,1,1)
 
                 -- show try count / first pass / first perfect data
+                love.graphics.setColor(color[1],color[2],color[3],transparency)
                 SetFont(14)
                 love.graphics.printf(Localize{'ui','tryCount',tries=save.tryCount},710,325,90,'left')
                 love.graphics.printf(Localize{'ui','firstPass',tries=save.firstPass},710,350,90,'left')
