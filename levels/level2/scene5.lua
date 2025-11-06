@@ -11,6 +11,10 @@ return {
         local a
         a=BulletSpawner{x=400,y=50,period=20,frame=0,lifeFrame=23000,bulletNumber=20,bulletSpeed=30,bulletLifeFrame=10000,angle='1.57+0.3',range=math.pi/2,bulletSprite=BulletSprites.rim.blue,fogEffect=true,fogTime=20,bulletEvents={
             function(cir,args,self)
+                if player.y<100 then
+                    cir.direction=Shape.toObj(cir,player)
+                    cir.flag=true
+                end
                 local speed=cir.speed
                 -- cir.speed=0
                 local limit=args.limit
@@ -39,13 +43,7 @@ return {
                     obj=self,
                     delayFrame=circPeriod/num*i*range,
                     executeFunc=function()
-                        if player.y<100 then
-                            direction=Shape.to(nx,ny,player.x,player.y)
-                        end
                         local cir=self:spawnBulletFunc{x=nx,y=ny,direction=direction,speed=speed,radius=size,index=i,batch=self.bulletBatch,limit=limit,sprite=self.bulletSprite}
-                        if player.y<100 and cir then
-                            cir.flag=true
-                        end
                     end
                 }
             end

@@ -330,6 +330,10 @@ return {
                     en_us = 'Forest Sign "Folded Forest Region"',
                     zh_cn = '森符「折叠的森域」',
                 },
+                hint = {
+                    en_us = 'Staying near the top is safer again. But staying there all the time may not deal enough damage.',
+                    zh_cn = '待在顶部还是更安全。但始终待在那里可能无法造成足够的伤害。',
+                }
             },
             [15] = {
                 quote = {
@@ -340,16 +344,10 @@ return {
                     en_us = 'Leaf Skill "Green Heptagram"',
                     zh_cn = '叶技「绿色七角星」',
                 },
-            },
-            [16] = {
-                quote = {
-                    en_us = 'These manacles are not even a closed loop, how could that can\'t be taken off?',
-                    zh_cn = '这些铐子甚至不是一个封闭的环，怎么会不能脱掉？',
-                },
-                spellName = {
-                    en_us = 'Manacles Sign "Manacles a Criminal Can\'t Take Off"',
-                    zh_cn = '铐符「罪人不释之铐」',
-                },
+                hint = {
+                    en_us = 'This spellcard looks skill based.',
+                    zh_cn = '这张符卡看起来是底力型的。',
+                }
             },
             [24] = {
                 quote = {
@@ -360,6 +358,10 @@ return {
                     en_us = 'Freeze Sign "Rime Ice"',
                     zh_cn = '冻符「雾凇冰晶」',
                 },
+                hint = {
+                    en_us = 'Right side is better for homing shots to hit.',
+                    zh_cn = '右侧更适合诱导弹击中。',
+                }
             },
             [25] = {
                 quote = {
@@ -370,6 +372,10 @@ return {
                     en_us = 'Crystalization "Supernatural Lattice"',
                     zh_cn = '结晶「超自然晶格」',
                 },
+                hint = {
+                    en_us = 'Her position is quite low. The upgrade that shoots downwards is very useful here.',
+                    zh_cn = '她的位置很低。向下射击的升级在这里非常有用。',
+                }
             },
             [27] = {
                 quote = {
@@ -382,25 +388,103 @@ return {
                 },
             },
             -- level 3
-            [31] = {
-                quote = {
-                    en_us = 'Such surreal scene of a broader hyperbolic area...',
-                    zh_cn = '如此超现实的广阔双曲区域...',
-                },
+            [132] = {
                 spellName = {
-                    en_us = 'Scarlet Sign "Vampirish Plaza"',
-                    zh_cn = '红符「吸血鬼广场」',
+                    en_us = 'Bullet Sign "Eagle\'s Volley Fire"',
+                    zh_cn = '弹符「鹰之齐射」',
                 },
+                quote = {
+                    en_us = 'The pattern is quite similar to when she was in normal world. Or her bullets originally belong to this dimension?',
+                    zh_cn = '这种弹幕和她在正常世界时的很相似。也许她的子弹本来就属于这个维度？',
+                },
+                hint = {
+                    en_us = 'Moving through red bullets line seems unavoidable. Practice more I guess (^^;',
+                    zh_cn = '穿过红色子弹线似乎是不可避免的。多练习吧(^^;',
+                }
             },
-            [32] = {
-                quote = {
-                    en_us = 'Yuugi\'s classic three steps become unpredictable here. She is truly drunken.',
-                    zh_cn = '勇仪的经典三步在这变得不可预测了。看来她真的喝醉了。',
-                },
+            [133] = {
                 spellName = {
-                    en_us = 'Big Four Arcanum "Knock Out In Three Sides"',
-                    zh_cn = '四天王奥义「三角必杀」',
+                    en_us = 'Bullet Sign "Eagle\'s Big Shot"',
+                    zh_cn = '弹符「鹰之大射」',
                 },
+                quote = {
+                    en_us = 'Woah, a giant triangle! Its recoil pushes her too far away, so she can\'t shoot it continuously.',
+                    zh_cn = '哇，一个巨大的三角形！后坐力把她推得太远了，所以她不能连续射击。',
+                },
+                hint = {
+                    en_us = 'There are multiple ways to go through the triangle. Staying near the middle line is one.',
+                    zh_cn = '穿过三角形有多种方法。靠近中间线是其中之一。',
+                }
+            },
+            [84] = {
+                spellName = {
+                    en_us = 'Dust Sign "Myriad Motes Accumulation"',
+                    zh_cn = '尘符「万尘集积」',
+                },
+                quote = {
+                    en_us = 'She is sweeping the dust away, but it only creates more dust. What a bad janitor.',
+                    zh_cn = '她在扫除灰尘，却让更多的灰尘出现。真是个糟糕的清洁工。',
+                },
+                hint = {
+                    en_us = 'Moving in a circle is a common strategy when I am being chased.',
+                    zh_cn = '被追逐时，绕圈移动是一种常见的策略。',
+                }
+            },
+            [85] = {
+                spellName = {
+                    en_us = 'Chest Sign "Karabitsu\'s Opened Hoard"',
+                    zh_cn = '柜符「唐柜的宝藏」',
+                },
+                quote = {
+                    en_us = 'Searching here and there, found nothing but random items. What is she looking for?',
+                    zh_cn = '到处寻找，找到的全是杂物。她在找什么呢？',
+                },
+                hint = {
+                    en_us = 'Secretly, some bullets are aiming at me.',
+                    zh_cn = '有些子弹秘密地瞄准我。',
+                }
+            },
+            [131] = {
+                spellName = {
+                    en_us = 'Collapse "Sanctuary of Schwarz"',
+                    zh_cn = '崩溃「施瓦茨圣域」',
+                },
+                quote = {
+                    en_us = 'If this is a sanctuary she would succeed in destroying it. The result is concerning...',
+                    zh_cn = '如果这是一个圣域，她就能成功摧毁它。结果真令人担忧……',
+                },
+                hint = {
+                    en_us = 'Stay near the edge to dodge the spreading pattern.',
+                    zh_cn = '待在边缘以躲避弹幕扩散的阶段。',
+                }
+            },
+            [46] = {
+                spellName = {
+                    en_us = 'Stack Sign "Crop Circle"',
+                    zh_cn = '堆符「麦田怪圈」',
+                },
+                quote = {
+                    en_us = 'Stones are stacked in a way that looks like a crop circle. Then, shouldn\'t it be called "Stone Circle"?',
+                    zh_cn = '石头堆成的形状看起来像麦田怪圈。那么，难道不应该叫“石头怪圈”吗？',
+                },
+                hint = {
+                    en_us = 'The circumference is longer than it looks. Moving along it can buy enough time for her to appear.',
+                    zh_cn = '周长比看起来的要长。沿着它移动可以为她出现争取足够的时间。',
+                }
+            },
+            [137] = {
+                spellName = {
+                    en_us = 'Stack Sign "Tower Stoxx"',
+                    zh_cn = '堆符「石头叠叠乐」',
+                },
+                quote = {
+                    en_us = 'It\'s stone version of that stack building game! Should hyperbolic tower be more unstable?',
+                    zh_cn = '这是石头版的叠建筑物游戏！双曲塔会更不稳定吗？',
+                },
+                hint = {
+                    en_us = 'Accuracy is important! Penalty bullets are getting more and more intense.',
+                    zh_cn = '准确性很重要！惩罚子弹会变得越来越强烈。',
+                }
             },
             [33] = {
                 quote = {
@@ -453,46 +537,6 @@ return {
                     zh_cn = '禁弹「边界破碎」',
                 },
             },
-            [131] = {
-                spellName = {
-                    en_us = 'Collapse "Sanctuary of Schwarz"',
-                    zh_cn = '崩溃「施瓦茨圣域」',
-                },
-                quote = {
-                    en_us = 'She tried but failed to destroy this Hyperbolic Domain. Who to visit next?',
-                    zh_cn = '她试图摧毁双曲域，但失败了。接下来要去拜访谁呢？',
-                },
-            },
-            [137] = {
-                spellName = {
-                    en_us = 'Stack Sign "Tower Stoxx"',
-                    zh_cn = '堆符「石头叠叠乐」',
-                },
-                quote = {
-                    en_us = 'It\'s stone version of that stack building game! Should hyperbolic tower be more unstable?',
-                    zh_cn = '这是石头版的叠建筑物游戏！双曲塔会更不稳定吗？',
-                },
-            },
-            [132] = {
-                spellName = {
-                    en_us = 'Bullet Sign "Eagle\'s Volley Fire"',
-                    zh_cn = '弹符「鹰之齐射」',
-                },
-                quote = {
-                    en_us = 'The pattern is quite similar to when she was in normal world. Or her bullets originally belong to this dimension?',
-                    zh_cn = '这种弹幕和她在正常世界时的很相似。也许她的子弹本来就属于这个维度？',
-                },
-            },
-            [133] = {
-                spellName = {
-                    en_us = 'Bullet Sign "Eagle\'s Big Shot"',
-                    zh_cn = '弹符「鹰之大射」',
-                },
-                quote = {
-                    en_us = 'Woah, a giant triangle! Its recoil pushes her too far away, so she can\'t shoot it continuously.',
-                    zh_cn = '哇，一个巨大的三角形！后坐力把她推得太远了，所以她不能连续射击。',
-                },
-            },
             -- level 4
             [42] = {
                 quote = {
@@ -532,16 +576,6 @@ return {
                 spellName = {
                     en_us = 'Tiger Sign "Famished Tiger"',
                     zh_cn = '寅符「饿虎扑食」',
-                },
-            },
-            [46] = {
-                spellName = {
-                    en_us = 'Stack Sign "Crop Circle"',
-                    zh_cn = '堆符「麦田怪圈」',
-                },
-                quote = {
-                    en_us = 'Stones are stacked in a way that looks like a crop circle. Then, shouldn\'t it be called "Stone Circle"?',
-                    zh_cn = '石头堆成的形状看起来像麦田怪圈。那么，难道不应该叫“石头怪圈”吗？',
                 },
             },
             [47] = {
@@ -595,6 +629,26 @@ return {
                 },
             },
             -- level 5
+            [16] = {
+                quote = {
+                    en_us = 'These manacles are not even a closed loop, how could that can\'t be taken off?',
+                    zh_cn = '这些铐子甚至不是一个封闭的环，怎么会不能脱掉？',
+                },
+                spellName = {
+                    en_us = 'Manacles Sign "Manacles a Criminal Can\'t Take Off"',
+                    zh_cn = '铐符「罪人不释之铐」',
+                },
+            },
+            [32] = {
+                quote = {
+                    en_us = 'Yuugi\'s classic three steps become unpredictable here. She is truly drunken.',
+                    zh_cn = '勇仪的经典三步在这变得不可预测了。看来她真的喝醉了。',
+                },
+                spellName = {
+                    en_us = 'Big Four Arcanum "Knock Out In Three Sides"',
+                    zh_cn = '四天王奥义「三角必杀」',
+                },
+            },
             [51] = {
                 quote = {
                     en_us = 'Find the critical bullet that will explode! Sharp eyes are needed.',
@@ -891,26 +945,6 @@ return {
                     zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
                 },
             },
-            [84] = {
-                spellName = {
-                    en_us = 'Dust Sign "Myriad Motes Accumulation"',
-                    zh_cn = '尘符「万尘集积」',
-                },
-                quote = {
-                    en_us = 'She is sweeping the dust away, but it only creates more dust. What a bad janitor.',
-                    zh_cn = '她在扫除灰尘，却让更多的灰尘出现。真是个糟糕的清洁工。',
-                }
-            },
-            [85] = {
-                spellName = {
-                    en_us = 'Chest Sign "Karabitsu\'s Opened Hoard"',
-                    zh_cn = '柜符「唐柜的宝藏」',
-                },
-                quote = {
-                    en_us = 'Searching here and there, found nothing but random items. What is she looking for?',
-                    zh_cn = '到处寻找，找到的全是杂物。她在找什么呢？',
-                }
-            },
             [86] = {
                 spellName = {
                     en_us = 'Bewitching Sign "Qi of an Impenetrable Thicket"',
@@ -1178,6 +1212,16 @@ return {
                 }
             },
             -- ex spellcards
+            [31] = {
+                quote = {
+                    en_us = 'Such surreal scene of a broader hyperbolic area...',
+                    zh_cn = '如此超现实的广阔双曲区域...',
+                },
+                spellName = {
+                    en_us = 'Scarlet Sign "Vampirish Plaza"',
+                    zh_cn = '红符「吸血鬼广场」',
+                },
+            },
             [122] = {
                 spellName = {
                     en_us = 'Truth "Moon Landing Studio"',
