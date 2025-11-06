@@ -17,11 +17,11 @@ return {
         a=BulletSpawner{x=en.x,y=en.y,period=150,frame=100,lifeFrame=10000,bulletSpeed=10,bulletNumber=10,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.lightRound.purple,bulletEvents={
             function(cir,args,self)
                 cir.invincible=true -- prevent vortex removing all bullets. set to false at 120 frames
-                cir.forceDrawLargeSprite=true
+                -- cir.forceDrawLargeSprite=true
                 local times=a.spawnEvent.executedTimes
                 local sign=math.mod2Sign(times)
                 local round=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bigRound.yellow,lifeFrame=cir.lifeFrame}
-                round.forceDrawLargeSprite=true
+                -- round.forceDrawLargeSprite=true
                 local roundRadius=round.radius
                 local radiusRef=cir.radius
                 round.invincible=true

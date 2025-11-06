@@ -17,11 +17,11 @@ return {
         a=BulletSpawner{x=en.x,y=en.y,period=150,frame=100,lifeFrame=10000,bulletSpeed=60,bulletNumber=10,bulletLifeFrame=1000,angle='0+999',range=math.pi*2,highlight=true,bulletSprite=BulletSprites.lightRound.purple,bulletEvents={
             function(cir,args,self)
                 cir.invincible=true
-                cir.forceDrawLargeSprite=true
+                -- cir.forceDrawLargeSprite=true
                 local index=args.index
                 local stop=math.random()<0.3
-                local round=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bigRound[stop and 'red' or 'yellow'],lifeFrame=cir.lifeFrame}
-                round.forceDrawLargeSprite=true
+                local round=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bigRound[stop and 'red' or 'yellow'],lifeFrame=cir.lifeFrame,highlight=true}
+                -- round.forceDrawLargeSprite=true
                 local roundRadius=round.radius
                 local radiusRef=cir.radius
                 round.invincible=true
@@ -55,6 +55,16 @@ return {
                         end
                     }
                 end
+                Event.DelayEvent{
+                    obj=cir,delayFrame=600,executeFunc=function()
+                        Event.EaseEvent{
+                            obj=cir,aimKey='radius',aimValue=0,easeFrame=120,afterFunc=function()
+                                cir:remove()
+                                round:remove()
+                            end
+                        }
+                    end
+                }
             end
         },
         }
