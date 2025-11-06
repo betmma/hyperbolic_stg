@@ -62,7 +62,7 @@ local Shockwave=Larger:extend()
 Effect.Shockwave=Shockwave
 function Shockwave:new(args)
     self.color=args.color or 'red'
-    args.sprite=Asset.bulletSprites.explosion[self.color] or Asset.bulletSprites.explosion.red
+    args.sprite=args.sprite or Asset.bulletSprites.explosion[self.color] or Asset.bulletSprites.explosion.red
     Shockwave.super.new(self, args)
     self.canRemove=args.canRemove or {bullet=true,invincible=false,safe=true}
 end

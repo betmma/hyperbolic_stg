@@ -302,6 +302,34 @@ return {
                     en_us = 'Blade Exhaustion Sign "Killing Grid"',
                     zh_cn = '尽符「杀戮方阵」',
                 },
+                hint = {
+                    en_us = 'Aim precisely to end the spellcard quickly before she gets too close.',
+                    zh_cn = '保持精准，在她靠得太近之前尽快结束符卡。',
+                }
+            },
+            [41] = {
+                quote = {
+                    en_us = 'This knife sharpening way looks funny. Sometimes she almost leaves the screen.',
+                    zh_cn = '这种磨刀方式看起来很有趣。有时她几乎要离开屏幕了。',
+                },
+                spellName = {
+                    en_us = 'Blade Sign "Swirling Knife Sharpening"',
+                    zh_cn = '刃符「旋转式磨刀」',
+                },
+                hint = {
+                    en_us = 'Though not obvious, she also moves towards me. Guiding her upwards when she is close to bottom can help.',
+                    zh_cn = '虽然不明显，但她也在向我移动。当她靠近底部时引导她向上会有所帮助。',
+                }
+            },
+            [21] = {
+                quote = {
+                    en_us = 'Leaves are teleporting across the screen, or maybe they are just moving fast due to forest qi.',
+                    zh_cn = '树叶好像在瞬移，也有可能它们因为森林的气而移动得很快。',
+                },
+                spellName = {
+                    en_us = 'Forest Sign "Folded Forest Region"',
+                    zh_cn = '森符「折叠的森域」',
+                },
             },
             [15] = {
                 quote = {
@@ -321,16 +349,6 @@ return {
                 spellName = {
                     en_us = 'Manacles Sign "Manacles a Criminal Can\'t Take Off"',
                     zh_cn = '铐符「罪人不释之铐」',
-                },
-            },
-            [21] = {
-                quote = {
-                    en_us = 'Leaves are teleporting across the screen, or maybe they are just moving fast due to forest qi.',
-                    zh_cn = '树叶好像在瞬移，也有可能它们因为森林的气而移动得很快。',
-                },
-                spellName = {
-                    en_us = 'Forest Sign "Folded Forest Region"',
-                    zh_cn = '森符「折叠的森域」',
                 },
             },
             [24] = {
@@ -476,16 +494,6 @@ return {
                 },
             },
             -- level 4
-            [41] = {
-                quote = {
-                    en_us = 'This knife sharpening way looks funny. Sometimes she almost leaves the screen.',
-                    zh_cn = '这种磨刀方式看起来很有趣。有时她几乎要离开屏幕了。',
-                },
-                spellName = {
-                    en_us = 'Blade Sign "Swirling Knife Sharpening"',
-                    zh_cn = '刃符「旋转式磨刀」',
-                },
-            },
             [42] = {
                 quote = {
                     en_us = 'The thread is stretched far away but still connected. So called "Celestial Thread".',
@@ -1143,6 +1151,20 @@ return {
                 quote = {
                     en_us = 'Is this the feeling of being trapped in koto as a tsukumogami?',
                     zh_cn = '作为付丧神被困在筝里的感觉……？',
+                }
+            },
+            [105] = {
+                spellName = {
+                    en_us = 'Sonata "Interrupted Cadence"',
+                    zh_cn = '奏曲「阻碍的终止式」',
+                },
+                quote = {
+                    en_us = 'In this measure I can\'t move, in the next measure notes can\'t move. It isn\'t going to stop.',
+                    zh_cn = '在这个小节我无法移动，下一个小节音符无法移动。没有终止。',
+                },
+                hint = {
+                    en_us = 'Certain color of notes can be macrododged, while for another color of notes, micrododge is needed.',
+                    zh_cn = '某种颜色的音符适合大范围移动，而另一种颜色的音符则需要微移。',
                 }
             },
             [104] = {

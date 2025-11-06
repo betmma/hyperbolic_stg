@@ -812,10 +812,11 @@ local stageShader=ShaderScan:load_shader('shaders/backgrounds/stage.glsl')
 local Stage=H3Terrain:extend()
 function Stage:new(args)
     Stage.super.new(self,args)
-    self.cam_translation={0,0.4,0.5}
+    self.cam_translation={0,1.2,0.8}
     self.shader=stageShader
     self.p,self.q,self.r=4,4,4
-    self.camMoveRange={-1,1}
+    self.cam_pitch=-0.9
+    self.camMoveRange={0.5,0.2}
     self.camMoveSpeed=0.5
     local axisY=Shape.axisY
     local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{1,axisY+1},0)
