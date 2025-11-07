@@ -32,6 +32,9 @@ return {
                                 obj=cir,aimKey='spriteTransparency',aimValue=1,easeFrame=30
                             }
                         end
+                        if not cir.inside and not cir.exited and cir.frame>300 then -- missed the chance to enter, edge bullets
+                            cir:remove()
+                        end
                         if cir.inside and not cir.exited and not player.border:inside(cir.x,cir.y) then
                             cir.exited=true
                             Event.EaseEvent{

@@ -29,6 +29,7 @@ return {
 
         b=BulletSpawner{x=400,y=600000,period=300,frame=200,lifeFrame=10000,bulletNumber=6,bulletSpeed=60,bulletLifeFrame=340,angle='player',range=0,bulletSprite=BulletSprites.bigRound.cyan,bulletEvents={
             function(cir,args,self)
+                cir.safe=true
                 cir.invincible=true
                 cir.direction=cir.direction+math.eval(0,angleD*10)
                 local sub=BulletSpawner{x=cir.x,y=cir.y,period=20,frame=math.random(0,19),lifeFrame=300,bulletNumber=1,bulletSpeed=0,bulletLifeFrame=500,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.bigRound.cyan,fogEffect=true,fogTime=60,bulletEvents={

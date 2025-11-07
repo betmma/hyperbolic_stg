@@ -22,7 +22,7 @@ return {
                 local timeM=(cir.times or 0)%2
                 local c=Circle{x=cir.x,y=cir.y,lifeFrame=500,direction=cir.direction,sprite=BulletSprites.crystal[timeM==1 and 'green' or 'teal'],speed=0}
                 if f then
-                    c.direction=c.direction+math.eval(0,0.1)
+                    c.direction=c.direction+math.eval(0,0.05)
                     Event.EaseEvent{
                         obj=c,
                         easeFrame=180,
@@ -68,7 +68,7 @@ return {
                         Shape.moveTowards(en,pos,1,true)
                         b.x,b.y=en.x,en.y
                         if times%2==0 then
-                            b.range=math.pi*times/150
+                            b.range=math.pi*times/200
                             b:spawnBatchFunc()
                         end
                     end

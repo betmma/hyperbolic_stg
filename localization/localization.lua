@@ -486,37 +486,120 @@ return {
                     zh_cn = '准确性很重要！惩罚子弹会变得越来越强烈。',
                 }
             },
-            [33] = {
-                quote = {
-                    en_us = 'Oh no, I can\'t find the direction home! Can compass work in this world?',
-                    zh_cn = '不好，我找不到回家的方向了！指南针在这个世界里能用吗？',
-                },
+            -- level 4
+            [78] = {
                 spellName = {
-                    en_us = 'Turnabout "Change Orientation"',
-                    zh_cn = '逆转「方向变换」',
+                    en_us = 'Night-Blindness "Bioluminescent Night"',
+                    zh_cn = '夜盲「生物荧光之夜」',
+                },
+                quote = {
+                    en_us = 'Isn\'t it morning now? Her ability is strengthened in this incident?',
+                    zh_cn = '现在不是早上吗？她的能力在这次异变中被强化了？',
+                },
+                hint = {
+                    en_us = 'Fireflies are providing dim light. Be careful not to kill them accidentally.',
+                    zh_cn = '萤火虫提供微弱的光线。别不小心杀死它们。',
                 },
             },
-            [34] = {
-                quote = {
-                    en_us =
-                    'What is she doing? I don\'t think my orientation has changed, but the world is still spinning...',
-                    zh_cn = '她在干什么？我觉得我的朝向没变，但世界还在旋转...',
-                },
+            [79] = {
                 spellName = {
-                    en_us = 'Turnabout "Change Projection"',
-                    zh_cn = '逆转「投影变换」',
+                    en_us = 'Night Sparrow "Staccato Melody"',
+                    zh_cn = '夜雀「断奏的旋律」',
+                },
+                quote = {
+                    en_us = 'A music kind of night blindness. Take fitful steps, or sometimes sprint into deep darkness.',
+                    zh_cn = '一种音乐般的夜盲症。走走停停，或者有时冲进深邃的黑暗。',
+                },
+                hint = {
+                    en_us = 'Don\'t move too frequently, and try to memorize position of bullets.',
+                    zh_cn = '不要频繁移动，尽量记住子弹的位置。',
                 },
             },
-            [35] = {
+            [92] = {
+                spellName = {
+                    en_us = 'Stone Sign "Rotating Stone"',
+                    zh_cn = '石符「旋转的石头」',
+                },
                 quote = {
-                    en_us = 'Keep my speed up, and catch the right time to cross tracks!',
-                    zh_cn = '保持速度，抓住合适的时机穿越轨道！',
+                    en_us = 'Stones mysteriously become larger after rotating around.',
+                    zh_cn = '石头在旋转后神秘地变大了。',
+                },
+                hint = {
+                    en_us = 'Stones rotate faster when they go further away. Stay near the center looks better.',
+                    zh_cn = '石头离得越远旋转得越快。待在中心附近看起来更好。',
+                }
+            },
+            [144] = {
+                quote = {
+                    en_us = 'The souls stop drifting and shoot bullets before disappearing. I wonder what they are thinking.',
+                    zh_cn = '漂流的灵魂在消失前会停下来射出子弹。它们在想什么呢。',
                 },
                 spellName = {
-                    en_us = 'Taboo "Labyrinthine Trap"',
-                    zh_cn = '禁忌「环形陷阱」',
+                    en_us = 'Drowning Sign "Drifting Souls"',
+                    zh_cn = '溺符「漂流的灵魂」',
                 },
+                hint = {
+                    en_us = 'No much strategy here. Generally, I would try to beat her fast.',
+                    zh_cn = '没有太多策略。一般来说，我会尝试尽快击败她。',
+                }
             },
+            [145] = {
+                quote = {
+                    en_us = 'Boulder\'s mass is so large that its gravity attracts all water drops in the river. Is this really possible?',
+                    zh_cn = '巨石的质量如此之大，以至于它的引力吸引了河中所有的水滴。这真的可能吗？',
+                },
+                spellName = {
+                    en_us = 'Stone Sign "Boulder in Sanzu River"',
+                    zh_cn = '石符「三途川的巨石」',
+                },
+                hint = {
+                    en_us = 'Staying near her is less likely to be hit by boulders, but the attract attack is more dangerous.',
+                    zh_cn = '待在她身边不容易被巨石击中，但引力攻击更危险。',
+                }
+            },
+            [146] = {
+                quote = {
+                    en_us = 'Though called silent land, the ground is always moving. More like a living land.',
+                    zh_cn = '虽然叫做寂静大地，但地面总是在移动。更像是有生命的土地。',
+                },
+                spellName = {
+                    en_us = 'Mountain Spirit Sign "Qi of Silent Land"',
+                    zh_cn = '魑符「寂静大地之气」',
+                },
+                hint = {
+                    en_us = 'Move around frequently to avoid being trapped.',
+                    zh_cn = '频繁移动以避免被困。',
+                }
+            },
+            [86] = {
+                spellName = {
+                    en_us = 'Bewitching Sign "Qi of an Impenetrable Thicket"',
+                    zh_cn = '魅符「致密灌木之气」',
+                },
+                quote = {
+                    en_us = 'This thicket is almost a primary forest. Seems a environment protection yokai.',
+                    zh_cn = '这个灌木丛几乎像是原始森林了。看起来是个环境保护妖怪。',
+                },
+                hint = {
+                    en_us = 'It\'s still possible to dodge her cloud-like bullets when close to her.',
+                    zh_cn = '靠近她时，也是可以躲避她云状的子弹的。',
+                }
+            },
+            [87] = {
+                spellName = {
+                    en_us = 'Mountain Spirit Sign "Qi of a Drainage Divide"',
+                    zh_cn = '魑符「分水山岭之气」',
+                },
+                quote = {
+                    en_us = 'How the water flows in opposite directions on both sides of the watershed?',
+                    zh_cn = '分水岭两侧的水流为什么是相反方向的？',
+                },
+                hint = {
+                    en_us = 'Switching sides when hearing the charge sound.',
+                    zh_cn = '听到蓄力音效时切换位置。',
+                }
+            },
+            -- level 5
             [36] = {
                 quote = {
                     en_us = 'Besides these sentries, even she sits in that machine automatically chasing me! Lazy, but effective.',
@@ -525,37 +608,6 @@ return {
                 spellName = {
                     en_us = 'Battle Machine "Autonomous Sentries"',
                     zh_cn = '战斗兵器「自动哨兵」',
-                },
-            },
-            [37] = {
-                quote = {
-                    en_us = 'A creative use of her absolute power to destroy everything...',
-                    zh_cn = '她绝对破坏力的创造性运用...',
-                },
-                spellName = {
-                    en_us = 'Forbidden Barrage "Border break"',
-                    zh_cn = '禁弹「边界破碎」',
-                },
-            },
-            -- level 4
-            [42] = {
-                quote = {
-                    en_us = 'The thread is stretched far away but still connected. So called "Celestial Thread".',
-                    zh_cn = '线拉得很远但仍然连接着。这就是所谓「通天线」吧。',
-                },
-                spellName = {
-                    en_us = 'Moon Wood Sign "Celestial Thread"',
-                    zh_cn = '月木符「通天线」',
-                },
-            },
-            [43] = {
-                quote = {
-                    en_us = 'Hyperbolic geometry distorts her rings a lot. She has to change the material.',
-                    zh_cn = '双曲几何让她的环大大变形。她不得不换材料了。',
-                },
-                spellName = {
-                    en_us = 'Divine Tool "Moriya\'s Elastic Ring"',
-                    zh_cn = '神具「洩矢的弹性环」',
                 },
             },
             [44] = {
@@ -568,67 +620,6 @@ return {
                     zh_cn = '仔细观察环境来判断方向。我正在学习一项有用的技能！',
                 },
             },
-            [45] = {
-                quote = {
-                    en_us = 'Her pounce even moves the border. Moving too far in this world seems dangerous.',
-                    zh_cn = '她的扑击甚至移动了边界。在这个世界里走得太远似乎很危险。',
-                },
-                spellName = {
-                    en_us = 'Tiger Sign "Famished Tiger"',
-                    zh_cn = '寅符「饿虎扑食」',
-                },
-            },
-            [47] = {
-                quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
-                },
-                spellName = {
-                    en_us = 'Magic Sign "Explosive Marionette"',
-                    zh_cn = '魔符「爆裂玩偶」',
-                },
-            },
-            [48] = {
-                quote = {
-                    en_us = 'With solar energy stored inside, the alloy is hot and untouchable.',
-                    zh_cn = '蕴含太阳能的合金炽热无比，不可触碰。',
-                },
-                spellName = {
-                    en_us = 'Sun Metal Sign "Solar Alloy"',
-                    zh_cn = '日金符「太阳合金」',
-                },
-            },
-            [144] = {
-                quote = {
-                    en_us = 'The souls stop drifting and shoot bullets before disappearing. I wonder what they are thinking.',
-                    zh_cn = '漂流的灵魂在消失前会停下来射出子弹。它们在想什么呢。',
-                },
-                spellName = {
-                    en_us = 'Drowning Sign "Drifting Souls"',
-                    zh_cn = '溺符「漂流的灵魂」',
-                },
-            },
-            [145] = {
-                quote = {
-                    en_us = 'Boulder\'s mass is so large that its gravity attracts all water drops in the river. Is this really possible?',
-                    zh_cn = '巨石的质量如此之大，以至于它的引力吸引了河中所有的水滴。这真的可能吗？',
-                },
-                spellName = {
-                    en_us = 'Stone Sign "Boulder in Sanzu River"',
-                    zh_cn = '石符「三途川的巨石」',
-                },
-            },
-            [146] = {
-                quote = {
-                    en_us = 'Though called silent land, the ground is always moving. More like a living land.',
-                    zh_cn = '虽然叫做寂静大地，但地面总是在移动。更像是有生命的土地。',
-                },
-                spellName = {
-                    en_us = 'Mountain Spirit Sign "Qi of Silent Land"',
-                    zh_cn = '魑符「寂静大地之气」',
-                },
-            },
-            -- level 5
             [16] = {
                 quote = {
                     en_us = 'These manacles are not even a closed loop, how could that can\'t be taken off?',
@@ -741,6 +732,26 @@ return {
                 },
             },
             -- level 6
+            [42] = {
+                quote = {
+                    en_us = 'The thread is stretched far away but still connected. So called "Celestial Thread".',
+                    zh_cn = '线拉得很远但仍然连接着。这就是所谓「通天线」吧。',
+                },
+                spellName = {
+                    en_us = 'Moon Wood Sign "Celestial Thread"',
+                    zh_cn = '月木符「通天线」',
+                },
+            },
+            [48] = {
+                quote = {
+                    en_us = 'With solar energy stored inside, the alloy is hot and untouchable.',
+                    zh_cn = '蕴含太阳能的合金炽热无比，不可触碰。',
+                },
+                spellName = {
+                    en_us = 'Sun Metal Sign "Solar Alloy"',
+                    zh_cn = '日金符「太阳合金」',
+                },
+            },
             [61] = {
                 quote = {
                     en_us = 'Suddenly bullets fade and scatter all around me, but next moment they return solid.',
@@ -822,6 +833,37 @@ return {
                 },
             },
             -- level 7
+            [33] = {
+                quote = {
+                    en_us = 'Oh no, I can\'t find the direction home! Can compass work in this world?',
+                    zh_cn = '不好，我找不到回家的方向了！指南针在这个世界里能用吗？',
+                },
+                spellName = {
+                    en_us = 'Turnabout "Change Orientation"',
+                    zh_cn = '逆转「方向变换」',
+                },
+            },
+            [34] = {
+                quote = {
+                    en_us =
+                    'What is she doing? I don\'t think my orientation has changed, but the world is still spinning...',
+                    zh_cn = '她在干什么？我觉得我的朝向没变，但世界还在旋转...',
+                },
+                spellName = {
+                    en_us = 'Turnabout "Change Projection"',
+                    zh_cn = '逆转「投影变换」',
+                },
+            },
+            [45] = {
+                quote = {
+                    en_us = 'Her pounce even moves the border. Moving too far in this world seems dangerous.',
+                    zh_cn = '她的扑击甚至移动了边界。在这个世界里走得太远似乎很危险。',
+                },
+                spellName = {
+                    en_us = 'Tiger Sign "Famished Tiger"',
+                    zh_cn = '寅符「饿虎扑食」',
+                },
+            },
             [71] = {
                 quote = {
                     en_us = 'The world is full of her "sword spirit". I can feel the power of her sword.',
@@ -894,26 +936,6 @@ return {
                     zh_cn = '烟火吗？好似烟花表演，但每一颗火星都真的讨厌我。',
                 },
             },
-            [78] = {
-                spellName = {
-                    en_us = 'Night-Blindness "Bioluminescent Night"',
-                    zh_cn = '夜盲「生物荧光之夜」',
-                },
-                quote = {
-                    en_us = 'Fireflies are providing dim light. Be careful not to kill them accidentally.',
-                    zh_cn = '萤火虫提供微弱的光线。小心不要意外地杀死它们。',
-                },
-            },
-            [79] = {
-                spellName = {
-                    en_us = 'Night Sparrow "Staccato Melody"',
-                    zh_cn = '夜雀「断奏的旋律」',
-                },
-                quote = {
-                    en_us = 'A music kind of night blindness. Take fitful steps, or sometimes sprint into deep darkness.',
-                    zh_cn = '一种音乐般的夜盲症。走走停停，或者有时冲进深邃的黑暗。',
-                },
-            },
             -- level 8
             [81] = {
                 spellName = {
@@ -944,26 +966,6 @@ return {
                     en_us = 'Huge bats are flying around, their wings shrouding me. But the big eyes detached from the body seems more irritating.',
                     zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
                 },
-            },
-            [86] = {
-                spellName = {
-                    en_us = 'Bewitching Sign "Qi of an Impenetrable Thicket"',
-                    zh_cn = '魅符「致密灌木之气」',
-                },
-                quote = {
-                    en_us = 'This thicket is almost a primary forest. Seems a environment protection yokai.',
-                    zh_cn = '这个灌木丛几乎像是原始森林了。看起来是个环境保护妖怪。',
-                }
-            },
-            [87] = {
-                spellName = {
-                    en_us = 'Mountain Spirit Sign "Qi of a Drainage Divide"',
-                    zh_cn = '魑符「分水山岭之气」',
-                },
-                quote = {
-                    en_us = 'How the water flows in opposite directions on both sides of the watershed?',
-                    zh_cn = '分水岭两侧的水流为什么是相反方向的？',
-                }
             },
             [88] = {
                 spellName = {
@@ -1033,16 +1035,6 @@ return {
                 quote = {
                     en_us = 'The water is swirling around, and I can\'t find the way out. It\'s like being trapped in a whirlpool.',
                     zh_cn = '水在旋转，我找不到出路。就像被困在漩涡中一样。',
-                }
-            },
-            [92] = {
-                spellName = {
-                    en_us = 'Stone Sign "Rotating Stone"',
-                    zh_cn = '石符「旋转的石头」',
-                },
-                quote = {
-                    en_us = 'Stones mysteriously become larger after rotating around.',
-                    zh_cn = '石头在旋转后神秘地变大了。',
                 }
             },
             [110] = {
@@ -1166,6 +1158,27 @@ return {
                     zh_cn = '象征四季的疯狂弹幕在肆虐，而磐座是唯一的安全之地。',
                 }
             },
+            -- level 11
+            [35] = {
+                quote = {
+                    en_us = 'Keep my speed up, and catch the right time to cross tracks!',
+                    zh_cn = '保持速度，抓住合适的时机穿越轨道！',
+                },
+                spellName = {
+                    en_us = 'Taboo "Labyrinthine Trap"',
+                    zh_cn = '禁忌「环形陷阱」',
+                },
+            },
+            [37] = {
+                quote = {
+                    en_us = 'A creative use of her absolute power to destroy everything...',
+                    zh_cn = '她绝对破坏力的创造性运用...',
+                },
+                spellName = {
+                    en_us = 'Forbidden Barrage "Border break"',
+                    zh_cn = '禁弹「边界破碎」',
+                },
+            },
             -- boss spellcards
             [101] = {
                 spellName = {
@@ -1220,6 +1233,26 @@ return {
                 spellName = {
                     en_us = 'Scarlet Sign "Vampirish Plaza"',
                     zh_cn = '红符「吸血鬼广场」',
+                },
+            },
+            [43] = {
+                quote = {
+                    en_us = 'Hyperbolic geometry distorts her rings a lot. She has to change the material.',
+                    zh_cn = '双曲几何让她的环大大变形。她不得不换材料了。',
+                },
+                spellName = {
+                    en_us = 'Divine Tool "Moriya\'s Elastic Ring"',
+                    zh_cn = '神具「洩矢的弹性环」',
+                },
+            },
+            [47] = {
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn = '还没想好 :P',
+                },
+                spellName = {
+                    en_us = 'Magic Sign "Explosive Marionette"',
+                    zh_cn = '魔符「爆裂玩偶」',
                 },
             },
             [122] = {
