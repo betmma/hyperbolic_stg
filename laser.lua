@@ -99,7 +99,7 @@ function LaserUnit:extractCoordinates()
             local dis=Shape.distance(xc1,yc1,xc2,yc2)
             local splitLength=10
             local segMax=self.interpolateLimit or 10 -- at most self.interpolateLimit or 10 points
-            -- if G.viewMode.mode==G.VIEW_MODES.FOLLOW then
+            -- if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW then
             --     local viewer=G.viewMode.object
             --     local toViewerDistance=Shape.distance(xc1,yc1,viewer.x,viewer.y)
             --     local toViewerDistance2=Shape.distance(xc2,yc2,viewer.x,viewer.y)

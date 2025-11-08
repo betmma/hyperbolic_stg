@@ -22,7 +22,7 @@ local function wrapLevelMake(levelData)
         math.randomseed(seed)
         G.randomseed=seed
         Shape.timeSpeed=1
-        G.viewMode.mode=G.VIEW_MODES.NORMAL
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.NORMAL
         G.viewMode.viewOffset={x=0,y=0}
         -- show spellcard name
         do
@@ -50,7 +50,7 @@ local function wrapLevelMake(levelData)
             }
             Event.LoopEvent{
                 obj=txt,period=1,frame=-120,executeFunc=function(self) -- after above ease events
-                    if G.viewMode.mode==G.VIEW_MODES.NORMAL and Player.objects[1] then
+                    if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.NORMAL and Player.objects[1] then
                         txt.color[4]=math.clamp(math.abs(txt.y-Player.objects[1].y)/75,0.2,1)
                     end
                 end
@@ -156,7 +156,7 @@ local function wrapLevelMake(levelData)
         end
     end
     levelData.make=function()
-        if levelData.dialogue and not G.replay then
+        if levelData.dialogue and not G.replay and not (G.lastLevel[1]==G.currentLevel[1] and G.lastLevel[2]==G.currentLevel[2]) then
             local dialogueController=DialogueController{key=levelData.dialogue}
             dialogueController.afterFunc=makeLevelWrapped
         else
@@ -287,4 +287,9 @@ levelData.getDefaultBackground=function(level,scene)
     end
     return BackgroundPattern.FollowingTesselation
 end
+
+-- some common functions used for initializing levels
+levelData.initFuncs={
+    
+}
 return levelData

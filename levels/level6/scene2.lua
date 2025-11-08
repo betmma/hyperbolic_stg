@@ -18,7 +18,7 @@ return {
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         local dummy=Shape{x=400,y=400,lifeFrame=99999999}
         G.viewMode.object=player
         local alpha=0

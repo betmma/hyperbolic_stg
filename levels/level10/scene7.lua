@@ -4,7 +4,7 @@ return {
     spellName='Permanence Sign "Unmoving Fossil"',
     make=function()
         G.backgroundPattern:remove()
-        G.viewMode.hyperbolicModel=G.HYPERBOLIC_MODELS.UHP
+        G.viewMode.hyperbolicModel=G.CONSTANTS.HYPERBOLIC_MODELS.UHP
         Shape.axisY=-20
         G.levelRemainingFrame=7200
         Shape.removeDistance=20000
@@ -39,7 +39,7 @@ return {
         player.moveMode=Player.moveModes.Euclid
         player.border:remove()
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,150,12))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object={x=400,y=6000}
         G.viewMode.viewOffset={x=0,y=0}
         local function fixedMove(self)
@@ -130,9 +130,9 @@ return {
                         cir.checkHitPlayer=checkHitPlayer
                     end
                     cir.spriteTransparency=math.clamp(cir.spriteTransparency+0.02,0,0.3)
-                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
+                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.CONSTANTS.HYPERBOLIC_MODELS_COUNT
                     cir.fixed={Shape.screenPosition(player.x,player.y)}
-                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel-1)%G.HYPERBOLIC_MODELS_COUNT
+                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel-1)%G.CONSTANTS.HYPERBOLIC_MODELS_COUNT
                 end
             }}
 

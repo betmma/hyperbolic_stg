@@ -23,7 +23,7 @@ return {
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local modf=function(x,m) return x%(2*m)<m end
         a=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=3,bulletSpeed=20,bulletLifeFrame=300,angle='1.57+1',range=math.pi*0,spawnCircleRadius=50,spawnCircleAngle='0+999',fogEffect=true,fogTime=30,bulletSprite=BulletSprites.bigStar.red,bulletEvents={

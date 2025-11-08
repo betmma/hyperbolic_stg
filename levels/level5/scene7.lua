@@ -17,7 +17,7 @@ return {
         local poses={{cx-w,h+axisY},{cx,h+axisY},{cx+w,h+axisY},{cx+w,2*h+axisY},{cx-w,2*h+axisY}}
         local r02=(w*w+4*h*h)
         local border=PolyLine(poses,false)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         -- G.viewMode.viewOffset.y=-200
         -- record LR sequences below current position, to know which side will you get if you leave from bottom. For example, if you go upper right, then upper left, it should track so that when you go bottom twice, you will appear from left, then right.

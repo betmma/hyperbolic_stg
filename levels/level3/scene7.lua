@@ -17,7 +17,7 @@ return {
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local middleLineAngle=math.pi/2+math.eval(0.2,0.1)*math.randomSign()
         local mlx,mly=Shape.rThetaPos(400,300,100,middleLineAngle)

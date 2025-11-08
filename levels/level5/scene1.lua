@@ -18,7 +18,7 @@ return {
         end
         local dis0=Shape.distance(poses[1][1],poses[1][2],poses[2][1],poses[2][2])
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local b={x=-500,y=300,period=24,frame=0,lifeFrame=6001,bulletSpeed=20,angle=0,bulletLifeFrame=990000,bulletSprite=BulletSprites.bullet.red,
         spawnBatchFunc=function(self)

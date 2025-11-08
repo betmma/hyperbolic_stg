@@ -29,7 +29,7 @@ return {
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,100,12))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local period=5
         for r=5,120,5 do

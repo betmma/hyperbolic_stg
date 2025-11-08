@@ -120,7 +120,7 @@ return {
         player.border:remove()
         local center={x=400,y=300}
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,300,30))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local waterHeight=-150
         local surfaceAx,surfaceAy,sdir,surfaceBx,surfaceBy=400,2000,math.pi/2,410,2000
@@ -146,7 +146,7 @@ return {
             local dis=Shape.distanceToLine(player.x,player.y,surfaceAx,surfaceAy,surfaceBx,surfaceBy)*(isAboveWater(player.x,player.y) and 1 or -1)
             local centerX,radius
             centerX=WINDOW_WIDTH/2
-            if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+            if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.UHP then
                 if G.UseHypRotShader then
                     local x1,y1=Shape.rThetaPos(centerX,WINDOW_HEIGHT/2,dis,math.pi/2)
                     radius=y1-Shape.axisY
@@ -158,7 +158,7 @@ return {
                 love.graphics.circle('fill',centerX,Shape.axisY,99999)
                 love.graphics.setColor(0,0,0,1)
                 love.graphics.circle('fill',centerX,Shape.axisY,radius)
-            elseif G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.P_DISK then
+            elseif G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.P_DISK then
                 dis=dis/Shape.curvature
                 local r=math.tanh(dis/2)
                 local centerY=(1+r*r)/(2*r)
@@ -176,7 +176,7 @@ return {
                     love.graphics.setColor(0,0,0,1)
                     love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2+ratio*centerY,ratio*(-centerY+r))
                 end
-            elseif G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
+            elseif G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK then
                 dis=dis/Shape.curvature
                 local r=math.tanh(dis/2)
                 r=(2*r)/(1+r*r)

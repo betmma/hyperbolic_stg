@@ -34,6 +34,11 @@ local G={
             Asset:drawBatches()
             love.graphics.setShader()
         end,
+        ---@enum VIEW_MODE
+        VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'},
+        ---@enum HYPERBOLIC_MODEL
+        HYPERBOLIC_MODELS={UHP=0,P_DISK=1,K_DISK=2}, -- use number is because it will be sent to shader
+        HYPERBOLIC_MODELS_COUNT=3
     },
 }
 G={
@@ -168,6 +173,35 @@ G={
                 transitionState='TRANSITION_IMAGE',
             }
         },
+    },
+    currentLevel={},
+    ---@type integer|nil
+    levelRemainingFrame=nil,
+    ---@type integer|nil
+    levelRemainingFrameMax=nil,
+    ---@type boolean|nil
+    levelIsTimeoutSpellcard=nil,
+    lastLevel={},
+    mainEnemy=nil,
+    preWin=nil,
+    frame=0,
+    sceneTempObjs={},
+    replay=nil,
+    ---@type GameObject|nil
+    spellNameText=nil,
+    ---@type boolean
+    UseHypRotShader=true,
+
+    DISK_RADIUS_BASE={
+        [G.CONSTANTS.HYPERBOLIC_MODELS.P_DISK]=1, -- Poincare disk
+        [G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK]=1, -- Klein disk
+    },
+    ---@type {mode: VIEW_MODE, hyperbolicModel: HYPERBOLIC_MODEL, object: GameObject|nil, viewOffset: pos}
+    viewMode={
+        mode=G.CONSTANTS.VIEW_MODES.NORMAL,
+        hyperbolicModel=G.CONSTANTS.HYPERBOLIC_MODELS.UHP,
+        object=...,
+        viewOffset={x=0,y=0}
     },
     UIDEF={
         MAIN_MENU={
@@ -684,7 +718,7 @@ G={
         },
         CHOOSE_LEVELS={
             enter=function(self,lastState)
-                G.viewMode.mode=G.VIEW_MODES.NORMAL
+                G.viewMode.mode=G.CONSTANTS.VIEW_MODES.NORMAL
                 self.currentUI.enterFrame=self.frame
                 self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 BGM:play('title')
@@ -908,12 +942,12 @@ G={
                         self.viewMode.mode=self.VIEW_MODES.NORMAL
                     end
                 elseif (player and player.keyIsPressed('x') or isPressed('x')) and (player and player.unlockDiskModels==true or G.replay) then -- note that this A and B or C clause is not equal to B if A else C, since B can be false. in replay mode pressing x still works
-                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.HYPERBOLIC_MODELS_COUNT
+                    G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.CONSTANTS.HYPERBOLIC_MODELS_COUNT
                     SFX:play('select')
                 end
 
                 if not G.UseHypRotShader or not (player and player.unlockDiskModels==true or G.replay) then
-                    G.viewMode.hyperbolicModel=G.HYPERBOLIC_MODELS.UHP -- without shader only UHP is supported
+                    G.viewMode.hyperbolicModel=G.CONSTANTS.HYPERBOLIC_MODELS.UHP -- without shader only UHP is supported
                 end
                 
                 if self.levelRemainingFrame then
@@ -968,7 +1002,7 @@ G={
                 SetFont(48,Fonts.en_us)
                 local xt,yt=160,5
                 local dx,dy=72,26
-                if not player or Shape.distance(170,10,player.x,player.y)>50 or G.viewMode.mode~=G.VIEW_MODES.NORMAL then
+                if not player or Shape.distance(170,10,player.x,player.y)>50 or G.viewMode.mode~=G.CONSTANTS.VIEW_MODES.NORMAL then
                     xt,yt=160,5
                 else
                     xt,yt=560,5
@@ -1199,7 +1233,7 @@ G={
             pageMax=4,
             enter=function(self)
                 self:removeAll()
-                G.viewMode.mode=G.VIEW_MODES.NORMAL
+                G.viewMode.mode=G.CONSTANTS.VIEW_MODES.NORMAL
                 self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 ReplayManager.loadAll()
                 self.currentUI.chosenMax=ReplayManager.REPLAY_NUM_PER_PAGE
@@ -1424,24 +1458,7 @@ G={
 }
 
 G:switchState(G.STATES.MAIN_MENU)
-G.frame=0
-G.sceneTempObjs={}
----@enum VIEW_MODE
-G.VIEW_MODES={NORMAL='NORMAL',FOLLOW='FOLLOW'}
----@enum HYPERBOLIC_MODEL
-G.HYPERBOLIC_MODELS={UHP=0,P_DISK=1,K_DISK=2} -- use number is because it will be sent to shader
-G.DISK_RADIUS_BASE={
-    [G.HYPERBOLIC_MODELS.P_DISK]=1, -- Poincare disk
-    [G.HYPERBOLIC_MODELS.K_DISK]=1, -- Klein disk
-}
-G.HYPERBOLIC_MODELS_COUNT=3
----@type {mode: VIEW_MODE, hyperbolicModel: HYPERBOLIC_MODEL, object: GameObject|nil, viewOffset: pos}
-G.viewMode={
-    mode=G.VIEW_MODES.NORMAL,
-    hyperbolicModel=G.HYPERBOLIC_MODELS.UHP,
-    object=...,
-    viewOffset={x=0,y=0}
-}
+
 
 local lume = require "import.lume"
 G.saveData=function(self)
@@ -1650,6 +1667,7 @@ G.leaveLevel=function(self)
         self.save.upgrades=self.upgradesRef
         return true
     end
+    self.lastLevel={level,scene}
     self:_incrementTryCount()
 end
 G._incrementTryCount=function(self)
@@ -1694,9 +1712,9 @@ G.draw=function(self)
     -- love.graphics.clear({0,0,0,1})
     shove.beginLayer('main')
     self.currentUI=self.UIDEF[self.STATE]
-    if G.viewMode.mode==G.VIEW_MODES.NORMAL then
+    if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.NORMAL then
         self:_drawBatches()
-    elseif G.viewMode.mode==G.VIEW_MODES.FOLLOW then
+    elseif G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW then
         if not G.viewMode.object then
             G.viewMode.object=Player.objects[1]
         end
@@ -1731,7 +1749,7 @@ G.draw=function(self)
     shove.endLayer()
 end
 G._drawBatches=function(self)
-    if not self.backgroundPattern.noZoom or G.viewMode.mode==G.VIEW_MODES.NORMAL then
+    if not self.backgroundPattern.noZoom or G.viewMode.mode==G.CONSTANTS.VIEW_MODES.NORMAL then
         self.backgroundPattern:draw()
     end
     self.currentUI.draw(self)

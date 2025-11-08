@@ -55,7 +55,7 @@ return {
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local shoot=player.shootDirStraight
         player.shootDirStraight=function(self,pos,damage,sprite,theta)

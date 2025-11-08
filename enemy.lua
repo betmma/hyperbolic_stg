@@ -78,7 +78,7 @@ end
 
 -- to calculate to make the sprite upward, how much to rotate the sprite. calculation is similar to modelsTrans.glsl. basic idea is delta = - screen geodesic angle (different models) + world geodesic angle (Shape.to(x,y,viewObject.x,viewObject.y))
 function Enemy.upwardDeltaOrientation(x,y)
-    if G.viewMode.mode==G.VIEW_MODES.NORMAL then
+    if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.NORMAL then
         return 0
     end
     local obj=G.viewMode.object
@@ -88,14 +88,14 @@ function Enemy.upwardDeltaOrientation(x,y)
     end
     local rotateAngle=obj.naturalDirection or 0
     local x1,y1=Shape.rotateAround(x,y,-rotateAngle,xo,yo)
-    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+    if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.UHP then
         local deltaOrientation=-Shape.to(x1,y1,xo,yo)+Shape.to(x,y,xo,yo)
         return deltaOrientation
     end
     local screenx,screeny=Shape.screenPosition(x,y)
     local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
     local screenObjx,screenObjy=Shape.screenPosition(xo,yo)
-    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then --geodesic is straight line
+    if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK then --geodesic is straight line
         return -math.atan2(screenObjy-screeny,screenObjx-screenx)+Shape.to(x,y,xo,yo)
     end
     -- poincare disk

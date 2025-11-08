@@ -29,7 +29,7 @@ return {
             {x12,y12},{x11,y11},
             {x21,y21},{x22,y22},
         })
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local x31,y31=Shape.rThetaPos(center.x,center.y,300,dir0+math.pi/2)
         local x32,y32=Shape.rThetaPos(center.x,center.y,-300,dir0+math.pi/2)

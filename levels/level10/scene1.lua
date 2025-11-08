@@ -24,7 +24,7 @@ return {
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,100,12))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         circle=function(x,y,speed,direction,straightTime,turnTime,curveSign,regenerate)
             curveSign=curveSign or math.mod2Sign(a.spawnEvent.executedTimes)

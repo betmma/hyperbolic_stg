@@ -20,7 +20,7 @@ return {
         local posesCopy=copy_table(poses)
         local indexesCopy=copy_table(indexes)
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local theta=math.eval(0,999)
         Event.LoopEvent{

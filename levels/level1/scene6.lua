@@ -7,7 +7,7 @@ return {
         local en=Enemy{x=400,y=150,mainEnemy=true,maxhp=7500}
         local player=Player{x=400,y=600}
         -- player.moveMode=Player.moveModes.Monopolar
-        -- G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        -- G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         -- G.viewMode.object=player
         local a
         a={x=150,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=512,bulletSpeed='20',bulletLifeFrame=10000,angle=math.pi/2,range=math.pi*256*0,bulletSprite=BulletSprites.rim.orange,bulletEvents={

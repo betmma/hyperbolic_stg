@@ -18,7 +18,7 @@ return {
         local player=Player{x=400,y=600000,noBorder=true}
         player.moveMode=Player.moveModes.Natural
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,700,30))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local moveUpdateRef=player.moveUpdate
         player.moveUpdate=function(self,dt)

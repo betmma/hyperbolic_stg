@@ -273,7 +273,7 @@ Asset.flushBatches=function(self)
     end
 end
 Asset.setHyperbolicRotateShader=function()
-    if not (G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader) then
+    if not (G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW and G.UseHypRotShader) then
         return
     end
     local object=G.viewMode.object
@@ -290,7 +290,7 @@ end
 Asset.drawBatches=function(self)
     for key, batch in pairs(self.Batches) do
         -- use hyperbolicRotateShader from first batch to player focus batch (only excluding foreground). Note that some levels have their own shader, levels need to set G.UseHypRotShader to false to prevent being overridden
-        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and G.UseHypRotShader then
+        if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW and G.UseHypRotShader then
             local object=G.viewMode.object
             local shader=G.hyperbolicRotateShader
             if batch==Asset.bossMeshes then -- though hypRotShader has been activated in G.CONSTANTS.DRAW before calling GameObject:drawAll, activating again here to make sure
@@ -302,7 +302,7 @@ Asset.drawBatches=function(self)
                 shader:send("rotation_angle",-object.naturalDirection)
             -- end
         end
-        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
+        if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.push()
             love.graphics.origin()
         end
@@ -321,10 +321,10 @@ Asset.drawBatches=function(self)
             self.batchExtraActions[batch].after()
         end
         love.graphics.setBlendMode('alpha') -- default mode
-        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.playerFocusBatch and G.UseHypRotShader then
+        if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW and batch==Asset.playerFocusBatch and G.UseHypRotShader then
             love.graphics.setShader()
         end
-        if G.viewMode.mode==G.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
+        if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW and batch==Asset.foregroundBatch then
             love.graphics.pop()
         end
     end

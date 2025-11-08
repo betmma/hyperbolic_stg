@@ -31,7 +31,7 @@ return {
             player.border=PolyLine(borderPoses)
         end
         borderCreate()
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
 
         --- input object and (x1,y1), (x2,y2) that determines the mirror, return a fake object (a table with x, y and orientation)

@@ -698,7 +698,7 @@ end
 ---@return coordinate "y of screen position"
 function Shape.screenPosition(x,y)
     local object=G.viewMode.object
-    if not object or G.viewMode.mode~=G.VIEW_MODES.FOLLOW then
+    if not object or G.viewMode.mode~=G.CONSTANTS.VIEW_MODES.FOLLOW then
         return x,y
     end
     local xo,yo=object.x,object.y
@@ -710,7 +710,7 @@ function Shape.screenPosition(x,y)
     local zoom=(ay-axisY)/(yo-axisY)
     local dx=ax-xo*zoom
     local x2,y2=x1*zoom+dx,(y1-axisY)*zoom+axisY
-    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.UHP then
+    if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.UHP then
         return x2,y2
     end
     -- convert to Poincare disk model
@@ -723,7 +723,7 @@ function Shape.screenPosition(x,y)
     local wx,wy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
     wx,wy=-wy,wx
     local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
-    if G.viewMode.hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
+    if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK then
         local ww=wx*wx+wy*wy
         ww=2/(1+ww)
         wx,wy=wx*ww,wy*ww
@@ -738,15 +738,15 @@ end
 ---@return coordinate "y of coordinate system position"
 function Shape.inverseScreenPosition(x,y)
     local object=G.viewMode.object
-    if not object or G.viewMode.mode~=G.VIEW_MODES.FOLLOW then
+    if not object or G.viewMode.mode~=G.CONSTANTS.VIEW_MODES.FOLLOW then
         return x,y
     end
     local hyperbolicModel=G.viewMode.hyperbolicModel
-    if hyperbolicModel~=G.HYPERBOLIC_MODELS.UHP then -- convert from disk models to UHP
+    if hyperbolicModel~=G.CONSTANTS.HYPERBOLIC_MODELS.UHP then -- convert from disk models to UHP
         local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[hyperbolicModel] or 1)
         local wx,wy=(x-WINDOW_WIDTH/2)/r,(y-WINDOW_HEIGHT/2)/r
         local ww=wx*wx+wy*wy
-        if hyperbolicModel==G.HYPERBOLIC_MODELS.K_DISK then
+        if hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK then
             ww=(1-math.sqrt(1-ww))/ww
             wx,wy=wx*ww,wy*ww
         end

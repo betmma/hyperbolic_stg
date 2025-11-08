@@ -11,7 +11,7 @@ return {
         local center={x=400,y=300}
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
         player.moveMode=Player.moveModes.Natural
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local center,radius,thetas,vertices,outvertices,polyline,outpolyline
         Event.LoopEvent{

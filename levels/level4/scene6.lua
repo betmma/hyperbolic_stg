@@ -13,7 +13,7 @@ return {
         player.moveMode=Player.moveModes.Natural
         local center={x=400,y=300}
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         a=BulletSpawner{x=400,y=300,period=30,frame=-20,lifeFrame=10000,bulletNumber=30,bulletSpeed='0',bulletLifeFrame=1500,angle='player',range=math.pi*2,bulletSprite=BulletSprites.cross.orange,fogEffect=true,fogTime=10,bulletEvents={
             function(cir,args,self)

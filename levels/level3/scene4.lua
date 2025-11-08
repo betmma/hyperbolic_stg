@@ -14,7 +14,7 @@ return {
         local center={x=400,y=300}
         local poses=Shape.regularPolygonCoordinates(center.x,center.y,110,12)
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local moveRange=40
         local function drawBox(x,y,direction)

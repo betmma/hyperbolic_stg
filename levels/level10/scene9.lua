@@ -21,7 +21,7 @@ return {
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,150,12))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local safeR,safeTheta=math.eval(60,40),math.eval(0,math.pi)
         local safex,safey=Shape.rThetaPos(center.x,center.y,safeR,safeTheta)

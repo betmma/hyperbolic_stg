@@ -76,7 +76,7 @@ return {
         local player0=Player{x=0,y=y0,border=PolyLine(border),moveMode=Player.moveModes.Natural}
         -- player0.cancelVortex=true
         players[currentIndex]=player0
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player0
         local bullets={}
         en=Enemy{x=0,y=y0/2,mainEnemy=true,maxhp=94000000,}

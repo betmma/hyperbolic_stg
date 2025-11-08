@@ -13,7 +13,7 @@ return {
         player.moveMode=Player.moveModes.Natural
         local center={x=400,y=300}
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
         local x01,y01=Shape.rThetaPos(400,300,120,-1.45+math.pi)
         local x02,y02=Shape.rThetaPos(400,300,120,-1.45)

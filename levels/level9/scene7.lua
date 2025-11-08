@@ -22,7 +22,7 @@ return {
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
-        G.viewMode.mode=G.VIEW_MODES.FOLLOW
+        G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
 
         a={x=400,y=1600000,period=30,frame=0,speed=20,lifeFrame=61,bulletNumber=20,bulletSpeed=70,bulletLifeFrame=1000,angle=0,range=0,highlight=true,bulletSprite=BulletSprites.scale.purple,fogEffect=true,fogTime=3,bulletEvents={
