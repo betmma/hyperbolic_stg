@@ -48,7 +48,7 @@ return {
                     outvertices={}
                     for i = 1, 3 do
                         local x,y=Shape.rThetaPos(center.x,center.y,radius-7,thetas[i])
-                        local xo,yo=Shape.rThetaPos(center.x,center.y,radius+7,thetas[i])
+                        local xo,yo=Shape.rThetaPos(center.x,center.y,radius+15,thetas[i])
                         table.insert(vertices,{x,y})
                         table.insert(outvertices,{xo,yo})
                         local fog=Circle({x=x, y=y, radius=1, lifeFrame=60, sprite=Asset.bulletSprites.fog.gray,safe=true})

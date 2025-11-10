@@ -7,14 +7,8 @@ return {
         G.levelRemainingFrame=4800
         G.levelIsTimeoutSpellcard=true
         Shape.removeDistance=2000
-        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=72000000}
-        Event.EaseEvent{
-            obj=en,
-            aimTable=en,
-            aimKey='y',
-            aimValue=-50,
-            easeFrame=100
-        }
+        local en=Enemy{x=400,y=1000000,mainEnemy=true,maxhp=72000000}
+        en.removeDistance=1e100
         local player=Player{x=400,y=300}
         local move=function()
             Event.EaseEvent{
@@ -22,14 +16,16 @@ return {
                 aimTable=player,
                 aimKey='x',
                 aimValue=400,
-                easeFrame=10
+                easeFrame=20,
+                easeMode='hard'
             }
             Event.EaseEvent{
                 obj=player,
                 aimTable=player,
                 aimKey='y',
                 aimValue=300,
-                easeFrame=10
+                easeFrame=20,
+                easeMode='hard'
             }
         end
         EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,move,EventManager.EVENTS.LEAVE_LEVEL)
@@ -58,9 +54,10 @@ return {
                 local ii=i^0.5*num^0.5
                 local direction=angle+ii*0.04*(ind%2*2-1)
                 local x,y=Shape.rThetaPos(self.x,self.y,ii/num*70+10,direction)
-                self.fogTime=math.ceil(ii/num*120)
+                self.fogTime=math.ceil(ii/num*60)
                 self:spawnBulletFunc{x=x,y=y,direction=direction+1.5,speed=speed,radius=size,index=i,batch=self.bulletBatch,fogTime=self.fogTime}
                 if(ind>0 and i%(12-2*ind)==0) then
+                    self.fogTime=math.ceil(ii/num*120)
                     self:spawnBulletFunc{x=x,y=y,direction=direction+math.pi+ind*0.1,speed=5,radius=size,index=i,sprite=self.bulletSprite,fogTime=self.fogTime}
                 end
                 
@@ -68,12 +65,14 @@ return {
         end,
         bulletEvents={
             function(cir,args,self)
+                if not isVersionSmaller(self.version,'0.2.0.1') then -- cancel graze at all. for very early version graze calls random so keep graze to avoid breaking old replay
+                    cir.grazed=true
+                end
                 local speedRef=cir.speed
                 Event.DelayEvent{
                     obj=cir,
                     delayFrame=1000-cir.args.fogTime,
                     executeFunc=function()
-                        cir.grazed=true
                         cir.damage=2
                         cir.sprite=BulletSprites.ellipse.purple
                         Event.EaseEvent{

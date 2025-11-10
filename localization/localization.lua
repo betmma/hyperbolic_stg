@@ -609,16 +609,25 @@ return {
                     en_us = 'Battle Machine "Autonomous Sentries"',
                     zh_cn = '战斗兵器「自动哨兵」',
                 },
+                hint = {
+                    en_us = 'Sentries shoot faster when I am dealing more damage to her.',
+                    zh_cn = '当我对她造成更多伤害时，哨兵的射击速度会更快。',
+                }
             },
-            [44] = {
+            [57] = {
                 spellName = {
-                    en_us = 'Obstructing Sign "Wall of Misdirection"',
-                    zh_cn = '塞符「误向之墙」',
+                    en_us = 'Water Sign "Kappa\'s Meandering Current"',
+                    zh_cn = '水符「河童的蜿蜒河流」',
                 },
                 quote = {
-                    en_us = 'Examine the environment carefully to tell direction. I\'m learning a useful skill!',
-                    zh_cn = '仔细观察环境来判断方向。我正在学习一项有用的技能！',
+                    en_us =
+                    'I noticed the banks are diverging at far away place. It seems a complicated question whether river can exist in this world.',
+                    zh_cn = '河岸在远处逐渐分开。在这个世界里河能不能存在好像是个很复杂的问题。',
                 },
+                hint = {
+                    en_us = 'Most rivers go through the central area. Try not leaving center too far.',
+                    zh_cn = '大多数河流都经过中央区域。尽量不要离中心太远。',
+                }
             },
             [16] = {
                 quote = {
@@ -629,6 +638,10 @@ return {
                     en_us = 'Manacles Sign "Manacles a Criminal Can\'t Take Off"',
                     zh_cn = '铐符「罪人不释之铐」',
                 },
+                hint = {
+                    en_us = 'Which upgrade helps me remove the blue manacles?',
+                    zh_cn = '哪个升级能帮助我消除蓝色铐子？',
+                }
             },
             [32] = {
                 quote = {
@@ -639,27 +652,68 @@ return {
                     en_us = 'Big Four Arcanum "Knock Out In Three Sides"',
                     zh_cn = '四天王奥义「三角必杀」',
                 },
+                hint = {
+                    en_us = 'Vertices are much safer than edges.',
+                    zh_cn = '顶点比边安全得多。',
+                }
             },
-            [51] = {
-                quote = {
-                    en_us = 'Find the critical bullet that will explode! Sharp eyes are needed.',
-                    zh_cn = '找到即将爆炸的关键子弹！要火眼金睛才行。',
-                },
+            [88] = {
                 spellName = {
-                    en_us = 'Explosion Sign "Critical Mass"',
-                    zh_cn = '爆符「临界质量」',
+                    en_us = 'Riddle Sign "Pseudo Hexagonal Labyrinth"',
+                    zh_cn = '谜符「伪六角迷宫」',
                 },
-            },
-            [52] = {
                 quote = {
-                    en_us = 'Through the experiment, she found the way to make bigger nukes in this world.',
-                    zh_cn = '通过实验，她找到了在这个世界制造更大核弹的方法。',
+                    en_us = 'Due to the geometry, 6 way shots don\'t form regular cells and it gets more complicated.',
+                    zh_cn = '由于几何关系，6路弹幕并没有形成规则的单元格，而是更加复杂。',
                 },
-                spellName = {
-                    en_us = 'Atomic Fire "Nuclear Experiment Expansion"',
-                    zh_cn = '核热「核反应扩大试验」',
-                },
+                hint = {
+                    en_us = 'The pattern is lowkey fixed. Get familiar with it is the key.',
+                    zh_cn = '弹幕是某种程度上固定的。熟悉它是关键。',
+                }
             },
+            [44] = {
+                spellName = {
+                    en_us = 'Obstructing Sign "Wall of Misdirection"',
+                    zh_cn = '塞符「误向之墙」',
+                },
+                quote = {
+                    en_us = 'Examine the environment carefully to tell direction. I\'m learning a useful skill!',
+                    zh_cn = '仔细观察环境来判断方向。我正在学习一项有用的技能！',
+                },
+                hint = {
+                    en_us = 'Utilize the 12-gon walls to track direction, or try to look further away.',
+                    zh_cn = '利用十二边形的墙壁来追踪方向，或者尝试看得更远。',
+                }
+            },
+            [89] = {
+                spellName = {
+                    en_us = 'Path Sign "Escher\'s Walkway"',
+                    zh_cn = '道符「埃舍尔的走道」',
+                },
+                quote = {
+                    en_us = 'Seemingly infinite space filled with bullets quickly. All paths are dangerous now.',
+                    zh_cn = '看似无限的空间迅速被子弹填满。所有的道路现在都很危险。',
+                },
+                hint = {
+                    en_us = 'If I can find a fixed route, I would never panic again.',
+                    zh_cn = '我如果能找到一条固定的路线，就再也不会惊慌了。',
+                }
+            },
+            [151] = {
+                spellName = {
+                    en_us = 'Water Sign "the Grand Water War"',
+                    zh_cn = '水符「大水仗」',
+                },
+                quote = {
+                    en_us = 'Playful water fight! If this is Kappa\'s daily life I would like to be a Kappa too.',
+                    zh_cn = '顽皮的水仗！如果这是河童的日常生活，我也想当个河童。',
+                },
+                hint = {
+                    en_us = 'For these multi-phase spellcards, more practice to get familiar with later phases is needed.',
+                    zh_cn = '对于这些多阶段的符卡，需要更多的练习来熟悉后期阶段。',
+                }
+            },
+            -- level 6
             [53] = {
                 spellName = {
                     en_us = 'Crossroad Sign "Wind-Chasing Track"',
@@ -680,58 +734,6 @@ return {
                     zh_cn = '看起来是风在推动我和她的子弹，但实际上是她在和边界一起移动。',
                 },
             },
-            [55] = {
-                spellName = {
-                    en_us = 'Hell Sign "Erroneous Orbit"',
-                    zh_cn = '狱符「谬误轨道」',
-                },
-                quote = {
-                    en_us = 'The orbit is ellipse, or more like rotating ellipse, or what?',
-                    zh_cn = '这轨道是椭圆，还是更像旋转的椭圆，或者说是什么？',
-                },
-            },
-            [56] = {
-                spellName = {
-                    en_us = 'Hell Sign "Exotic Meteor"',
-                    zh_cn = '狱符「异域流星」',
-                },
-                quote = {
-                    en_us = 'Earth would be destroyed if these meteors are real.',
-                    zh_cn = '如果这些流星是真的，地球就会被毁灭的。',
-                },
-            },
-            [57] = {
-                spellName = {
-                    en_us = 'Water Sign "Kappa\'s Meandering Current"',
-                    zh_cn = '水符「河童的蜿蜒河流」',
-                },
-                quote = {
-                    en_us =
-                    'I noticed the banks are diverging at far away place. It seems a complicated question whether river can exist in this world.',
-                    zh_cn = '河岸在远处逐渐分开。在这个世界里河能不能存在好像是个很复杂的问题。',
-                },
-            },
-            [58] = {
-                spellName = {
-                    en_us = 'Light Sign "Light of Purification"',
-                    zh_cn = '光符「净化之光」',
-                },
-                quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
-                },
-            },
-            [151] = {
-                spellName = {
-                    en_us = 'Water Sign "the Grand Water War"',
-                    zh_cn = '水符「大水仗」',
-                },
-                quote = {
-                    en_us = 'Playful water fight! If this is Kappa\'s daily life I would like to be a Kappa too.',
-                    zh_cn = '顽皮的水仗！如果这是河童的日常生活，我也想当个河童。',
-                },
-            },
-            -- level 6
             [42] = {
                 quote = {
                     en_us = 'The thread is stretched far away but still connected. So called "Celestial Thread".',
@@ -864,6 +866,36 @@ return {
                     zh_cn = '寅符「饿虎扑食」',
                 },
             },
+            [58] = {
+                spellName = {
+                    en_us = 'Light Sign "Light of Purification"',
+                    zh_cn = '光符「净化之光」',
+                },
+                quote = {
+                    en_us = 'not come up yet :P',
+                    zh_cn = '还没想好 :P',
+                },
+            },
+            [55] = {
+                spellName = {
+                    en_us = 'Hell Sign "Erroneous Orbit"',
+                    zh_cn = '狱符「谬误轨道」',
+                },
+                quote = {
+                    en_us = 'The orbit is ellipse, or more like rotating ellipse, or what?',
+                    zh_cn = '这轨道是椭圆，还是更像旋转的椭圆，或者说是什么？',
+                },
+            },
+            [56] = {
+                spellName = {
+                    en_us = 'Hell Sign "Exotic Meteor"',
+                    zh_cn = '狱符「异域流星」',
+                },
+                quote = {
+                    en_us = 'Earth would be destroyed if these meteors are real.',
+                    zh_cn = '如果这些流星是真的，地球就会被毁灭的。',
+                },
+            },
             [71] = {
                 quote = {
                     en_us = 'The world is full of her "sword spirit". I can feel the power of her sword.',
@@ -967,26 +999,6 @@ return {
                     zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
                 },
             },
-            [88] = {
-                spellName = {
-                    en_us = 'Riddle Sign "Pseudo Hexagonal Labyrinth"',
-                    zh_cn = '谜符「伪六角迷宫」',
-                },
-                quote = {
-                    en_us = 'Due to the geometry, 6 way shots don\'t form regular cells and it gets more complicated.',
-                    zh_cn = '由于几何关系，6路弹幕并没有形成规则的单元格，而是更加复杂。',
-                }
-            },
-            [89] = {
-                spellName = {
-                    en_us = 'Path Sign "Escher\'s Walkway"',
-                    zh_cn = '道符「埃舍尔的走道」',
-                },
-                quote = {
-                    en_us = 'Seemingly infinite space filled with bullets quickly. All paths are dangerous now.',
-                    zh_cn = '看似无限的空间迅速被子弹填满。所有的道路现在都很危险。',
-                }
-            },
             [181] = {
                 spellName = {
                     en_us = 'Illusion Existence "Doppelganger"',
@@ -1066,6 +1078,27 @@ return {
                     en_us = 'Hugest bullets I have ever seen! The whole area is filled with them.',
                     zh_cn = '我见过的最大子弹！整个区域都被它们填满了。',
                 }
+            },
+            -- level 9
+            [51] = {
+                quote = {
+                    en_us = 'Find the critical bullet that will explode! Sharp eyes are needed.',
+                    zh_cn = '找到即将爆炸的关键子弹！要火眼金睛才行。',
+                },
+                spellName = {
+                    en_us = 'Explosion Sign "Critical Mass"',
+                    zh_cn = '爆符「临界质量」',
+                },
+            },
+            [52] = {
+                quote = {
+                    en_us = 'Through the experiment, she found the way to make bigger nukes in this world.',
+                    zh_cn = '通过实验，她找到了在这个世界制造更大核弹的方法。',
+                },
+                spellName = {
+                    en_us = 'Atomic Fire "Nuclear Experiment Expansion"',
+                    zh_cn = '核热「核反应扩大试验」',
+                },
             },
             -- level 10
             [113] = {

@@ -12,7 +12,7 @@ return {
         player.moveMode=Player.moveModes.Natural
         G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed='60',bulletLifeFrame=100,range=math.pi*2,angle='1.17+3.14',bulletSprite=BulletSprites.laser.blue,bulletEvents={
+        local a=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=10,bulletSpeed='90',bulletLifeFrame=100,range=math.pi*2,angle='1.17+3.14',bulletSprite=BulletSprites.laser.blue,bulletEvents={
             function(cir)
                 Event.LoopEvent{
                     obj=cir,
@@ -24,16 +24,20 @@ return {
                         elseif t>=60 and t<90 then
                             cir.direction=cir.direction-0.12
                         end
+                        if Shape.distanceObj(cir,center)>120 then
+                            cir:remove()
+                        end
                     end
                 }
             end
         }}
         local b
-        b=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=35,bulletSpeed='80',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.laser.red,frequency=4,highlight=true,bulletEvents={
+        b=BulletSpawner{x=400,y=150,period=300,frame=240,lifeFrame=10000,bulletNumber=25,bulletSpeed='80',bulletLifeFrame=200,warningFrame=60,fadingFrame=20,angle='1.57+0.54',range=math.pi*2,bulletSprite=BulletSprites.laser.red,frequency=4,highlight=true,bulletEvents={
             function(cir)
                 Event.EaseEvent{
                     obj=cir,aimKey='speed',aimValue=480,easeFrame=10
                 }
+                cir.lifeFrame=30
             end},laserEvents={
             function(laser)
                 local enDirRef=en.direction

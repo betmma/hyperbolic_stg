@@ -157,8 +157,8 @@ return {
             obj=en,
             delayFrame=1800,
             executeFunc=function()
-                for i=1,20 do
-                    local x,y=400+(i-10.5)*50,800
+                for i=1,10 do
+                    local x,y=400+(i-5.5)*100,800
                     local cir={x=x,y=y,sprite=BulletSprites.blackrice.red,lifeFrame=20000,fogTime=60,direction=(i<11 and -math.pi/2 or math.pi/2),speed=36,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,safe=true}
                     cir.extraUpdate={
                         function(cir)

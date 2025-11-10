@@ -62,7 +62,7 @@ function Circle:draw()
         return
     end
     local radius=self.radius
-    if radius<5 and not self.forceDrawLargeSprite or self.forceDrawNormalSprite then
+    if radius<10 and not self.forceDrawLargeSprite or self.forceDrawNormalSprite then
         self:drawSprite()
     else
         self:drawLargeSprite()

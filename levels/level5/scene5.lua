@@ -37,7 +37,7 @@ return {
                                 obj=b,
                                 period=10,
                                 executeFunc=function()
-                                    b.angle=b.angle+0.05*math.mod2Sign(b.delayCount)*(spawnCount+1)
+                                    b.angle=b.angle+0.01*math.mod2Sign(b.delayCount)*(spawnCount+1)
                                 end
                             }
                         end

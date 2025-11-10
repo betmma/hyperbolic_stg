@@ -4,17 +4,17 @@ return {
     spellName='Dirge "Lost Path of Return"',
     make=function()
         G.levelRemainingFrame=7200
-        G.backgroundPattern.overallColorScale=2
-        Event.EaseEvent{
-            obj=G.backgroundPattern,
-            easeFrame=240,
-            aimKey='overallColorScale',
-            aimValue=0,
-            afterFunc=function()
-                G.backgroundPattern:remove()
-                G.backgroundPattern=BackgroundPattern.Empty()
-            end
-        }
+        -- G.backgroundPattern.overallColorScale=2
+        -- Event.EaseEvent{
+        --     obj=G.backgroundPattern,
+        --     easeFrame=240,
+        --     aimKey='overallColorScale',
+        --     aimValue=0,
+        --     afterFunc=function()
+        --         G.backgroundPattern:remove()
+        --         G.backgroundPattern=BackgroundPattern.Empty()
+        --     end
+        -- }
         Shape.removeDistance=1e100
         local center={x=400,y=300}
         local a,b
