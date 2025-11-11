@@ -17,6 +17,8 @@ function Enemy:new(args)
     self.radius=10
     -- if mainEnemy is defeated, win this scene
     self.mainEnemy=args.mainEnemy or false
+    self.showCircleHPBar=self.mainEnemy
+    self.showHexagram=self.mainEnemy
     if self.mainEnemy then
         G.mainEnemy=self
     end
@@ -43,6 +45,7 @@ function Enemy:new(args)
             self.sprite=Asset.boss.placeholder
         end
     end
+    self.bindedEnemy=nil
 end
 
 function Enemy:update(dt)
@@ -54,7 +57,11 @@ function Enemy:update(dt)
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
     end
     Circle.checkHitPlayer(self)
-    self:checkHitByPlayer()
+    self:checkHitByPlayer(self.bindedEnemy)
+    if self.bindedEnemy then
+        self.hp=self.bindedEnemy.hp
+        self.damageResistance=self.bindedEnemy.damageResistance
+    end
     local hpLevel=self:getHPLevel()
     if self._hpLevel~=hpLevel then
         self.hpSegmentsFunc(self,self._hpLevel)
@@ -62,6 +69,19 @@ function Enemy:update(dt)
     end
     self:calculateMovingTransitionSprite()
     self.orientation=Enemy.upwardDeltaOrientation(self.x,self.y)
+end
+
+--- make this enemy share hp and transfer damage with otherEnemy
+function Enemy:bind(otherEnemy)
+    self.bindedEnemy=otherEnemy
+    self.maxhp=otherEnemy.maxhp
+    self.hp=otherEnemy.hp
+    self.hpSegments=otherEnemy.hpSegments
+    self.showCircleHPBar=otherEnemy.showCircleHPBar
+    self.showHexagram=otherEnemy.showHexagram
+    if self.mainEnemy then
+        error('Enemy:bind: mainEnemy cannot bind with other enemy')
+    end
 end
 
 function Enemy:calculateMovingTransitionSprite()
@@ -279,7 +299,7 @@ function Enemy:draw()
     local shader=love.graphics.getShader()
     local color={love.graphics.getColor()}
     self.orientation=self.orientation or Enemy.upwardDeltaOrientation(self.x,self.y)
-    if self.mainEnemy then
+    if self.showHexagram then
         self:drawHexagram()
     end
     love.graphics.setColor(0,1,1)
@@ -287,7 +307,7 @@ function Enemy:draw()
         Shape.drawCircle(self.x,self.y,self.radius)
     end
     self:drawSprite()
-    if not G.levelIsTimeoutSpellcard and self.mainEnemy then 
+    if not G.levelIsTimeoutSpellcard and self.showCircleHPBar then
         self:drawCircleHPBar()
     end
     love.graphics.setColor(color[1],color[2],color[3])
@@ -393,8 +413,8 @@ function Enemy:drawHexagram()
         local x1,y1=Shape.rThetaPos(self.x,self.y,rM+dM*math.sin(theta*2.167+i*3.16),alpha+dtheta*math.sin(theta*1.943+5632+i*63.3))
         local x2,y2=Shape.rThetaPos(self.x,self.y,rM+dM*math.sin(theta*1.469+i*9.4),alpha+dtheta*(math.sin(theta*2.136+562+i*7.74))+0.03)
         local x3,y3=Shape.rThetaPos(self.x,self.y,rM+dM*math.sin(theta*2.463+i*13.3),alpha+dtheta*(math.sin(theta*1.796+1592+i*29.1))+0.06)
-        Shape.drawSegment(x1,y1,x2,y2)
-        Shape.drawSegment(x3,y3,x2,y2)
+        Shape.drawSegment(x1,y1,x2,y2,1)
+        Shape.drawSegment(x3,y3,x2,y2,1)
     end
     love.graphics.setLineWidth(width)
     love.graphics.setColor(color[1],color[2],color[3])
