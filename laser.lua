@@ -41,7 +41,7 @@ function LaserUnit:draw()
     end
 end
 
--- extract coordinates of all LaserUnits linked. Each unit yields 2 points that are perpendicular to its direction.
+-- extract coordinates of all LaserUnits linked. Each unit yields 2 points that are perpendicular to the direction to the next unit.
 -- for example: 
 -- v v v
 ---o-o-o---->

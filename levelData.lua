@@ -224,7 +224,7 @@ local levelData={
     loadLevels(9,{'1','2','3','4','5','6','7','8','9'}),
     loadLevels(10,{'1','2','3','4','5','6','7','8','9'}),
     loadLevels(11,{'1','2','3','4','5','6','7','8'}),
-    loadLevels(12,{'1','2','3','4'}),
+    loadLevels(12,{'1','2','3','4','5'}),
     loadLevels('EX',{'1','2','3','4','5','6','7'}),
 }
 
@@ -290,6 +290,6 @@ end
 
 -- some common functions used for initializing levels
 levelData.initFuncs={
-    
+
 }
 return levelData

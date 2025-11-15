@@ -399,7 +399,7 @@ function Enemy:drawHexagram()
         points[#points+1]=newpoint
     end
     for i=1,#points do
-        Shape.drawSegment(points[i][1],points[i][2],points[(i+1)%#points+1][1],points[(i+1)%#points+1][2])
+        Shape.drawSegment(points[i][1],points[i][2],points[(i+1)%#points+1][1],points[(i+1)%#points+1][2],10)
     end
     Shape.drawCircle(self.x,self.y,rIN)
     Shape.drawCircle(self.x,self.y,rOUT)

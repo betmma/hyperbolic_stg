@@ -681,8 +681,8 @@ return {
                     zh_cn = '仔细观察环境来判断方向。我正在学习一项有用的技能！',
                 },
                 hint = {
-                    en_us = 'Utilize the 12-gon walls to track direction, or try to look further away.',
-                    zh_cn = '利用十二边形的墙壁来追踪方向，或者尝试看得更远。',
+                    en_us = 'I need to remember the direction of that orb. Utilize the 12-gon walls to track the direction, or try to look further away.',
+                    zh_cn = '我需要记住那个球的方向。利用十二边形的墙壁来追踪方向，或者尝试看得更远。',
                 }
             },
             [89] = {
@@ -1255,6 +1255,16 @@ return {
                 quote = {
                     en_us = 'After funeral procession leaves, the soul wanders around, trying to find the way home.',
                     zh_cn = '送葬队伍离开后，灵魂徘徊在四周，试图找到回家的路。',
+                }
+            },
+            [106] = {
+                spellName = {
+                    en_us = 'Soukyoku "The World Bent by a Duet"',
+                    zh_cn = '双曲「二重奏扭曲世界」',
+                },
+                quote = {
+                    en_us = 'Their final performance! Does the incident come to an end?',
+                    zh_cn = '她们的最后演出！异变就此结束了吗？',
                 }
             },
             -- ex spellcards
