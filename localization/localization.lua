@@ -185,6 +185,10 @@ return {
                 en_us = 'Yatsuhashi Tsukumo',
                 zh_cn = '九十九八桥',
             },
+            tsukumo = {
+                en_us = 'Tsukumo Sisters',
+                zh_cn = '九十九姐妹',
+            },
             asama = {
                 en_us = 'Yuiman Asama',
                 zh_cn = '维缦·浅间',
@@ -723,6 +727,10 @@ return {
                     en_us = 'Escaping along the track and feeling the rustling wind, a unique experience.',
                     zh_cn = '沿着小路全速逃跑，感受风声呼啸，也算独特的体验。',
                 },
+                hint = {
+                    en_us = 'Moving around in circles can change the track direction. Changing it to cardinal or intercardinal makes moving easier.',
+                    zh_cn = '绕圈移动可以改变小路的方向。改为上下左右或对角线方向会更容易移动。',
+                }
             },
             [54] = {
                 spellName = {
@@ -733,6 +741,10 @@ return {
                     en_us = 'Looks like wind is pushing me and her bullets, but actually it\'s she moving with the border.',
                     zh_cn = '看起来是风在推动我和她的子弹，但实际上是她在和边界一起移动。',
                 },
+                hint = {
+                    en_us = 'Pay attention to the "wind" direction. Stay at the side where bullets are blown away from me.',
+                    zh_cn = '注意“风”的方向。待在子弹被吹离我的一侧。',
+                }
             },
             [42] = {
                 quote = {
@@ -743,6 +755,10 @@ return {
                     en_us = 'Moon Wood Sign "Celestial Thread"',
                     zh_cn = '月木符「通天线」',
                 },
+                hint = {
+                    en_us = 'The gap moves faster as time goes on. But some threads will not reach the edge, don\'t be eager to cross them.',
+                    zh_cn = '随着时间的推移，间隙移动得更快。但有些线不会到达边缘，不要急着穿过它们。',
+                }
             },
             [48] = {
                 quote = {
@@ -753,7 +769,55 @@ return {
                     en_us = 'Sun Metal Sign "Solar Alloy"',
                     zh_cn = '日金符「太阳合金」',
                 },
+                hint = {
+                    en_us = 'Such powerful attack makes her vulnerable. Try finishing the battle quickly.',
+                    zh_cn = '如此强力的攻击使她变得脆弱。尝试快速结束战斗。',
+                }
             },
+            [77] = {
+                spellName = {
+                    en_us = 'Fire Sign "Hephaestus Pyrotechnics"',
+                    zh_cn = '火符「赫淮斯托斯的烟火」',
+                },
+                quote = {
+                    en_us =
+                    'Pyrotechnics, huh? It\'s like a fireworks show where every single spark suddenly decides it really hates me.',
+                    zh_cn = '烟火吗？好似烟花表演，但每一颗火星都真的讨厌我。',
+                },
+                hint = {
+                    en_us = 'Avoid moving too far away, or distant sparks will be too fast to react.',
+                    zh_cn = '避免移动得太远，否则远处的火星就会太快而无法反应。',
+                }
+            },
+            [90] = {
+                spellName = {
+                    en_us = 'Heavy Sign "Weight of a Thousand Fathoms"',
+                    zh_cn = '重符「千寻之重」',
+                },
+                quote = {
+                    en_us = 'Anchors flying towards me! Warning for shipwrecked sailors?',
+                    zh_cn = '锚正朝我飞来！是遇难水手的警告吗？',
+                },
+                hint = {
+                    en_us = 'The huge anchor explodes into countless pieces. Must guide it to the deep corners of the area.',
+                    zh_cn = '巨大的锚爆炸成无数碎片。必须引导它到区域的深处。',
+                }
+            },
+            [91] = {
+                spellName = {
+                    en_us = 'Drowning Sign "Double Vortex"',
+                    zh_cn = '溺符「双重漩涡」',
+                },
+                quote = {
+                    en_us = 'The water is swirling around, and I can\'t find the way out. It\'s like being trapped in a whirlpool.',
+                    zh_cn = '水在旋转，我找不到出路。就像被困在漩涡中一样。',
+                },
+                hint = {
+                    en_us = 'For perfect completion: find a way to align directions of bullets from the two vortexes, and get her extra bullets perpendicular to that direction.',
+                    zh_cn = '无伤通过：找到方法对齐两个漩涡的子弹方向，再让她的子弹垂直于漩涡的方向。',
+                }
+            },
+            -- level 7
             [61] = {
                 quote = {
                     en_us = 'Suddenly bullets fade and scatter all around me, but next moment they return solid.',
@@ -774,67 +838,6 @@ return {
                     zh_cn = '幻光「虚无之月」',
                 },
             },
-            [63] = {
-                quote = {
-                    en_us = 'Ehh, how did I become the bob of this clock? Dizzying.',
-                    zh_cn = '诶，我怎么成了这个钟的摆锤？头好晕。',
-                },
-                spellName = {
-                    en_us = 'Conjuring "The Clock that Doesn\'t Tell Time"',
-                    zh_cn = '奇术「不报时的钟表」',
-                },
-            },
-            [64] = {
-                quote = {
-                    en_us = 'Junko must have improved her gardening skills. No longer only lilies.',
-                    zh_cn = '纯狐一定是提高了她的园艺技能。不再只有百合了。',
-                },
-                spellName = {
-                    en_us = '"Sterile Flowers of Murderous Intent"',
-                    zh_cn = '「杀意的徒花」',
-                },
-            },
-            [65] = {
-                quote = {
-                    en_us = 'A real physicist here. What a clever trick to capture my shots.',
-                    zh_cn = '货真价实的物理学家。捕捉我的子弹，真是个聪明的把戏。',
-                },
-                spellName = {
-                    en_us = 'Capture "Fabry-Pérot Cavity"',
-                    zh_cn = '捕获「法布里-佩罗腔」'
-                },
-            },
-            [66] = {
-                quote = {
-                    en_us = 'Monochrome light makes the mandala kind of bland. A limitation of interference pattern?',
-                    zh_cn = '单色光让曼荼罗有点单调。这是干涉图案的局限性吗？',
-                },
-                spellName = {
-                    en_us = 'Interference "Wavefront Mandala"',
-                    zh_cn = '干涉「波前曼荼罗」'
-                },
-            },
-            [67] = {
-                quote = {
-                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry. Will she consider this?',
-                    zh_cn = '看来袿姬的能力可以用来制作首饰，她会考虑一下吗？',
-                },
-                spellName = {
-                    en_us = 'Polygon Shape "Facet Sculpting Art"',
-                    zh_cn = '多边形「刻面造形术」'
-                },
-            },
-            [68] = {
-                quote = {
-                    en_us = 'Lines from extremely far away converge to me.',
-                    zh_cn = '来自远方的直线到达我这里。',
-                },
-                spellName = {
-                    en_us = 'Tessellation "N-Sided Nirvana"',
-                    zh_cn = '密铺「N边的涅槃」'
-                },
-            },
-            -- level 7
             [33] = {
                 quote = {
                     en_us = 'Oh no, I can\'t find the direction home! Can compass work in this world?',
@@ -957,18 +960,17 @@ return {
                     zh_cn = '要靠近，要绕圈，还是要远离？',
                 }
             },
-            [77] = {
-                spellName = {
-                    en_us = 'Fire Sign "Hephaestus Pyrotechnics"',
-                    zh_cn = '火符「赫淮斯托斯的烟火」',
-                },
+            -- level 8
+            [63] = {
                 quote = {
-                    en_us =
-                    'Pyrotechnics, huh? It\'s like a fireworks show where every single spark suddenly decides it really hates me.',
-                    zh_cn = '烟火吗？好似烟花表演，但每一颗火星都真的讨厌我。',
+                    en_us = 'Ehh, how did I become the bob of this clock? Dizzying.',
+                    zh_cn = '诶，我怎么成了这个钟的摆锤？头好晕。',
+                },
+                spellName = {
+                    en_us = 'Conjuring "The Clock that Doesn\'t Tell Time"',
+                    zh_cn = '奇术「不报时的钟表」',
                 },
             },
-            -- level 8
             [81] = {
                 spellName = {
                     en_us = 'Secret Ceremony "Dark Butoh of the Back Door"',
@@ -1029,26 +1031,6 @@ return {
                     zh_cn = '链条向外弯曲。这是在展示她的力量吗？',
                 }
             },
-            [90] = {
-                spellName = {
-                    en_us = 'Heavy Sign "Weight of a Thousand Fathoms"',
-                    zh_cn = '重符「千寻之重」',
-                },
-                quote = {
-                    en_us = 'The huge anchor explodes into countless pieces. Must guide it to the deep corners of the area.',
-                    zh_cn = '巨大的锚爆炸成无数碎片。必须引导它到区域的深处。',
-                }
-            },
-            [91] = {
-                spellName = {
-                    en_us = 'Drowning Sign "Double Vortex"',
-                    zh_cn = '溺符「双重漩涡」',
-                },
-                quote = {
-                    en_us = 'The water is swirling around, and I can\'t find the way out. It\'s like being trapped in a whirlpool.',
-                    zh_cn = '水在旋转，我找不到出路。就像被困在漩涡中一样。',
-                }
-            },
             [110] = {
                 spellName = {
                     en_us = 'Wave Sign "Eigenstate in the Quantum Well"',
@@ -1098,6 +1080,26 @@ return {
                 spellName = {
                     en_us = 'Atomic Fire "Nuclear Experiment Expansion"',
                     zh_cn = '核热「核反应扩大试验」',
+                },
+            },
+            [67] = {
+                quote = {
+                    en_us = 'Seems like Keiki\'s power can be adapted to jewelry. Will she consider this?',
+                    zh_cn = '看来袿姬的能力可以用来制作首饰，她会考虑一下吗？',
+                },
+                spellName = {
+                    en_us = 'Polygon Shape "Facet Sculpting Art"',
+                    zh_cn = '多边形「刻面造形术」'
+                },
+            },
+            [68] = {
+                quote = {
+                    en_us = 'Lines from extremely far away converge to me.',
+                    zh_cn = '来自远方的直线到达我这里。',
+                },
+                spellName = {
+                    en_us = 'Tessellation "N-Sided Nirvana"',
+                    zh_cn = '密铺「N边的涅槃」'
                 },
             },
             -- level 10
@@ -1212,6 +1214,26 @@ return {
                     zh_cn = '禁弹「边界破碎」',
                 },
             },
+            [65] = {
+                quote = {
+                    en_us = 'A real physicist here. What a clever trick to capture my shots.',
+                    zh_cn = '货真价实的物理学家。捕捉我的子弹，真是个聪明的把戏。',
+                },
+                spellName = {
+                    en_us = 'Capture "Fabry-Pérot Cavity"',
+                    zh_cn = '捕获「法布里-佩罗腔」'
+                },
+            },
+            [66] = {
+                quote = {
+                    en_us = 'Monochrome light makes the mandala kind of bland. A limitation of interference pattern?',
+                    zh_cn = '单色光让曼荼罗有点单调。这是干涉图案的局限性吗？',
+                },
+                spellName = {
+                    en_us = 'Interference "Wavefront Mandala"',
+                    zh_cn = '干涉「波前曼荼罗」'
+                },
+            },
             -- boss spellcards
             [101] = {
                 spellName = {
@@ -1296,6 +1318,16 @@ return {
                 spellName = {
                     en_us = 'Magic Sign "Explosive Marionette"',
                     zh_cn = '魔符「爆裂玩偶」',
+                },
+            },
+            [64] = {
+                quote = {
+                    en_us = 'Junko must have improved her gardening skills. No longer only lilies.',
+                    zh_cn = '纯狐一定是提高了她的园艺技能。不再只有百合了。',
+                },
+                spellName = {
+                    en_us = '"Sterile Flowers of Murderous Intent"',
+                    zh_cn = '「杀意的徒花」',
                 },
             },
             [122] = {

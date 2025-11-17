@@ -77,7 +77,7 @@ return {
                 end
                 if en.frame%300==0 then
                     SFX:play('enemyPowerfulShot')
-                    Effect.Larger{sprite=BulletSprites.shockwave.gray,x=en.x,y=en.y,animationFrame=60}
+                    Effect.Larger{sprite=BulletSprites.shockwave.gray,x=en.x,y=en.y,animationFrame=30}
                     Event.LoopEvent{
                         obj=en,
                         period=1,times=120,

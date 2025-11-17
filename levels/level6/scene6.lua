@@ -52,6 +52,7 @@ return {
                         SFX:play('enemyPowerfulShot',true,0.7)
                         local large=Circle{x=self.x,y=self.y,direction=Shape.to(self.x,self.y,player.x,player.y),speed=0,radius=2,lifeFrame=1000,sprite=BulletSprites.anchor}
                         large.invincible=true
+                        large.forceDrawLargeSprite=true
                         Event.EaseEvent{
                             obj=large,aimTable=large,aimKey='speed',aimValue=160,easeFrame=120
                         }
