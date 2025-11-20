@@ -827,6 +827,10 @@ return {
                     en_us = 'Scatter Sign "Phantom Mirage"',
                     zh_cn = '散符「幻影蜃景」',
                 },
+                hint = {
+                    en_us = 'In the last phase, grazing the "single" bullets can accumulate much charge for flash bomb.',
+                    zh_cn = '在最后阶段，擦过“单个”子弹可以为瞬雷积累大量能量。',
+                }
             },
             [62] = {
                 quote = {
@@ -837,6 +841,10 @@ return {
                     en_us = 'Illusion Light "Moon of Void"',
                     zh_cn = '幻光「虚无之月」',
                 },
+                hint = {
+                    en_us = 'The speed of bullets from the figures are related to figures\' sizes.',
+                    zh_cn = '来自雾团的子弹速度与雾团的大小有关。',
+                }
             },
             [33] = {
                 quote = {
@@ -847,6 +855,10 @@ return {
                     en_us = 'Turnabout "Change Orientation"',
                     zh_cn = '逆转「方向变换」',
                 },
+                hint = {
+                    en_us = 'I should not be interrupted when the orientation is changing.',
+                    zh_cn = '在方向变换时我不应该被干扰。',
+                }
             },
             [34] = {
                 quote = {
@@ -858,6 +870,10 @@ return {
                     en_us = 'Turnabout "Change Projection"',
                     zh_cn = '逆转「投影变换」',
                 },
+                hint = {
+                    en_us = 'Try to find a circling route where bullets always come vertically.',
+                    zh_cn = '尝试找到子弹总是竖直飞来的环形移动路线。',
+                }
             },
             [45] = {
                 quote = {
@@ -868,6 +884,10 @@ return {
                     en_us = 'Tiger Sign "Famished Tiger"',
                     zh_cn = '寅符「饿虎扑食」',
                 },
+                hint = {
+                    en_us = 'Switch to opposite side after each pounce seems good.',
+                    zh_cn = '每次扑击后换到对面似乎不错。',
+                }
             },
             [58] = {
                 spellName = {
@@ -875,9 +895,13 @@ return {
                     zh_cn = '光符「净化之光」',
                 },
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'So messy light rays! Does not feel like purification at all.',
+                    zh_cn = '如此杂乱的光线！根本没有净化的感觉。',
                 },
+                hint = {
+                    en_us = 'Rays go in straight lines. Find a hyperbolic model that keeps lines straight, can help predicting their movement.',
+                    zh_cn = '光沿直线前进。找到一个能保持直线的双曲模型，可以帮助预测它们的运动。',
+                }
             },
             [55] = {
                 spellName = {
@@ -888,6 +912,10 @@ return {
                     en_us = 'The orbit is ellipse, or more like rotating ellipse, or what?',
                     zh_cn = '这轨道是椭圆，还是更像旋转的椭圆，或者说是什么？',
                 },
+                hint = {
+                    en_us = 'Remove the big star that generates smaller stars can reduce the difficulty significantly.',
+                    zh_cn = '消除产生小星星的大星星可以降低难度。',
+                }
             },
             [56] = {
                 spellName = {
@@ -898,7 +926,12 @@ return {
                     en_us = 'Earth would be destroyed if these meteors are real.',
                     zh_cn = '如果这些流星是真的，地球就会被毁灭的。',
                 },
+                hint = {
+                    en_us = "In the last phase, I must move away from the shooter quickly.",
+                    zh_cn = '在最后阶段，我必须迅速远离发射器。',
+                }
             },
+            -- level 8
             [71] = {
                 quote = {
                     en_us = 'The world is full of her "sword spirit". I can feel the power of her sword.',
@@ -929,38 +962,6 @@ return {
                     zh_cn = '业缚剑「宿业断罪斩」',
                 },
             },
-            [74] = {
-                spellName = {
-                    en_us = 'Barrier "Flickering of the Real and Reflected"',
-                    zh_cn = '结界「物与像的明灭」',
-                },
-                quote = {
-                    en_us = 'Under barrier\'s interference, it\'s like trying to watch a corrupted feed.',
-                    zh_cn = '在结界的干扰下，就像试图观看损坏的信号。',
-                },
-            },
-            [75] = {
-                spellName = {
-                    en_us = '"Instant Pierce Barrier - Impregnable Fortress"',
-                    zh_cn = '「隧穿结界　-金城铁壁-」'
-                },
-                quote = {
-                    en_us =
-                    'Stationary bullets can warp through the space around me, and that\'s the way to penetrate inside. The final fortress is too large, though.',
-                    zh_cn = '静止的子弹可以穿越我周围的空间，这就是穿透到内部的方式。不过最终的堡垒太大了。',
-                },
-            },
-            [76] = {
-                spellName = {
-                    en_us = 'Conjuring "Pendulum of Illusory Speed"',
-                    zh_cn = '奇术「幻速的振子」',
-                },
-                quote = {
-                    en_us = 'To get close, to circle around, or to get away?',
-                    zh_cn = '要靠近，要绕圈，还是要远离？',
-                }
-            },
-            -- level 8
             [63] = {
                 quote = {
                     en_us = 'Ehh, how did I become the bob of this clock? Dizzying.',
@@ -980,6 +981,16 @@ return {
                     en_us = 'She is moving so frantically, and the danmaku is chaotic too. Should\'t Butoh be more elegant?',
                     zh_cn = '她的动作如此疯狂，弹幕也很混乱。舞踏不应该更优雅吗？',
                 },
+            },
+            [76] = {
+                spellName = {
+                    en_us = 'Conjuring "Pendulum of Illusory Speed"',
+                    zh_cn = '奇术「幻速的振子」',
+                },
+                quote = {
+                    en_us = 'To get close, to circle around, or to get away?',
+                    zh_cn = '要靠近，要绕圈，还是要远离？',
+                }
             },
             [82] = {
                 spellName = {
@@ -1194,6 +1205,27 @@ return {
                 }
             },
             -- level 11
+            [74] = {
+                spellName = {
+                    en_us = 'Barrier "Flickering of the Real and Reflected"',
+                    zh_cn = '结界「物与像的明灭」',
+                },
+                quote = {
+                    en_us = 'Under barrier\'s interference, it\'s like trying to watch a corrupted feed.',
+                    zh_cn = '在结界的干扰下，就像试图观看损坏的信号。',
+                },
+            },
+            [75] = {
+                spellName = {
+                    en_us = '"Instant Pierce Barrier - Impregnable Fortress"',
+                    zh_cn = '「隧穿结界　-金城铁壁-」'
+                },
+                quote = {
+                    en_us =
+                    'Stationary bullets can warp through the space around me, and that\'s the way to penetrate inside. The final fortress is too large, though.',
+                    zh_cn = '静止的子弹可以穿越我周围的空间，这就是穿透到内部的方式。不过最终的堡垒太大了。',
+                },
+            },
             [35] = {
                 quote = {
                     en_us = 'Keep my speed up, and catch the right time to cross tracks!',
@@ -2344,7 +2376,7 @@ return {
                 zh_cn = '哦……原来那些闪光的瓷砖，是为了搞一个迪斯科舞厅啊。',
             },
             whoAreUnderTheLights = {
-                en_us = 'And who are you two under the lights?',
+                en_us = 'And who are the two under the lights?',
                 zh_cn = '灯下面的那两个人是谁？',
             },
             anotherAudienceMember = {

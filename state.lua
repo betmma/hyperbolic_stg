@@ -1759,7 +1759,7 @@ G.followModeTransform=function(self, getParams)
     if G.UseHypRotShader then
         return 0,0,1
     end
-    local screenWidth, screenHeight = love.graphics.getDimensions()
+    local screenWidth, screenHeight = WINDOW_WIDTH, WINDOW_HEIGHT
     local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
     if G.viewMode.viewOffset then
         wantedX=wantedX+G.viewMode.viewOffset.x
@@ -1778,7 +1778,7 @@ G.followModeTransform=function(self, getParams)
     -- G.screenRect=screenRect
 end
 G.antiFollowModeTransform=function(self)
-    local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
+    local scale=(WINDOW_HEIGHT/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
     local screenWidth, screenHeight = love.graphics.getDimensions()
     local wantedX, wantedY=screenWidth/2,screenHeight/2 -- after translation and scaling, the position of the player (default is center of the screen)
     if G.viewMode.viewOffset then

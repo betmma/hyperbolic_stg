@@ -105,7 +105,7 @@ return {
         player.testRotate=function (player,angle,restore)
             if not restore then
                 love.graphics.push()
-                local scale=(love.graphics.getHeight()/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
+                local scale=(WINDOW_HEIGHT/2-Shape.axisY)/(G.viewMode.object.y-Shape.axisY)
                 local theta=player.naturalDirectionSpecial
                 love.graphics.translate(player.x,player.y)
                 love.graphics.rotate(theta)

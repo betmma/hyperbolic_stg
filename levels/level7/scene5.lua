@@ -6,19 +6,19 @@ return {
     make=function()
         G.levelRemainingFrame=5400
         Shape.removeDistance=10000000
-        local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
-        local player=Player{x=400,y=500}
+        local en=Enemy{x=400,y=3900,mainEnemy=true,maxhp=7200}
+        local player=Player{x=400,y=5900}
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
         local poses={}
         for i = 1, 12, 1 do
-            local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
+            local nx,ny=Shape.rThetaPos(400,3900,100,math.pi/6*(i-.5))
             table.insert(poses,{nx,ny})
         end
         player.border=PolyLine(poses)
         G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
-        local borderCenter=Shape{x=400,y=300,lifeFrame=99999999}
+        local borderCenter=Shape{x=400,y=3900,lifeFrame=99999999}
         Event.LoopEvent{
             obj=en,
             period=1,
@@ -79,8 +79,7 @@ return {
                                 local num=hpp<0.4 and 150 or 90
                                 BulletSpawner{x=en.x,y=en.y,period=1,frame=0,lifeFrame=2,bulletNumber=num,bulletSpeed=70,bulletLifeFrame=500,angle=angle,bulletSprite=BulletSprites.scale.yellow,highlight=true,bulletEvents={
                                     function(cir,args,self)
-                                        cir.x=cir.x*math.eval(1,0.04)
-                                        cir.y=cir.y*math.eval(1,0.04)
+                                        cir.x,cir.y=Shape.rThetaPos(cir.x,cir.y,math.eval(4,4),math.eval(0,999))
                                         local rand=math.eval(0,1)
                                         local dang=rand^3*math.pi*(hpp<0.4 and 4 or 2)
                                         cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)+dang

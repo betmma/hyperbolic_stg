@@ -62,6 +62,9 @@ return {
             }
         end
         t=0
+        local function reduceTransparency(self)
+            self.spriteTransparency=math.max(self.spriteTransparency-0.02,0)
+        end
         local bullets={}
         a=BulletSpawner{x=400,y=300,period=300,frame=290,lifeFrame=10000,bulletNumber=2,bulletSpeed=80,bulletLifeFrame=1200,angle='0',range=math.pi*2,spawnSFXVolume=0.5,bulletSprite=BulletSprites.bigRound.red,highlight=true,bulletSize=4,invincible=true,bulletEvents={
             function (cir,args,self)
@@ -109,7 +112,8 @@ return {
                     period=1,
                     executeFunc=function()
                         -- create a white fog effect
-                        Circle{x=cir.x,y=cir.y,direction=math.pseudoRandom(cir)*math.pi*2,speed=math.pseudoRandom(cir,2)*60,sprite=BulletSprites.fog.gray,lifeFrame=30,spriteTransparency=0.23-.03*hpLevel,radius=cir.radius*hpLevel,highlight=true,safe=true}
+                        local cir=Circle{x=cir.x,y=cir.y,direction=math.pseudoRandom(cir)*math.pi*2,speed=math.pseudoRandom(cir,2)*60,sprite=BulletSprites.fog.gray,lifeFrame=30,spriteTransparency=0.46-.06*hpLevel,radius=cir.radius*hpLevel,highlight=true,safe=true,extraUpdate=reduceTransparency}
+                        cir.forceDrawNormalSprite=true
                     end
                 }
             end

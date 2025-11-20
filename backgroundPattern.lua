@@ -580,7 +580,7 @@ function plasmaGlobe:new(args)
     self.rotationSpeed = math.pi / 1.5 -- Radians per second, adjust for sensitivity
     self.paramSendFunction=function(self,shader)
         shader:send("iTime", love.timer.getTime())
-        shader:send("iResolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+        shader:send("iResolution", {WINDOW_WIDTH, WINDOW_HEIGHT})
         
         shader:send("u_camAngleX", self.cameraAngleX)
         shader:send("u_camAngleY", self.cameraAngleY)
@@ -619,7 +619,7 @@ function Fractal:new(args)
     local randomOffset=math.random(0,1000)
     self.paramSendFunction=function(self,shader)
         shader:send("iTime", love.timer.getTime()/3+randomOffset)
-        shader:send("iResolution", {love.graphics.getWidth(), love.graphics.getHeight()})
+        shader:send("iResolution", {WINDOW_WIDTH, WINDOW_HEIGHT})
     end
 end
 BackgroundPattern.Fractal=Fractal

@@ -57,7 +57,7 @@ end
 local ShapeDrawAllRef=Shape.drawAll
 function Shape:drawAll()
     -- if self==Shape then
-    --     love.graphics.line(0,Shape.axisY,love.graphics.getWidth(),Shape.axisY) -- draw the axis
+    --     love.graphics.line(0,Shape.axisY,WINDOW_WIDTH,Shape.axisY) -- draw the axis
     -- end
     ShapeDrawAllRef(self)
 end

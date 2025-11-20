@@ -52,7 +52,7 @@ return {
                             elseif color=='blue' then
                                 direction=Shape.to(cir.x,cir.y,player.x,player.y)
                             end
-                            local laser=Laser{x=cir.x,y=cir.y,direction=direction,speed=30,sprite=BulletSprites.laser[color],lifeFrame=25,frequency=3,smoothFrame=3,bulletEvents={
+                            local laser=Laser{x=cir.x,y=cir.y,radius=2,direction=direction,speed=30,sprite=BulletSprites.laser[color],lifeFrame=25,frequency=3,smoothFrame=3,bulletEvents={
                                 function(laser,args,self)
                                     Event.EaseEvent{
                                         obj=laser,
@@ -63,7 +63,7 @@ return {
                                     }
                                 end
                             }}
-                            local laser2=Laser{x=cir.x,y=cir.y,direction=direction,speed=300,sprite=BulletSprites.laser[color],lifeFrame=5,warningFrame=5,bulletEvents={
+                            local laser2=Laser{x=cir.x,y=cir.y,radius=4,direction=direction,speed=300,sprite=BulletSprites.laserDark[color],lifeFrame=5,warningFrame=5,bulletEvents={
                                 function(laser,args,self)
                                     if laser.speed<100 then
                                         Event.EaseEvent{
@@ -107,13 +107,13 @@ return {
                     a.bulletNumber=math.ceil(15*(3-2*curPercent))
                     a.range=math.pi/75*a.bulletNumber
                 elseif hpLevel==2 then
-                    a.spawnEvent.period=100
+                    a.spawnEvent.period=120
                     a.bulletSprite=BulletSprites.rice.blue
                     a.range=math.pi*2
                     a.angle='0+999'
                     a.bulletNumber=math.ceil(5*(3-2*curPercent))
                 else
-                    a.spawnEvent.period=20
+                    a.spawnEvent.period=50
                     local num=a.spawnEvent.executedTimes
                     if num%2==0 then
                         a.bulletNumber=math.ceil(2*(3-2*curPercent))

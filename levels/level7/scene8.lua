@@ -33,7 +33,7 @@ return {
                 cir.direction=math.eval(0,999)
                 local count=0
                 local hpLevel=en:getHPLevel()
-                local range=hpLevel==1 and 30 or hpLevel==2 and 15 or 5
+                local range=hpLevel==1 and 60 or hpLevel==2 and 15 or 5
                 if hpLevel==3 then
                     cir.direction=Shape.to(cir.x,cir.y,player.x,player.y)
                 end

@@ -3,7 +3,7 @@
 //https://opensource.org/licenses/mit-license.php
 
 extern number iTime;      // Provided by Lua: love.timer.getTime()
-extern vec2 iResolution;  // Provided by Lua: vec2(love.graphics.getWidth(), love.graphics.getHeight())
+extern vec2 iResolution;  // Provided by Lua: vec2(WINDOW_WIDTH, WINDOW_HEIGHT)
 
 const float PI = 3.14159265359; // acos(-1.0) also works
 
