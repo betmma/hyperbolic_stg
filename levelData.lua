@@ -276,6 +276,9 @@ levelData.getDefaultBackground=function(level,scene)
     if level>=3 and level<=4 then
         return BackgroundPattern.H3Terrain
     end
+    if level>=5 and level<=7 then
+        return BackgroundPattern.YoukaiMountain
+    end
     if level>=8 and level<=9 then
         return function() return BackgroundPattern.Honeycomb{inverse=true} end
     end

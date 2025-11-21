@@ -1,6 +1,7 @@
 float cosh(float x) { return (exp(x) + exp(-x)) / 2.0; }
 float sinh(float x) { return (exp(x) - exp(-x)) / 2.0; }
 float acosh(float x) { if (x < 1.0) return 0.0; return log(x + sqrt(x * x - 1.0)); } 
+float asinh(float x) { return log(x + sqrt(x * x + 1.0)); }
 const float PI = 3.1415926535;
 const float EPSILON = 1e-7;
 

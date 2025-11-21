@@ -836,4 +836,22 @@ function Stage:new(args)
     end
 end
 BackgroundPattern.Stage=Stage
+
+local youkaiMountainShader=ShaderScan:load_shader('shaders/backgrounds/youkaiMountain.glsl')
+local YoukaiMountain=H3Terrain:extend()
+function YoukaiMountain:new(args)
+    YoukaiMountain.super.new(self,args)
+    self.cam_translation={0,0,0.5}
+    self.camMoveRange={0.8,0.8}
+    self.cam_pitch=-0.9
+    self.shader=youkaiMountainShader
+    self.paramSendFunction=function(self,shader)
+        shader:send("time", self.frame/60)
+        local trans=self.cam_translation
+        local pitch,yaw,roll=self.cam_pitch,self.cam_yaw,self.cam_roll
+        local mat4=build_lorentz_mat4(pitch, yaw, roll, trans)
+        shader:send("cam_mat4", mat4)
+    end
+end
+BackgroundPattern.YoukaiMountain=YoukaiMountain
 return BackgroundPattern
