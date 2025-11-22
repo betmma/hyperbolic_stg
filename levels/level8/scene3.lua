@@ -86,10 +86,22 @@ return {
                             }
                         end
                     end
+                    cir.safe=true
                     Event.DelayEvent{
                         obj=cir,
                         delayFrame=10,
                         executeFunc=function()
+                            if en:getHPLevel()<3 then
+                                cir.safe=false
+                            else
+                                Event.DelayEvent{
+                                    obj=cir,
+                                    delayFrame=10,
+                                    executeFunc=function()
+                                        cir.safe=false
+                                    end
+                                }
+                            end
                             Event.EaseEvent{
                                 obj=cir,
                                 aimTable=cir,

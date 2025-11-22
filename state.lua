@@ -927,19 +927,13 @@ G={
                     -- self:removeAll()
                     self:switchState(self.STATES.PAUSE)
                 elseif (isPressed('r')or isPressed('w')) and (not player or player.frame>10)then
-                    if self.replay then -- if in "replay" replay "replay" (why so strange)
-                        self:leaveLevel()
-                        ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
-                    else
-                        self:leaveLevel()
-                        self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
-                    end
+                    self:retryLevel()
                 elseif isPressed('q')then
-                    if self.viewMode.mode==self.VIEW_MODES.NORMAL and player then
-                        self.viewMode.mode=self.VIEW_MODES.FOLLOW
+                    if self.viewMode.mode==self.CONSTANTS.VIEW_MODES.NORMAL and player then
+                        self.viewMode.mode=self.CONSTANTS.VIEW_MODES.FOLLOW
                         self.viewMode.object=player
-                    elseif self.viewMode.mode==self.VIEW_MODES.FOLLOW then
-                        self.viewMode.mode=self.VIEW_MODES.NORMAL
+                    elseif self.viewMode.mode==self.CONSTANTS.VIEW_MODES.FOLLOW then
+                        self.viewMode.mode=self.CONSTANTS.VIEW_MODES.NORMAL
                     end
                 elseif (player and player.keyIsPressed('x') or isPressed('x')) and (player and player.unlockDiskModels==true or G.replay) then -- note that this A and B or C clause is not equal to B if A else C, since B can be false. in replay mode pressing x still works
                     G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.CONSTANTS.HYPERBOLIC_MODELS_COUNT
@@ -1669,6 +1663,15 @@ G.leaveLevel=function(self)
     end
     self.lastLevel={level,scene}
     self:_incrementTryCount()
+end
+G.retryLevel=function(self)
+    if self.replay then -- if in "replay" replay "replay" (why so strange)
+        self:leaveLevel()
+        ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
+    else
+        self:leaveLevel()
+        self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+    end
 end
 G._incrementTryCount=function(self)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel

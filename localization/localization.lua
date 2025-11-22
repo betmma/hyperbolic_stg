@@ -941,25 +941,37 @@ return {
                     en_us = 'Soul-Body Sword "Slash of Echoing Ghost Blade"',
                     zh_cn = '魂魄剑「回响灵刃斩」',
                 },
+                hint = {
+                    en_us = 'Find a fixed way to navigate through the dense sword spirits.',
+                    zh_cn = '找到固定的路线穿过密集的剑气。',
+                }
             },
             [72] = {
                 quote = {
-                    en_us = 'Follow the rhythm... do\'nt tell me the idea is from dance pad.',
+                    en_us = 'Follow the rhythm... don\'t tell me the idea is from dance pad.',
                     zh_cn = '跟紧节奏……难道这个创意是来自跳舞毯？',
                 },
                 spellName = {
                     en_us = 'Instant Sword "Fleeting Crossing Slash"',
                     zh_cn = '刹那剑「无常横断斩」',
                 },
+                hint = {
+                    en_us = 'Good memory is a must here. Also, a quick mind to find path through the bullet walls.',
+                    zh_cn = '良好的记忆力是必不可少的。此外，还需要快速的思维来找到穿过弹链的路径。',
+                }
             },
             [73] = {
-                quote = {
-                    en_us = 'The border corners are like horns, much deeper than I thought and provide space to escape.',
-                    zh_cn = '边界的角落是号角形的，比我想象的要深得多，提供了逃跑的空间。',
-                },
                 spellName = {
                     en_us = 'Karmic Binding Sword "Karmic Retribution Slash"',
                     zh_cn = '业缚剑「宿业断罪斩」',
+                },
+                quote = {
+                    en_us = 'The sword energy extends far and vanishes slowly. Slight oversight will leave me trapped.',
+                    zh_cn = '剑气延伸得很远，消失得很慢。稍有疏忽就会让我陷入困境。',
+                },
+                hint = {
+                    en_us = 'The border corners are much deeper than I thought and provide space to escape.',
+                    zh_cn = '边界的角落比我想象的要深得多，提供了逃跑的空间。',
                 },
             },
             [63] = {
@@ -1757,6 +1769,16 @@ return {
             description = {
                 en_us = 'Unlock Poincare Disk and Klein Disk models. Press X in level to switch model.',
                 zh_cn = '解锁庞加莱圆盘和克莱因圆盘模型。在关卡中按X键切换模型。',
+            },
+        },
+        instantRetry = {
+            name = {
+                en_us = 'Instant Retry',
+                zh_cn = '即时重开',
+            },
+            description = {
+                en_us = 'When hurt, instantly retry the scene without pressing any key. For the lazy perfectionist!',
+                zh_cn = '被弹时无需按键立即重开场景。为懒惰的完美主义者准备！',
             },
         }
     },

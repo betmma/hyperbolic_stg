@@ -114,6 +114,8 @@ function Player:new(args)
     self.shootTransparency=0.1
     self.shootInterval=3
     self.canShootDuringInvincible=false
+    -- instant retry when hurt upgrade
+    self.instantRetry=false
 
     self.moveMode=args.moveMode or Player.moveModes.Euclid
     self.dieShockwaveRadius=2
@@ -625,6 +627,11 @@ EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 -- it's hit effect, not hp = 0 effect
 function Player:hitEffect(damage)
     if self.invincibleTime>0 then
+        return
+    end
+    if self.instantRetry and not G.replay then -- G.replay should not be true: when instant retry is on, there is no chance to save replay if player is hurt, and saved replay must be perfect completion
+        SFX:play('dead',true) -- still play dead sound for hint
+        G:retryLevel()
         return
     end
     damage=damage or 1

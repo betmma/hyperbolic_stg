@@ -248,6 +248,16 @@ local data = {
             player.unlockDiskModels=true
         end,
         spritePos={x=2,y=2}
+    },
+    instantRetry={
+        name='Instant Retry',
+        description='When hurt, instantly retry the scene without pressing any key. For the perfectionist lazy player!',
+        cost=20,
+        executeFunc=function(player)
+            player= player or Player.objects[1]
+            player.instantRetry=true
+        end,
+        spritePos={x=3,y=2}
     }
 }
 upgrades.data=data
@@ -275,6 +285,7 @@ local nodes = {
     clairvoyance =   {connect = {}, pos = {x=3, y=5}, requires = {'fixedHPDisplay'} },
     diskModels =     {connect = {}, pos = {x=4, y=5}, requires = {'clairvoyance'} },
     diagonalMover =  {connect = {}, pos = {x=2, y=6}, requires = {'fixedHPDisplay'} },
+    instantRetry =   {connect = {}, pos = {x=3, y=6}, requires = {'clairvoyance'} },
 }
 
 upgrades.nodes = nodes
