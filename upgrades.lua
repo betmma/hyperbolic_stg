@@ -72,7 +72,7 @@ local data = {
         executeFunc=function(player)
             player= player or Player.objects[1]
             player.enableFlashbomb=true
-            player.grazeCountForFlashbomb=100
+            player.grazeReqForFlashbomb=100
             player.flashbombWidth=5
         end,
         spritePos={x=4,y=0}
@@ -258,6 +258,17 @@ local data = {
             player.instantRetry=true
         end,
         spritePos={x=3,y=2}
+    },
+    emergencyBomb={
+        name='Emergency Bomb',
+        description='Press C to use flash bomb without filling the graze bar, but each graze missing costs 0.01 HP. It counts as being hit.',
+        cost=60,
+        executeFunc=function(player)
+            player= player or Player.objects[1]
+            player.emergencyBomb=true
+            player.emergencyBombCostPerGraze=0.01
+        end,
+        spritePos={x=4,y=2}
     }
 }
 upgrades.data=data
@@ -271,6 +282,7 @@ local nodes = {
     unyielding =  {connect = {}, pos = {x=2, y=2}, requires = {'regenerate'} },
     acrobat =     {connect = {}, pos = {x=3, y=1}, requires = {'regenerate'} },
     flashbomb =   {connect = {}, pos = {x=4, y=1}, requires = {'acrobat'} },
+    emergencyBomb={connect = {}, pos = {x=4, y=2}, requires = {'flashbomb'} },
     vortex =      {connect = {}, pos = {x=5, y=1}, requires = {'flashbomb'} },
     homingShot =  {connect = {}, pos = {x=1, y=3}, requires = {} },
     sideShot =    {connect = {}, pos = {x=3, y=3}, requires = {'homingShot'} },

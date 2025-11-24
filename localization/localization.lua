@@ -1800,7 +1800,17 @@ return {
                 en_us = 'When hurt, instantly retry the scene without pressing any key. For the lazy perfectionists!',
                 zh_cn = '被弹时无需按键立即重开场景。为懒惰的完美主义者准备！',
             },
-        }
+        },
+        emergencyBomb = {
+            name = {
+                en_us = 'Emergency Bomb',
+                zh_cn = '紧急瞬雷',
+            },
+            description = {
+                en_us = 'Press C to use flash bomb without filling the graze bar, but each graze missing costs 0.01 HP. Using this counts as being harmed so no perfect completion.',
+                zh_cn = '按C键在擦弹条未满时使用瞬雷，但每缺少1次擦弹扣除0.01生命值。使用后不计为无伤通过。',
+            },
+        },
     },
     ---@type table<string, NicknameLocalization>
     nickname = {

@@ -104,6 +104,7 @@ function Player:new(args)
     self.hpRegen=0
     self.grazeHpRegen=0
     self.grazeCount=0
+    self.grazeCountForFlashbomb=0
     self.hurt=false --to check perfect completion
     self.damageTaken=0
     self.invincibleTime=0
@@ -125,7 +126,7 @@ function Player:new(args)
     if self.replaying then
         self:setReplaying()
     end
-    self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32,x=64}
+    self.key2Value={up=1,right=2,down=4,left=8,lshift=16,z=32,x=64,c=128}
     self.keyEverPressed={} -- to check restriction nicknames like no focus
     self.keyIsDown=love.keyboard.isDown
     self.keyIsPressed=isPressed -- check if current frame is the first frame that key be pressed down. only used for switching hyperbolic model (X key)
@@ -181,7 +182,12 @@ function Player:update(dt)
 
     self:calculateMovingTransitionSprite()
     self:calculateFocusPointTransparency()
-    self:calculateFlashbomb()
+    if self.enableFlashbomb then
+        self:calculateFlashbomb()
+    end
+    if self.emergencyBomb and self.keyIsPressed('c') then
+        self:releaseEmergencyBomb()
+    end
     self.grazeCountThisFrame=0
 
 end
@@ -593,7 +599,7 @@ function Player:drawText()
         love.graphics.setColor(1,1,1)
         love.graphics.rectangle("line",x0,y0,100,10)
         love.graphics.setColor(1,0.2,0.5)
-        love.graphics.rectangle("fill",x0,y0,100*(self.grazeCount%self.grazeCountForFlashbomb)/self.grazeCountForFlashbomb,10)
+        love.graphics.rectangle("fill",x0,y0,100*(self.grazeCountForFlashbomb%self.grazeReqForFlashbomb)/self.grazeReqForFlashbomb,10)
         love.graphics.setColor(color[1],color[2],color[3])
     end
     SetFont(12)
@@ -621,15 +627,17 @@ function Player:grazeEffect(amount)
     -- grazeHpRegen
     self.hp=math.clamp(self.hp+self.grazeHpRegen*amount,0,self.maxhp)
     self.grazeCount=self.grazeCount+amount
+    self.grazeCountForFlashbomb=self.grazeCountForFlashbomb+amount
 end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 
 -- it's hit effect, not hp = 0 effect
-function Player:hitEffect(damage)
-    if self.invincibleTime>0 then
+-- isDirect: if true, damage is directly deducted from hp without considering invincibility time, and will not trigger invincibility time and shockwave effect.
+function Player:hitEffect(damage,isDirect)
+    if self.invincibleTime>0 and not isDirect then
         return
     end
-    if self.instantRetry and not G.replay then -- G.replay should not be true: when instant retry is on, there is no chance to save replay if player is hurt, and saved replay must be perfect completion
+    if self.instantRetry and not G.replay then -- G.replay should not be true: when instant retry is on, there is no chance to save replay if player is hurt, and saved replay must be perfect completion. if it's an old replay broken it could happen
         SFX:play('dead',true) -- still play dead sound for hint
         G:retryLevel()
         return
@@ -639,11 +647,13 @@ function Player:hitEffect(damage)
     self.hp=self.hp-damage
     self.hurt=true
     self.dieFrame=self.frame
-    self.invincibleTime=self.invincibleTime+1
     if self.hp<=0 then
         G:lose()
     end
-    Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
+    if not isDirect then
+        self.invincibleTime=self.invincibleTime+1
+        Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
+    end
     SFX:play('dead',true)
 end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,Player.hitEffect)
@@ -681,15 +691,28 @@ function Player:invertShaderEffect()
 end
 
 function Player:calculateFlashbomb()
-    if not self.enableFlashbomb then
+    if self.grazeCountForFlashbomb>=self.grazeReqForFlashbomb then
+        self.grazeCountForFlashbomb=0
+        self:releaseFlashbomb()
+    end
+end
+
+function Player:releaseEmergencyBomb()
+    local missingGrazes=self.grazeReqForFlashbomb - self.grazeCountForFlashbomb
+    if missingGrazes<0 then -- shouldn't happen
         return
     end
+    self.grazeCountForFlashbomb=0
+    local deductHP=missingGrazes*self.emergencyBombCostPerGraze
+    EventManager.post(EventManager.EVENTS.PLAYER_HIT,self,deductHP,true) -- direct damage
+    self:releaseFlashbomb()
+end
+
+function Player:releaseFlashbomb()
     local count=self.flashbombCount or 1
-    if self.grazeCount>=count*self.grazeCountForFlashbomb then
-        self.flashbombCount=count+1
-        SFX:play('enemyPowerfulShot',true,0.8)
-        Effect.FlashBomb{x=self.x,y=self.y,direction=self.naturalDirection-math.pi/2}
-    end
+    self.flashbombCount=count+1
+    SFX:play('enemyPowerfulShot',true,0.8)
+    Effect.FlashBomb{x=self.x,y=self.y,direction=self.naturalDirection-math.pi/2}
 end
 
 return Player
