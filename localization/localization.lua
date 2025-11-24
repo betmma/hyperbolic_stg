@@ -983,16 +983,10 @@ return {
                     en_us = 'Conjuring "The Clock that Doesn\'t Tell Time"',
                     zh_cn = '奇术「不报时的钟表」',
                 },
-            },
-            [81] = {
-                spellName = {
-                    en_us = 'Secret Ceremony "Dark Butoh of the Back Door"',
-                    zh_cn = '秘仪「后户的暗黑舞踏」',
-                },
-                quote = {
-                    en_us = 'She is moving so frantically, and the danmaku is chaotic too. Should\'t Butoh be more elegant?',
-                    zh_cn = '她的动作如此疯狂，弹幕也很混乱。舞踏不应该更优雅吗？',
-                },
+                hint = {
+                    en_us = 'Stay on the left or right side to minimize swinging\'s effect on dodging.',
+                    zh_cn = '待在左侧或右侧以减少摆动对躲避的影响。',
+                }
             },
             [76] = {
                 spellName = {
@@ -1002,27 +996,11 @@ return {
                 quote = {
                     en_us = 'To get close, to circle around, or to get away?',
                     zh_cn = '要靠近，要绕圈，还是要远离？',
+                },
+                hint = {
+                    en_us = 'Multiple strategies work here. Find a comfortable one!',
+                    zh_cn = '多种策略都可行。找一个喜欢的吧！'
                 }
-            },
-            [82] = {
-                spellName = {
-                    en_us = 'Secret Ceremony "The Ninefold Heaven Gates"',
-                    zh_cn = '秘仪「阊阖九重天门」',
-                },
-                quote = {
-                    en_us = 'Nine heaven gates look solemn and majestic, but hesitate too much before them will leave no time to do damage.',
-                    zh_cn = '九扇天门看起来庄严而宏伟，但在它们面前犹豫太久，就没有时间打伤害了。',
-                },
-            },
-            [83] = {
-                spellName = {
-                    en_us = 'Secret Ceremony "One Eyed Bat"',
-                    zh_cn = '秘仪「独眼蝙蝠」',
-                },
-                quote = {
-                    en_us = 'Huge bats are flying around, their wings shrouding me. But the big eyes detached from the body seems more irritating.',
-                    zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
-                },
             },
             [181] = {
                 spellName = {
@@ -1032,6 +1010,10 @@ return {
                 quote = {
                     en_us = 'Thought it\'s her doppelganger, but actually knives\' doppelgangers. Do my bullets have doppelgangers too?',
                     zh_cn = '以为是她的分身，实际上是刀的分身。我的子弹也有分身吗？',
+                },
+                hint = {
+                    en_us = 'Different phases have different routes. Utilize the large space to deal with bullet walls.',
+                    zh_cn = '不同阶段有不同的打法。利用大空间来应对弹链。',
                 }
             },
             [182] = {
@@ -1042,6 +1024,10 @@ return {
                 quote = {
                     en_us = 'The range expands suddenly, and the sparks are everywhere. Individual spark looks like ... popcorn?',
                     zh_cn = '范围突然扩大，火花无处不在。单个火花看起来像……爆米花？',
+                },
+                hint = {
+                    en_us = 'Large vision helps understanding the pattern.',
+                    zh_cn = '开阔的视野有助于理解弹幕模式。',
                 }
             },
             [183] = {
@@ -1052,36 +1038,10 @@ return {
                 quote = {
                     en_us = 'Chains are bent away from her. Is that showing her power?',
                     zh_cn = '链条向外弯曲。这是在展示她的力量吗？',
-                }
-            },
-            [110] = {
-                spellName = {
-                    en_us = 'Wave Sign "Eigenstate in the Quantum Well"',
-                    zh_cn = '波符「量子阱的本征态」',
                 },
-                quote = {
-                    en_us = 'Sine waves are oscillating around me! What a messy quantum well.',
-                    zh_cn = '正弦波在我周围振荡！真是混乱的量子阱。',
-                }
-            },
-            [111] = {
-                spellName = {
-                    en_us = 'Triangular Shape "Triangle Creature"',
-                    zh_cn = '三角形「三角生物」',
-                },
-                quote = {
-                    en_us = 'Triangle creatures walk by flipping their sides. Would they be confused which vertex walks to the front?',
-                    zh_cn = '三角生物通过翻转它们的边走动。它们会搞混哪个顶点走在前面吗？',
-                }
-            },
-            [112] = {
-                spellName = {
-                    en_us = 'Giant Star "Dense Stellaris"',
-                    zh_cn = '巨星「致密星云」',
-                },
-                quote = {
-                    en_us = 'Hugest bullets I have ever seen! The whole area is filled with them.',
-                    zh_cn = '我见过的最大子弹！整个区域都被它们填满了。',
+                hint = {
+                    en_us = 'Every fourth wave, I have to catch the moment of chains switching side to leave the cage.',
+                    zh_cn = '每四波，我必须抓住链条换边的时机才能离开牢笼。',
                 }
             },
             -- level 9
@@ -1124,6 +1084,56 @@ return {
                     en_us = 'Tessellation "N-Sided Nirvana"',
                     zh_cn = '密铺「N边的涅槃」'
                 },
+            },
+            [81] = {
+                spellName = {
+                    en_us = 'Secret Ceremony "Dark Butoh of the Back Door"',
+                    zh_cn = '秘仪「后户的暗黑舞踏」',
+                },
+                quote = {
+                    en_us = 'She is moving so frantically, and the danmaku is chaotic too. Should\'t Butoh be more elegant?',
+                    zh_cn = '她的动作如此疯狂，弹幕也很混乱。舞踏不应该更优雅吗？',
+                },
+            },
+            [82] = {
+                spellName = {
+                    en_us = 'Secret Ceremony "The Ninefold Heaven Gates"',
+                    zh_cn = '秘仪「阊阖九重天门」',
+                },
+                quote = {
+                    en_us = 'Nine heaven gates look solemn and majestic, but hesitate too much before them will leave no time to do damage.',
+                    zh_cn = '九扇天门看起来庄严而宏伟，但在它们面前犹豫太久，就没有时间打伤害了。',
+                },
+            },
+            [83] = {
+                spellName = {
+                    en_us = 'Secret Ceremony "One Eyed Bat"',
+                    zh_cn = '秘仪「独眼蝙蝠」',
+                },
+                quote = {
+                    en_us = 'Huge bats are flying around, their wings shrouding me. But the big eyes detached from the body seems more irritating.',
+                    zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
+                },
+            },
+            [111] = {
+                spellName = {
+                    en_us = 'Triangular Shape "Triangle Creature"',
+                    zh_cn = '三角形「三角生物」',
+                },
+                quote = {
+                    en_us = 'Triangle creatures walk by flipping their sides. Would they be confused which vertex walks to the front?',
+                    zh_cn = '三角生物通过翻转它们的边走动。它们会搞混哪个顶点走在前面吗？',
+                }
+            },
+            [112] = {
+                spellName = {
+                    en_us = 'Giant Star "Dense Stellaris"',
+                    zh_cn = '巨星「致密星云」',
+                },
+                quote = {
+                    en_us = 'Hugest bullets I have ever seen! The whole area is filled with them.',
+                    zh_cn = '我见过的最大子弹！整个区域都被它们填满了。',
+                }
             },
             -- level 10
             [113] = {
@@ -1277,6 +1287,16 @@ return {
                     en_us = 'Interference "Wavefront Mandala"',
                     zh_cn = '干涉「波前曼荼罗」'
                 },
+            },
+            [110] = {
+                spellName = {
+                    en_us = 'Wave Sign "Eigenstate in the Quantum Well"',
+                    zh_cn = '波符「量子阱的本征态」',
+                },
+                quote = {
+                    en_us = 'Sine waves are oscillating around me! What a messy quantum well.',
+                    zh_cn = '正弦波在我周围振荡！真是混乱的量子阱。',
+                }
             },
             -- boss spellcards
             [101] = {
@@ -1777,7 +1797,7 @@ return {
                 zh_cn = '即时重开',
             },
             description = {
-                en_us = 'When hurt, instantly retry the scene without pressing any key. For the lazy perfectionist!',
+                en_us = 'When hurt, instantly retry the scene without pressing any key. For the lazy perfectionists!',
                 zh_cn = '被弹时无需按键立即重开场景。为懒惰的完美主义者准备！',
             },
         }

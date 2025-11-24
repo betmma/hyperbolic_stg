@@ -91,17 +91,7 @@ return {
                         obj=cir,
                         delayFrame=10,
                         executeFunc=function()
-                            if en:getHPLevel()<3 then
-                                cir.safe=false
-                            else
-                                Event.DelayEvent{
-                                    obj=cir,
-                                    delayFrame=10,
-                                    executeFunc=function()
-                                        cir.safe=false
-                                    end
-                                }
-                            end
+                            cir.safe=false
                             Event.EaseEvent{
                                 obj=cir,
                                 aimTable=cir,
@@ -212,6 +202,7 @@ return {
                 createLaser(cir.x,cir.y,cir.direction,0.35)
             end
         }}
+        local currentAttack=0
         local function oneAttack(deltaTheta)
             deltaTheta=deltaTheta or 0
             SFX:play('enemyCharge',true)
@@ -225,6 +216,7 @@ return {
                 delayFrame=52,
                 executeFunc=function()
                     en.safe=true -- prevent enemy's body killing player when dashing
+                    currentAttack=currentAttack+1
                     Event.LoopEvent{
                         obj=en,
                         period=1,
@@ -242,6 +234,7 @@ return {
                 obj=en,
                 delayFrame=60,
                 executeFunc=function()
+                    currentAttack=currentAttack-1
                     local hpLevel=en:getHPLevel()
                     if hpLevel0~=hpLevel then -- into next phase, cancel current attack
                         return
@@ -270,7 +263,9 @@ return {
                         ::continue::
                     end
                     en.x,en.y=Shape.rThetaPos(xp,yp,math.clamp(distance,20,80),angle+math.pi)
-                    en.safe=false
+                    if currentAttack==0 then -- prevent removing safety when in multiple attacks
+                        en.safe=false
+                    end
                 end
             }
         end
