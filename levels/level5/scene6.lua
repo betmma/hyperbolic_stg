@@ -65,7 +65,7 @@ return {
         end,
         bulletEvents={
             function(cir,args,self)
-                if not isVersionSmaller(self.version,'0.2.0.1') then -- cancel graze at all. for very early version graze calls random so keep graze to avoid breaking old replay
+                if not (player.version and isVersionSmaller(player.version,'0.2.0.1')) then -- cancel graze at all. for very early version graze calls random so keep graze to avoid breaking old replay
                     cir.grazed=true
                 end
                 local speedRef=cir.speed

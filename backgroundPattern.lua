@@ -841,7 +841,7 @@ local youkaiMountainShader=ShaderScan:load_shader('shaders/backgrounds/youkaiMou
 local YoukaiMountain=H3Terrain:extend()
 function YoukaiMountain:new(args)
     YoukaiMountain.super.new(self,args)
-    self.cam_translation={0,0,0.5}
+    self.cam_translation={0,0,0.4}
     self.camMoveRange={0.8,0.8}
     self.cam_pitch=-0.9
     self.shader=youkaiMountainShader
