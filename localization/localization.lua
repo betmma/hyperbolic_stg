@@ -208,6 +208,10 @@ return {
             byakuren = {
                 en_us = 'Byakuren Hijiri',
                 zh_cn = '圣白莲',
+            },
+            kotoba = {
+                en_us = 'Kotoba Kyokuwa',
+                zh_cn = '曲话言波',
             }
         },
         spellcards = {
@@ -1351,6 +1355,16 @@ return {
                 quote = {
                     en_us = 'Their final performance! Does the incident come to an end?',
                     zh_cn = '她们的最后演出！异变就此结束了吗？',
+                }
+            },
+            [107] = {
+                spellName = {
+                    en_us = 'Honeymoon "Sticky Satellites"',
+                    zh_cn = '蜜月「粘性卫星」',
+                },
+                quote = {
+                    en_us = 'The true culprit reveals herself! By the way, I would never want a honeymoon like this.',
+                    zh_cn = '真正的犯人出现了！不过，我绝对不想要这样的蜜月。',
                 }
             },
             -- ex spellcards

@@ -41,6 +41,7 @@ function Circle:new(args)
 
     self.spriteExtraDirection=0
     self.spriteRotationSpeed=0 -- used for nuke bullet
+    self.spriteColor=args.spriteColor
 
     if self.sprite.data.key=='note' then
         self.spriteExtraDirection=math.pi -- note sprites are rotated 180 degrees
@@ -49,6 +50,12 @@ function Circle:new(args)
         self.invincible=true
         self.batch=Asset.bulletHighlightBatch
         self.spriteRotationSpeed=0.01
+    end
+
+    if args.events then
+        for _, eventFunc in pairs(args.events) do
+            eventFunc(self, args)
+        end
     end
 end
 

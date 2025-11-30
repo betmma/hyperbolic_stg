@@ -102,15 +102,18 @@ params:
 [point]: where pattern begins. [angle]: direction of first line. [sideNum]: how many sides do each polygon have. [angleNum]: how many sides are connected to each point. [iteCount]: input 0, currently only to check if it's first point. [centerPoint]: input nil. [toDrawNum]: how many lines to draw. If only draw sides, a few hundred to merely above 1000 is a reasonable number. If draw faces <400 is recommended.
 returns: 
 adjacentPoints,angles,sidesTable. [adjacentPoints]: adjacent points to centerPoint (inputted point). [angles]: angles from each adjacent point to center point. I knew it's only used to update center point while keeping the pattern same, so angle should be to center point. [sidesTable]: all sides that are drawn. Each side is a table {point1,point2,index}. index is the index of the side in the sidesTable.
-the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) is added to prevent the side drawn 0 or 2 times.
+the way to find tesselation points is rather simple: from a point, extend angleNum lines, and only keep points that are farther away from the center point. This is because the closer points are already drawn by the previous lines. However when sideNum is odd (especially 3) some lines' two ends have same distance to the center point, so another check (polar angle) is added to prevent the side drawn 0 or 2 times.
 pointsQueue is a queue that stores points that are not drawn yet, drawedPointsNum being the pointer. If drawedPointsNum is more than toDrawNum/angleNum, clear the queue to stop the tesselation. So that you shouldn't try getting points information from pointsQueue since it's always cleared when function ends.]]
 local drawedPointsNum=0
 local pointsQueue={}
+-- key format: key:int = ceil(distance to centerPoint)*1000+floor(angle*1000)
+local visitedPoints={}
 local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, toDrawNum, sidesTable, skipInRangeLimit)
     centerPoint=centerPoint or point
     if iteCount==0 then
         drawedPointsNum=0
         pointsQueue={}
+        visitedPoints={}
     end
     local iteCount=(iteCount or 0)+1
     local adjacentPoints={}
@@ -129,10 +132,21 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         local ret={Shape.rThetaPos(point.x,point.y,r,alpha)}
         local newpoint={x=ret[1],y=ret[2]}
         local distance=Shape.distance(newpoint.x,newpoint.y,centerPoint.x,centerPoint.y)
-        if distance<distance0 and (distance0-distance>Shape.EPS*10 or alpha%(math.pi*2)>math.pi) then
+        -- these two ifs fully exclude duplicate sides, but points still can duplicate (two points connect to same further point)
+        local centerAngle=Shape.toObj(centerPoint,newpoint)
+        if distance<distance0-Shape.EPS*10 then
             goto continue
+        elseif distance<distance0+Shape.EPS*10 then -- same distance on both ends: check angle
+            if Shape.toObj(centerPoint,point)>centerAngle then
+                goto continue
+            end
         end
-        adjacentPoints[#adjacentPoints+1]=newpoint
+        local centerDistance=Shape.distanceObj(centerPoint,newpoint)
+        local key=math.ceil(centerDistance)*1000+math.floor(centerAngle*1000)
+        if not visitedPoints[key] then -- skip redundant new point
+            adjacentPoints[#adjacentPoints+1]=newpoint
+            visitedPoints[key]=true
+        end
         local len=#sidesTable
         sidesTable[len+1]={point,newpoint,index=len+1}
         if len+1>=toDrawNum then
@@ -140,13 +154,6 @@ local function tesselation(point,angle,sideNum,angleNum,iteCount, centerPoint, t
         end
         ::continue::
     end
-    -- if leftMost and iteCount>2 then
-    --     table.remove(points,1)
-    -- end
-    -- if drawedPointsNum>20 then
-    --     pointsQueue={}
-    --     return {},{}
-    -- end
     local angles={}
     for i=1,#adjacentPoints do
         local newpoint=adjacentPoints[i]
@@ -529,6 +536,7 @@ function Shader:new(args)
     self.frame=0
     self.paramSendFunction=args.paramSendFunction or function(self,shader) end
     self.color={1,1,1}
+    self.lightColor={1,1,1}
     self.darkColor={0.5,0.5,0.5}
     self.autoDark=false -- if true, color will be lerped to darkColor when not G.preWin (enemy exists, during spellcard) (for very bright shaders)
 end
@@ -537,7 +545,7 @@ function Shader:update(dt)
     if self.autoDark then
         local ratio=0.02
         if G.preWin then
-            self.color={self.color[1]*(1-ratio)+1*ratio,self.color[2]*(1-ratio)+1*ratio,self.color[3]*(1-ratio)+1*ratio}
+            self.color={self.color[1]*(1-ratio)+self.lightColor[1]*ratio,self.color[2]*(1-ratio)+self.lightColor[2]*ratio,self.color[3]*(1-ratio)+self.lightColor[3]*ratio}
         else
             self.color={self.color[1]*(1-ratio)+self.darkColor[1]*ratio,self.color[2]*(1-ratio)+self.darkColor[2]*ratio,self.color[3]*(1-ratio)+self.darkColor[3]*ratio}
         end

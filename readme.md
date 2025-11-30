@@ -66,3 +66,4 @@ Enemy portraits in dialogue and small portraits in level are drawn by myself.
 Music is made by me and my friend.
 
 SFX are from th6 and [Old-school Shonen SFX](https://heltonyan.itch.io/retroanimesfx).
+Sticky SFX is by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=43763) from [Pixabay](https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=43763)

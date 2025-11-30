@@ -77,8 +77,8 @@ function Player:new(args)
     self.naturalDirection=0
     self.lifeFrame=9999999
     self.speed=0
-    self.movespeed=args.movespeed or 60
-    self.diagonalSpeedAddition=false -- if false, speed is always movespeed. if true, speed is the addition of 2 vectors of U/D and L/R. (Vanilla game is false but dunno why I implemented true from very beginning (^^;))
+    self.moveSpeed=args.moveSpeed or 60
+    self.diagonalSpeedAddition=false -- if false, speed is always moveSpeed. if true, speed is the addition of 2 vectors of U/D and L/R. (Vanilla game is false but dunno why I implemented true from very beginning (^^;))
     self.focusFactor=0.4444
     self.centerX=400
     self.radius = 0.5
@@ -216,7 +216,7 @@ function Player:getKeyboardMoveSpeed()
 
     local vxunit,vyunit=rightx*rightAmount+downx*downAmount, righty*rightAmount+downy*downAmount
     local vlen,dir=math.xy2rTheta(vxunit,vyunit)
-    local speed=vlen>0 and self.movespeed or 0 -- if vlen==0, then player is not moving, so speed is 0.
+    local speed=vlen>0 and self.moveSpeed or 0 -- if vlen==0, then player is not moving, so speed is 0.
     if rightAmount~=0 and downAmount~=0 and self.diagonalSpeedAddition then
         speed=speed*math.sqrt(vxunit^2+vyunit^2) -- it means when moving diagonally, the speed is the addition of 2 vectors of U/D and L/R. Not multiplying by sqrt(2) is because U/D vector and L/R vector could be not orthogonal.
     end
