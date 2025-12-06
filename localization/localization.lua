@@ -1367,6 +1367,16 @@ return {
                     zh_cn = '真正的犯人出现了！不过，我绝对不想要这样的蜜月。',
                 }
             },
+            [108] = {
+                spellName = {
+                    en_us = 'Bluetooth "Telekinetic Bite"',
+                    zh_cn = '蓝牙「念力咬噬」',
+                },
+                quote = {
+                    en_us = 'I would be dead if there were not that missing tooth. Glad the mouth is virtual so I won\'t be covered with saliva...?',
+                    zh_cn = '如果没有那颗缺失的牙齿，我早就死了。幸好嘴巴是虚拟的，这样我就不会沾上口水……？',
+                }
+            },
             -- ex spellcards
             [31] = {
                 quote = {
