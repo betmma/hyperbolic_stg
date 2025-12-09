@@ -3,6 +3,7 @@ return {
     quote='Moving through this "square" grid is so difficult.',
     user='nemuno',
     spellName='Blade Exhaustion Sign "Killing Grid"',
+    dialogue='monologue2_1',
     make=function()
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800,speed=2}
         Event.LoopEvent{
@@ -128,5 +129,8 @@ return {
             end
         end
         }
+    end,
+    leave=function()
+        G.save.extraUnlock['shopUnlocked']=true
     end
 }

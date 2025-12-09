@@ -187,6 +187,23 @@ local doremyDialogue1_1={
     }
 }
 
+local monologue2_1={
+    name='monologue2_1',
+    defaultSpeakerPosition={
+        reimu='left',
+    },
+    lines={
+        line('reimu','normal','gettingUsedToThis'),
+        line('reimu','happy','mySkillsAreImproving'),
+        line('system','normal','youAreDoingWell'),
+        line('system','normal','shopUnlocked'),
+        line('system','normal','getXPwhenCompletingScenes'),
+        line('system','normal','perfectCompletionMoreXP'),
+        line('system','normal','itsInSelectMenu'),
+        line('system','normal','tryThatCoolHomingShotUpgrade'),
+    }
+}
+
 local monologue3_1={
     name='monologue3_1',
     defaultSpeakerPosition={
@@ -348,6 +365,7 @@ local bossDialogue12_1 = {
 ---@type table<string,Dialogue>
 Dialogue.data={
     doremyDialogue1_1=doremyDialogue1_1,
+    monologue2_1=monologue2_1,
     monologue3_1=monologue3_1,
     nitoriDialogue5_1=nitoriDialogue5_1,
     protagonistsDialogue8_1=protagonistsDialogue8_1,

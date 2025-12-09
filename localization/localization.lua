@@ -2080,6 +2080,40 @@ return {
                 zh_cn = '祝你玩得开心！',
             },
         },
+        monologue2_1 = {
+            gettingUsedToThis = {
+                en_us = 'I\'m getting used to this strange space...',
+                zh_cn = '我渐渐适应了这种奇怪的空间……',
+            },
+            mySkillsAreImproving = {
+                en_us = 'I can control my body better. My skills are improving too.',
+                zh_cn = '我能更好地控制自己的身体。我的技能也在提升。',
+            },
+            youAreDoingWell = {
+                en_us = 'You are doing well!',
+                zh_cn = '你做得很好！',
+            },
+            shopUnlocked = {
+                en_us = 'A shop is unlocked. You can spend your XP on upgrades there.',
+                zh_cn = '解锁了商店。你可以在那里花费经验值购买升级。',
+            },
+            getXPwhenCompletingScenes = {
+                en_us = 'You get 10 XP for each completed scene.',
+                zh_cn = '每通过一个场景会获得10经验值。',
+            },
+            perfectCompletionMoreXP = {
+                en_us = 'Perfect completion (no damage taken) grants an additional 2 XP.',
+                zh_cn = '无伤通过会额外获得2经验值。',
+            },
+            itsInSelectMenu = {
+                en_us = 'In the level select menu, press C to enter the shop.',
+                zh_cn = '在关卡选择菜单中，按C键进入商店。',
+            },
+            tryThatCoolHomingShotUpgrade = {
+                en_us = 'That Homing Shot upgrade looks cool. You will like it!',
+                zh_cn = '那个追尾射击升级看起来很酷。你会喜欢的！',
+            },
+        },
         monologue3_1 = {
             wakeUp = {
                 en_us = 'Hmm... I\'m awake. That was a strange dream...',

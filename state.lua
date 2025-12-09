@@ -734,7 +734,7 @@ G={
                 local levelID=LevelData[level][scene].ID
                 self.currentUI.levelID=levelID
                 local passedSceneCount=self:countPassedSceneNum()
-                for i=1,levelNum do
+                for i=1,levelNum do -- limiting visible levels according to passed scenes
                     if passedSceneCount<LevelData.needPass[i] then
                         levelNum=i
                         break
@@ -761,7 +761,7 @@ G={
                 elseif isPressed('z') then
                     SFX:play('select')
                     self:enterLevel(level,scene)
-                elseif isPressed('c') then
+                elseif isPressed('c') and self.save.extraUnlock.shopUnlocked then
                     SFX:play('select')
                     self:switchState(self.STATES.UPGRADES)
                 elseif isPressed('x') or isPressed('escape')then
@@ -882,8 +882,10 @@ G={
                 love.graphics.translate(-rightOffset,0) -- right part ends
 
                 -- show "C: upgrades menu"
-                SetFont(18)
-                love.graphics.printf(Localize{'ui','levelUIHint'},100,570,380,"left",0,1,1)
+                if self.save.extraUnlock.shopUnlocked then
+                    SetFont(18)
+                    love.graphics.printf(Localize{'ui','levelUIHint'},100,570,380,"left",0,1,1)
+                end
             end,
         },
         IN_LEVEL={
@@ -1468,7 +1470,7 @@ end
 ---@field upgrades {[string]: {bought: boolean}}}
 ---@field defaultName string
 ---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
----@field extraUnlock {[integer]: boolean} -- secret level unlocks, format not decided
+---@field extraUnlock {[string]: boolean} -- secret level unlocks, format not decided
 ---@field nicknameUnlock {[string]: boolean}
 ---@field statistics {[string]: number}
 ---@type Save
@@ -1481,7 +1483,9 @@ G.save={
         playTimeOverall=0,
         playTimeInLevel=0,
     },
-    extraUnlock={}, -- secret level unlocks, format not decided
+    extraUnlock={
+        shopUnlocked=false
+    }, -- secret level unlocks, format not decided
     nicknameUnlock={},
     statistics={},
 }
@@ -1574,7 +1578,9 @@ G.loadData=function(self)
     end
 
     if not self.save.extraUnlock then
-        self.save.extraUnlock={}
+        self.save.extraUnlock={
+            shopUnlocked=false
+        }
     end
 
     if not self.save.nicknameUnlock then
