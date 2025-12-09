@@ -234,7 +234,11 @@ end
 
 local localization=require 'localization.localization'
 
+---@alias localizationArg string|integer
+---@alias localizationArgs localizationArg[] 
+
 -- get raw localize string containing {}. args is a table of keys, for example {'ui','start'}
+---@param args localizationArgs
 ---@return string
 ---@return boolean success
 local function getRawLocalizeString(args)

@@ -64,7 +64,7 @@ local function nicknameGet(id)
 end
 EventManager.listenTo(EventManager.EVENTS.NICKNAME_GET,nicknameGet)
 
--- this is to draw notice box when a nickname is unlocked
+-- this is to draw notice box when a nickname is unlocked. considering moving to notice.lua
 function Nickname:drawText()
     local color={love.graphics.getColor()}
     local count=0

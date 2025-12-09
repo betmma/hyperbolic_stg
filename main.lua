@@ -1,4 +1,4 @@
-VERSION="0.8.13.2"
+VERSION="0.8.14"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -7,7 +7,7 @@ io.stdout:setvbuf("no")
 love.window.setTitle('Hyperbolic Domain'..' '..VERSION)
 require'misc'
 shove = require "import.shove"
-local input = require "input"
+Input = require "input"
 function love.load()
     shove.setResolution(800, 600, {fitMethod = "aspect", renderMode = "layer"})
     Object,GameObject = unpack(require "classic")
@@ -35,21 +35,24 @@ function love.load()
     DialogueController=require"localization.dialogue"
     Upgrades = require "upgrades"
     G=require"state"
-    BGM:play('title')
+    ---@type NoticeManager
+    NoticeManager=require"notice"
     ScreenshotManager=require"screenshotManager"
     ReplayManager=require"replayManager"
     Nickname=require"nickname"
     Complex,Mobius=unpack(require"import.mobius")
+
+    BGM:play('title')
 
     shove.setWindowMode(G.save.options.resolution.width,G.save.options.resolution.height, {resizable = true})
     shove.createLayer("main")
     shove.addEffect('main',Player.invertShader)
 end
 function love.keypressed(key, scancode, isrepeat)
-    input.keypressed(key, scancode, isrepeat)
+    Input.keypressed(key, scancode, isrepeat)
 end
 -- return true if current frame is the first frame that key be pressed down
-isPressed=input.isKeyJustPressed
+isPressed=Input.isKeyJustPressed
 
 local profiExists=pcall(require,"profi") -- lib that log functions call and time spent to optimize code
 local profi
@@ -75,7 +78,7 @@ function love.update(dt)
         if AccumulatedTime>=frameTime then
             AccumulatedTime=AccumulatedTime-frameTime
             dt=1/60
-            input.update()
+            Input.update()
             G:update(dt)
         end
     elseif controlFPSmode==1 then
@@ -84,7 +87,7 @@ function love.update(dt)
         local newTime=sleepTime*fps/60
         sleepTime=0.995*(sleepTime-newTime)+newTime
         dt=1/60
-        input.update()
+        Input.update()
         G:update(dt)
     end
     -- love.timer.sleep(sleepTime-dt)

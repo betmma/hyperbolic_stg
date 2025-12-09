@@ -131,6 +131,9 @@ return {
         }
     end,
     leave=function()
-        G.save.extraUnlock['shopUnlocked']=true
+        if not G.save.extraUnlock['shopUnlocked'] then
+            G.save.extraUnlock['shopUnlocked']=true
+            NoticeManager:add({'unlockShop'})
+        end
     end
 }

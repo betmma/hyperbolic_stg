@@ -722,6 +722,18 @@ G={
                 self.currentUI.enterFrame=self.frame
                 self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
                 BGM:play('title')
+                local newMaxUnlock=#LevelData
+                local passedSceneCount=self:countPassedSceneNum()
+                for i=1,newMaxUnlock do -- find new max unlock
+                    if passedSceneCount<LevelData.needPass[i] then
+                        newMaxUnlock=i
+                        break
+                    end
+                end
+                for newUnlockedLevel=self.save.levelUnlock+1,newMaxUnlock do
+                    NoticeManager:add({'unlockLevel',newUnlockedLevel})
+                end
+                self.save.levelUnlock=newMaxUnlock
             end,
             chosenLevel=1,
             chosenScene=1,
@@ -729,17 +741,10 @@ G={
                 self.backgroundPattern:update(dt)
                 local level=self.currentUI.chosenLevel
                 local scene=self.currentUI.chosenScene
-                local levelNum=#LevelData
+                local levelNum=self.save.levelUnlock
                 local sceneNum=#LevelData[level]
                 local levelID=LevelData[level][scene].ID
                 self.currentUI.levelID=levelID
-                local passedSceneCount=self:countPassedSceneNum()
-                for i=1,levelNum do -- limiting visible levels according to passed scenes
-                    if passedSceneCount<LevelData.needPass[i] then
-                        levelNum=i
-                        break
-                    end
-                end
                 if isPressed('down') then
                     self.currentUI.chosenScene=self.currentUI.chosenScene%sceneNum+1
                     SFX:play('select')
@@ -1466,6 +1471,7 @@ end
 -- an example of its structure
 ---@class Save
 ---@field levelData {[integer]: {passed: integer, tryCount: integer, firstPass: integer, firstPerfect: integer}}
+---@field levelUnlock integer -- max level unlocked
 ---@field options {master_volume: integer, music_volume: integer, sfx_volume: integer, language: string, resolution: {width: integer, height: integer}}
 ---@field upgrades {[string]: {bought: boolean}}}
 ---@field defaultName string
@@ -1476,6 +1482,7 @@ end
 ---@type Save
 G.save={
     levelData={[1]={passed=0,tryCount=0,firstPass=0,firstPerfect=0}},
+    levelUnlock=1,
     options={master_volume=100,},
     upgrades={{{bought=true}}},
     defaultName='',-- the default name when saving replay
@@ -1512,6 +1519,9 @@ G.loadData=function(self)
         if self.save.levelData[level] and self.save.levelData[level][scene] then
             self.save.levelData[level][scene]=nil -- remove old save data
         end
+    end
+    if not self.save.levelUnlock then
+        self.save.levelUnlock=1
     end
     -- add options data
     local defaultOptions={
@@ -1691,6 +1701,7 @@ G.update=function(self,dt)
     self.frame=self.frame+1
     self.currentUI=self.UIDEF[self.STATE]
 
+    NoticeManager:update()
     -- replay speed control
     if G.replay then
         if love.keyboard.isDown('lalt') then -- +2x
@@ -1754,8 +1765,12 @@ G.draw=function(self)
     love.graphics.setShader()
     shove.endLayer()
     shove.beginLayer('text')
-    self.currentUI.drawText(self)
+    self:drawText()
     shove.endLayer()
+end
+G.drawText=function(self)
+    self.currentUI.drawText(self)
+    NoticeManager:drawText()
 end
 G._drawBatches=function(self)
     if not self.backgroundPattern.noZoom or G.viewMode.mode==G.CONSTANTS.VIEW_MODES.NORMAL then

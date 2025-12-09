@@ -1524,8 +1524,8 @@ return {
             zh_cn = '花费: {xp} 经验值',
         },
         level = {
-            en_us = 'Day {level}',
-            zh_cn = '第{level}日',
+            en_us = 'Act {level}',
+            zh_cn = '第{level}幕',
         },
         tryCount = {
             en_us = '{tries} tries',
@@ -1590,6 +1590,62 @@ return {
         replayDigitsEntered = {
             en_us = 'Digits entered: {digits}',
             zh_cn = '已输入数字: {digits}',
+        },
+    },
+    notice = {
+        unlockShop = {
+            en_us = 'Shop Unlocked!\nPress C in this menu to open it.\n(after dismissing this notice)',
+            zh_cn = '商店已解锁！\n在此菜单中按C打开它。\n（关闭此通知后）',
+        },
+        unlockLevel = {
+            [2] = {
+                en_us = 'Unlocked Act 2!\nMore enemies in Reimu\'s dream.',
+                zh_cn = '解锁第2幕！\n更多敌人在灵梦的梦境中出现。',
+            },
+            [3] = {
+                en_us = 'Unlocked Act 3!\nReimu is waking up.',
+                zh_cn = '解锁第3幕！\n灵梦正在醒来。',
+            },
+            [4] = {
+                en_us = 'Unlocked Act 4!\nThe path leaving Hakurei Shrine is so long.',
+                zh_cn = '解锁第4幕！\n离开博丽神社的道路真长啊。',
+            },
+            [5] = {
+                en_us = 'Unlocked Act 5!\nEntering Youkai Mountain.',
+                zh_cn = '解锁第5幕！\n进入妖怪之山了呢。',
+            },
+            [6] = {
+                en_us = 'Unlocked Act 6!\nFollowing that Hyper-Compass isn\'t easy.',
+                zh_cn = '解锁第6幕！\n跟随那个双曲罗盘可不容易。',
+            },
+            [7] = {
+                en_us = 'Unlocked Act 7!\nStill some way to go.',
+                zh_cn = '解锁第7幕！\n还有一段路要走。',
+            },
+            [8] = {
+                en_us = 'Unlocked Act 8!\nWhat\'s that place ahead?',
+                zh_cn = '解锁第8幕！\n前面是什么地方？',
+            },
+            [9] = {
+                en_us = 'Unlocked Act 9!\nGlad to see other protagonists, right?',
+                zh_cn = '解锁第9幕！\n很高兴见到其他主角，对吧？',
+            },
+            [10] = {
+                en_us = 'Unlocked Act 10!\nA building... Yeah, most culprits hide in a building.',
+                zh_cn = '解锁第10幕！\n一座建筑物……是的，大部分异变的犯人都藏在建筑物里。',
+            },
+            [11] = {
+                en_us = 'Unlocked Act 11!\nThe final stage is near.',
+                zh_cn = '解锁第11幕！\n最后的舞台近了。',
+            },
+            [12] = {
+                en_us = 'Unlocked Act 12!\nThe truth is about to be revealed.',
+                zh_cn = '解锁第12幕！\n真相即将揭晓。',
+            },
+            [13] = {
+                en_us = 'Unlocked Extra Act!\nJust some random bonus spellcards, ugh...',
+                zh_cn = '解锁EX幕！\n只是一些随便的额外符卡，呃……',
+            }
         }
     },
     musicData = {
@@ -2094,8 +2150,8 @@ return {
                 zh_cn = '你做得很好！',
             },
             shopUnlocked = {
-                en_us = 'A shop is unlocked. You can spend your XP on upgrades there.',
-                zh_cn = '解锁了商店。你可以在那里花费经验值购买升级。',
+                en_us = 'Shop is unlocked. You can spend your XP on upgrades there.',
+                zh_cn = '商店已解锁。你可以在那里花费经验值购买升级。',
             },
             getXPwhenCompletingScenes = {
                 en_us = 'You get 10 XP for each completed scene.',

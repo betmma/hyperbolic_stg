@@ -21,4 +21,9 @@ function Input.isKeyJustPressed(key)
     return keyboardPressedLastFrame[key]
 end
 
+-- clear pressed keys record, to achieve "block inputs" for notices
+function Input.consume()
+    keyboardPressedLastFrame={}
+end
+
 return Input
