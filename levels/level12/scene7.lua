@@ -10,6 +10,7 @@ return {
         local en
         local hplevel=1
         local randChord
+        local color='blue'
         en=Enemy{x=center.x,y=center.y,mainEnemy=true,maxhp=9600,hpSegments={0.7,0.3},hpSegmentsFunc=function(self,hpLevel)
             Enemy.hpSegmentsFuncShockwave(self,hpLevel)
             en:addHPProtection(600,10)
@@ -61,7 +62,7 @@ return {
                 local imid=i-num/2-0.5
                 local x0,y0,dir0=Shape.rThetaPosT(cir.x,cir.y,r*i,cir.direction+math.pi/2)
                 dir0=dir0-math.pi/2
-                local tooth=Circle{x=x0,y=y0,speed=0,direction=dir0,radius=6,sprite=BulletSprites.scale.blue,spriteTransparency=0,safe=true,invincible=true,highlight=true,extraUpdate=toothUpdate}
+                local tooth=Circle{x=x0,y=y0,speed=0,direction=dir0,radius=6,sprite=BulletSprites.scale[color],spriteTransparency=0,safe=true,invincible=true,highlight=true,extraUpdate=toothUpdate}
                 tooth.bind=cir
                 tooth.i=imid
                 tooth.r=r
@@ -86,11 +87,11 @@ return {
                         local laserSpeed=0--distance/lasert/2*60
                         -- tooth1.speed=laserSpeed
                         -- tooth2.speed=laserSpeed
-                        local laser1=Laser.LaserUnit{x=tooth1.x,y=tooth1.y,direction=tooth1.direction,radius=0.01,sprite=BulletSprites.laser.blue,speed=laserSpeed,lifeFrame=lasert}
+                        local laser1=Laser.LaserUnit{x=tooth1.x,y=tooth1.y,direction=tooth1.direction,radius=0.01,sprite=BulletSprites.laser[color],speed=laserSpeed,lifeFrame=lasert}
                         Event.EaseEvent{
                             obj=laser1,aimKey='radius',aimValue=laserR,easeFrame=lasert,progressFunc=Event.sineBackProgressFunc
                         }
-                        local laser2=Laser.LaserUnit{x=tooth2.x,y=tooth2.y,direction=tooth2.direction+math.pi,radius=0.01,sprite=BulletSprites.laser.blue,speed=-laserSpeed,lifeFrame=lasert}
+                        local laser2=Laser.LaserUnit{x=tooth2.x,y=tooth2.y,direction=tooth2.direction+math.pi,radius=0.01,sprite=BulletSprites.laser[color],speed=-laserSpeed,lifeFrame=lasert}
                         Event.EaseEvent{
                             obj=laser2,aimKey='radius',aimValue=laserR,easeFrame=lasert,progressFunc=Event.sineBackProgressFunc
                         }
@@ -120,7 +121,7 @@ return {
                                     x=p.x,y=p.y,
                                     speed=0,direction=Shape.toObj(p,toObj),
                                     radius=2,highlight=true,
-                                    sprite=BulletSprites.bigRound.blue,lifeFrame=t,
+                                    sprite=BulletSprites.bigRound[color],lifeFrame=t,
                                     extraUpdate=function(self)
                                         self.speed=self.frame/(t-20)*speed
                                         if self.frame>(t-20) then
@@ -205,6 +206,11 @@ return {
         -- circling()
         a=Event.LoopEvent{
             obj=en,period=200,frame=140,executeFunc=function(self)
+                if color=='blue' then
+                    color='cyan'
+                else
+                    color='blue'
+                end
                 randChord()
                 if Shape.distanceObj(player,en)>130 then
                     Event.LoopEvent{

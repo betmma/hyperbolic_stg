@@ -175,6 +175,7 @@ G={
         },
     },
     currentLevel={},
+    --- Warning: besides setting max time, do not access it in any level logic (like for random seed). it is 1 frame less in replay (dunno why) so using it will break replays.
     ---@type integer|nil
     levelRemainingFrame=nil,
     ---@type integer|nil

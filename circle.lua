@@ -34,6 +34,8 @@ function Circle:new(args)
     -- invincible means won't be removed by normal shockwave (win shockwave can)
     self.invincible=args.invincible or false
 
+    self.damage=args.damage or 1
+
     self.grazed=args.grazed or false
 
     self.batch=args.batch or (args.highlight and Asset.bulletHighlightBatch or BulletBatch)

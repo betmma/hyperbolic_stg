@@ -1377,6 +1377,16 @@ return {
                     zh_cn = '如果没有那颗缺失的牙齿，我早就死了。幸好嘴巴是虚拟的，这样我就不会沾上口水……？',
                 }
             },
+            [109] = {
+                spellName = {
+                    en_us = 'Hotline "Fuse Web"',
+                    zh_cn = '热线「引信网络」',
+                },
+                quote = {
+                    en_us = 'What a terrorist attack! Making fire every where and leaving me running around. Why isn\'t she afraid of the explosion?',
+                    zh_cn = '什么恐怖袭击啊！到处点火，让我跑来跑去。她为什么不怕爆炸呢？',
+                }
+            },
             -- ex spellcards
             [31] = {
                 quote = {

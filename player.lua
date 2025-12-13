@@ -632,7 +632,7 @@ end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 
 -- it's hit effect, not hp = 0 effect
--- isDirect: if true, damage is directly deducted from hp without considering invincibility time, and will not trigger invincibility time and shockwave effect.
+-- isDirect: if true, damage is directly deducted from hp without considering invincibility time, and will not trigger invincibility time and shockwave effect. currently used for flashbomb without enough graze.
 function Player:hitEffect(damage,isDirect)
     if self.invincibleTime>0 and not isDirect then
         return
