@@ -1901,6 +1901,26 @@ return {
                 zh_cn = '按C键在擦弹条未满时使用瞬雷，但每缺少1次擦弹扣除0.01生命值。使用后不计为无伤通过。',
             },
         },
+        accumulativeBomb = {
+            name = {
+                en_us = 'Accumulative Bomb',
+                zh_cn = '累积瞬雷',
+            },
+            description = {
+                en_us = 'You can store multiple flash bombs and use them manually by pressing C.',
+                zh_cn = '你可以储存多个瞬雷，并通过按C键手动使用它们。',
+            },
+        },
+        spareBomb = {
+            name = {
+                en_us = 'Spare Bomb',
+                zh_cn = '备用瞬雷',
+            },
+            description = {
+                en_us = 'Start each scene with 1 flash bomb.',
+                zh_cn = '进入场景时持有1个瞬雷。',
+            },
+        },
     },
     ---@type table<string, NicknameLocalization>
     nickname = {

@@ -105,6 +105,9 @@ function Player:new(args)
     self.grazeHpRegen=0
     self.grazeCount=0
     self.grazeCountForFlashbomb=0
+    self.grazeReqForFlashbomb=100
+    self.enableFlashbomb=false
+    self.accumulativeFlashbomb=false
     self.hurt=false --to check perfect completion
     self.damageTaken=0
     self.invincibleTime=0
@@ -182,11 +185,9 @@ function Player:update(dt)
 
     self:calculateMovingTransitionSprite()
     self:calculateFocusPointTransparency()
-    if self.enableFlashbomb then
-        self:calculateFlashbomb()
-    end
-    if self.emergencyBomb and self.keyIsPressed('c') then
-        self:releaseEmergencyBomb()
+    self:calculateFlashbomb()
+    if self.keyIsPressed('c') then
+        self:tryReleaseFlashBomb()
     end
     self.grazeCountThisFrame=0
 
@@ -598,6 +599,14 @@ function Player:drawText()
         local x0,y0=30,570
         love.graphics.setColor(1,1,1)
         love.graphics.rectangle("line",x0,y0,100,10)
+        if self.accumulativeFlashbomb then
+            local times=math.floor(self.grazeCountForFlashbomb/self.grazeReqForFlashbomb)
+            if times>0 then
+                SetFont(16)
+                love.graphics.print('x'..times,x0,y0-20)
+                SetFont(24)
+            end
+        end
         love.graphics.setColor(1,0.2,0.5)
         love.graphics.rectangle("fill",x0,y0,100*(self.grazeCountForFlashbomb%self.grazeReqForFlashbomb)/self.grazeReqForFlashbomb,10)
         love.graphics.setColor(color[1],color[2],color[3])
@@ -628,6 +637,10 @@ function Player:grazeEffect(amount)
     self.hp=math.clamp(self.hp+self.grazeHpRegen*amount,0,self.maxhp)
     self.grazeCount=self.grazeCount+amount
     self.grazeCountForFlashbomb=self.grazeCountForFlashbomb+amount
+    
+    if self.accumulativeFlashbomb and self.grazeCountForFlashbomb%self.grazeReqForFlashbomb==0 then -- play sound when reaching each flashbomb threshold
+        SFX:play('extend',true)
+    end
 end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 
@@ -691,15 +704,23 @@ function Player:invertShaderEffect()
 end
 
 function Player:calculateFlashbomb()
-    if self.grazeCountForFlashbomb>=self.grazeReqForFlashbomb then
+    if not self.enableFlashbomb then
+        return
+    end
+    if self.grazeCountForFlashbomb>=self.grazeReqForFlashbomb and not self.accumulativeFlashbomb then -- release flashbomb once enough graze
         self.grazeCountForFlashbomb=0
         self:releaseFlashbomb()
     end
 end
 
-function Player:releaseEmergencyBomb()
+function Player:tryReleaseFlashBomb()
     local missingGrazes=self.grazeReqForFlashbomb - self.grazeCountForFlashbomb
-    if missingGrazes<0 then -- shouldn't happen
+    if missingGrazes<=0 and self.accumulativeFlashbomb then -- possible accumulable flashbomb
+        self.grazeCountForFlashbomb=self.grazeCountForFlashbomb - self.grazeReqForFlashbomb
+        self:releaseFlashbomb()
+        return
+    end
+    if not self.emergencyBomb then
         return
     end
     self.grazeCountForFlashbomb=0

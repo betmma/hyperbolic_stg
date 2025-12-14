@@ -255,6 +255,8 @@ G={
                 end
                 love.graphics.rectangle("line",300,optionBaseY+self.currentUI.chosen*50,200,40)
                 -- love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
+                SetFont(24)
+                love.graphics.print(VERSION, WINDOW_WIDTH-80, WINDOW_HEIGHT-30)
                 love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
             end
         },
