@@ -1,4 +1,4 @@
-VERSION="0.8.15"
+VERSION="0.8.16"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 if arg[2] == "debug" then
     require("lldebugger").start()
@@ -34,6 +34,7 @@ function love.load()
     LevelData = require "levelData"
     DialogueController=require"localization.dialogue"
     Upgrades = require "upgrades"
+    UIHelper = require "uiHelper"
     G=require"state"
     ---@type NoticeManager
     NoticeManager=require"notice"
