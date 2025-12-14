@@ -569,7 +569,7 @@ G={
                             end
                         end
                         love.graphics.printf(text,boxX+gap,boxY+gap,600-gap*2,'left')
-                        love.graphics.rectangle("line",boxX,boxY,600,85)
+                        love.graphics.rectangle("line",boxX,boxY,600,100)
                     end
                     ::continue::
                 end

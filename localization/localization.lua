@@ -2010,6 +2010,20 @@ return {
                 zh_cn = '现在你意识到使魔射击并不是那么无用。',
             },
         },
+        BombSurvivor = {
+            name = {
+                en_us = 'Bomb Survivor',
+                zh_cn = '炸弹幸存者',
+            },
+            condition = {
+                en_us = 'Clear 12-8 after bomb explosion',
+                zh_cn = '炸弹爆炸后通过12-8',
+            },
+            description = {
+                en_us = 'Lesser of two evils... What, it can\'t be that the explosion just happened before the spellcard ended, right?',
+                zh_cn = '两害相权取其轻……什么，不会是爆炸时间刚好在符卡结束前吧？',
+            }
+        },
         HurrySickness = {
             name = {
                 en_us = 'Hurry Sickness',

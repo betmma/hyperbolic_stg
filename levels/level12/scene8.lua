@@ -79,9 +79,9 @@ return {
                     self.radius=self.frame*0.15
                 end
                 if self.ignited and not self.exploded then
-                    -- or change self.radius to big value?
                     SFX:play('enemyPowerfulShot')
                     self.exploded=true
+                    G.bombExploded=true -- for the secret achievement
                     Event.EaseEvent{
                         obj=self,aimKey='spriteTransparency',aimValue=0,easeFrame=55
                     }
@@ -102,6 +102,7 @@ return {
             return bomb
         end
         local bomb=spawnBomb()
+        G.bombExploded=false
         local function spawnFusePoint(x,y,dir)
             local fusePoint=Circle{x=x,y=y,direction=dir or 0,radius=2,sprite=BulletSprites.rice.red,speed=0,invincible=true,safe=true,extraUpdate={fuseUpdate},lifeFrame=99999,spriteTransparency=0}
             fusePoint.connect={}

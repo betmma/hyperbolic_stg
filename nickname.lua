@@ -185,6 +185,17 @@ Nickname{
     isSecret=true,
 }
 Nickname{
+    name='BombSurvivor',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==109 and G.bombExploded==true then -- kotoba fuse web spellcard
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
+Nickname{
     name='HurrySickness',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
