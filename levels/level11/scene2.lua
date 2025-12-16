@@ -16,7 +16,7 @@ return {
         en:addHPProtection(600,10)
         local player=Player{x=400,y=600}
         player.cancelVortex=true
-        player.shoot=function() end
+        player.shoot=function() end -- shooting isn't mirrored, so disable it
         player.moveMode=Player.moveModes.Natural
         local _,r=BackgroundPattern.calculateSideLength(4,5)
         local borderAngle=0

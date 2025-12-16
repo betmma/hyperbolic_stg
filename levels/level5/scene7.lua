@@ -11,6 +11,7 @@ return {
         local en,a
         en=Enemy{x=400,y=30000,mainEnemy=true,maxhp=72000000}
         local player=Player{x=400,y=800,noBorder=true}
+        player.shoot=function() end -- bullets aren't drawn in sub areas and will look like teleport when player teleports, so disable shooting
         player.moveMode=Player.moveModes.Natural
         local w,h=500,600
         local cx,axisY=400,Shape.axisY
