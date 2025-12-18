@@ -2040,8 +2040,8 @@ return {
                 zh_cn = '炸弹爆炸后通过12-8',
             },
             description = {
-                en_us = 'Lesser of two evils... What, it can\'t be that the explosion just happened before the spellcard ended, right?',
-                zh_cn = '两害相权取其轻……什么，不会是爆炸时间刚好在符卡结束前吧？',
+                en_us = 'Fatal damage or 1 damage, lesser of two evils... What, it can\'t be that the explosion just happened before the spellcard ended, right?',
+                zh_cn = '致命伤害或者1点伤害，两害相权取其轻……什么，不会是爆炸时间刚好在符卡结束前吧？',
             }
         },
         HurrySickness = {
@@ -2618,5 +2618,197 @@ return {
                 zh_cn = '第一支曲目，马上就要开始咯！',
             },
         },
+        bossDialogue12_6 = {
+            performanceEnded = {
+                en_us = 'The performance has ended, finally.',
+                zh_cn = '演出终于结束了。',
+            },
+            nowStopDistortion = {
+                en_us = 'Now, please stop distorting Gensokyo\'s space!',
+                zh_cn = '现在，请停止扭曲幻想乡的空间！',
+            },
+            weArentRelatedToIt = {
+                en_us = 'But, we aren\'t related to the incident at all.',
+                zh_cn = '可是，我们可跟这次异变毫无关系哦。',
+            },
+            weAlsoGetLost = {
+                en_us = 'In fact, we got lost in this distorted space just hours before you did.',
+                zh_cn = '事实上，我们和你一样，是几个小时前迷路到这里的。',
+            },
+            really = {
+                en_us = 'Really?',
+                zh_cn = '真的吗？',
+            },
+            wePerformToLiftUpPeopleTrappedHere = {
+                en_us = 'Yes. We are performing to lift the spirits of those trapped in this place.',
+                zh_cn = '是的。我们现在表演，是为了振奋那些被困在这里的人。',
+            },
+            yeahAndTheIdeaIsFrom = {
+                en_us = 'Yeah, and the idea was actually from... That one sitting at first row.',
+                zh_cn = '是啊，这个主意其实是来自……那边，坐在第一排的那位。',
+            },
+            ohWhoIsThat = {
+                en_us = 'Oh? Who\'s that?',
+                zh_cn = '哦？那是谁？',
+            },
+            iAmKotobaWhoYouSeek = {
+                en_us = 'I am Kotoba Kyokuwa, the one you seek.',
+                zh_cn = '我是曲话言波，你要找的人。',
+            },
+            withAbilityToDistort = {
+                en_us = 'This incident is my doing, as I possess the ability to distort...',
+                zh_cn = '这次异变是我造成的，我的能力是扭曲……',
+            },
+            soItsYouFight = {
+                en_us = 'So blatant, huh? Fine, let\'s fight!',
+                zh_cn = '这么直白，那就来战吧！',
+            },
+        },
+        bossDialogue12_7 = {
+            iHaventFinishedLastSentence = {
+                en_us = 'Hey! I hadn\'t even finished my sentence!',
+                zh_cn = '喂！我上一句话还没说完呢！',
+            },
+            myAbilityIsToDistortLanguage = {
+                en_us = 'My ability is to distort language, not space.',
+                zh_cn = '我的能力是扭曲语言，而不是空间。',
+            },
+            huh = {
+                en_us = 'Huh?',
+                zh_cn = '哈？',
+            },
+            preciselyMaterializeAPun = {
+                en_us = 'To be precise, I can make a pun materialize into reality.',
+                zh_cn = '准确地说，是让“双关语”具现化。',
+            },
+            thatMatchesYourSpellcard = {
+                en_us = 'I guess that matches the Spell Cards you used earlier...',
+                zh_cn = '这倒是和你刚才用的符卡挺相配的……',
+            },
+            butWhatAboutTheSpace = {
+                en_us = 'But what does that have to do with this weird space?',
+                zh_cn = '但那跟这个奇怪的空间有什么关系？',
+            },
+            thisComesFromThePun = {
+                en_us = 'The space itself comes from the pun I used.',
+                zh_cn = '这个空间本身就是那个双关语的衍生物。',
+            },
+            tellYouAfterNextSpellcard = {
+                en_us = 'Survive this next one, and I\'ll tell you the punchline!',
+                zh_cn = '撑过下一张符卡，我就把谜底告诉你！',
+            }
+        },
+        bossDialogue12_8 = {
+            okTellYouNow = {
+                en_us = 'Alright, fine. I\'ll tell you.',
+                zh_cn = '好吧，这就告诉你。',
+            },
+            hyperbolicAria = {
+                en_us = 'The pun was: "Hyperbolic Aria"!',
+                zh_cn = '那个双关语就是：“在双曲空间中双人奏曲”！',
+            },
+            itCouldBeFunnyIfNotTrappingEveryone = {
+                en_us = '..."Area" and "Aria"? That dad joke is why we\'re all trapped here?',
+                zh_cn = '……就为了这种冷笑话把大家都困在这里吗？',
+            },
+            sorryForThat = {
+                en_us = 'Ahaha... sorry about that.',
+                zh_cn = '啊哈哈……这确实很抱歉。',
+            },
+            daysEarlierIWanderInYoukaiMountain = {
+                en_us = 'A few days ago, I was wandering inside Youkai Mountain.',
+                zh_cn = '几天前，我在妖怪之山闲逛。',
+            },
+            iFoundACavewithLargeSpace = {
+                en_us = 'I found a cave with a surprisingly large open space inside.',
+                zh_cn = '我发现了一个内部空间非常开阔的洞穴。',
+            },
+            thoughtAndMaterializedThatPun = {
+                en_us = 'I thought of the joke, and my power materialized it.',
+                zh_cn = '我脑中冒出了那个双关语，而我的能力让它具现化了。',
+            },
+            aStageInHyperbolicSpaceAppears = {
+                en_us = 'Suddenly, a stage within a Hyperbolic Space appeared inside.',
+                zh_cn = '瞬间，一个位于“双曲”空间中的舞台就在洞穴中诞生了。',
+            },
+            terrificForPerformance = {
+                en_us = 'It\'s the stage we are on now. Terrific for a performance, right?',
+                zh_cn = '就是我们所在的舞台。很适合用来演出，对吧？',
+            },
+            howeverThenComesTrouble = {
+                en_us = 'However, that\'s when the trouble started.',
+                zh_cn = '然而，麻烦也随之而来了。',
+            },
+            whatTrouble = {
+                en_us = 'What sort of trouble?',
+                zh_cn = '什么麻烦？',
+            },
+            letsHaveAnotherDanmakuShow = {
+                en_us = 'I\'ll explain during another Danmaku show!',
+                zh_cn = '再来一场弹幕表演再说！',
+            }
+        },
+        bossDialogue12_9 = {
+            languageHasPower = {
+                en_us = 'Language has power. Words have spirits.',
+                zh_cn = '语言是有力量的。言语之中寄宿着灵魂。',
+            },
+            aPunWillThriveForFulfillment = {
+                en_us = 'A materialized pun will thrive for fulfillment. It wants to make sense.',
+                zh_cn = '具现化的双关语会渴求“完满”。它想要变得合理。',
+            },
+            whenIWasFindingPerformer = {
+                en_us = 'Since I created a stage for an "Aria", it demanded performers and an audience.',
+                zh_cn = '既然我为了“奏曲”创造了舞台，它就渴求表演者和观众。',
+            },
+            theSpaceExpandedTooMuch = {
+                en_us = 'While I was searching for them, the space expanded too much trying to find people.',
+                zh_cn = '在我寻找这些要素时，空间为了搜寻人类而过度膨胀了。',
+            },
+            evenTwistingWholeGensokyo = {
+                en_us = 'It ended up twisting the entirety of Gensokyo.',
+                zh_cn = '结果甚至扭曲了整个幻想乡。',
+            },
+            ohISee = {
+                en_us = 'Oh, I see. That explains the lost people.',
+                zh_cn = '噢，我明白了。所以迷路的人都会掉到这里。',
+            },
+            asYouExperiencedPeopleGetThereWhenLost = {
+                en_us = 'Exactly. As you experienced, people end up here when they get lost.',
+                zh_cn = '没错。正如你所经历的，迷路的人最终都会殊途同归。',
+            },
+            thereComesAudienceAndPerformers = {
+                en_us = 'Now we have the audience, and we have the Tsukumo sisters as performers.',
+                zh_cn = '现在观众有了，九十九姐妹作为表演者也到位了。',
+            },
+            theWayToFixIsToFinishPerformance = {
+                en_us = 'The way to fix the distortion is to finish the performance!',
+                zh_cn = '修复扭曲的唯一方法，就是完成这场演出！',
+            },
+            dunnoIfYouNoticedSpaceIsRecovering = {
+                en_us = 'I don\'t know if you noticed, but the space is already recovering.',
+                zh_cn = '不知道你有没有注意到，空间已经开始恢复了。',
+            },
+            yeahOutsideSpaceIsZoomingAndDizzying = {
+                en_us = 'Yeah, the outside view is zooming like crazy... it\'s dizzying.',
+                zh_cn = '是啊，外面的景色正在疯狂缩放……看着真让人头晕。',
+            },
+            wellSupposeDontLookAtThat = {
+                en_us = 'Well, I suppose nobody should look at that right now.',
+                zh_cn = '好吧，我想所有人现在都不该盯着外面看。',
+            },
+            ourFightIsToAttractAttention = {
+                en_us = 'Our fight acts as the finale to attract the audience\'s attention.',
+                zh_cn = '我们的战斗将作为压轴戏，吸引住观众的注意力。',
+            },
+            soOthersWontLeaveBeforeSpaceFullyStable = {
+                en_us = 'So the others won\'t leave before the space is fully stable?',
+                zh_cn = '这样其他人就不会在空间完全稳定前离开了？',
+            },
+            exactlyFinalSpellcardHere = {
+                en_us = 'Exactly! Here comes the Final Spell Card!',
+                zh_cn = '正是如此！这就献上最后的符卡！',
+            }
+        }
     },
 }

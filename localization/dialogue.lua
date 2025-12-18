@@ -362,6 +362,94 @@ local bossDialogue12_1 = {
     }
 }
 
+local bossDialogue12_6 = {
+    name='bossDialogue12_6',
+    defaultSpeakerPosition={
+        reimu='left',
+        benben='right',
+        yatsuhashi='right',
+        kotoba='right'
+    },
+    lines={
+        line('reimu','angry','performanceEnded'),
+        line('reimu','angry','nowStopDistortion'),
+        line('benben','frustrated','weArentRelatedToIt'),
+        line('yatsuhashi','frustrated','weAlsoGetLost'),
+        line('reimu','surprised','really'),
+        line('benben','normal','wePerformToLiftUpPeopleTrappedHere'),
+        line('yatsuhashi','normal','yeahAndTheIdeaIsFrom'),
+        line('reimu','surprised','ohWhoIsThat'),
+        line('kotoba','normal','iAmKotobaWhoYouSeek'),
+        line('kotoba','normal','withAbilityToDistort'),
+        line('reimu','angry','soItsYouFight'),
+    }
+}
+
+local bossDialogue12_7 = {
+    name='bossDialogue12_7',
+    defaultSpeakerPosition={
+        reimu='left',
+        kotoba='right'
+    },
+    lines={
+        line('kotoba','surprised','iHaventFinishedLastSentence'),
+        line('kotoba','normal','myAbilityIsToDistortLanguage'),
+        line('reimu','surprised','huh'),
+        line('kotoba','normal','preciselyMaterializeAPun'),
+        line('reimu','normal','thatMatchesYourSpellcard'),
+        line('reimu','normal','butWhatAboutTheSpace'),
+        line('kotoba','normal','thisComesFromThePun'),
+        line('kotoba','cunning','tellYouAfterNextSpellcard')
+    }
+}
+
+local bossDialogue12_8 = {
+    name='bossDialogue12_8',
+    defaultSpeakerPosition={
+        reimu='left',
+        kotoba='right'
+    },
+    lines={
+        line('kotoba','normal','okTellYouNow'),
+        line('kotoba','happy','hyperbolicAria'),
+        line('reimu','frustrated','itCouldBeFunnyIfNotTrappingEveryone'),
+        line('kotoba','sad','sorryForThat'),
+        line('kotoba','normal','daysEarlierIWanderInYoukaiMountain'),
+        line('kotoba','normal','iFoundACavewithLargeSpace'),
+        line('kotoba','normal','thoughtAndMaterializedThatPun'),
+        line('kotoba','normal','aStageInHyperbolicSpaceAppears'),
+        line('kotoba','happy','terrificForPerformance'),
+        line('kotoba','sad','howeverThenComesTrouble'),
+        line('reimu','surprised','whatTrouble'),
+        line('kotoba','cunning','letsHaveAnotherDanmakuShow'),
+    }
+}
+
+local bossDialogue12_9 = {
+    name='bossDialogue12_9',
+    defaultSpeakerPosition={
+        reimu='left',
+        kotoba='right'
+    },
+    lines={
+        line('kotoba','normal','languageHasPower'),
+        line('kotoba','normal','aPunWillThriveForFulfillment'),
+        line('kotoba','normal','whenIWasFindingPerformer'),
+        line('kotoba','surprised','theSpaceExpandedTooMuch'),
+        line('kotoba','surprised','evenTwistingWholeGensokyo'),
+        line('reimu','normal','ohISee'),
+        line('kotoba','normal','asYouExperiencedPeopleGetThereWhenLost'),
+        line('kotoba','normal','thereComesAudienceAndPerformers'),
+        line('kotoba','normal','theWayToFixIsToFinishPerformance'),
+        line('kotoba','normal','dunnoIfYouNoticedSpaceIsRecovering'),
+        line('reimu','surprised','yeahOutsideSpaceIsZoomingAndDizzying'),
+        line('kotoba','cunning','wellSupposeDontLookAtThat'),
+        line('kotoba','normal','ourFightIsToAttractAttention'),
+        line('reimu','happy','soOthersWontLeaveBeforeSpaceFullyStable'),
+        line('kotoba','happy','exactlyFinalSpellcardHere'),
+    }
+}
+
 ---@type table<string,Dialogue>
 Dialogue.data={
     doremyDialogue1_1=doremyDialogue1_1,
@@ -372,6 +460,10 @@ Dialogue.data={
     monologue9_1=monologue9_1,
     monologue10_1=monologue10_1,
     bossDialogue12_1=bossDialogue12_1,
+    bossDialogue12_6=bossDialogue12_6,
+    bossDialogue12_7=bossDialogue12_7,
+    bossDialogue12_8=bossDialogue12_8,
+    bossDialogue12_9=bossDialogue12_9,
 }
 
 

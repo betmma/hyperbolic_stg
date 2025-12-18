@@ -2,6 +2,7 @@ return {
     ID=109,
     user='kotoba',
     spellName='Hotline "Fuse Web"',
+    dialogue='bossDialogue12_8',
     make=function()
         G.levelRemainingFrame=5400
         G.levelIsTimeoutSpellcard=true

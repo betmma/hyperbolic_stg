@@ -2,6 +2,7 @@ return {
     ID=108,
     user='kotoba',
     spellName='Bluetooth "Tele-bite"',
+    dialogue='bossDialogue12_7',
     make=function()
         G.levelRemainingFrame=10800
         Shape.removeDistance=1e100

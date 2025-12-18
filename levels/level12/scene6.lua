@@ -2,6 +2,7 @@ return {
     ID=107,
     user='kotoba',
     spellName='Honeymoon "Sticky Satellites',
+    dialogue='bossDialogue12_6',
     make=function()
         G.levelRemainingFrame=10800
         Shape.removeDistance=1e100
