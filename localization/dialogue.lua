@@ -433,7 +433,7 @@ local bossDialogue12_9 = {
     },
     lines={
         line('kotoba','normal','languageHasPower'),
-        line('kotoba','normal','aPunWillThriveForFulfillment'),
+        line('kotoba','normal','aPunWillStriveForFulfillment'),
         line('kotoba','normal','whenIWasFindingPerformer'),
         line('kotoba','surprised','theSpaceExpandedTooMuch'),
         line('kotoba','surprised','evenTwistingWholeGensokyo'),

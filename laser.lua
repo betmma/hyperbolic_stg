@@ -136,9 +136,13 @@ function LaserUnit:drawMesh(poses)
     poses=poses or self:extractCoordinates()
     local vertices={}
     local x,y,w,h=love.graphics.getQuadXYWHOnImage(self.sprite.quad,Asset.bulletImage)
+    local r,g,b=1,1,1
+    if self.spriteColor then
+        r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
+    end
     for i=1,#poses,2 do
-        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, self.spriteTransparency or 1})
-        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})
+        table.insert(vertices,{poses[i][1],poses[i][2], x, y, r, g, b, self.spriteTransparency or 1})
+        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, r, g, b, self.spriteTransparency or 1})
     end
     if #vertices<4 then return end
     local mesh=love.graphics.newMesh(vertices,'strip')

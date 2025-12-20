@@ -1387,6 +1387,16 @@ return {
                     zh_cn = '什么恐怖袭击啊！到处点火，让我跑来跑去。她为什么不怕爆炸呢？',
                 }
             },
+            [100] = {
+                spellName = {
+                    en_us = 'Fangame "Fan Service"',
+                    zh_cn = '扇区「八扇屏蔽」'
+                },
+                quote = {
+                    en_us = 'Uh, the most blinding spellcard ever! Makes me doubt if looking at this is really better than looking at the repairing space.',
+                    zh_cn = '呃，有史以来最刺眼的符卡！让我怀疑看这个是否真的比看修复中的空间更好。',
+                }
+            },
             -- ex spellcards
             [31] = {
                 quote = {
@@ -2753,8 +2763,8 @@ return {
                 en_us = 'Language has power. Words have spirits.',
                 zh_cn = '语言是有力量的。言语之中寄宿着灵魂。',
             },
-            aPunWillThriveForFulfillment = {
-                en_us = 'A materialized pun will thrive for fulfillment. It wants to make sense.',
+            aPunWillStriveForFulfillment = {
+                en_us = 'A materialized pun will strive for fulfillment. It wants to make sense.',
                 zh_cn = '具现化的双关语会渴求“完满”。它想要变得合理。',
             },
             whenIWasFindingPerformer = {
