@@ -29,7 +29,7 @@ return {
         LevelData[level][scene].make()
     end,
     update=function(self,dt)
-        if isPressed('v') then
+        if DEV_MODE and isPressed('v') then
             G.UseHypRotShader=not G.UseHypRotShader
         end
         self.backgroundPattern:update(dt)
@@ -41,7 +41,7 @@ return {
             self:switchState(self.STATES.PAUSE)
         elseif (isPressed('r')or isPressed('w')) and (not player or player.frame>10)then
             self:retryLevel()
-        elseif isPressed('q')then
+        elseif DEV_MODE and isPressed('q')then
             if self.viewMode.mode==self.CONSTANTS.VIEW_MODES.NORMAL and player then
                 self.viewMode.mode=self.CONSTANTS.VIEW_MODES.FOLLOW
                 self.viewMode.object=player

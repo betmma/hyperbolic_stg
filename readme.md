@@ -34,7 +34,6 @@ LAlt to speed up by 2x.
 ###### In level:
 Q to switch following view or fixed view. 
 V to switch using shader or testRotate to calculate sprites' hyperbolic rotation. It's defaulted to shader that is more efficient, and will display "Using Rotation Shader" at bottom right.
-E to switch Hyperbolic model if is following view (player is fixed at center of the screen) and using hyperbolic rotation shader. There are UHP, Poincare Disk and Klein Disk available.
 
 #### Misc:
 Player gains 1 second of invincible time when hit by bullet.

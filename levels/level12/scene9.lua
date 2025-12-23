@@ -58,6 +58,7 @@ return {
             local core=Circle{x=args.x,y=args.y,sprite=BulletSprites.round[color],safe=true,spriteTransparency=0,direction=args.direction,speed=0,lifeFrame=args.lifeFrame or 99999,invincible=true}
             core.r=args.r or 100
             core.span=args.span or math.pi/4
+            core.spanRef=core.span
             core.mode=MODES.AROUND_ENEMY
             core.enterFrame=0
             core.rotateDir=0
@@ -224,8 +225,13 @@ return {
                 if c.mode==MODES.POINT then
                     local startFrame=5
                     local orbFrame=startFrame+prepFrame+activeFrame+20
-                    if modeFrame==startFrame then
+                    if modeFrame<startFrame then
+                        c.span=c.spanRef*(1 - (modeFrame+1)/startFrame)
+                    elseif modeFrame==startFrame then
                         SFX:play('enemyCharge',true)
+                        Event.EaseEvent{
+                            obj=c,aimKey='span',aimValue=c.spanRef,easeFrame=prepFrame,progressFunc=Event.sineOProgressFunc
+                        }
                         c.pointMoveRatio=0.1
                         for angleRatio=-0.5,0.5,0.25 do
                             local cSideLaserUnit=Laser.LaserUnit{x=c.x,y=c.y,direction=c.direction,sprite=BulletSprites.laserDark[color],safe=true,radius=1,speed=0,lifeFrame=240,extraUpdate={fanComponentUpdate, laserUpdate}}

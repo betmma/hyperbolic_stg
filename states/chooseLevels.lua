@@ -54,10 +54,10 @@ return {
         elseif isPressed('x') or isPressed('escape')then
             SFX:play('select')
             self:switchState(self.STATES.MAIN_MENU)
-        elseif isPressed('[') then
+        elseif DEV_MODE and isPressed('[') then
             SFX:play('select')
             self.save.levelData[levelID].passed=math.max(self.save.levelData[levelID].passed-1,0)
-        elseif isPressed(']') then
+        elseif DEV_MODE and isPressed(']') then
             SFX:play('select')
             self.save.levelData[levelID].passed=math.min(self.save.levelData[levelID].passed+1,2)
         end
