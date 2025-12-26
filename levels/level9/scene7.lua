@@ -3,7 +3,7 @@ return {
     user='okina',
     spellName='Secret Ceremony "One Eyed Bat"',
     make=function()
-        G.levelRemainingFrame=7200
+        G.levelRemainingFrame=5400
         Shape.removeDistance=1e100
         local a,b
         local en

@@ -385,16 +385,6 @@ return {
                     zh_cn = '她的位置很低。向下射击的升级在这里非常有用。',
                 }
             },
-            [27] = {
-                quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
-                },
-                spellName = {
-                    en_us = 'Barrier "Boundary of Monad and Dyad"',
-                    zh_cn = '结界「己与彼的境界」',
-                },
-            },
             -- level 3
             [132] = {
                 spellName = {
@@ -1058,6 +1048,10 @@ return {
                     en_us = 'Explosion Sign "Critical Mass"',
                     zh_cn = '爆符「临界质量」',
                 },
+                hint = {
+                    en_us = 'Watch out the flashing bullet, or try to remove all normal bullets!',
+                    zh_cn = '注意闪烁的子弹，或者尝试消除所有普通子弹！',
+                }
             },
             [52] = {
                 quote = {
@@ -1068,6 +1062,10 @@ return {
                     en_us = 'Atomic Fire "Nuclear Experiment Expansion"',
                     zh_cn = '核热「核反应扩大试验」',
                 },
+                hint = {
+                    en_us = 'Nukes grow in same speed and stop when touching other nukes. Use this information to predict safe spots.',
+                    zh_cn = '核弹以相同的速度膨胀，在触碰到其他核弹时停止。利用这些信息来预测安全点。',
+                }
             },
             [67] = {
                 quote = {
@@ -1078,6 +1076,10 @@ return {
                     en_us = 'Polygon Shape "Facet Sculpting Art"',
                     zh_cn = '多边形「刻面造形术」'
                 },
+                hint = {
+                    en_us = 'Different phases have different safe spots. Don\'t be frightened by the high speed of bullets.',
+                    zh_cn = '不同阶段有不同的安全点。不要被高速子弹吓到。',
+                }
             },
             [68] = {
                 quote = {
@@ -1088,6 +1090,10 @@ return {
                     en_us = 'Tessellation "N-Sided Nirvana"',
                     zh_cn = '密铺「N边的涅槃」'
                 },
+                hint = {
+                    en_us = 'Variations are limited. Get familiar with them to find safe spots quickly.',
+                    zh_cn = '变化是有限的。熟悉它们以快速找到安全点。',
+                }
             },
             [81] = {
                 spellName = {
@@ -1098,6 +1104,10 @@ return {
                     en_us = 'She is moving so frantically, and the danmaku is chaotic too. Should\'t Butoh be more elegant?',
                     zh_cn = '她的动作如此疯狂，弹幕也很混乱。舞踏不应该更优雅吗？',
                 },
+                hint = {
+                    en_us = 'That frantic movement is actually periodic. Don\'t move randomly, and I can see the gap between fast bullet chains.',
+                    zh_cn = '那疯狂的动作实际上是周期性的。不要随意移动，我就能看到快速弹链之间的间隙。',
+                }
             },
             [82] = {
                 spellName = {
@@ -1105,9 +1115,13 @@ return {
                     zh_cn = '秘仪「阊阖九重天门」',
                 },
                 quote = {
-                    en_us = 'Nine heaven gates look solemn and majestic, but hesitate too much before them will leave no time to do damage.',
-                    zh_cn = '九扇天门看起来庄严而宏伟，但在它们面前犹豫太久，就没有时间打伤害了。',
+                    en_us = 'Nine heaven gates look solemn and majestic. But why are they scissor gates?',
+                    zh_cn = '九扇天门看起来庄严而宏伟。但为什么像伸缩门？',
                 },
+                hint = {
+                    en_us = 'There seems no trick here. Just find the right timing to pass through the gates quickly.',
+                    zh_cn = '似乎没有什么技巧。只要找到合适的时机快速通过天门即可。',
+                }
             },
             [83] = {
                 spellName = {
@@ -1118,6 +1132,10 @@ return {
                     en_us = 'Huge bats are flying around, their wings shrouding me. But the big eyes detached from the body seems more irritating.',
                     zh_cn = '巨大的蝙蝠在我周围飞翔，它们的翅膀笼罩着我。但从身体上脱离的大眼睛似乎更让人不安。',
                 },
+                hint = {
+                    en_us = 'Move in large circles can avoid the bullets, but be aware of the time limit.',
+                    zh_cn = '绕大圈移动可以躲避子弹，但要注意时间限制。',
+                }
             },
             [111] = {
                 spellName = {
@@ -1127,6 +1145,10 @@ return {
                 quote = {
                     en_us = 'Triangle creatures walk by flipping their sides. Would they be confused which vertex walks to the front?',
                     zh_cn = '三角生物通过翻转它们的边走动。它们会搞混哪个顶点走在前面吗？',
+                },
+                hint = {
+                    en_us = 'For that tall triangle, circle around the vertex with smallest angle is safer.',
+                    zh_cn = '对于那个高三角形，绕着最小角的顶点转会更安全。',
                 }
             },
             [112] = {
@@ -1137,6 +1159,10 @@ return {
                 quote = {
                     en_us = 'Hugest bullets I have ever seen! The whole area is filled with them.',
                     zh_cn = '我见过的最大子弹！整个区域都被它们填满了。',
+                },
+                hint = {
+                    en_us = 'I have to slip through the tiny gaps in the second phase.',
+                    zh_cn = '在第二阶段，我必须穿过狭小的缝隙。',
                 }
             },
             -- level 10
@@ -1231,6 +1257,16 @@ return {
                 }
             },
             -- level 11
+            [27] = {
+                spellName = {
+                    en_us = 'Barrier "Boundary of Monad and Dyad"',
+                    zh_cn = '结界「己与彼的境界」',
+                },
+                quote = {
+                    en_us = 'Sending bullets through the barrier to surround me. So convenient to manipulate space like this.',
+                    zh_cn = '通过结界传送子弹包围我。这样操纵空间真方便。',
+                },
+            },
             [74] = {
                 spellName = {
                     en_us = 'Barrier "Flickering of the Real and Reflected"',
@@ -1302,7 +1338,7 @@ return {
                     zh_cn = '正弦波在我周围振荡！真是混乱的量子阱。',
                 }
             },
-            -- boss spellcards
+            -- level 12 (final bosses spellcards)
             [101] = {
                 spellName = {
                     en_us = 'Music Sign "Sly Musical Score"',
@@ -1420,8 +1456,8 @@ return {
             },
             [47] = {
                 quote = {
-                    en_us = 'not come up yet :P',
-                    zh_cn = '还没想好 :P',
+                    en_us = 'So many bullets exploding here! Is she trying to blow up the whole area?',
+                    zh_cn = '这么多子弹在爆炸！她是想炸掉整个区域吗？',
                 },
                 spellName = {
                     en_us = 'Magic Sign "Explosive Marionette"',

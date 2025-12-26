@@ -12,14 +12,14 @@ return {
         local sideNum,angleNum=4,5
         en=Enemy{x=400,y=300,mainEnemy=true,maxhp=10800,hpSegments={0.8,0.5,0.2},hpSegmentsFunc=function(self,hpLevel)
             if hpLevel==1 then
-                sideNum=5
-                angleNum=4
-            elseif hpLevel==2 then
-                sideNum=7
-                angleNum=3
-            else
                 sideNum=3
                 angleNum=7
+            elseif hpLevel==2 then
+                sideNum=8
+                angleNum=3
+            else
+                sideNum=7
+                angleNum=3
             end
             Enemy.hpSegmentsFuncShockwave(self,hpLevel)
             -- a.spawnEvent.frame=a.spawnEvent.period-60
@@ -39,10 +39,39 @@ return {
         G.viewMode.mode=G.CONSTANTS.VIEW_MODES.FOLLOW
         G.viewMode.object=player
 
+        local function getPolygonVertices(x1,y1,x2,y2,sideNum,angleNum)
+            local vertices={}
+            local sideLength=BackgroundPattern.calculateSideLength(sideNum,angleNum)
+            for sideIndex=1,sideNum do
+                local alpha1=math.pi*2/angleNum+Shape.to(x2,y2,x1,y1)
+                table.insert(vertices,{x1,y1})
+                x1,y1=x2,y2
+                x2,y2=Shape.rThetaPos(x2,y2,sideLength,alpha1)
+            end
+            return vertices
+        end
+
+        local function randAngleDiffPolygon(sideNum,angleNum)
+            local sideLength=BackgroundPattern.calculateSideLength(sideNum,angleNum)
+            local xa,ya=0,0
+            local xb,yb=Shape.rThetaPos(xa,ya,sideLength,0)
+            local vertices=getPolygonVertices(xa,ya,xb,yb,sideNum,angleNum)
+            local angleDiffs={}
+            local x1,y1=vertices[#vertices][1],vertices[#vertices][2]
+            local angle1=Shape.to(x1,y1,vertices[1][1],vertices[1][2])
+            for i=2,#vertices-1 do
+                local x2,y2=vertices[i][1],vertices[i][2]
+                local angle2=Shape.to(x1,y1,x2,y2)
+                table.insert(angleDiffs,angle2-angle1)
+            end
+            return angleDiffs[math.random(1,#angleDiffs)]
+        end
+
         G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.FollowingTesselation{sideColor={0.9,0.7,0.18},sideNum=sideNum,angleNum=angleNum,toDrawNum=100}
+        G.backgroundPattern=BackgroundPattern.FollowingTesselation{sideColor={0.9,0.7,0.18},sideNum=sideNum,angleNum=angleNum,toDrawNum=60}
         G.backgroundPattern.dontDrawFaces=true
         backgroundPatt=G.backgroundPattern
+        local hplevelRef=1
         a=BulletSpawner{x=400,y=300,period=240,frame=160,lifeFrame=10000,bulletNumber=0,bulletSpeed=0,bulletLifeFrame=350,angle=0,range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,spawnBatchFunc=function(self)
             SFX:play('enemyShot',true,self.spawnSFXVolume)
             local sides=backgroundPatt.sidesTable
@@ -60,6 +89,7 @@ return {
                 obj=backgroundPatt,
                 delayFrame=120,
                 executeFunc=function()
+                    hplevelRef=en:getHPLevel()
                     backgroundPatt.angle=math.eval(0,999)
                     backgroundPatt.sideNum,backgroundPatt.angleNum=sideNum,angleNum
                     backgroundPatt:updateSides()
@@ -71,6 +101,7 @@ return {
                         period=1,
                         times=120,
                         executeFunc=function(self,times,maxTimes)
+                            en.safe=times+1<maxTimes
                             en.x,en.y=Shape.rThetaPos(centerPoint.x,centerPoint.y,distance*math.sin((1-(times+1)/maxTimes)*math.pi/2),angle)
                             a.x,a.y=en.x,en.y
                         end
@@ -84,7 +115,10 @@ return {
                     }
                 end
             }
-            local deltaAngle=math.eval(0,99999)
+            if hplevel~=hplevelRef then
+                return
+            end
+            local deltaAngle=randAngleDiffPolygon(sideNum,angleNum)
             for key,side in pairs(sides) do
                 local x1,y1,x2,y2=side[1].x,side[1].y,side[2].x,side[2].y
                 local angle1=Shape.to(x1,y1,x2,y2)+deltaAngle
@@ -125,30 +159,33 @@ return {
                 }
                 }
                 local tab2=copy_table(tab)
-                local toPlayerAngle=Shape.to(x1,y1,player.x,player.y)
-                if math.abs(math.modClamp(toPlayerAngle-angle1))<math.pi/2 then
+                local x1i,y1i=Shape.rThetaPos(x1,y1,10,angle1)
+                local dist=Shape.distanceToLine(player.x,player.y,x1,y1,x1i,y1i)
+                if dist<150 then
                     Laser(tab)
                 end
                 local angle2=Shape.to(x2,y2,x1,y1)+deltaAngle
                 tab2.x,tab2.y,tab2.direction=x2,y2,angle2
-                toPlayerAngle=Shape.to(x2,y2,player.x,player.y)
-                if math.abs(math.modClamp(toPlayerAngle-angle2))<math.pi/2 then
+                local x2i,y2i=Shape.rThetaPos(x2,y2,10,angle2)
+                dist=Shape.distanceToLine(player.x,player.y,x2,y2,x2i,y2i)
+                if dist<150 then
                     Laser(tab2)
                 end
             end
         end}
         
-        b=BulletSpawner{x=400,y=200,period=120,frame=0,lifeFrame=10000,bulletNumber=3,bulletSpeed=20,angle='player',range=0.3,bulletSprite=BulletSprites.giant.yellow,bulletLifeFrame=1800,bulletEvents={
-            -- function(cir)
-            --     Event.LoopEvent{
-            --         obj=cir,
-            --         period=1,
-            --         executeFunc=function()
-            --             cir.speed=cir.speed+0.2
-            --         end
-            --     }
-            -- end
-        }}
+        b=BulletSpawner{x=400,y=200,period=120,frame=0,lifeFrame=10000,bulletNumber=3,bulletSpeed=20,angle='0+999',bulletSprite=BulletSprites.round.yellow,bulletLifeFrame=1800,bulletExtraUpdate=function(self)
+            if self.frame<100 then
+                self.speed=self.speed+0.5
+            elseif self.frame<240 then
+                self.speed=self.speed-0.5
+            elseif self.frame==240 then
+                self.direction=Shape.toObj(self,player)
+                self:changeSpriteColor('red')
+            else
+                self.speed=self.speed+0.2
+            end
+        end}
         Event.LoopEvent{
             obj=en,
             period=1,

@@ -43,6 +43,16 @@ return {
         G.backgroundPattern:remove()
         G.backgroundPattern=BackgroundPattern.FollowingTesselation{sideColor={1,0.2,0.1},sideNum=sideNum,angleNum=angleNum,toDrawNum=50}
         backgroundPatt=G.backgroundPattern
+        local fade=function(self)
+            if self.frame+20==self.lifeFrame then
+                self.safe=true
+                self.spriteTransparency=0.5
+            end
+            if self.frame+20>self.lifeFrame then
+                self.spriteTransparency=self.spriteTransparency-0.5/20
+            end
+        end
+        local hplevelRef=1
         a=BulletSpawner{x=400,y=300,period=240,frame=160,lifeFrame=10000,bulletNumber=0,bulletSpeed=0,bulletLifeFrame=350,angle=0,range=math.pi*2,bulletSprite=BulletSprites.scale.yellow,spawnBatchFunc=function(self)
             SFX:play('enemyShot',true,self.spawnSFXVolume)
             local sides=backgroundPatt.sidesTable
@@ -60,6 +70,7 @@ return {
                 obj=backgroundPatt,
                 delayFrame=120,
                 executeFunc=function()
+                    hplevelRef=en:getHPLevel()
                     backgroundPatt.angle=math.eval(0,999)
                     backgroundPatt.sideNum,backgroundPatt.angleNum=sideNum,angleNum
                     backgroundPatt:updateSides()
@@ -71,6 +82,7 @@ return {
                         period=1,
                         times=120,
                         executeFunc=function(self,times,maxTimes)
+                            en.safe=times+1<maxTimes
                             en.x,en.y=Shape.rThetaPos(centerPoint.x,centerPoint.y,distance*math.sin((1-(times+1)/maxTimes)*math.pi/2),angle)
                             a.x,a.y=en.x,en.y
                         end
@@ -84,6 +96,9 @@ return {
                     }
                 end
             }
+            if hplevel~=hplevelRef then
+                return
+            end
             for key,side in pairs(sides) do
                 local x1,y1,x2,y2=side[1].x,side[1].y,side[2].x,side[2].y
                 local angle1=Shape.to(x1,y1,x2,y2)
@@ -97,7 +112,7 @@ return {
                             period=1,
                             executeFunc=function()
                                 if cir.frame%10==0 then
-                                    local cir2=Circle{x=cir.x,y=cir.y,direction=Shape.to(cir.x,cir.y,centerRef[1],centerRef[2])+(math.pi*(hplevel-(hplevel==4 and 0.5 or 0))),speed=0,sprite=BulletSprites.crystal.red,lifeFrame=480-cir.frame,}
+                                    local cir2=Circle{x=cir.x,y=cir.y,direction=Shape.to(cir.x,cir.y,centerRef[1],centerRef[2])+(math.pi*(hplevel-(hplevel==4 and 0.5 or 0))),speed=0,sprite=BulletSprites.crystal.red,lifeFrame=360-cir.frame,extraUpdate=fade}
                                     Event.DelayEvent{
                                         obj=cir2,
                                         delayFrame=t0+120-en.frame,

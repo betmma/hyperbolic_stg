@@ -67,7 +67,7 @@ return {
             if self.levelIsTimeoutSpellcard and not G.replay and self.levelRemainingFrame==60 then -- for normal levels it's done by enemy:dieEffect
                 ScreenshotManager.preSave(levelID)
             end
-            if self.levelRemainingFrame==0 then
+            if self.levelRemainingFrame==0 and not G.preWin then -- if time's up and main enemy is already dead, should not trigger win/lose again
                 if self.levelIsTimeoutSpellcard then
                     if not G.replay then 
                         ScreenshotManager.save(levelID)
@@ -77,6 +77,7 @@ return {
                     self:lose()
                 end
             end
+            self.levelRemainingFrame=math.max(self.levelRemainingFrame,0) -- prevent negative frame count due to main enemy death happening at 0~1 seconds left
         end
     end,
     draw=G.CONSTANTS.DRAW,
