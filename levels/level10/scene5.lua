@@ -210,7 +210,16 @@ return {
             self.spawnCircleRange=-self.spawnCircleRange
         end}
         Event.LoopEvent{
-            obj=en,period=300,frame=0,executeFunc=function(self,times,maxTimes)
+            obj=en,period=1,executeFunc=function(self,times,maxTimes) -- secret nickname: is player out of main mountain?
+                local outside=false
+                for i=1,2 do
+                    local line=lines[i]
+                    if math.distance(Player.objects[1].x,Player.objects[1].y,line[5],Shape.axisY)<line[6] then
+                        outside=true
+                        break
+                    end
+                end
+                player.outsideMainMountain=outside
             end
         }
     end

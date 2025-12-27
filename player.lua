@@ -636,11 +636,13 @@ function Player:grazeEffect(amount)
     -- grazeHpRegen
     self.hp=math.clamp(self.hp+self.grazeHpRegen*amount,0,self.maxhp)
     self.grazeCount=self.grazeCount+amount
-    self.grazeCountForFlashbomb=self.grazeCountForFlashbomb+amount
-    
-    if self.accumulativeFlashbomb and self.grazeCountForFlashbomb%self.grazeReqForFlashbomb==0 then -- play sound when reaching each flashbomb threshold
+    local prevCount=self.grazeCountForFlashbomb
+    local newCount=prevCount+amount
+    local req=self.grazeReqForFlashbomb
+    if self.accumulativeFlashbomb and math.modClamp(newCount,0,req/2)>=0 and math.modClamp(prevCount,0,req/2)<0 then -- play sound when reaching each flashbomb threshold. It's possible to graze multiple or <1 graze at once, so %req==0 will miss some cases.
         SFX:play('extend',true)
     end
+    self.grazeCountForFlashbomb=newCount
 end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 
@@ -656,7 +658,7 @@ function Player:hitEffect(damage,isDirect)
         return
     end
     damage=damage or 1
-    self.damageTaken=self.damageTaken+damage
+    self.damageTaken=self.damageTaken+math.min(damage,self.hp) -- only count actual damage taken
     self.hp=self.hp-damage
     self.hurt=true
     self.dieFrame=self.frame

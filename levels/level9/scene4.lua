@@ -139,6 +139,9 @@ return {
                             executeFunc=function()
                                 local the=dir0
                                 local r
+                                if (cir.frame+key)%10==0 then
+                                    cir.grazed=false -- allow multiple grazing on laser
+                                end
                                 if cir.frame<t1 then
                                     r=A/t1*cir.frame
                                 elseif cir.frame<t2 then

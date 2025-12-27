@@ -1139,7 +1139,7 @@ return {
             },
             [111] = {
                 spellName = {
-                    en_us = 'Triangular Shape "Triangle Creature"',
+                    en_us = 'Triangular Shape "Triangle Creatures"',
                     zh_cn = '三角形「三角生物」',
                 },
                 quote = {
@@ -1174,6 +1174,10 @@ return {
                 quote = {
                     en_us = 'Snake reborns itself by eating its own tail. Too similar to ecdysis?',
                     zh_cn = '蛇通过吃掉自己的尾巴来重生。和蜕皮太像了吧？',
+                },
+                hint = {
+                    en_us = 'Avoid being surrounded by the snake body.',
+                    zh_cn = '避免被蛇身包围。',
                 }
             },
             [114] = {
@@ -1184,6 +1188,10 @@ return {
                 quote = {
                     en_us = 'Merging streams of data into a single piece, it would be cool as a download animation, much better than flying papers.',
                     zh_cn = '将数据流合并为一个整体，作为下载动画会很酷，比纸张飞来飞去好得多。',
+                },
+                hint = {
+                    en_us = 'Identify the moving direction of the stream. Don\'t stay in the wrong side!',
+                    zh_cn = '识别数据流的移动方向。不要待在错误的一侧！',
                 }
             },
             [115] = {
@@ -1194,6 +1202,10 @@ return {
                 quote = {
                     en_us = 'A way to remove impurities in her memory. But there is always a bit not touched.',
                     zh_cn = '一种清除她记忆中杂质的方法。但总有一部分没有被触及。',
+                },
+                hint = {
+                    en_us = 'Go against the arrow to find the safe spot.',
+                    zh_cn = '逆着箭头前进以找到安全点。',
                 }
             },
             [116] = {
@@ -1204,6 +1216,10 @@ return {
                 quote = {
                     en_us = 'A breeze that purifies bullets in its path. Snapping open the fan is cool.',
                     zh_cn = '一阵净化子弹的微风。猛地打开扇子真是太酷了。',
+                },
+                hint = {
+                    en_us = 'Removing dense bullets is good for first phase.',
+                    zh_cn = '消除密集的子弹对第一阶段有好处。',
                 }
             },
             [117] = {
@@ -1214,6 +1230,10 @@ return {
                 quote = {
                     en_us = 'A beautiful landscape painting depicting the harmony between mountains and seas... if the danmaku is not this dense.',
                     zh_cn = '一幅美丽的风景画，描绘了山与海之间的和谐……如果弹幕没有这么密的话。',
+                },
+                hint = {
+                    en_us = 'In the second phase, I can attract orb bullets aside to ease the pressure.',
+                    zh_cn = '在第二阶段，我可以将大玉子弹吸引到一旁以减轻压力。',
                 }
             },
             [118] = {
@@ -1224,6 +1244,10 @@ return {
                 quote = {
                     en_us = 'The crystal suddenly arranges water into ordered pattern. A mesmerizing sight.',
                     zh_cn = '晶体突然将水排列成有序的图案。令人着迷的景象。',
+                },
+                hint = {
+                    en_us = 'The background hints the safe spots when water forms patterns.',
+                    zh_cn = '背景提示了水形成图案时的安全点。',
                 }
             },
             [119] = {
@@ -1234,6 +1258,10 @@ return {
                 quote = {
                     en_us = 'Over eons, fossils are even moving, but her stones remain unchanged.',
                     zh_cn = '超越万古，化石甚至在移动，但她的石头保持不变。',
+                },
+                hint = {
+                    en_us = 'Switch the view model to move between cells formed by fixed yellow stones. That transparent Yin-Yang orb indicates where I will be after switching.',
+                    zh_cn = '切换投影模型，才能在固定的黄色石头形成的单元格之间移动。那个透明的阴阳玉表示切换后我将所在的位置。',
                 }
             },
             [120] = {
@@ -1244,6 +1272,10 @@ return {
                 quote = {
                     en_us = 'Stopped time seems that I have plenty of time to dodge, but new bullets will come soon! Ruthless competition of species evolution.',
                     zh_cn = '时间停止似乎让我有充足的时间躲避，但新一轮子弹很快就会到来！是在说物种进化中的无情竞争吧。',
+                },
+                hint = {
+                    en_us = 'Time stops when I stay still. Get familiar with the timing of new bullets coming.',
+                    zh_cn = '当我静止时，时间会停止。熟悉新子弹到来的时机。',
                 }
             },
             [121] = {
@@ -1254,6 +1286,10 @@ return {
                 quote = {
                     en_us = 'Crazy danmaku representing four seasons is swirling around, while the Iwakura remains the only safe place.',
                     zh_cn = '象征四季的疯狂弹幕在肆虐，而磐座是唯一的安全之地。',
+                },
+                hint = {
+                    en_us = 'There is exactly one safe spot for all seasons. Find it and stay there.',
+                    zh_cn = '有一个所有季节的安全点。找到它，待在那里。',
                 }
             },
             -- level 11
@@ -2060,6 +2096,20 @@ return {
             description = {
                 en_us = 'The HP design is to reduce such situation...! So unlucky of you.',
                 zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
+            },
+        },
+        GapYoukai = {
+            name = {
+                en_us = 'Gap Youkai',
+                zh_cn = '隙间妖怪',
+            },
+            condition = {
+                en_us = 'Perfectly clear 10-5 when outside of the mountains',
+                zh_cn = '在山的外侧无伤通过10-5',
+            },
+            description = {
+                en_us = 'Only gap youkai can pass through both mountain and sea so easily.',
+                zh_cn = '只有隙间妖怪才能如此轻松地穿越山和海。',
             },
         },
         MaginotLine = {

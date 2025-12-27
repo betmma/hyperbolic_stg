@@ -38,7 +38,7 @@ return {
             for i=0,num-1 do
                 local theta=i/num*math.pi*2
                 local x,y=Shape.rThetaPos(center.x,center.y,r,theta)
-                local bullet=Circle{x=x,y=y,speed=0,lifeFrame=10000,sprite=BulletSprites.explosion.magenta,radius=0.9,safe=true,highlight=false,invincible=true,spriteTransparency=0,extraUpdate={
+                local bullet=Circle{x=x,y=y,speed=0,lifeFrame=10000,sprite=BulletSprites.explosion.gray,radius=0.9,safe=true,highlight=true,invincible=true,spriteTransparency=0,extraUpdate={
                     function(self)
                         if not self.preSignalled and preSignalLine and Shape.leftToLine(self.x,self.y,preSignalLine[1],preSignalLine[2],preSignalLine[3],preSignalLine[4]) then
                             self.preSignalled=true
@@ -50,7 +50,8 @@ return {
                         if signalLine and self.safe==true and Shape.leftToLine(self.x,self.y,signalLine[1],signalLine[2],signalLine[3],signalLine[4]) then
                             self.safe=false
                             local dist=math.clamp(1-Shape.distanceObj(self,player)/120,0,1)*0.7
-                            self.spriteColor={dist,dist,dist,1}
+                            local baseColor=self.spriteColorBase
+                            self.spriteColor={dist*baseColor[1],dist*baseColor[2],dist*baseColor[3],1}
                         elseif not signalLine and not self.safe then
                             self.safe=true
                         end
@@ -63,6 +64,8 @@ return {
                     end
                 }}
                 bullet.forceDrawNormalSprite=true
+                local seed=i*999+r*776
+                bullet.spriteColorBase={math.pseudoRandom(seed),math.pseudoRandom(seed,13),math.pseudoRandom(seed,29),1}
                 bullet.spriteColor={0,0,0,1}
             end
         end

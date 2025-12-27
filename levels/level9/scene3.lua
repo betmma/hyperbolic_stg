@@ -112,17 +112,18 @@ return {
                             period=1,
                             executeFunc=function()
                                 if cir.frame%10==0 then
-                                    local cir2=Circle{x=cir.x,y=cir.y,direction=Shape.to(cir.x,cir.y,centerRef[1],centerRef[2])+(math.pi*(hplevel-(hplevel==4 and 0.5 or 0))),speed=0,sprite=BulletSprites.crystal.red,lifeFrame=360-cir.frame,extraUpdate=fade}
+                                    local cir2=Circle{x=cir.x,y=cir.y,direction=Shape.to(cir.x,cir.y,centerRef[1],centerRef[2])+(math.pi*(hplevel-(hplevel==4 and 0.5 or 0))),speed=0,sprite=BulletSprites.crystal.red,lifeFrame=360-cir.frame-(hplevel==3 and 30 or 0),extraUpdate=fade}
                                     Event.DelayEvent{
                                         obj=cir2,
                                         delayFrame=t0+120-en.frame,
                                         executeFunc=function()
                                             cir2.speed=30
+                                            local increaseBase=(hplevel==3 and 30 or 60)
                                             Event.EaseEvent{
                                                 obj=cir2,
                                                 aimTable=cir2,
                                                 aimKey='speed',
-                                                aimValue=30+60*(1-hpP),
+                                                aimValue=30+increaseBase*(1-hpP),
                                                 easeFrame=100
                                             }
                                         end

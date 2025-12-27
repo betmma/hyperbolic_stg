@@ -174,10 +174,20 @@ Nickname{
     isSecret=true,
 }
 Nickname{
+    name='GapYoukai',
+    isSecret=true,
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==117 and player.outsideMainMountain and perfect then -- 10-5 Watatsuki mountain and sea spellcard
+            return true
+        end
+    end
+}
+Nickname{
     name='MaginotLine',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
-        if levelData.id==75 and not G.phase4EnteredInner then -- yukari Fortress spellcard
+        if levelData.id==75 and not G.phase4EnteredInner then -- 11-3 yukari Fortress spellcard
             return true
         end
         return false
@@ -188,7 +198,7 @@ Nickname{
     name='BombSurvivor',
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
-        if levelData.id==109 and G.bombExploded==true then -- kotoba fuse web spellcard
+        if levelData.id==109 and G.bombExploded==true then -- 12-8 kotoba fuse web spellcard
             return true
         end
         return false

@@ -36,7 +36,7 @@ return {
         local tesseAngle=math.eval(0,999)
         local adjacentPoints,angles,sidesTable=BackgroundPattern.tesselation(center,tesseAngle,3,7,0,{x=400,y=3500},42,nil,true)
         G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.FixedTesselation{centerPoint=center,sideColor={0.1,0.1,0.5},faceColor={0.06,0.06,0.3},sideNum=3,angleNum=7,toDrawNum=42}
+        G.backgroundPattern=BackgroundPattern.FixedTesselation{centerPoint=center,angle=tesseAngle,sideColor={0.1,0.1,0.5},faceColor={0.06,0.06,0.3},sideNum=3,angleNum=7,toDrawNum=42}
         Event.DelayEvent{
             obj=en,delayFrame=60,executeFunc=function()
                 SFX:play('enemyShot',true,2)
