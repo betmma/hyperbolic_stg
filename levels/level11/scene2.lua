@@ -180,7 +180,7 @@ return {
 
         local basePos={x=400,y=300}
 
-        a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=40,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,bulletEvents={
+        a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=40,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,visible=false,bulletEvents={
             function(cir,args,self)
                 bulletBase(cir)
                 if args.index%2==1 then
@@ -231,27 +231,44 @@ return {
                 local testing=0
                 if frame==20 then
                     SFX:play('enemyCharge',true)
-                    Effect.Charge{obj=player,particleSize=30,particleSpeed=0.5,color={0.3,0.3,0.3}}
+                    Effect.Charge{obj=player,particleSize=10,particleSpeed=0.5,color={0.3,0.3,0.3}}
                 end
                 if frame==60 then
                     SFX:play('enemyPowerfulShot',true)
                 end
                 if frame==math.max(1200-testing,2) then
                     SFX:play('enemyCharge',true)
-                    b=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed=15,bulletLifeFrame=3500,angle='player',range=math.pi/3,bulletSprite=BulletSprites.bigStar.blue,bulletEvents={
+                    b=BulletSpawner{x=400,y=300,period=300,frame=240,lifeFrame=10000,bulletNumber=15,bulletSpeed=15,bulletLifeFrame=3500,angle='player',range=math.pi/3,bulletSprite=BulletSprites.bigStar.blue,visible=false,bulletEvents={
                         function(cir,args,self)
                             if args.index==1 then
-                                SFX:play('enemyPowerfulShot',true)
+                                SFX:play('enemyShot',true,0.5)
                             end
                             bulletBase(cir)
+                            --- a potential blue star bullets remake that looks like circle around corners instead of current 2-part line. But it's harder to dodge
+                            -- local pointidx=self.spawnEvent.executedTimes%#player.border.points+1
+                            -- local point=player.border.points[pointidx]
+                            -- local point2=player.border.points[pointidx%#player.border.points+1]
+                            -- local angleBase=Shape.to(point.x,point.y,point2.x,point2.y)
+                            -- local angleAdd=math.pi*(args.index-0.5)/(self.bulletNumber)
+                            -- cir.x,cir.y,cir.direction=Shape.rThetaPosT(point.x,point.y,1,angleBase+angleAdd)
+                            -- cir.pointidx=pointidx
+                            -- cir.angleAdd=angleAdd
                             cir.x,cir.y=Shape.rThetaPos(cir.x,cir.y,80-10*2*math.abs(args.index/b.bulletNumber-0.5),cir.direction)
                             cir.direction=Shape.to(cir.x,cir.y,b.x,b.y)
                         end
+                    },bulletExtraUpdate={
+                        -- function(self)
+                        --     local pointidx=self.pointidx
+                        --     local point=player.border.points[pointidx]
+                        --     local point2=player.border.points[pointidx%#player.border.points+1]
+                        --     local angleBase=Shape.to(point.x,point.y,point2.x,point2.y)
+                        --     self.x,self.y,self.direction=Shape.rThetaPosT(point.x,point.y,1+self.frame/6,angleBase+self.angleAdd)
+                        -- end
                     }}
                 end
-                if frame==2400 then
-                    SFX:play('enemyCharge',true)
-                end
+                -- if frame==2400 then
+                --     SFX:play('enemyCharge',true)
+                -- end
                 if frame>=2400 then
                     Shape.moveTowards(basePos,player,0.1,true)
                     a.x,a.y=basePos.x,basePos.y
@@ -276,7 +293,7 @@ return {
                 end
                 if frame==6000-testing then
                     SFX:play('enemyCharge',true)
-                    a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=10,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,bulletEvents={
+                    a=BulletSpawner{x=400,y=300,period=150,frame=80,lifeFrame=10000,bulletNumber=10,bulletSpeed=20,bulletLifeFrame=3500,angle='0+360',range=math.pi*2,bulletSprite=BulletSprites.bigStar.yellow,visible=false,bulletEvents={
                         function(cir,args,self)
                             bulletBase(cir)
                         end

@@ -132,8 +132,8 @@ return {
             local toDir=Shape.to(x,y,txy[1],txy[2])
             return toDir+(isAboveWater(x,y) and 0 or math.pi)
         end
-        G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.FollowingTesselation()
+        -- G.backgroundPattern:remove()
+        -- G.backgroundPattern=BackgroundPattern.FollowingTesselation()
         local drawRef=G.backgroundPattern.draw
         local function getDiskRadius()
             return G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel]

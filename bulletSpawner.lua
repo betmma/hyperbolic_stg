@@ -12,7 +12,10 @@ local BulletSpawner=Shape:extend()
 function BulletSpawner:new(args)
     BulletSpawner.super.new(self, args)
     self.radius=args.radius or 5
-    self.visible=args.visible or (self.lifeFrame>60 and true or false)
+    self.visible=args.visible
+    if self.visible==nil then
+       self.visible=(self.lifeFrame>60 and true or false)
+    end
     self.sprite=BulletSprites.lotus[args.bulletSprite and Asset.spectrum1MapSpectrum2[args.bulletSprite.data.color] or 'gray']
     self.period=args.period or 60
     self.frame=args.frame or 0
