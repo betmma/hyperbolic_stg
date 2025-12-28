@@ -97,6 +97,18 @@ function Nickname:drawText()
     end
 end
 
+Nickname.BeatTheGame=Nickname{
+    name='BeatTheGame',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==100 then -- 12-9, final level
+            if G.save.nicknameUnlock[self.name]~=true then -- first time unlock, go to ending screen
+                G:switchState(G.STATES.ENDING)
+            end
+            return true
+        end
+    end,
+}
 ProgressedNickname{
     name='PassAllScenes',
     progressFunc=function()

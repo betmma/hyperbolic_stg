@@ -1683,6 +1683,24 @@ return {
             en_us = 'Digits entered: {digits}',
             zh_cn = '已输入数字: {digits}',
         },
+        ending = {
+            congratulations = {
+                en_us = 'Congratulations!!',
+                zh_cn = '恭喜！',
+            },
+            epilogue = {
+                en_us = 'The hyperbolic domain has become stable.\n\nWhen people leave this place,\nthey find that it connects\nmultiple remote locations in Gensokyo.\nIt becomes a fast travel hub!',
+                zh_cn = '双曲域变得稳定了。\n\n当人们离开这里时，\n他们发现它连接了\n幻想乡中多个遥远的地点。\n它变成了一个快速旅行的枢纽！',
+            },
+            thanksForPlaying = {
+                en_us = 'Thanks for playing!',
+                zh_cn = '感谢游玩！',
+            },
+            yearAndAuthor = {
+                en_us = '2025 Betmma',
+                zh_cn = '2025 Betmma',
+            }
+        }
     },
     notice = {
         unlockShop = {
@@ -2006,6 +2024,20 @@ return {
     },
     ---@type table<string, NicknameLocalization>
     nickname = {
+        BeatTheGame = {
+            name = {
+                en_us = 'Hyperbolic Conqueror',
+                zh_cn = '双曲征服者',
+            },
+            condition = {
+                en_us = 'Game completed',
+                zh_cn = '通关游戏',
+            },
+            description = {
+                en_us = 'You handled the incident!\nHit Z to see the ending screen.',
+                zh_cn = '你解决了异变！\n按Z键查看结局画面。',
+            },
+        },
         PassAllScenes = {
             name = {
                 en_us = 'Hyperbolic Master',
@@ -2016,8 +2048,8 @@ return {
                 zh_cn = '通过所有场景',
             },
             description = {
-                en_us = 'Congratulations! You have mastered the hyperbolic domain and all its spellcards!',-- Hit Z to see the ending screen.',
-                zh_cn = '恭喜你！你已经掌握了双曲域及其所有符卡！',--按Z键查看结局画面。',
+                en_us = 'Congratulations! You have mastered the hyperbolic domain and all its spellcards!',
+                zh_cn = '恭喜你！你已经掌握了双曲域及其所有符卡！',
             },
         },
         Pass1Scene = {

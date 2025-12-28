@@ -5,6 +5,7 @@ return {
         {text='Options',value='OPTIONS'},
         {text='Music Room',value='MUSIC_ROOM'},
         {text='Nicknames',value='NICKNAMES'},
+        -- {text='Ending',value='ENDING'}, -- test only
         {text='Exit',value='EXIT'},
     },
     chosen=1,
@@ -22,7 +23,9 @@ return {
         REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
         MUSIC_ROOM=function(self)self:switchState(self.STATES.MUSIC_ROOM)end,
         NICKNAMES=function(self)self:switchState(self.STATES.NICKNAMES)end,
-        OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end})
+        OPTIONS=function(self)self:switchState(self.STATES.OPTIONS) end,
+        ENDING=function(self)self:switchState(self.STATES.ENDING) end}
+        )
         Asset.titleBatch:clear()
         Asset.titleBatch:add(Asset.title,70,-30,0,0.5,0.5,0,0)
     end,

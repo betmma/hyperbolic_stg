@@ -44,6 +44,13 @@ return {
                 bool=true
             end
             self.save.nicknameUnlock[currentNickname.name]=bool
+        elseif isPressed('z') then
+            local nicknames=Nickname.nicknames
+            local currentNickname=nicknames[self.currentUI.chosen]
+            if currentNickname==Nickname.BeatTheGame and self.save.nicknameUnlock[currentNickname.name]==true then
+                SFX:play('select')
+                G:switchState(G.STATES.ENDING)
+            end
         end
     end,
     draw=function(self)

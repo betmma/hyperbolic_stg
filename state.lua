@@ -96,10 +96,11 @@ G={
         CHOOSE_LEVELS='CHOOSE_LEVELS',
         IN_LEVEL='IN_LEVEL',
         PAUSE='PAUSE',
-        GAME_END='GAME_END', -- either win or lose
+        GAME_END='GAME_END', -- either win or lose a scene
         SAVE_REPLAY='SAVE_REPLAY',
         SAVE_REPLAY_ENTER_NAME='SAVE_REPLAY_ENTER_NAME',
         LOAD_REPLAY='LOAD_REPLAY',
+        ENDING='ENDING', -- ending screen after beating the game
         TRANSITION_SLIDE='TRANSITION_SLIDE', -- a state that slides the screen. Draw both last state and next state, while update is only called for next state
         TRANSITION_IMAGE='TRANSITION_IMAGE', -- an image that covers the screen and fades
     },
@@ -135,6 +136,19 @@ G={
         NICKNAMES={
             MAIN_MENU={
                 slideDirection='down'
+            },
+            ENDING={
+                transitionState='TRANSITION_IMAGE'
+            }
+        },
+        GAME_END={
+            ENDING={
+                transitionState='TRANSITION_IMAGE'
+            }
+        },
+        ENDING={
+            MAIN_MENU={
+                transitionState='TRANSITION_IMAGE'
             }
         },
         UPGRADES={
