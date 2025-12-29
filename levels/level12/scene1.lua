@@ -54,7 +54,7 @@ return {
                             SFX:play('hit2',true,3)
                             if hpp<0.5 then
                                 angle=angle+math.pi/15
-                                local x1,y1,dir=Shape.rThetaPosT(player.x,player.y,50,angle)
+                                local x1,y1,dir=Shape.rThetaPosT(player.x,player.y,80,angle)
                                 local note=Circle{x=x1,y=y1,lifeFrame=240,speed=20,sprite=Asset.bulletSprites.note.purple,radius=1.5,highlight=true,direction=dir+math.pi,extraUpdate={
                                     function(self)
                                         self.direction=self.direction+math.eval(0,0.14)

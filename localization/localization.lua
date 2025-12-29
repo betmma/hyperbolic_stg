@@ -1415,6 +1415,10 @@ return {
                 quote = {
                     en_us = 'Varied types of scores are flying around. I can\'t read music, but I can dodge.',
                     zh_cn = '各种类型的乐谱在空中飞舞。我不会读乐谱，但我可以躲避。',
+                },
+                hint = {
+                    en_us = 'Different types of scores have different active patterns. But, bypassing is always possible.',
+                    zh_cn = '不同类型的乐谱有不同的激活模式。但是，总是可以绕过它们。',
                 }
             },
             [102] = {
@@ -1425,6 +1429,10 @@ return {
                 quote = {
                     en_us = 'Is this the feeling of being trapped in koto as a tsukumogami?',
                     zh_cn = '作为付丧神被困在筝里的感觉……？',
+                },
+                hint = {
+                    en_us = 'Circling to dodge the aimed bullets. The space is bigger than it looks.',
+                    zh_cn = '绕圈躲避自机狙。空间比看起来要大。',
                 }
             },
             [105] = {
@@ -1449,6 +1457,10 @@ return {
                 quote = {
                     en_us = 'After funeral procession leaves, the soul wanders around, trying to find the way home.',
                     zh_cn = '送葬队伍离开后，灵魂徘徊在四周，试图找到回家的路。',
+                },
+                hint = {
+                    en_us = 'I will need those fairies to find the way back.',
+                    zh_cn = '我需要那些妖精来找到回去的路。',
                 }
             },
             [106] = {
@@ -1459,6 +1471,10 @@ return {
                 quote = {
                     en_us = 'Their final performance! Does the incident come to an end?',
                     zh_cn = '她们的最后演出！异变就此结束了吗？',
+                },
+                hint = {
+                    en_us = 'Nothing special here, just dodge (^^;',
+                    zh_cn = '没什么特别的，只能躲 (^^;',
                 }
             },
             [107] = {
@@ -1469,6 +1485,10 @@ return {
                 quote = {
                     en_us = 'The true culprit reveals herself! By the way, I would never want a honeymoon like this.',
                     zh_cn = '真正的犯人出现了！不过，我绝对不想要这样的蜜月。',
+                },
+                hint = {
+                    en_us = 'Attract the tracing moon outwards for more space.',
+                    zh_cn = '将追踪月亮吸引到外侧以获得更多空间。',
                 }
             },
             [108] = {
@@ -1479,6 +1499,10 @@ return {
                 quote = {
                     en_us = 'I would be dead if there were not that missing tooth. Glad the mouth is virtual so I won\'t be covered with saliva...?',
                     zh_cn = '如果没有那颗缺失的牙齿，我早就死了。幸好嘴巴是虚拟的，这样我就不会沾上口水……？',
+                },
+                hint = {
+                    en_us = 'At the moment the mouth spawns, the less bright position is where gap is.',
+                    zh_cn = '嘴巴生成的那一刻，亮度较低的位置就是缺口所在。',
                 }
             },
             [109] = {
@@ -1489,6 +1513,10 @@ return {
                 quote = {
                     en_us = 'What a terrorist attack! Making fire every where and leaving me running around. Why isn\'t she afraid of the explosion?',
                     zh_cn = '什么恐怖袭击啊！到处点火，让我跑来跑去。她为什么不怕爆炸呢？',
+                },
+                hint = {
+                    en_us = 'I should care more about the inner part of the fuse web.',
+                    zh_cn = '我应该更关注引信网络的内侧。',
                 }
             },
             [100] = {
@@ -1499,6 +1527,10 @@ return {
                 quote = {
                     en_us = 'Uh, the most blinding spellcard ever! Makes me doubt if looking at this is really better than looking at the repairing space.',
                     zh_cn = '呃，有史以来最刺眼的符卡！让我怀疑看这个是否真的比看修复中的空间更好。',
+                },
+                hint = {
+                    en_us = 'The final spellcard isn\'t that hard!',
+                    zh_cn = '最终的符卡并不难！',
                 }
             },
             -- ex spellcards
@@ -1511,6 +1543,10 @@ return {
                     en_us = 'Scarlet Sign "Vampirish Plaza"',
                     zh_cn = '红符「吸血鬼广场」',
                 },
+                hint = {
+                    en_us = 'This is the first spellcard I made in following view (Reimu at center), and the implementation is not complete. Can you spot the difference of view from other spellcards?',
+                    zh_cn = '这是我制作的第一个跟随视角（灵梦在中心）的符卡，且实现尚不完整。你能发现这个符卡与其他符卡的视角区别吗？',
+                }
             },
             [43] = {
                 quote = {
@@ -1521,6 +1557,10 @@ return {
                     en_us = 'Divine Tool "Moriya\'s Elastic Ring"',
                     zh_cn = '神具「洩矢的弹性环」',
                 },
+                hint = {
+                    en_us = 'Probably not hard. This is another early made spellcard though.',
+                    zh_cn = '可能不难。不过这是另一个早期制作的符卡。',
+                }
             },
             [47] = {
                 quote = {
@@ -1531,6 +1571,10 @@ return {
                     en_us = 'Magic Sign "Explosive Marionette"',
                     zh_cn = '魔符「爆裂玩偶」',
                 },
+                hint = {
+                    en_us = 'This spellcard has most bullets in the game, I suppose.',
+                    zh_cn = '我猜这是游戏中子弹最多的符卡。',
+                }
             },
             [64] = {
                 quote = {
@@ -1541,6 +1585,10 @@ return {
                     en_us = '"Sterile Flowers of Murderous Intent"',
                     zh_cn = '「杀意的徒花」',
                 },
+                hint = {
+                    en_us = 'Note that these spellcard owners only have 1 spellcard. One of the reason why they are in Extra Stage.',
+                    zh_cn = '注意这些符卡的拥有者只有1张符卡。这是她们出现在Extra关卡的原因之一。',
+                }
             },
             [122] = {
                 spellName = {
@@ -1550,6 +1598,10 @@ return {
                 quote = {
                     en_us = 'Yeah, stage lights are needed in a sound stage. But this bright is surely excessive.',
                     zh_cn = '是啊，摄影棚里需要灯光。但这亮度实在是过于夸张了。',
+                },
+                hint = {
+                    en_us = 'Behind the rocket is safe from its explosion.',
+                    zh_cn = '火箭后方不会受到火箭爆炸的影响。',
                 }
             },
             [123] = {
@@ -1560,6 +1612,10 @@ return {
                 quote = {
                     en_us = 'I see many myselves, each controlling another! Though, doesn\'t the headache of controlling them prove multiple simulations can\'t possibly exist?',
                     zh_cn = '我看到了许多自己，每个都在控制另一个！不过，控制它们的艰难岂不是证明了多重模拟难以存在吗？',
+                },
+                hint = {
+                    en_us = 'Only use left and right key for simplicity.',
+                    zh_cn = '为了简化操作，只使用左右键。',
                 }
             },
             [103] = {
@@ -1570,6 +1626,10 @@ return {
                 quote = {
                     en_us = 'Huge wheels appear from far away and roll towards me. Though, are they really circles?',
                     zh_cn = '巨大的轮子从远处出现，向我滚来。不过，它们真的是圆形的吗？',
+                },
+                hint = {
+                    en_us = 'Moving too much is more likely to be surrounded by wheels.',
+                    zh_cn = '移动过多更容易被轮子包围。',
                 }
             }
         },
