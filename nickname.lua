@@ -4,13 +4,14 @@
 ---@field eventName string the event this nickname is associated with
 ---@field eventFunc fun(...):nil called when eventName event is posted. generally it should update statistics
 ---@field isSecret boolean if true, this nickname is not shown in nicknames menu when locked
+---@field extraLocalizeInputFunc fun():table additional key-value pairs to be added to Localize input when getting description text
 local Nickname=Object:extend()
 
 -- localization format: name, condition, description
 ---@class NicknameLocalization
----@field name localizationItem
----@field condition localizationItem
----@field description localizationItem
+---@field name localizationItem the string appearing out of box
+---@field condition localizationItem the string describing the condition to unlock this nickname, always shown
+---@field description localizationItem usually some comments, shown only when unlocked
 
 ---@type table<integer,Nickname>
 Nickname.nicknames={}
@@ -23,6 +24,7 @@ function Nickname:new(args)
     self.eventName=args.eventName
     self.eventFunc=args.eventFunc or function(...)end
     self.isSecret=args.isSecret or false
+    self.extraLocalizeInputFunc=args.extraLocalizeInputFunc or function()return {} end
     Nickname.nicknameCount=Nickname.nicknameCount+1
     self.ID=Nickname.nicknameCount
     Nickname.nicknames[Nickname.nicknameCount]=self
@@ -35,6 +37,39 @@ function Nickname:new(args)
     end)
 end
 
+---@return string name the display name of this nickname (from Localize)
+function Nickname:getName()
+    local ret=Localize{'nickname',self.name,'name'}
+    return ret
+end
+
+---@param unlocked boolean whether this nickname is unlocked
+---@return string text the description text of this nickname (from Localize)
+function Nickname:getText(unlocked)
+    local condition=Localize(self:_getConditionLocalizeInput())
+    if unlocked then
+        local description=Localize(self:_getDescriptionLocalizeInput())
+        return string.format('%s\n%s',condition,description)
+    else
+        return condition
+    end
+end
+
+---@return table localization input for condition string
+function Nickname:_getConditionLocalizeInput()
+    return {'nickname',self.name,'condition'}
+end
+
+---@return table localization input for description string
+function Nickname:_getDescriptionLocalizeInput()
+    local base={'nickname',self.name,'description'}
+    local toAdd=self:extraLocalizeInputFunc()
+    for k,v in pairs(toAdd) do
+        base[k]=v
+    end
+    return base
+end
+
 ---@class ProgressedNickname:Nickname display a progress bar in nickname menu when unlocked.
 ---@field progressFunc fun():number read from statistics and calculate filled ratio of progress bar.
 local ProgressedNickname=Nickname:extend()
@@ -42,14 +77,6 @@ function ProgressedNickname:new(args)
     self.progressFunc=args.progressFunc or function(self)return 0 end
     args.eventFunc=args.eventFunc or function(self)return self:progressFunc()>=1 end
     ProgressedNickname.super.new(self, args)
-end
-
----@class DetailedNickname:Nickname with extra detail string about progress.
----@field detailFunc fun():string read from statistics and use Localize to form and return a string to show in nickname menu.
-local DetailedNickname=Nickname:extend()
-function DetailedNickname:new(args)
-    self.detailFunc=args.detailFunc or function(self)return '' end
-    DetailedNickname.super.new(self, args)
 end
 
 local nicknamePending={}
@@ -124,23 +151,68 @@ ProgressedNickname{
     end,
     eventName=EventManager.EVENTS.WIN_LEVEL,
 }
+EventManager.listenTo(EventManager.EVENTS.LEAVE_LEVEL, function(level,scene,inReplay,win)
+    if not inReplay and not win then
+        G.save.statistics.loseCount=G.save.statistics.loseCount+1
+    end
+end)
 ProgressedNickname{
     name='Lose100Times',
     progressFunc=function()
-        G.save.statistics.loseCount=G.save.statistics.loseCount or 0
         return G.save.statistics.loseCount/100
     end,
-    eventName=EventManager.EVENTS.LOSE_LEVEL,
-    eventFunc=function()
-        G.save.statistics.loseCount=(G.save.statistics.loseCount or 0)+1
-        return G.save.statistics.loseCount/100>=1
+    eventName=EventManager.EVENTS.LEAVE_LEVEL
+}
+ProgressedNickname{
+    name='Lose300Times',
+    progressFunc=function()
+        return G.save.statistics.loseCount/300
+    end,
+    eventName=EventManager.EVENTS.LEAVE_LEVEL
+}
+ProgressedNickname{
+    name='Lose1000Times',
+    progressFunc=function()
+        return G.save.statistics.loseCount/1000
+    end,
+    eventName=EventManager.EVENTS.LEAVE_LEVEL,
+    extraLocalizeInputFunc=function(self)
+        return {count=G.save.statistics.loseCount}
     end,
 }
-DetailedNickname{
+ProgressedNickname{
+    name='Play30Minutes',
+    progressFunc=function()
+        return G.save.playTimeTable.playTimeOverall/(30*60)
+    end,
+    eventName=EventManager.EVENTS.LEAVE_LEVEL,
+}
+ProgressedNickname{
+    name='Play1Hour',
+    progressFunc=function()
+        return G.save.playTimeTable.playTimeOverall/(60*60)
+    end,
+    eventName=EventManager.EVENTS.LEAVE_LEVEL,
+}
+ProgressedNickname{
+    name='Play3Hours',
+    progressFunc=function()
+        return G.save.playTimeTable.playTimeOverall/(3*60*60)
+    end,
+    eventName=EventManager.EVENTS.LEAVE_LEVEL,
+}
+ProgressedNickname{
+    name='Play10Hours',
+    progressFunc=function()
+        return G.save.playTimeTable.playTimeOverall/(10*60*60)
+    end,
+    eventName=EventManager.EVENTS.LEAVE_LEVEL,
+}
+Nickname{
     name='Take10DamageIn1Scene',
-    detailFunc=function(self)
+    extraLocalizeInputFunc=function(self)
         local maxDamageTaken=G.save.statistics.maxDamageTaken or {levelData={level=0,scene=0},amount=0}
-        return Localize{'nickname',self.name,'detail',level=maxDamageTaken.levelData.level,scene=maxDamageTaken.levelData.scene,amount=maxDamageTaken.amount}
+        return {level=maxDamageTaken.levelData.level,scene=maxDamageTaken.levelData.scene,amount=maxDamageTaken.amount}
     end,
     eventName=EventManager.EVENTS.PLAYER_HIT,
     eventFunc=function(self,player)
@@ -156,11 +228,11 @@ DetailedNickname{
         return maxDamageTaken.amount>=10
     end,
 }
-DetailedNickname{
+Nickname{
     name='PerfectWinIn15Seconds',
-    detailFunc=function(self)
+    extraLocalizeInputFunc=function(self)
         local fastestWin=G.save.statistics.fastestWin or {levelData={level=0,scene=0},time=999}
-        return Localize{'nickname',self.name,'detail',level=fastestWin.levelData.level,scene=fastestWin.levelData.scene,time=string.format("%.2f",fastestWin.time)}
+        return{level=fastestWin.levelData.level,scene=fastestWin.levelData.scene,time=string.format("%.2f",fastestWin.time)}
     end,
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
@@ -261,5 +333,4 @@ ProgressedNickname{
 }
 
 Nickname.ProgressedNickname=ProgressedNickname
-Nickname.DetailedNickname=DetailedNickname
 return Nickname

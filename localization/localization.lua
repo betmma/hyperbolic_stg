@@ -2164,12 +2164,96 @@ return {
                 zh_cn = '必要的痛苦',
             },
             condition = {
-                en_us = 'Lose 100 times',
-                zh_cn = '满身疮痍100次',
+                en_us = 'Lose 100 times (retry also counts)',
+                zh_cn = '满身疮痍100次（重开也算）',
             },
             description = {
-                en_us = '100 times is just beginning. Come on and try again?',
-                zh_cn = '100次只是开始。再来一次吧？',
+                en_us = '100 times is just beginning in this game. Come on and try again?',
+                zh_cn = '100次只是游戏的开始。再来一次吧？',
+            },
+        },
+        Lose300Times = {
+            name = {
+                en_us = 'Moderate Pain',
+                zh_cn = '适度的痛苦',
+            },
+            condition = {
+                en_us = 'Lose 300 times',
+                zh_cn = '满身疮痍300次',
+            },
+            description = {
+                en_us = 'It would be impressive if you can beat the game before getting this nickname. (But then you won\'t see this message...)',
+                zh_cn = '如果你能在获得这个称号之前通关游戏，那还是很厉害的。（不过那样你就看不到这条消息了……）',
+            },
+        },
+        Lose1000Times = {
+            name = {
+                en_us = 'Extreme Pain',
+                zh_cn = '极度的痛苦',
+            },
+            condition = {
+                en_us = 'Lose 1000 times',
+                zh_cn = '满身疮痍1000次',
+            },
+            description = {
+                en_us = 'You can complain about the difficulty to me (^^;\nBtw, you have lost {count} times so far.',
+                zh_cn = '你可以向我抱怨游戏的难度 (^^;\n顺便说一下，你已满身疮痍{count}次了。',
+            },
+        },
+        Play30Minutes = {
+            name = {
+                en_us = 'Dazzling World',
+                zh_cn = '炫目世界',
+            },
+            condition = {
+                en_us = 'Play for 30 minutes',
+                zh_cn = '游玩30分钟',
+            },
+            description = {
+                en_us = 'Do you feel dizzy when looking at that zooming pattern in menus?',
+                zh_cn = '看着菜单中缩放的背景，你是否感到头晕目眩？',
+            },
+        },
+        Play1Hour = {
+            name = {
+                en_us = 'Puzzling World',
+                zh_cn = '迷惑世界',
+            },
+            condition = {
+                en_us = 'Play for 1 hour',
+                zh_cn = '游玩1小时',
+            },
+            description = {
+                en_us = 'You probably find some scenes quite puzzling. There are hints in the spellcard quotes, after some tries and before you beat them.',
+                zh_cn = '你可能会发现某些场景相当迷惑。在多次尝试后、通过它们前，符卡的评价中会出现提示。',
+            },
+        },
+        Play3Hours = {
+            name = {
+                en_us = 'Bamboozling World',
+                zh_cn = '蒙骗世界',
+            },
+            condition = {
+                en_us = 'Play for 3 hours',
+                zh_cn = '游玩3小时',
+            },
+            description = {
+                en_us = 'Did you think it\'s a short demo at the beginning?',
+                zh_cn = '你一开始有没有以为这只是个很短的试玩版呢？',
+            },
+        },
+        Play10Hours = {
+            name = {
+                en_us = 'Frazzling World',
+                zh_cn = '疲惫世界',
+            },
+            condition = {
+                en_us = 'Play for 10 hours',
+                zh_cn = '游玩10小时',
+            },
+            description = {
+                en_us = 'Hope you are still able to walk straight after such long time in the hyperbolic domain.',
+                zh_cn = '希望你在双曲域中待了这么长时间后，仍然能够直线行走。',
             },
         },
         Take10DamageIn1Scene = {
@@ -2182,13 +2266,9 @@ return {
                 zh_cn = '在1个场景中受到10点伤害',
             },
             description = {
-                en_us = 'Actually it\'s you regenerated much HP (^^;',
-                zh_cn = '实际上是回复了很多生命值（^^;',
+                en_us = 'Actually it\'s you regenerated much HP (^^;\nMost damage: {level}-{scene}, {amount} damage',
+                zh_cn = '实际上是回复了很多生命值（^^;\n最高伤害: {level}-{scene}，{amount} 伤害',
             },
-            detail = {
-                en_us = 'Most damage: {level}-{scene}, {amount} damage',
-                zh_cn = '最高伤害: {level}-{scene}，{amount} 伤害',
-            }
         },
         PerfectWinIn15Seconds = {
             name = {
@@ -2200,13 +2280,9 @@ return {
                 zh_cn = '在15秒内无伤通过一个场景',
             },
             description = {
-                en_us = 'Early spellcard is too easy when you have all the upgrades.',
-                zh_cn = '当你拥有所有升级时，早期的符卡实在是太简单了。',
+                en_us = 'Early spellcard is too easy when you have all the upgrades.\nFastest perfect win: {level}-{scene}, {time} seconds',
+                zh_cn = '当你拥有所有升级时，早期的符卡实在是太简单了。\n最快无伤通过: {level}-{scene}，{time} 秒',
             },
-            detail = {
-                en_us = 'Fastest perfect win: {level}-{scene}, {time} seconds',
-                zh_cn = '最快无伤通过: {level}-{scene}，{time} 秒',
-            }
         },
         ThisIsTouhou = {
             name = {

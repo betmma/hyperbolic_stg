@@ -180,7 +180,9 @@ SaveManager.defaultSaveData=DefaultRoot{
         shopUnlocked=false
     },
     nicknameUnlock={}, -- this and below are filled by nickname.lua
-    statistics={},
+    statistics={
+        loseCount=0
+    },
 }
 
 function SaveManager:applyDefaultSaveData(saveData)

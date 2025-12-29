@@ -280,7 +280,7 @@ G.countPassedSceneNum=function(self)
 end
 G.win=function(self)
     self:switchState(self.STATES.GAME_END)
-    local inReplay=self:leaveLevel()
+    local inReplay=self:leaveLevel(true)
     if inReplay then
         return -- don't change savedata and other things
     end
@@ -310,7 +310,7 @@ G.lose=function(self)
         return -- don't change savedata and other things
     end
     self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
-    EventManager.post(EventManager.EVENTS.LOSE_LEVEL,self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
+    -- EventManager.post(EventManager.EVENTS.LOSE_LEVEL,self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene) -- retry wont call this function, so use this to count lose times is not accurate. need to listen to LEAVE_LEVEL event and exclude win=true cases instead.
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)
@@ -318,10 +318,12 @@ G.enterLevel=function(self,level,scene)
     self:switchState(self.STATES.IN_LEVEL)
 end
 -- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), G.retryLevel (pressing "R" or instant retry upgrade called from player) or exiting from pause menu. return true if in replay (for G.win or lose to skip changing savedata and other things)
-G.leaveLevel=function(self)
+---@param self table
+---@param win boolean|nil whether the player just won the level
+G.leaveLevel=function(self,win)
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
-    EventManager.post(EventManager.EVENTS.LEAVE_LEVEL,level,scene)
+    EventManager.post(EventManager.EVENTS.LEAVE_LEVEL,level,scene,self.replay~=nil,win)
     if LevelData[level][scene].leave then
         LevelData[level][scene].leave()
     end
