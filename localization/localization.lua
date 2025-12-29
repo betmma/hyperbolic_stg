@@ -1302,6 +1302,10 @@ return {
                     en_us = 'Sending bullets through the barrier to surround me. So convenient to manipulate space like this.',
                     zh_cn = '通过结界传送子弹包围我。这样操纵空间真方便。',
                 },
+                hint = {
+                    en_us = 'Fancy tricks... but her defense is weak.',
+                    zh_cn = '花哨的把戏……但她的防御很弱。',
+                }
             },
             [74] = {
                 spellName = {
@@ -1312,6 +1316,10 @@ return {
                     en_us = 'Under barrier\'s interference, it\'s like trying to watch a corrupted feed.',
                     zh_cn = '在结界的干扰下，就像试图观看损坏的信号。',
                 },
+                hint = {
+                    en_us = 'In the last 60 seconds, move in circles to prevent being confused by the direction change.',
+                    zh_cn = '在最后60秒内，绕圈移动以防被方向变化弄糊涂。',
+                }
             },
             [75] = {
                 spellName = {
@@ -1323,6 +1331,10 @@ return {
                     'Stationary bullets can warp through the space around me, and that\'s the way to penetrate inside. The final fortress is too large, though.',
                     zh_cn = '静止的子弹可以穿越我周围的空间，这就是穿透到内部的方式。不过最终的堡垒太大了。',
                 },
+                hint = {
+                    en_us = 'This spellcard is very long. If enough time is left, take a rest to recover some HP.',
+                    zh_cn = '这个符卡很长。如果时间足够，可以休息一下恢复一些生命值。',
+                }
             },
             [35] = {
                 quote = {
@@ -1333,6 +1345,10 @@ return {
                     en_us = 'Taboo "Labyrinthine Trap"',
                     zh_cn = '禁忌「环形陷阱」',
                 },
+                hint = {
+                    en_us = 'Outer tracks are much longer than inner ones. Spending more time on outer tracks means less crossing and safer movement.',
+                    zh_cn = '外圈轨道比内圈轨道长得多。在外圈轨道上停留越久，穿越轨道就越少，也就越安全。',
+                }
             },
             [37] = {
                 quote = {
@@ -1343,6 +1359,10 @@ return {
                     en_us = 'Forbidden Barrage "Border break"',
                     zh_cn = '禁弹「边界破碎」',
                 },
+                hint = {
+                    en_us = 'Background with red tint indicates safe area when border breaks.',
+                    zh_cn = '边界破碎时，淡红色背景表示安全区域。',
+                }
             },
             [65] = {
                 quote = {
@@ -1353,6 +1373,10 @@ return {
                     en_us = 'Capture "Fabry-Pérot Cavity"',
                     zh_cn = '捕获「法布里-佩罗腔」'
                 },
+                hint = {
+                    en_us = 'Be patient in the last phase, and only shoot when my bullets won\'t hit myself. My shots are powerful, they will hurt a lot!',
+                    zh_cn = '在最后阶段要有耐心，只有在我的子弹不会击中自己时才开火。我的子弹很强力，会很疼的！',
+                }
             },
             [66] = {
                 quote = {
@@ -1363,6 +1387,10 @@ return {
                     en_us = 'Interference "Wavefront Mandala"',
                     zh_cn = '干涉「波前曼荼罗」'
                 },
+                hint = {
+                    en_us = 'After first phase, I need to move towards center when I can.',
+                    zh_cn = '在第一阶段之后，我需要尽可能向中心移动。',
+                }
             },
             [110] = {
                 spellName = {
@@ -1372,6 +1400,10 @@ return {
                 quote = {
                     en_us = 'Sine waves are oscillating around me! What a messy quantum well.',
                     zh_cn = '正弦波在我周围振荡！真是混乱的量子阱。',
+                },
+                hint = {
+                    en_us = 'I need to move against the wave propagation direction. How strange that feels!',
+                    zh_cn = '我需要逆着波的传播方向移动。感觉真奇怪！',
                 }
             },
             -- level 12 (final bosses spellcards)

@@ -34,6 +34,7 @@ return {
         local x31,y31=Shape.rThetaPos(center.x,center.y,300,dir0+math.pi/2)
         local x32,y32=Shape.rThetaPos(center.x,center.y,-300,dir0+math.pi/2)
         local L,R=false,false
+        local LLastFalseFrame,RLastFalseFrame=0,0
         local function runBase(cir,color)
             cir.spriteTransparency=0
             local d=Shape.distanceToLineSigned(cir.x,cir.y,x1,y1,x2,y2)
@@ -52,13 +53,20 @@ return {
         a=BulletSpawner{x=x31,y=y31,period=3,frame=0,lifeFrame=9000,bulletNumber=1,bulletSpeed=0,bulletLifeFrame=1000,angle='player',range=math.pi*0.3,bulletSprite=BulletSprites.giant.red,highlight=true,bulletEvents={
             function(cir,args,self)
                 runBase(cir,'green')
+                cir.frameSinceLastFalse=self.successCount or 0
                 if not L then
+                    self.successCount=0
                     cir:remove()
                 end
+                self.successCount=(self.successCount or 0)+1
             end
         },bulletExtraUpdate={
             function(cir)
-                cir.spriteTransparency=math.min(cir.frame/20,(cir.lifeFrame-cir.frame)/20,1)
+                local maxTrans=0.2+cir.frameSinceLastFalse/30+(cir.frameSinceLastFalse>12 and 0.4 or 0)
+                if maxTrans<1 then
+                    cir.safe=true
+                end
+                cir.spriteTransparency=math.min(cir.frame/20,(cir.lifeFrame-cir.frame)/20,maxTrans,1)
                 local xd,yd,dir=Shape.rThetaPosT(center.x,center.y,cir.d,dir0+math.pi/2)
                 local xe,ye=Shape.rThetaPos(x1,y1,cir.d,dir1)
                 local d2=Shape.distance(xd,yd,xe,ye)
@@ -70,9 +78,12 @@ return {
         b=BulletSpawner{x=x32,y=y32,period=3,frame=0,lifeFrame=9000,bulletNumber=1,bulletSpeed=0,bulletLifeFrame=1000,angle='player',range=math.pi*0.3,bulletSprite=BulletSprites.giant.blue,highlight=true,bulletEvents={
             function(cir,args,self)
                 runBase(cir,'yellow')
+                cir.frameSinceLastFalse=(self.successCount or 0)*2
                 if not R then
+                    self.successCount=0
                     cir:remove()
                 end
+                self.successCount=(self.successCount or 0)+1
             end
         },bulletExtraUpdate=a.bulletExtraUpdate}
         local period,started

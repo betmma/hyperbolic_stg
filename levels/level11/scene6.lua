@@ -88,7 +88,13 @@ return {
                             if hpLevel>1 then
                                 speedExtraCoeff=speedExtraCoeff-0.01*cir.index
                             end
-                            local refraction=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=cir.speed/n*speedExtraCoeff,sprite=BulletSprites.crystal.blue,lifeFrame=1000}
+                            local color='blue'
+                            if cir.damage>4 then -- from powerful player bullet
+                                color='red'
+                            elseif cir.damage>1 then
+                                color='yellow'
+                            end
+                            local refraction=Circle{x=cir.x,y=cir.y,direction=cir.direction,speed=cir.speed/n*speedExtraCoeff,sprite=BulletSprites.crystal[color],lifeFrame=1000}
                             local dir0=cir.direction
                             cavity:reflection(cir)
                             local dir1=cir.direction

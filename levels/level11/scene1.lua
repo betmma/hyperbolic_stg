@@ -7,6 +7,7 @@ return {
         G.levelRemainingFrame=7200
         Shape.removeDistance=1e100
         local en=Enemy{x=400,y=300000,mainEnemy=true,maxhp=7200}
+        en:addHPProtection(600,10)
         local player=Player{x=400,y=600000,noBorder=true}
         player.moveMode=Player.moveModes.Natural
         local center={x=400,y=300000}
