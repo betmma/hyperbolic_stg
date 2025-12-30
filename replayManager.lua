@@ -200,6 +200,11 @@ replayManager.replayTweak=function(replay)
     end
     local version=replay.version or '0.0.0'
     player.version=version -- version<0.2.0.1 old graze effect is in player.lua
+    if isVersionSmaller(version,'0.8.19.5') then
+        if player.canHitFamiliar then -- increased from 1/4 to 1/2
+            player.hitFamiliarDamageFactor=0.25
+        end
+    end
     if isVersionSmaller(version,'0.5.10.1') then
         player.canShootDuringInvincible=true
     end

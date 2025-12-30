@@ -115,11 +115,11 @@ local data = {
     },
     familiarShot={
         name='Familiar Shot',
-        description='Your shots can hit enemy\'s familiars and do 1/4 damage',
+        description='Your shots can hit enemy\'s familiars and do 1/2 damage',
         cost=40,
         executeFunc=function(player)
             player.canHitFamiliar=true
-            player.hitFamiliarDamageFactor=0.25
+            player.hitFamiliarDamageFactor=0.5
         end,
         spritePos={x=1,y=1}
     },

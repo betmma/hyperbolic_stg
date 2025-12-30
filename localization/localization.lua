@@ -1979,8 +1979,8 @@ return {
                 zh_cn = '使魔射击',
             },
             description = {
-                en_us = 'Your shots can hit enemy\'s familiars and do 1/4 damage.',
-                zh_cn = '自机子弹可以击中敌人的使魔，造成1/4伤害。',
+                en_us = 'Your shots can hit enemy\'s familiars and do 1/2 damage.',
+                zh_cn = '自机子弹可以击中敌人的使魔，造成1/2伤害。',
             },
         },
         vortex = {
