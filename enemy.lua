@@ -46,6 +46,8 @@ function Enemy:new(args)
         end
     end
     self.bindedEnemy=nil
+
+    self.grazed=true
 end
 
 function Enemy:update(dt)

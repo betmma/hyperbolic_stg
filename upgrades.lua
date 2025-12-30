@@ -143,6 +143,7 @@ local data = {
                     vortex.scale=2
                     vortex.direction=theta*5
                     vortex.sprite=Asset.bulletSprites.orb.red
+                    player.vortex=vortex
                 end
             }
         end,
@@ -269,6 +270,19 @@ local data = {
         end,
         spritePos={x=6,y=2}
     },
+    sensitiveOrb={
+        name='Sensitive Orb',
+        description='Bullets absorbed by Yin-Yang Orb count as grazes.',
+        cost=40,
+        executeFunc=function(player)
+            EventManager.listenTo(EventManager.EVENTS.SHOCKWAVE_REMOVE_BULLET, function(bullet,shockwave)
+                if player.vortex==shockwave then
+                    EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player,bullet:grazeValue())
+                end
+            end,EventManager.EVENTS.LEAVE_LEVEL)
+        end,
+        spritePos={x=7,y=2}
+    },
 }
 upgrades.data=data
 
@@ -285,6 +299,7 @@ local nodes = {
     accumulativeBomb={connect = {}, pos = {x=5, y=2}, requires = {'flashbomb'} },
     spareBomb =     {connect = {}, pos = {x=6, y=2}, requires = {'accumulativeBomb'} },
     vortex =      {connect = {}, pos = {x=5, y=1}, requires = {'flashbomb'} },
+    sensitiveOrb= {connect = {}, pos = {x=6, y=1}, requires = {'vortex'} },
     homingShot =  {connect = {}, pos = {x=1, y=3}, requires = {} },
     sideShot =    {connect = {}, pos = {x=3, y=3}, requires = {'homingShot'} },
     backShot =    {connect = {}, pos = {x=3, y=4}, requires = {'homingShot'} },

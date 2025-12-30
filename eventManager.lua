@@ -5,7 +5,8 @@ EventManager.EVENTS={
     NICKNAME_GET='nicknameGet',
     WIN_LEVEL='winLevel',
     LOSE_LEVEL='loseLevel',
-    LEAVE_LEVEL='leaveLevel'
+    LEAVE_LEVEL='leaveLevel',
+    SHOCKWAVE_REMOVE_BULLET='shockwaveRemoveBullet'
 }
 
 EventManager.listeners = {}

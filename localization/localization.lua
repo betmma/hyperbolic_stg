@@ -1885,12 +1885,12 @@ return {
     upgrades = {
         increaseHP = {
             name = {
-                en_us = 'Increase HP',
-                zh_cn = '增加生命值',
+                en_us = '1UP',
+                zh_cn = '1UP',
             },
             description = {
-                en_us = 'Increase HP by 1',
-                zh_cn = '增加1点生命值',
+                en_us = 'Increase HP by 1.',
+                zh_cn = '增加1点生命值。',
             },
         },
         regenerate = {
@@ -1899,8 +1899,8 @@ return {
                 zh_cn = '生命回复',
             },
             description = {
-                en_us = 'Increase HP by 0.024 per second',
-                zh_cn = '每秒回复0.024点生命值',
+                en_us = 'Increase HP by 0.024 per second.',
+                zh_cn = '每秒回复0.024点生命值。',
             },
         },
         unyielding = {
@@ -1909,8 +1909,8 @@ return {
                 zh_cn = '不屈',
             },
             description = {
-                en_us = 'Shockwave when you are hit is bigger',
-                zh_cn = '被弹后消弹范围更大',
+                en_us = 'Shockwave when you are hit is bigger.',
+                zh_cn = '被弹后消弹范围更大。',
             },
         },
         acrobat = {
@@ -1919,8 +1919,8 @@ return {
                 zh_cn = '杂技演员',
             },
             description = {
-                en_us = 'Each graze gives 0.005 HP',
-                zh_cn = '每次擦弹回复0.005点生命值',
+                en_us = 'Each graze gives 0.005 HP.',
+                zh_cn = '每次擦弹回复0.005点生命值。',
             },
         },
         flashbomb = {
@@ -1929,8 +1929,8 @@ return {
                 zh_cn = '瞬雷',
             },
             description = {
-                en_us = 'Release a flash bomb for every 100 grazes',
-                zh_cn = '每擦弹100次释放一次瞬雷',
+                en_us = 'Release a flash bomb for every 100 grazes.',
+                zh_cn = '每擦弹100次释放一次瞬雷。',
             },
         },
         amulet = {
@@ -1939,8 +1939,8 @@ return {
                 zh_cn = '护符',
             },
             description = {
-                en_us = 'Player hitbox is 25% smaller',
-                zh_cn = '判定点减小25%',
+                en_us = 'Player hitbox is 25% smaller.',
+                zh_cn = '判定点减小25%。',
             },
         },
         homingShot = {
@@ -1949,8 +1949,8 @@ return {
                 zh_cn = '追尾射击',
             },
             description = {
-                en_us = '2 rows of your shot become homing',
-                zh_cn = '自机的2排子弹具有追踪效果',
+                en_us = '2 rows of your shot become homing.',
+                zh_cn = '自机的2排子弹具有追踪效果。',
             },
         },
         sideShot = {
@@ -1959,8 +1959,8 @@ return {
                 zh_cn = '侧翼射击',
             },
             description = {
-                en_us = 'Add 4 rows of side shot on each side',
-                zh_cn = '自机两侧各发射4排子弹',
+                en_us = 'Add 4 rows of side shot on each side.',
+                zh_cn = '自机两侧各发射4排子弹。',
             },
         },
         backShot = {
@@ -1969,8 +1969,8 @@ return {
                 zh_cn = '后方射击',
             },
             description = {
-                en_us = 'Add 4 rows of back shot that do double damage',
-                zh_cn = '自机向后方发射4排子弹，伤害加倍',
+                en_us = 'Add 4 rows of back shot that do double damage.',
+                zh_cn = '自机向后方发射4排子弹，伤害加倍。',
             },
         },
         familiarShot = {
@@ -1979,18 +1979,18 @@ return {
                 zh_cn = '使魔射击',
             },
             description = {
-                en_us = 'Your shots can hit enemy\'s familiars and do 1/4 damage',
-                zh_cn = '自机子弹可以击中敌人的使魔，造成1/4伤害',
+                en_us = 'Your shots can hit enemy\'s familiars and do 1/4 damage.',
+                zh_cn = '自机子弹可以击中敌人的使魔，造成1/4伤害。',
             },
         },
         vortex = {
             name = {
-                en_us = 'Vortex',
-                zh_cn = '漩涡',
+                en_us = 'Yin-Yang Orb',
+                zh_cn = '阴阳玉',
             },
             description = {
-                en_us = 'Create a vortex rounding you that can absorb bullets',
-                zh_cn = '产生一个环绕自己的漩涡，可以吸收子弹',
+                en_us = 'Create a Yin-Yang Orb rounding you that can absorb bullets.',
+                zh_cn = '产生一个环绕自己的阴阳玉，可以吸收子弹。',
             },
         },
         fixedHPDisplay = {
@@ -2009,8 +2009,8 @@ return {
                 zh_cn = '透视',
             },
             description = {
-                en_us = 'The background on both sides is slightly transparent',
-                zh_cn = '两侧背景略微透明',
+                en_us = 'The background on both sides is slightly transparent.',
+                zh_cn = '两侧背景略微透明。',
             },
         },
         diagonalMover = {
@@ -2019,8 +2019,8 @@ return {
                 zh_cn = '角行者',
             },
             description = {
-                en_us = 'You move faster when moving diagonally',
-                zh_cn = '斜向移动时速度更快',
+                en_us = 'You move faster when moving diagonally.',
+                zh_cn = '斜向移动时速度更快。',
             },
         },
         homingShotII = {
@@ -2029,8 +2029,8 @@ return {
                 zh_cn = '追尾射击II',
             },
             description = {
-                en_us = '2 more rows of your shot become homing, but homing effect is reduced',
-                zh_cn = '自机再多2排子弹具有追踪效果，但是追踪效果减弱',
+                en_us = '2 more rows of your shot become homing, but homing effect is reduced.',
+                zh_cn = '自机再多2排子弹具有追踪效果，但是追踪效果减弱。',
             },
         },
         sideShotII = {
@@ -2039,8 +2039,8 @@ return {
                 zh_cn = '侧翼射击II',
             },
             description = {
-                en_us = 'Increase side shot damage by 50%, but they spread more',
-                zh_cn = '侧边子弹伤害增加50%，但是角度扩散',
+                en_us = 'Increase side shot damage by 50%, but they spread more.',
+                zh_cn = '侧边子弹伤害增加50%，但是角度扩散。',
             },
         },
         backShotII = {
@@ -2049,8 +2049,8 @@ return {
                 zh_cn = '后方射击II',
             },
             description = {
-                en_us = 'Increase back shot damage by 50%, but they do less damage if you are close to enemy',
-                zh_cn = '后方子弹伤害增加50%，但离敌人较近时伤害降低',
+                en_us = 'Increase back shot damage by 50%, but they do less damage if you are close to enemy.',
+                zh_cn = '后方子弹伤害增加50%，但离敌人较近时伤害降低。',
             },
         },
         counterShot = {
@@ -2059,8 +2059,8 @@ return {
                 zh_cn = '反击',
             },
             description = {
-                en_us = 'You can shoot during invincible time after being hit',
-                zh_cn = '被弹后的无敌时间可以射击',
+                en_us = 'You can shoot during invincible time after being hit.',
+                zh_cn = '被弹后的无敌时间可以射击。',
             },
         },
         diskModels = {
@@ -2111,6 +2111,16 @@ return {
             description = {
                 en_us = 'Start each scene with 1 flash bomb.',
                 zh_cn = '进入场景时持有1个瞬雷。',
+            },
+        },
+        sensitiveOrb = {
+            name = {
+                en_us = 'Sensitive Orb',
+                zh_cn = '感知阴阳玉',
+            },
+            description = {
+                en_us = 'Bullets absorbed by Yin-Yang Orb count as grazes.',
+                zh_cn = '阴阳玉吸收的子弹计为擦弹。',
             },
         },
     },

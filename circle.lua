@@ -159,6 +159,7 @@ function Circle:checkShockwaveRemove()
     if not self.safe then 
         for k,shockwave in pairs(Effect.Shockwave.objects) do
             if shockwave.canRemove.bullet==true and(self.invincible==false or shockwave.canRemove.invincible==true)and(self.safe==false or shockwave.canRemove.safe==true) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+                EventManager.post(EventManager.EVENTS.SHOCKWAVE_REMOVE_BULLET,self,shockwave)
                 self:remove()
                 self:removeEffect()
             end
@@ -181,7 +182,7 @@ function Circle:checkHitPlayer()
             local dis=Shape.distance(player.x,player.y,self.x,self.y)
             local radi=player.radius+self.radius
             if dis<radi+player.radius*player.grazeRadiusFactor and not self.grazed then
-                EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player,(self.lifeFrame<3 or self.frame<3) and 0.05 or 1)
+                EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player,self:grazeValue())
                 self.grazed=true
             end
             if player.invincibleTime<=0 and dis<radi then
@@ -189,6 +190,9 @@ function Circle:checkHitPlayer()
             end
         end
     end
+end
+function Circle:grazeValue()
+    return (self.lifeFrame<3 or self.frame<3) and 0.05 or 1
 end
 
 function Circle:removeEffect()
