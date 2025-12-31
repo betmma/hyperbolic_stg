@@ -31,6 +31,7 @@ Player.moveModes={
 ---@field sprite Sprite sprite of each bullet
 ---@field spread number spread of each bullet (angle between bullets)
 ---@field readyFrame number? if nil, the damage is [damage] from the beginning. if not, damage begins with 0 and increases to [damage] in [readyFrame]. 
+---@field shootFunc nil|fun(shootType:ShootType, player:table, chargeFrame:integer):nil custom shoot function. for charge shoot mode.
 
 local shootSprite='snake'
 
@@ -69,6 +70,10 @@ Player.shootRows={
         sprite=BulletSprites[shootSprite].purple,
         spread=0
     }
+}
+Player.shootModes={
+    Normal='Normal', -- shoot some bullets every shootInterval frames pressing Z key
+    Charge='Charge', -- hold Z key to charge, release to shoot bullets according to charge level
 }
 function Player:new(args)
     Player.super.new(self, {x=args.x, y=args.y})
@@ -113,11 +118,15 @@ function Player:new(args)
     self.invincibleTime=0
     self.grazeRadiusFactor=15
 
+    self.shootMode=Player.shootModes.Normal
     self.shootRows=copy_table(Player.shootRows)
     self.shootRadius=0.5
     self.shootTransparency=0.1
     self.shootInterval=3
     self.canShootDuringInvincible=false
+
+    self.chargeFrame=0 -- frames of holding Z key, Charge shoot mode
+
     -- instant retry when hurt upgrade
     self.instantRetry=false
 
@@ -167,9 +176,23 @@ function Player:update(dt)
         end
         table.insert(self.keyRecord,keyVal)
     end
+    
     -- shooting bullet
-    if self.keyIsDown('z') and self.frame%self.shootInterval==0 then
-        self:shoot()
+    if self.shootMode==Player.shootModes.Normal then
+        if self.keyIsDown('z') and self.frame%self.shootInterval==0 then
+            self:shoot()
+        end
+    elseif self.shootMode==Player.shootModes.Charge then
+        if self.keyIsDown('z') then
+            if self.chargeFrame==0 then
+                SFX:play('notice',true,1)
+            end
+            self.chargeFrame=self.chargeFrame+1
+        elseif self.chargeFrame>0 then
+            SFX:play('cancel',true,1) -- some sfx rare in level (they are used in menus) for more distinct
+            self:chargeShoot(self.chargeFrame)
+            self.chargeFrame=0
+        end
     end
 
     self:moveUpdate(dt)
@@ -526,6 +549,14 @@ function Player:findShootType(direction,mode)
     for k,shootType in pairs(self.shootRows) do
         if shootType.direction==direction and shootType.mode==mode then
             return shootType
+        end
+    end
+end
+
+function Player:chargeShoot(chargeFrame)
+    for k,shootType in pairs(self.shootRows) do
+        if shootType.shootFunc then -- just let upgrades inject their own shoot functions
+            shootType.shootFunc(shootType,self,chargeFrame)
         end
     end
 end

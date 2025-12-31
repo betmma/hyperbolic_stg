@@ -1893,6 +1893,16 @@ return {
                 zh_cn = '增加1点生命值。',
             },
         },
+        increaseHPAgain = {
+            name = {
+                en_us = '1UP Again',
+                zh_cn = '又一个1UP',
+            },
+            description = {
+                en_us = 'Increase HP by 1 again. Why this is more expensive?',
+                zh_cn = '再增加1点生命值。为什么这个更贵？',
+            },
+        },
         regenerate = {
             name = {
                 en_us = 'Regenerate',
@@ -1909,7 +1919,7 @@ return {
                 zh_cn = '不屈',
             },
             description = {
-                en_us = 'Shockwave when you are hit is bigger.',
+                en_us = 'Shockwave when you are hit is bigger. This means removing more bullets.',
                 zh_cn = '被弹后消弹范围更大。',
             },
         },
@@ -2061,6 +2071,16 @@ return {
             description = {
                 en_us = 'You can shoot during invincible time after being hit.',
                 zh_cn = '被弹后的无敌时间可以射击。',
+            },
+        },
+        ring = {
+            name = {
+                en_us = 'Evil-Sealing Circle',
+                zh_cn = '封魔环',
+            },
+            description = {
+                en_us = 'Your shot is replaced by: hold Z to charge, release to create a ring that damages enemies on contact. The radius of the ring depends on charge time.',
+                zh_cn = '自机子弹替换为：按住Z键蓄力，松开时产生一个环，对接触的敌人造成伤害。环的半径取决于蓄力时间。',
             },
         },
         diskModels = {
@@ -2290,7 +2310,7 @@ return {
                 zh_cn = '在15秒内无伤通过一个场景',
             },
             description = {
-                en_us = 'Early spellcard is too easy when you have all the upgrades.\nFastest perfect win: {level}-{scene}, {time} seconds',
+                en_us = 'Early spellcards are too easy when you have all the upgrades.\nFastest perfect win: {level}-{scene}, {time} seconds',
                 zh_cn = '当你拥有所有升级时，早期的符卡实在是太简单了。\n最快无伤通过: {level}-{scene}，{time} 秒',
             },
         },

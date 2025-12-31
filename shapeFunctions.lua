@@ -393,6 +393,44 @@ function Shape.ringFanMesh(posX,posY,innerR,outerR,orientation,quad,image,n,colo
     return ringMesh,fanMesh
 end
 
+-- this function isn't for large circle sprite, but for ring shape. The difference is, inner vertices in ring mesh from this function have uv = (1,0) or (1,1) (right side), instead of a circle like in ringFanMesh. 
+---@param posX coordinate "x of object"
+---@param posY coordinate "y of object"
+---@param innerR number "inner radius of ring"
+---@param outerR number "outer radius of ring"
+---@param orientation angle "orientation of object"
+---@param quad love.Quad "quad of sprite"
+---@param image love.Image "image of sprite"
+---@param n integer "number of vertices on the circle"
+---@param color number[]|nil "color RGBA, each in [0,1]"
+---@param loopNum integer|nil "number of loops of texture around the ring"
+---@return love.Mesh "ring mesh"
+function Shape.ringMesh(posX,posY,innerR,outerR,orientation,quad,image,n,color,loopNum)
+    loopNum=loopNum or 1
+    color=color or {1,1,1,1}
+    local x,y,w,h=quad:getViewport()
+    local imgW,imgH=image:getDimensions()
+    x,y,w,h=x/imgW,y/imgH,w/imgW,h/imgH
+    local ringMeshVertices={}
+    local oneLoopVertices=math.floor(n/loopNum)
+    n=n-n%loopNum -- make sure it's multiple of loopNum, or can't loop properly
+    for i=0,n do
+        local angle=math.pi*2/n*i
+        local loopRatio=i%oneLoopVertices/oneLoopVertices
+        local x2,y2=Shape.rThetaPos(posX,posY,outerR,angle+orientation)
+        local x3,y3=Shape.rThetaPos(posX,posY,innerR,angle+orientation)
+        if loopRatio==0 and i>0 then -- loop happens, need to add 2 points with loopRatio=1
+            table.insert(ringMeshVertices,{x2,y2,x,y+h*1,color[1],color[2],color[3],color[4]})
+            table.insert(ringMeshVertices,{x3,y3,x+w,y+h*1,color[1],color[2],color[3],color[4]})
+        end
+        table.insert(ringMeshVertices,{x2,y2,x,y+h*loopRatio,color[1],color[2],color[3],color[4]})
+        table.insert(ringMeshVertices,{x3,y3,x+w,y+h*loopRatio,color[1],color[2],color[3],color[4]})
+    end
+    local ringMesh=love.graphics.newMesh(ringMeshVertices,'strip')
+    ringMesh:setTexture(image)
+    return ringMesh
+end
+
 --- hyperbolic rotate a point (x1,y1) around (ox,oy) by angle. Uses inlined mobius transformation.
 ---@param x1 coordinate
 ---@param y1 coordinate
@@ -511,6 +549,7 @@ function Shape.rThetaPosPolarAngle(x,y,r,theta)
     return finaltheta+div*math.pi*2
 end
 
+-- linear interpolation (in hyperbolic geometry) from (x1,y1) to (x2,y2) with ratio t in [0,1]
 function Shape.lerp(x1, y1, x2, y2, t)
     local distance = Shape.distance(x1, y1, x2, y2)
     distance = distance * t
@@ -589,7 +628,7 @@ function Shape.schwarzTriangleVertices(p, q, r, v0_coord, dir_v0v1_angle)
     return v0_out, v1_out, v2_out
 end
 
---- return the area of a triangle with vertices (x1,y1), (x2,y2), (x3,y3). not using Shape.curvature
+--- return the area of a triangle with vertices (x1,y1), (x2,y2), (x3,y3). not using Shape.curvature, so result is in [0, pi)
 ---@return number "area of the triangle"
 function Shape.triangleArea(x1,y1,x2,y2,x3,y3)
     local angleA=math.abs(math.modClamp(Shape.to(x1,y1,x2,y2)-Shape.to(x1,y1,x3,y3)))

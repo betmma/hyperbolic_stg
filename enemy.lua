@@ -256,20 +256,35 @@ end
 function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
     objToReduceHp=objToReduceHp or self
     damageFactor=damageFactor or 1
+    local damageSum=0
     for key, circ in pairs(Circle.objects) do
         if circ.fromPlayer and Shape.distance(circ.x,circ.y,self.x,self.y)<circ.radius+self.radius then
-            objToReduceHp.hp=objToReduceHp.hp-(circ.damage or 1)*damageFactor/(objToReduceHp.damageResistance or 1)
+            damageSum=damageSum+(circ.damage or 1)
             circ:remove()
-            SFX:play('damage')
             -- hit visual effect. at bullet position
             Effect.Larger{x=circ.x,y=circ.y,speed=10+5*math.sin(self.x*51323.35131+self.y*46513.1333+self.frame*653.13),direction=9999*math.sin(self.x*513.35131+self.y*413.1333+self.frame*6553.13),sprite=Asset.shards.dot,radius=3,growSpeed=1,animationFrame=20,spriteTransparency=0.3}
             -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
             --     self.presaved=true
             -- end
-            if objToReduceHp.hp<0 and not objToReduceHp.removed then
-                objToReduceHp:dieEffect()
+        end
+    end
+
+    if self:is(Enemy) then -- familiar shot should not trigger ring (or damage could be very high, >5x)
+        for k,ring in pairs(Effect.Ring.objects) do
+            local hitDist=math.abs(Shape.distance(ring.x,ring.y,self.x,self.y)-ring.radius)
+            if hitDist<ring.width/2+self.radius then
+                damageSum=damageSum+(ring.damage or 1)
             end
         end
+    end
+
+    if damageSum==0 then
+        return
+    end
+    SFX:play('damage')
+    objToReduceHp.hp=objToReduceHp.hp-damageSum*damageFactor/(objToReduceHp.damageResistance or 1)
+    if objToReduceHp.hp<0 and not objToReduceHp.removed then
+        objToReduceHp:dieEffect()
     end
 end
 

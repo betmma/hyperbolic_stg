@@ -175,4 +175,30 @@ function FlashBomb:draw()
     Asset.laserMeshes:add(mesh)
 end
 
+local Ring=Effect:extend()
+Effect.Ring=Ring
+function Ring:new(args)
+    args.lifeFrame=args.lifeFrame or 60
+    Ring.super.new(self, args)
+    self.sprite=args.sprite or Asset.bulletSprites.laser.white
+    self.spriteTransparency=0
+    self.radius=args.radius or 50
+    self.width=args.width or 10
+    self.damage=args.damage or 30 -- per frame
+end
+
+function Ring:update(dt)
+    Ring.super.update(self,dt)
+    local lifeRatio=self.frame/self.lifeFrame
+    self.spriteTransparency=1-(lifeRatio*2-1)^2
+end
+
+function Ring:draw()
+    local rInner=self.radius - self.width/2
+    local rOuter=self.radius + self.width/2
+    local num=math.ceil(math.clamp(self.radius*0.5,6,64))
+    local ringMesh=Shape.ringMesh(self.x,self.y,rInner,rOuter,self.direction,self.sprite.quad,Asset.bulletImage,num,{1,1,1,self.spriteTransparency},math.ceil(num/20))
+    Asset.laserMeshes:add(ringMesh)
+end
+
 return Effect

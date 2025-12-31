@@ -143,9 +143,9 @@ local function wrapLevelMake(levelData)
 
         local player=Player.objects[1]
         -- apply upgrades
-        local upgrades=Upgrades.data
-        for k,v in pairs(upgrades) do
-            if G.save.upgrades[k] and G.save.upgrades[k].bought then
+        local upgrades=Upgrades.dataList
+        for _,v in ipairs(upgrades) do
+            if G.save.upgrades[v.id] and G.save.upgrades[v.id].bought then
                 v.executeFunc(player)
             end
         end

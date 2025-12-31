@@ -97,9 +97,9 @@ return {
             -- G.viewMode.object=player
             player.drawText=function()end
             player.time=player0.time
-            local upgrades=Upgrades.data
-            for k,v in pairs(upgrades) do
-                if G.save.upgrades[k] and G.save.upgrades[k].bought then
+            local upgrades=Upgrades.dataList
+            for _,v in ipairs(upgrades) do
+                if G.save.upgrades[v.id] and G.save.upgrades[v.id].bought then
                     v.executeFunc(player)
                 end
             end

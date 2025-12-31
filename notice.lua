@@ -91,7 +91,7 @@ function NoticeManager:update()
             end
         end
     end
-    Input.consume() -- block inputs while notice is showing
+    Input.consume() -- block (other) inputs while notice is showing
 end
 
 function NoticeManager:drawText()

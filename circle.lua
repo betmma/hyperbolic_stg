@@ -91,8 +91,10 @@ function Circle:update(dt)
         func(self,dt)
     end
     Shape.update(self,dt)
-    if #Effect.Shockwave.objects>0 then self:checkShockwaveRemove() end
-    if #Effect.FlashBomb.objects>0 then self:checkFlashBombRemove() end
+    if not self.safe then
+        if #Effect.Shockwave.objects>0 then self:checkShockwaveRemove() end
+        if #Effect.FlashBomb.objects>0 then self:checkFlashBombRemove() end
+    end
     self:checkHitPlayer()
     self.spriteExtraDirection=self.spriteExtraDirection+self.spriteRotationSpeed*Shape.timeSpeed
     if self.sprite then
@@ -156,26 +158,31 @@ function Circle:drawLargeSprite(num)
 end
 
 function Circle:checkShockwaveRemove()
-    if not self.safe then 
-        for k,shockwave in pairs(Effect.Shockwave.objects) do
-            if shockwave.canRemove.bullet==true and(self.invincible==false or shockwave.canRemove.invincible==true)and(self.safe==false or shockwave.canRemove.safe==true) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
-                EventManager.post(EventManager.EVENTS.SHOCKWAVE_REMOVE_BULLET,self,shockwave)
-                self:remove()
-                self:removeEffect()
-            end
+    for k,shockwave in pairs(Effect.Shockwave.objects) do
+        if shockwave.canRemove.bullet==true and(self.invincible==false or shockwave.canRemove.invincible==true)and(self.safe==false or shockwave.canRemove.safe==true) and Shape.distance(shockwave.x,shockwave.y,self.x,self.y)<shockwave.radius+self.radius then
+            EventManager.post(EventManager.EVENTS.SHOCKWAVE_REMOVE_BULLET,self,shockwave)
+            self:remove()
+            self:removeEffect()
         end
     end
 end
 function Circle:checkFlashBombRemove()
-    if not self.safe then
-        for k,flashBomb in pairs(Effect.FlashBomb.objects) do
-            if flashBomb.canRemove.bullet==true and(self.invincible==false or flashBomb.canRemove.invincible==true) and flashBomb:inside(self.x,self.y) then
-                self:remove()
-                self:removeEffect()
-            end
+    for k,flashBomb in pairs(Effect.FlashBomb.objects) do
+        if flashBomb.canRemove.bullet==true and(self.invincible==false or flashBomb.canRemove.invincible==true) and flashBomb:inside(self.x,self.y) then
+            self:remove()
+            self:removeEffect()
         end
     end
 end
+function Circle:checkRingRemove()
+    for k,ring in pairs(Effect.Ring.objects) do
+        if ring.canRemove.bullet==true and(self.invincible==false or ring.canRemove.invincible==true) and math.abs(Shape.distance(ring.x,ring.y,self.x,self.y)-ring.radius)<ring.width/2+self.radius then
+            self:remove()
+            self:removeEffect()
+        end
+    end
+end
+
 function Circle:checkHitPlayer()
     if not self.safe then 
         for key, player in pairs(Player.objects) do

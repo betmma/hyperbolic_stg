@@ -5,11 +5,11 @@
 ---@alias Pos number[]
 
 ---@class Upgrade
+---@field id string unique key of this upgrade
 ---@field cost number exp needed to buy it
 ---@field executeFunc fun(player):nil function to execute when entering a level
 ---@field spritePos PosXY position of the sprite in upgrades.png
----@field name string|nil name of this upgrade (actual value is in localization file, so not needed)
----@field description string|nil description of this upgrade (same as above)
+---@field description string|nil description of this upgrade (actual value is in localization file, so not needed)
 
 ---@class UpgradeNode stores data of an upgrade in the upgrade tree
 ---@field pos PosXY position of this upgrade in the upgrade tree
@@ -22,10 +22,9 @@
 local upgrades={}
 
 ---@type table<string,Upgrade>
-local data = {
-    -- Warning: real texts are in localization.lua. Following texts are for coding reference only.
-    increaseHP={
-        name='Increase HP',
+local dataList = {
+    {
+        id='increaseHP',
         description='Increase HP by 1',
         cost=30,
         executeFunc=function(player)
@@ -34,8 +33,18 @@ local data = {
         end,
         spritePos={x=0,y=0}
     },
-    regenerate={
-        name='Regenerate',
+    {
+        id='increaseHPAgain',
+        description='Increase HP by 1 again',
+        cost=50,
+        executeFunc=function(player)
+            player.hp=player.hp+1
+            player.maxhp=player.maxhp+1
+        end,
+        spritePos={x=0,y=0}
+    },
+    {
+        id='regenerate',
         description='Increase HP by 0.024 per second',
         cost=40,
         executeFunc=function(player)
@@ -43,8 +52,8 @@ local data = {
         end,
         spritePos={x=1,y=0}
     },
-    unyielding={
-        name='Unyielding',
+    {
+        id='unyielding',
         description='Shockwave when you are hit is bigger',
         cost=30,
         executeFunc=function(player)
@@ -52,7 +61,8 @@ local data = {
         end,
         spritePos={x=2,y=0}
     },
-    acrobat={ -- add a scene that costs HP when grazing, and unlock this upgrade for it
+    {
+        id='acrobat', -- add a scene that costs HP when grazing, and unlock this upgrade for it
         name='Acrobat',
         description='Each graze gives 0.005 HP',
         cost=40,
@@ -61,8 +71,8 @@ local data = {
         end,
         spritePos={x=3,y=0}
     },
-    flashbomb={
-        name='Flash Bomb',
+    {
+        id='flashbomb',
         description='Release a flash bomb for every 100 grazes',
         cost=50,
         executeFunc=function(player)
@@ -72,8 +82,8 @@ local data = {
         end,
         spritePos={x=4,y=0}
     },
-    amulet={
-        name='Amulet',
+    {
+        id='amulet',
         description='Player hitbox is 25% smaller',
         cost=50,
         executeFunc=function(player)
@@ -81,10 +91,10 @@ local data = {
         end,
         spritePos={x=5,y=0}
     },
-    homingShot={
-        name='Homing Shot',
+    {
+        id='homingShot',
         description='2 rows of your shot become homing',
-        cost=50,
+        cost=30,
         executeFunc=function(player)
             local frontStraight=player:findShootType('front','straight')
             frontStraight.num=frontStraight.num-2
@@ -93,8 +103,8 @@ local data = {
         end,
         spritePos={x=6,y=0}
     },
-    sideShot={
-        name='Side Shot',
+    {
+        id='sideShot',
         description='Add 4 rows of side shot (on each side)',
         cost=30,
         executeFunc=function(player)
@@ -103,8 +113,8 @@ local data = {
         end,
         spritePos={x=7,y=0}
     },
-    backShot={
-        name='Back Shot',
+    {
+        id='backShot',
         description='Add 4 rows of back shot that do double damage',
         cost=50,
         executeFunc=function(player)
@@ -113,8 +123,8 @@ local data = {
         end,
         spritePos={x=0,y=1}
     },
-    familiarShot={
-        name='Familiar Shot',
+    {
+        id='familiarShot',
         description='Your shots can hit enemy\'s familiars and do 1/2 damage',
         cost=40,
         executeFunc=function(player)
@@ -123,8 +133,8 @@ local data = {
         end,
         spritePos={x=1,y=1}
     },
-    vortex={
-        name='Vortex',
+    {
+        id='vortex',
         description='A vortex rounding you that can absorb bullets',
         cost=60,
         executeFunc=function(player)
@@ -149,8 +159,8 @@ local data = {
         end,
         spritePos={x=2,y=1}
     },
-    fixedHPDisplay={
-        name='Fixed HP Display',
+    {
+        id='fixedHPDisplay',
         description='Show enemy HP at the top of the screen. (Wow, this is an upgrade?)', -- useful when enemy is off screen, specifically in 6-5 phase 3 where enemy is always at opposite direction of player, and player's projectiles go awry, with this upgrade it's easier to know if the shot is hitting the enemy. (Though I've raised the hitting sfx volume at that phase, adding a visual cue is still better)
         cost=10,
         executeFunc=function()
@@ -161,8 +171,8 @@ local data = {
         end,
         spritePos={x=3,y=1}
     },
-    clairvoyance={
-        name='Clairvoyance',
+    {
+        id='clairvoyance',
         description='Widen your vision, somewhat',
         cost=40,
         executeFunc=function()
@@ -170,8 +180,8 @@ local data = {
         end,
         spritePos={x=4,y=1}
     },
-    diagonalMover={
-        name='Diagonal Mover',
+    {
+        id='diagonalMover',
         description='You move faster when moving diagonally',
         cost=30,
         executeFunc=function(player)
@@ -179,8 +189,8 @@ local data = {
         end,
         spritePos={x=5,y=1}
     },
-    homingShotII={
-        name='Homing Shot II',
+    {
+        id='homingShotII',
         description='2 more rows of your shot become homing, but homing effect is reduced',
         cost=50,
         executeFunc=function(player)
@@ -193,8 +203,8 @@ local data = {
         end,
         spritePos={x=6,y=1}
     },
-    sideShotII={
-        name='Side Shot II',
+    {
+        id='sideShotII',
         description='Increase side shot damage by 50%, but they spread more',
         cost=50,
         executeFunc=function(player)
@@ -204,8 +214,8 @@ local data = {
         end,
         spritePos={x=7,y=1}
     },
-    backShotII={
-        name='Back Shot II',
+    {
+        id='backShotII',
         description='Increase back shot damage by 50%, but they do less damage if you are close to enemy',
         cost=50,
         executeFunc=function(player)
@@ -215,17 +225,17 @@ local data = {
         end,
         spritePos={x=0,y=2}
     },
-    counterShot={
-        name='Counter Shot',
+    {
+        id='counterShot',
         description='You can shoot during invincible time after being hit',
-        cost=70,
+        cost=20,
         executeFunc=function(player)
             player.canShootDuringInvincible=true
         end,
         spritePos={x=1,y=2}
     },
-    diskModels={
-        name='Disk Models',
+    {
+        id='diskModels',
         description='Unlock Poincare Disk and Klein Disk models. Press E in level to switch models.',
         cost=50,
         executeFunc=function(player)
@@ -233,8 +243,8 @@ local data = {
         end,
         spritePos={x=2,y=2}
     },
-    instantRetry={
-        name='Instant Retry',
+    {
+        id='instantRetry',
         description='When hurt, instantly retry the scene without pressing any key. For the perfectionist lazy player!',
         cost=20,
         executeFunc=function(player)
@@ -242,8 +252,8 @@ local data = {
         end,
         spritePos={x=3,y=2}
     },
-    emergencyBomb={
-        name='Emergency Bomb',
+    {
+        id='emergencyBomb',
         description='Press C to use flash bomb without filling the graze bar, but each graze missing costs 0.01 HP. It counts as being hit.',
         cost=60,
         executeFunc=function(player)
@@ -252,8 +262,8 @@ local data = {
         end,
         spritePos={x=4,y=2}
     },
-    accumulativeBomb={
-        name='Accumulative Bomb',
+    {
+        id='accumulativeBomb',
         description='You can store multiple flash bombs and use them manually by pressing C.',
         cost=50,
         executeFunc=function(player)
@@ -261,8 +271,8 @@ local data = {
         end,
         spritePos={x=5,y=2}
     },
-    spareBomb={
-        name='Spare Bomb',
+    {
+        id='spareBomb',
         description='Start each scene with 1 flash bomb.',
         cost=30,
         executeFunc=function(player)
@@ -270,8 +280,8 @@ local data = {
         end,
         spritePos={x=6,y=2}
     },
-    sensitiveOrb={
-        name='Sensitive Orb',
+    {
+        id='sensitiveOrb',
         description='Bullets absorbed by Yin-Yang Orb count as grazes.',
         cost=40,
         executeFunc=function(player)
@@ -283,14 +293,63 @@ local data = {
         end,
         spritePos={x=7,y=2}
     },
+    {
+        id='ring',
+        description='Your shots become rings',
+        cost=50,
+        executeFunc=function(player)
+            player.shootMode=Player.shootModes.Charge
+            player.shootRows={
+                {
+                    baseDamage=15,
+                    growRate=2,
+                    shootFunc=function(self,player,chargeFrame)
+                        --[[ dps data:
+                            previous maximum (4 backrows + 2 homing) is 4*6*1.5 (with II) + 2*3 = 42 damage per shoot interval (3 frames) = 840 dps
+                            but, many spellcards force to only use homing, then minimum is only 120 dps
+                            ring dps = baseDamage * lifeFrame * damageRatio / chargeFrame = 900 * (chargeFrame/60)^0.5 (before cap).
+                            easy shoot (chargeFrame 30 frames) dps = 900 / sqrt(2) = ~636 dps
+                            max dps (chargeFrame 120 frames) = 1272 dps
+                            To hit enemy, the time offset range is +- (enemy radius + half ring width)/growRate = 15 frames
+                            but many spellcards don't have large area, or enemy is moving, and charge every 2 seconds interrupts dodging so fair enough.
+                        ]]
+                        if chargeFrame<20 then
+                            return
+                        end
+                        chargeFrame=math.min(chargeFrame,120) -- cap charge time to 120 frames
+                        local damageRatio=(chargeFrame/60)^1.5 -- should be greater than linear growth
+                        Effect.Ring{
+                            x=player.x,
+                            y=player.y,
+                            radius=10+chargeFrame*self.growRate,
+                            width=10,
+                            lifeFrame=60,
+                            damage=self.baseDamage*damageRatio,
+                            direction=0, -- not important
+                            sprite=Asset.bulletSprites.snake.red
+                        }
+                    end
+                }
+            }
+        end,
+        spritePos={x=0,y=3}
+    }
 }
-upgrades.data=data
+-- when need to apply upgrades in order, use this table
+upgrades.dataList=dataList
+---@type table<string,Upgrade> key is upgrade id
+-- when need to find upgrade by id, use this table
+upgrades.data={}
+for _,upgrade in ipairs(dataList) do
+    upgrades.data[upgrade.id]=upgrade
+end
 
 
 --- it seems that below data can be placed in upgrades.data. but if there is second character with different upgrade tree while reusing some upgrades, then split upgrades data and tree data is good.
 ---@type table<string, UpgradeNode>
 local nodes = {
     increaseHP =  {connect = {}, pos = {x=1, y=1}, requires = {} },
+    increaseHPAgain =  {connect = {}, pos = {x=1, y=2}, requires = {'increaseHP'} },
     regenerate =  {connect = {}, pos = {x=2, y=1}, requires = {'increaseHP'} },
     unyielding =  {connect = {}, pos = {x=2, y=2}, requires = {'regenerate'} },
     acrobat =     {connect = {}, pos = {x=3, y=1}, requires = {'regenerate'} },
@@ -307,7 +366,8 @@ local nodes = {
     homingShotII = {connect = {}, pos = {x=6, y=3}, requires = {'familiarShot'} },
     sideShotII =   {connect = {}, pos = {x=6, y=4}, requires = {'familiarShot'} },
     backShotII =   {connect = {}, pos = {x=6, y=5}, requires = {'familiarShot'} },
-    counterShot =  {connect = {}, pos = {x=7, y=3}, requires = {'homingShotII', 'sideShotII', 'backShotII'} },
+    counterShot =  {connect = {}, pos = {x=7, y=4}, requires = {'homingShotII', 'sideShotII', 'backShotII'} },
+    ring =         {connect = {}, pos = {x=8, y=4}, requires = {'counterShot'} },
     amulet =         {connect = {}, pos = {x=1, y=5}, requires = {} },
     fixedHPDisplay = {connect = {}, pos = {x=2, y=5}, requires = {'amulet'} },
     clairvoyance =   {connect = {}, pos = {x=3, y=5}, requires = {'fixedHPDisplay'} },
