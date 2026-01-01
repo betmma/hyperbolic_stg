@@ -1799,6 +1799,10 @@ return {
             en_us = 'Shop Unlocked!\nPress C in this menu to open it.\n(after dismissing this notice)',
             zh_cn = '商店已解锁！\n在此菜单中按C打开它。\n（关闭此通知后）',
         },
+        lshiftReplayDialogueHint = {
+            en_us = 'The small square left to level means it has a dialogue. Hold LShift when selecting the level to replay it.',
+            zh_cn = '关卡左侧的小方块表示它有对话。在选择关卡时按住LShift键即可重新观看。',
+        },
         unlockLevel = {
             [2] = {
                 en_us = 'Unlocked Act 2!\nMore enemies in Reimu\'s dream.',

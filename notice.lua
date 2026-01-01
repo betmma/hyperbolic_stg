@@ -9,6 +9,7 @@
 ---@class NoticeManager:Object
 ---@field notices Notice[]
 ---@field add fun(self:NoticeManager,textArgs:localizationArgs)
+---@field addWhenEnterState fun(self:NoticeManager,textArgs:localizationArgs,state:string)
 ---@field update fun(self:NoticeManager)
 ---@field drawText fun(self:NoticeManager)
 ---@field hasNotice fun(self:NoticeManager):boolean return true if there is any notice being displayed
@@ -66,6 +67,17 @@ end
 ---@param textArgs localizationArgs "localization args. will localize with {'ui', 'notice', textArgs[1], ...}. non integer indexes are ignored"
 function NoticeManager:add(textArgs)
     self.notices[#self.notices+1]=Notice(textArgs)
+end
+
+-- add a notice that will be shown when entering certain (defaults to choose levels) state, common notices can use this. directly call NoticeManager:add in level:leave could happen when retrying level or at you win/lose screen
+function NoticeManager:addWhenEnterState(textArgs, state)
+    EventManager.listenTo(EventManager.EVENTS.SWITCH_STATE, function(from,to)
+        if to~=state then
+            return
+        end
+        self:add(textArgs)
+        return EventManager.DELETE_LISTENER
+    end)
 end
 
 -- called in G.update

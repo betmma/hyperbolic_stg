@@ -177,7 +177,8 @@ SaveManager.defaultSaveData=DefaultRoot{
         playTimeInLevel=0,
     },
     extraUnlock={
-        shopUnlocked=false
+        lshiftReplayDialogueHintShown=false, -- pass 1-1
+        shopUnlocked=false -- pass 2-1
     },
     nicknameUnlock={}, -- this and below are filled by nickname.lua
     statistics={

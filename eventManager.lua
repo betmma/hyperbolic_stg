@@ -6,8 +6,10 @@ EventManager.EVENTS={
     WIN_LEVEL='winLevel',
     LOSE_LEVEL='loseLevel',
     LEAVE_LEVEL='leaveLevel',
-    SHOCKWAVE_REMOVE_BULLET='shockwaveRemoveBullet'
+    SHOCKWAVE_REMOVE_BULLET='shockwaveRemoveBullet',
+    SWITCH_STATE='switchState'
 }
+EventManager.DELETE_LISTENER='deleteListener'
 
 EventManager.listeners = {}
 
@@ -49,7 +51,10 @@ end
 function EventManager.post(eventName, ...)
     if EventManager.listeners[eventName] then
         for _, func in ipairs(EventManager.listeners[eventName]) do
-            func(...)
+            local ret=func(...)
+            if ret == EventManager.DELETE_LISTENER then
+                EventManager.removeListener(eventName, func)
+            end
         end
     end
 end

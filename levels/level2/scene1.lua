@@ -131,9 +131,9 @@ return {
         }
     end,
     leave=function()
-        if not G.save.extraUnlock['shopUnlocked'] then
+        if not G.save.extraUnlock['shopUnlocked'] and not G.replay then
             G.save.extraUnlock['shopUnlocked']=true
-            NoticeManager:add({'unlockShop'})
+            NoticeManager:addWhenEnterState({'unlockShop'}, G.STATES.CHOOSE_LEVELS)
         end
     end
 }

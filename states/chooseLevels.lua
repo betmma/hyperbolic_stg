@@ -95,8 +95,12 @@ return {
         -- print Level x and Scene x (left part)
         SetFont(36)
         local levelStr=LevelData.getLevelStr(level)
-        love.graphics.print(Localize{'ui','level',level=levelStr},100,50,0,1,1)
+        local xBase=100
+        local yBase=50
+        love.graphics.print(Localize{'ui','level',level=levelStr},xBase,yBase,0,1,1)
         SetFont(30)
+        yBase=yBase+50
+        local yGap=40
         for index, value in ipairs(LevelData[level]) do
             local levelID=LevelData[level][index].ID
             love.graphics.setColor(.7,.6,.6)
@@ -105,11 +109,17 @@ return {
             elseif self.save.levelData[levelID].passed==2 then
                 love.graphics.setColor(1,1,0.5)
             end
-            love.graphics.print(levelStr.."-"..index,100,100+index*40,0,1,1)
+            -- print X-X text
+            love.graphics.print(levelStr.."-"..index,xBase,yBase+index*yGap,0,1,1)
+            -- draw a square indicating dialogue level
+            love.graphics.setColor(1,1,1)
+            if LevelData[level][index].dialogue then
+                love.graphics.rectangle("fill",xBase-20,yBase+index*yGap+10,10,10)
+            end
         end
         -- draw rectangle to mark current selected scene (left part)
         love.graphics.setColor(1,1,1)
-        love.graphics.rectangle("line",100,100+scene*40,200,40)
+        love.graphics.rectangle("line",xBase,yBase+scene*yGap,200,40)
 
         love.graphics.translate(leftOffset+rightOffset,0) -- right part begins
         -- add smooth transition when switching scenes or levels (setting the transparency of screenshot and quote)
@@ -131,10 +141,10 @@ return {
 
         -- show quote
         love.graphics.rectangle("line",325,500,400,80)
-        local text=Localize{'levelData','defaultQuote'}--levelData.defaultQuote
+        local text=Localize{'levelData','defaultQuote'}
         local save=self.save.levelData[levelID]
         if save.passed>=1 then
-            text=Localize{'levelData','spellcards',LevelData[level][scene].ID,'quote'}--levelData[level][scene].quote or ''
+            text=Localize{'levelData','spellcards',LevelData[level][scene].ID,'quote'}
         elseif save.tryCount>=10 then -- show hint text
             local hintText, success=Localize{'levelData','spellcards',LevelData[level][scene].ID,'hint'}
             if success then -- some levels may not have hint text

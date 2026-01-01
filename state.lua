@@ -38,6 +38,7 @@ G={
         if self.UIDEF[state].TRANSITION then
             error("Illegal to switch to a transition state directly")
         end
+        EventManager.post(EventManager.EVENTS.SWITCH_STATE,self.STATE,state)
 
         local lastState=self.STATE
 
@@ -196,6 +197,9 @@ G={
     spellNameText=nil,
     ---@type boolean
     UseHypRotShader=true,
+    ---@type boolean
+    -- to replay dialogue when entering level (spaghetti???)
+    lshiftDownWhenEnteringLevel=false,
 
     DISK_RADIUS_BASE={
         [G.CONSTANTS.HYPERBOLIC_MODELS.P_DISK]=1, -- Poincare disk
@@ -315,6 +319,7 @@ G.lose=function(self)
 end
 G.enterLevel=function(self,level,scene)
     self.currentLevel={level,scene}
+    self.lshiftDownWhenEnteringLevel=love.keyboard.isDown('lshift')
     self:switchState(self.STATES.IN_LEVEL)
 end
 -- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), G.retryLevel (pressing "R" or instant retry upgrade called from player) or exiting from pause menu. return true if in replay (for G.win or lose to skip changing savedata and other things)
@@ -337,11 +342,10 @@ G.leaveLevel=function(self,win)
     self:_incrementTryCount()
 end
 G.retryLevel=function(self)
+    self:leaveLevel()
     if self.replay then -- if in "replay" replay "replay" (why so strange)
-        self:leaveLevel()
         ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
     else
-        self:leaveLevel()
         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
     end
 end
