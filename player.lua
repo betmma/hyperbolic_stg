@@ -116,6 +116,7 @@ function Player:new(args)
     self.hurt=false --to check perfect completion
     self.damageTaken=0
     self.invincibleTime=0
+    self.hitInvincibleFrame=60
     self.grazeRadiusFactor=15
 
     self.shootMode=Player.shootModes.Normal
@@ -177,7 +178,7 @@ function Player:update(dt)
         table.insert(self.keyRecord,keyVal)
     end
     self:calculateShoot()
-    
+
     self:moveUpdate(dt)
 
     -- handle invincible time from hit
@@ -695,12 +696,12 @@ function Player:hitEffect(damage,isDirect)
     self.damageTaken=self.damageTaken+math.min(damage,self.hp) -- only count actual damage taken
     self.hp=self.hp-damage
     self.hurt=true
-    self.dieFrame=self.frame
+    self.hitFrame=self.frame
     if self.hp<=0 then
         G:lose()
     end
     if not isDirect then
-        self.invincibleTime=self.invincibleTime+1
+        self.invincibleTime=self.invincibleTime+self.hitInvincibleFrame/60
         Effect.Shockwave{x=self.x,y=self.y,radius=self.dieShockwaveRadius,growSpeed=1.1,animationFrame=30}
     end
     SFX:play('dead',true)
@@ -708,18 +709,18 @@ end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_HIT,Player.hitEffect)
 
 function Player:useInvertShader()
-    return self.dieFrame and self.frame-self.dieFrame<60
+    return self.hitFrame and self.frame-self.hitFrame<self.hitInvincibleFrame
 end
 
--- part of hit effect so based on dieFrame not invincibleTime
+-- part of hit effect so based on hitFrame not invincibleTime
 function Player:invertShaderEffect()
     -- if self.invincibleTime<=0 then return end
-    if not (self.dieFrame and self.frame-self.dieFrame<60) then
+    if not (self.hitFrame and self.frame-self.hitFrame<self.hitInvincibleFrame) then
         invertShader:send("radiusInner",0)
         invertShader:send("radiusOuter",0)
         return
     end
-    local t=1-(self.frame-self.dieFrame)/60
+    local t=1-(self.frame-self.hitFrame)/self.hitInvincibleFrame
     -- love.graphics.setShader(invertShader)
     local x,y=Shape.screenPosition(self.x,self.y)
     if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW and G.viewMode.hyperbolicModel~=G.CONSTANTS.HYPERBOLIC_MODELS.UHP then

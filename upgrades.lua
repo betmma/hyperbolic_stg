@@ -338,6 +338,15 @@ local dataList = {
             }
         end,
         spritePos={x=0,y=3}
+    },
+    {
+        id='spiritTraining',
+        description='invincible time after being hit increases by 0.5 seconds.',
+        cost=40,
+        executeFunc=function(player)
+            player.hitInvincibleFrame=player.hitInvincibleFrame+30
+        end,
+        spritePos={x=1,y=3}
     }
 }
 -- when need to apply upgrades in order, use this table
@@ -364,6 +373,7 @@ local nodes = {
     spareBomb =     {connect = {}, pos = {x=6, y=2}, requires = {'accumulativeBomb'} },
     vortex =      {connect = {}, pos = {x=5, y=1}, requires = {'flashbomb'} },
     sensitiveOrb= {connect = {}, pos = {x=6, y=1}, requires = {'vortex'} },
+    spiritTraining={connect = {}, pos = {x=7, y=1}, requires = {'sensitiveOrb'} },
     homingShot =  {connect = {}, pos = {x=1, y=3}, requires = {} },
     sideShot =    {connect = {}, pos = {x=3, y=3}, requires = {'homingShot'} },
     backShot =    {connect = {}, pos = {x=3, y=4}, requires = {'homingShot'} },

@@ -2143,6 +2143,16 @@ return {
                 zh_cn = '阴阳玉吸收的子弹计为擦弹。',
             },
         },
+        spiritTraining = {
+            name = {
+                en_us = 'Spirit Training',
+                zh_cn = '灵魂训练',
+            },
+            description = {
+                en_us = 'Invincible time after being hit is 0.5 seconds longer.',
+                zh_cn = '被弹后的无敌时间延长0.5秒。',
+            },
+        },
     },
     ---@type table<string, NicknameLocalization>
     nickname = {
