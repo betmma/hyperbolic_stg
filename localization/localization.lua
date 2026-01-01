@@ -1789,8 +1789,8 @@ return {
                 zh_cn = '感谢游玩！',
             },
             yearAndAuthor = {
-                en_us = '2025 Betmma',
-                zh_cn = '2025 Betmma',
+                en_us = '2026 Betmma',
+                zh_cn = '2026 Betmma',
             }
         }
     },
