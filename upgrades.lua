@@ -301,8 +301,13 @@ local dataList = {
             player.shootMode=Player.shootModes.Charge
             player.shootRows={
                 {
+                    mode='ring',
                     baseDamage=15,
                     growRate=2,
+                    width=10,
+                    radiusBase=10,
+                    minimumChargeFrame=20,
+                    maximumChargeFrame=120,
                     shootFunc=function(self,player,chargeFrame)
                         --[[ dps data:
                             previous maximum (4 backrows + 2 homing) is 4*6*1.5 (with II) + 2*3 = 42 damage per shoot interval (3 frames) = 840 dps
@@ -313,16 +318,16 @@ local dataList = {
                             To hit enemy, the time offset range is +- (enemy radius + half ring width)/growRate = 15 frames
                             but many spellcards don't have large area, or enemy is moving, and charge every 2 seconds interrupts dodging so fair enough.
                         ]]
-                        if chargeFrame<20 then
+                        if chargeFrame<self.minimumChargeFrame then
                             return
                         end
-                        chargeFrame=math.min(chargeFrame,120) -- cap charge time to 120 frames
+                        chargeFrame=math.min(chargeFrame,self.maximumChargeFrame) -- cap charge time to 120 frames
                         local damageRatio=(chargeFrame/60)^1.5 -- should be greater than linear growth
                         Effect.Ring{
                             x=player.x,
                             y=player.y,
-                            radius=10+chargeFrame*self.growRate,
-                            width=10,
+                            radius=self.radiusBase+chargeFrame*self.growRate,
+                            width=self.width,
                             lifeFrame=60,
                             damage=self.baseDamage*damageRatio,
                             direction=0, -- not important

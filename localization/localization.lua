@@ -2079,8 +2079,8 @@ return {
                 zh_cn = '封魔环',
             },
             description = {
-                en_us = 'Your shot is replaced by: hold Z to charge, release to create a ring that damages enemies on contact. The radius of the ring depends on charge time.',
-                zh_cn = '自机子弹替换为：按住Z键蓄力，松开时产生一个环，对接触的敌人造成伤害。环的半径取决于蓄力时间。',
+                en_us = 'Your shot is replaced by: hold Z to charge, release to create a ring that damages enemies on contact. The radius of the ring depends on charge time, but has a maximum limit.',
+                zh_cn = '自机子弹替换为：按住Z键蓄力，松开时产生一个环，对接触的敌人造成伤害。环的半径取决于蓄力时间，但有上限。',
             },
         },
         diskModels = {

@@ -80,6 +80,12 @@ return {
                 Event.EaseEvent{
                     obj=en,aimTable=Shape,aimKey='axisY',aimValue=-50,easeFrame=180,progressFunc=Event.sineIOProgressFunc
                 }
+                -- prevent ring shottype cheese, update limit
+                for _,v in pairs(player.shootRows) do
+                    if v.mode=='ring' then
+                        v.maximumChargeFrame=120/v.growRate
+                    end
+                end
             end
         }
         local hp=en.hp

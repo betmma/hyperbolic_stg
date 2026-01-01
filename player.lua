@@ -176,25 +176,8 @@ function Player:update(dt)
         end
         table.insert(self.keyRecord,keyVal)
     end
+    self:calculateShoot()
     
-    -- shooting bullet
-    if self.shootMode==Player.shootModes.Normal then
-        if self.keyIsDown('z') and self.frame%self.shootInterval==0 then
-            self:shoot()
-        end
-    elseif self.shootMode==Player.shootModes.Charge then
-        if self.keyIsDown('z') then
-            if self.chargeFrame==0 then
-                SFX:play('notice',true,1)
-            end
-            self.chargeFrame=self.chargeFrame+1
-        elseif self.chargeFrame>0 then
-            SFX:play('cancel',true,1) -- some sfx rare in level (they are used in menus) for more distinct
-            self:chargeShoot(self.chargeFrame)
-            self.chargeFrame=0
-        end
-    end
-
     self:moveUpdate(dt)
 
     -- handle invincible time from hit
@@ -214,6 +197,26 @@ function Player:update(dt)
     end
     self.grazeCountThisFrame=0
 
+end
+
+function Player:calculateShoot()
+    -- shooting bullet
+    if self.shootMode==Player.shootModes.Normal then
+        if self.keyIsDown('z') and self.frame%self.shootInterval==0 then
+            self:shoot()
+        end
+    elseif self.shootMode==Player.shootModes.Charge then
+        if self.keyIsDown('z') then
+            if self.chargeFrame==0 then
+                SFX:play('notice',true,1)
+            end
+            self.chargeFrame=self.chargeFrame+1
+        elseif self.chargeFrame>0 then
+            SFX:play('cancel',true,1) -- some sfx rare in level (they are used in menus) for more distinct
+            self:chargeShoot(self.chargeFrame)
+            self.chargeFrame=0
+        end
+    end
 end
 
 -- return vx, vy from keyboard input. normally this will directly be player's move speed, but in some levels simulating platformer (with gravity) more calculation is needed.

@@ -40,6 +40,12 @@ return {
                     aimKey='r2',
                     aimValue=en.r2+10
                 }
+                -- prevent ring shottype cheese, update limit
+                for _,v in pairs(player.shootRows) do
+                    if v.mode=='ring' then
+                        v.maximumChargeFrame=(en.r2+10-v.radiusBase)/v.growRate
+                    end
+                end
             end
             evict(getRadius(hpLevel+1))
             if phases[hpLevel+1] then
@@ -503,6 +509,12 @@ return {
                     -- Shape.drawCircle(en.x,en.y,en.r1,'fill') --  "player's bullet disappears when entering area around enemy from outside" is simplified to "player's bullet don't move when exiting player's area"
                     love.graphics.setColor(colorref[1],colorref[2],colorref[3],colorref[4] or 1)
                     drawRef(self)
+                end
+                -- prevent ring shottype cheese
+                for _,v in pairs(player.shootRows) do
+                    if v.mode=='ring' then
+                        v.maximumChargeFrame=(en.r2-v.radiusBase)/v.growRate
+                    end
                 end
             end
         }
