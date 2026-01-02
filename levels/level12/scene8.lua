@@ -83,11 +83,12 @@ return {
                     SFX:play('enemyPowerfulShot')
                     self.exploded=true
                     G.bombExploded=true -- for the secret achievement
+                    local explodeTime=player.hitInvincibleFrame-5 -- explode ends just before player invincible ends
                     Event.EaseEvent{
-                        obj=self,aimKey='spriteTransparency',aimValue=0,easeFrame=55
+                        obj=self,aimKey='spriteTransparency',aimValue=0,easeFrame=explodeTime
                     }
                     Event.EaseEvent{
-                        obj=self,aimKey='radius',aimValue=1000,easeFrame=55,afterFunc=function()
+                        obj=self,aimKey='radius',aimValue=1000,easeFrame=explodeTime,afterFunc=function()
                             self:remove()
                         end
                     }
