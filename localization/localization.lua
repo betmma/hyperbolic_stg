@@ -1871,8 +1871,8 @@ return {
                 zh_cn = '数学家之梦',
             },
             description = {
-                en_us = 'By Shinanij\nThis is (currently) first half level\'s theme.\nThis time I tried to make the climax part the most cheerful and uplifting.\nAlthough the difficulty of no-damage clear is hellish, after all, gaming should be a joyful thing. So should mathematics.\nBy the way, which one would be more interested in visiting this space, a mathematician or a physicist?',
-                zh_cn = 'By Shinanij\n这是（目前）前半关卡的主题曲。\n这次尝试把高潮部分写得最为欢乐，催人奋进。\n虽然无伤通关的难度是地狱，但是游戏总归是一件快乐的事。数学也应该是如此吧。\n话说数学家和物理学家，哪个会对来访这片空间更感兴趣呢？',
+                en_us = 'By Shinanij\nThis is Act 1-2\'s theme.\nThis time I tried to make the climax part the most cheerful and uplifting.\nAlthough the difficulty of no-damage clear is hellish, after all, gaming should be a joyful thing. So should mathematics.\nBy the way, which one would be more interested in visiting this space, a mathematician or a physicist?',
+                zh_cn = 'By Shinanij\n这是1-2幕的主题曲。\n这次尝试把高潮部分写得最为欢乐，催人奋进。\n虽然无伤通关的难度是地狱，但是游戏总归是一件快乐的事。数学也应该是如此吧。\n话说数学家和物理学家，哪个会对来访这片空间更感兴趣呢？',
             },
         },
         level2 = {
@@ -1881,9 +1881,59 @@ return {
                 zh_cn = '更广阔的天空',
             },
             description = {
-                en_us = 'This is (currently) second half level\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;\nHyperbolic sky, would be nearly pure black if considered again.',
-                zh_cn = '这是（目前）后半关卡的主题曲。\n听起来充满活力和积极。\n前奏有一种强烈的庆祝春节的感觉(^^;\n双曲的天空，再想想的话，几乎是纯黑的吧。',
+                en_us = 'This is Act 3-4\'s theme.\nIt feels energetic and uplifting.\nThe intro gives me a feeling of celebrating Spring Festival (^^;\nHyperbolic sky, would be nearly pure black if considered again.',
+                zh_cn = '这是3-4幕的主题曲。\n听起来充满活力和积极。\n前奏有一种强烈的庆祝春节的感觉(^^;\n双曲的天空，再想想的话，几乎是纯黑的吧。',
             },
+        },
+        level3 = {
+            name = {
+                en_us = 'Early Plum Blossoms',
+                zh_cn = '早梅',
+            },
+            description = {
+                en_us = 'This is Act 5-7\'s theme.\nPensive first, thriving later. Plum blossoms blooming alone in the winter.\nNot sure if it fits the Youkai Mountain lol.',
+                zh_cn = '这是5-7幕的主题曲。\n先是沉思，后是繁盛。东风破早梅，向暖一枝开。\n不确定它是否适合妖怪之山，哈哈。',
+            }
+        },
+        level4 = {
+            name = {
+                en_us = 'Unsteady March',
+                zh_cn = '不稳进行曲',
+            },
+            description = {
+                en_us = 'This is Act 8-9\'s theme.\nVery rare time signature (21/16) used but doesn\'t sound weird. \nJust entered the hyperbolic domain, feeling unsteady and unstable.\nThough, isn\'t Reimu flying instead of marching?',
+                zh_cn = '这是8-9幕的主题曲。\n使用了21/16这个罕见的拍号，但听起来并不奇怪。\n刚进入双曲域，脚步不稳的感觉。\n不过，灵梦不是用飞的吗？',
+            }
+        },
+        level5 = {
+            name = {
+                en_us = 'Fitful Nightmare',
+                zh_cn = '断续的噩梦',
+            },
+            description = {
+                en_us = 'This is Act 10-11\'s theme.\nFrom creepy to scurry off. Nightmare-like tune, fitting the levels\' difficulty.\nYeah you have seen the title before.',
+                zh_cn = '这是10-11幕的主题曲。\n从诡异到逃窜。噩梦般的旋律，符合关卡的难度。\n是的，你之前见过这个曲名。',
+            }
+        },
+        level6 = {
+            name = {
+                en_us = 'Signified Horizon ~ Hyperbolic Aria',
+                zh_cn = '所指的地平线 ~ Hyperbolic Aria',
+            },
+            description = {
+                en_us = 'This is Act 12\'s theme.\nGraceful finale, with addictive rhythm.\nRegarding the title, besides the semiotic element, also imagine a scene of signaling partner besides you and pointing at the beautiful horizon.',
+                zh_cn = '这是12幕的主题曲。\n优雅的最终曲，伴随着令人上瘾的节奏。\n关于标题，除了符号学元素外，还可以想象一个场景：示意身边的同伴，指向美丽的地平线。',
+            }
+        },
+        ending = {
+            name = {
+                en_us = 'Nonhyperbolic Happiness',
+                zh_cn = '无夸饰的幸福',
+            },
+            description = {
+                en_us = 'This is the ending theme.\nA purely happy tune.\nMaybe you realize it\'s similar to a part of Fitful Nightmare? I made this tune first, then adapted it into the nightmare version. Strange huh?',
+                zh_cn = '这是结局画面的主题曲。\n纯粹快乐的旋律。\n也许你会发现它和断续的噩梦中的一部分很相似？我是先写了这首曲子，然后再改编成噩梦版本的。有点奇怪吧？',
+            }
         }
     },
     upgrades = {

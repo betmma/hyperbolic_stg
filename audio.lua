@@ -90,7 +90,7 @@ sfx:setAudioVolume('start',3)
 sfx:setAudioVolume('stop',3)
 sfx:setAudioVolume('notice',3)
 ---@type AudioSystem
-local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title',loadType='stream'}
+local bgm=AudioSystem{folder='bgm',fileSuffix='.mp3',fileNames={'title','level1','level2','level3','level4','level5','level6','ending'},volumeCoeff=1,looping=true,unique=true,defaultAudio='title',loadType='stream'}
 bgm:setAudioVolume('title',0.5)
 bgm:setAudioVolume('level1',1)
 bgm:setAudioVolume('level2',0.8)

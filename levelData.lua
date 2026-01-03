@@ -263,10 +263,25 @@ levelData.getBGMName=function(level,scene)
     if levelData and levelData.bgm then
         return levelData.bgm
     end
-    if level<6 then
+    if level<=2 then
         return 'level1'
     end
-    return 'level2'
+    if level>=3 and level<=4 then
+        return 'level2'
+    end
+    if level>=5 and level<=7 then
+        return 'level3'
+    end
+    if level>=8 and level<=9 then
+        return 'level4'
+    end
+    if level>=10 and level<=11 or level==13 then
+        return 'level5'
+    end
+    if level==12 then
+        return 'level6'
+    end
+    return 'level1'
 end
 
 --- get the default background class of a level-scene

@@ -3,6 +3,7 @@ return {
     enter=function(self)
         self:replaceBackgroundPatternIfNot(BackgroundPattern.Stage) -- 12-9 final stage background
         self.backgroundPattern.camMoveRange={1,1} -- larger movement range
+        BGM:play('ending')
     end,
     update=function(self,dt)
         self.backgroundPattern:update(dt)
