@@ -5,7 +5,7 @@ return {
     spellName='Dream Sign "Lingering Memory"',
     make=function()
         Shape.removeDistance=30
-        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=4800}
         local player=Player{x=400,y=600}
         local function around(bullet,r,theta,radius)
             local sub=Circle{x=bullet.x,y=bullet.y,speed=0,lifeFrame=3000,sprite=BulletSprites.bigRound.red,spriteTransparency=0,safe=true,highlight=true,radius=radius,extraUpdate=function(self)
@@ -28,7 +28,14 @@ return {
             obj=en,
             executeFunc=function(self,times)
                 local level=math.ceil((7200-en.hp)/1800)
-                en.x=en.x*0.99+player.x*0.01
+                Event.LoopEvent{
+                    period=1,frame=-120,times=150,
+                    executeFunc=function()
+                        if player.y>300 then
+                            en.x=en.x*0.99+player.x*0.01
+                        end
+                    end
+                }
                 local x,y
                 if times%2==0 then
                     x,y=en.x,en.y
@@ -39,7 +46,7 @@ return {
                 end
                 Effect.Charge{obj={x=x,y=y},animationFrame=60}
                 Event.DelayEvent{
-                    obj=en,delayFrame=40,executeFunc=function()
+                    obj=en,delayFrame=60,executeFunc=function()
                         local core=Circle{x=x,y=y,speed=0,lifeFrame=3000,sprite=BulletSprites.bigRound.red,spriteTransparency=0,highlight=true,radius=level+1,safe=true,extraUpdate=function(self)
                             self.spriteTransparency=math.clamp((self.spriteTransparency or 0)+0.02,0,1)
                             if self.spriteTransparency>=1 then
@@ -54,7 +61,7 @@ return {
                         end}
                         local offset=math.eval(0,math.pi)
                         for i=1,level,1 do
-                            local r=i*10
+                            local r=i*8
                             for j=1,6+level do
                                 around(core,r,j/ (6+level) *math.pi*2+offset*i,level+1-i)
                             end

@@ -2588,8 +2588,8 @@ return {
                 zh_cn = '商店已解锁。你可以在那里花费经验值购买升级。',
             },
             getXPwhenCompletingScenes = {
-                en_us = 'You get 10 XP for each completed scene.',
-                zh_cn = '每通过一个场景会获得10经验值。',
+                en_us = 'You get 10 XP for each completed scene (only first time).',
+                zh_cn = '每通过一个场景会获得10经验值（限首次）。',
             },
             perfectCompletionMoreXP = {
                 en_us = 'Perfect completion (no damage taken) grants an additional 2 XP.',
