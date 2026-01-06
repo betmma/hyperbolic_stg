@@ -826,6 +826,8 @@ function Stage:new(args)
     self.cam_pitch=-0.9
     self.camMoveRange={0.5,0.2}
     self.camMoveSpeed=0.5
+    self.holeSize = args and args.holeSize or 0.0
+    self.holeIsHorizon = args and args.holeIsHorizon or false
     local axisY=Shape.axisY
     local V0,V1,V2=Shape.schwarzTriangleVertices(self.p,self.q,self.r,{1,axisY+1},0)
     V0[2]=V0[2]-axisY
@@ -841,6 +843,9 @@ function Stage:new(args)
         shader:send("V0", V0)
         shader:send("V1", V1)
         shader:send("V2", V2)
+        -- levelData create this pattern should set holeSize as integer from 1 to 4. ending screen uses 4. coefficient is set here.
+        shader:send("holeSize", self.holeSize*0.3)
+        shader:send("holeIsHorizon", self.holeIsHorizon)
     end
 end
 BackgroundPattern.Stage=Stage

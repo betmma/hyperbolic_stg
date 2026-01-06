@@ -7,6 +7,9 @@ uniform vec2 V0;
 uniform vec2 V1;
 uniform vec2 V2;
 
+uniform float holeSize;
+uniform bool holeIsHorizon;
+
 const float STAGE_HEIGHT = 0;
 const float STAGE_RADIUS = 1.60;
 const float STAGE_THICKNESS = 0.18;
@@ -120,7 +123,7 @@ vec3 spotBase(int idx) {
     } else if (idx == 1) {
         return vec3(-1.55, 0.30, 1.28);
     }
-    return vec3(0.0, -1.7, 1.42);
+    return vec3(0.0, 0.7, 2.42);
 }
 
 void getSpotInfo(int idx, float time, out vec3 origin, out vec3 direction, out vec3 color, out float coneAngle, out vec3 target) {
@@ -281,10 +284,49 @@ vec3 computeStageShading(vec4 hitPos_H, vec3 normal, vec3 viewDir, float travel,
     return clamp(lighting, 0.0, 2.4);
 }
 
-vec3 backgroundColor(vec3 rayDir, float time) {
+vec3 getHoleColor(vec3 dir, float time) {
+    vec3 holeCenter = normalize(vec3(0.0, -1.7, 0.3));
+    float cosTheta = dot(dir, holeCenter);
+    
+    vec3 w = holeCenter;
+    vec3 u = normalize(cross(vec3(1.0, 0.0, 0.0), w));
+    vec3 v = cross(w, u);
+    float angle = atan(dot(dir, v), dot(dir, u));
+    
+    float spike1 = 0.05 * abs(sin(angle * 4.0)); 
+    float spike2 = 0.03 * abs(sin(angle * 8.5 + 1.0));
+    float grit  = 0.01 * sin(angle * 30.0); // Add regular noise for texture
+
+    float irregularity = -(spike1 + spike2) + grit;
+    float currentRadius = (holeSize + irregularity);
+    
+    if (acos(clamp(cosTheta, -1.0, 1.0)) < currentRadius) {
+        if (holeIsHorizon) {
+            vec3 sky = vec3(0.05, 0.05, 0.4);
+            vec3 horizon = vec3(1.0, 0.6, 0.45);
+            vec3 ground = vec3(0.1, 0.0, 0.3);
+            if (dir.z < holeCenter.z) return mix(ground, horizon, smoothstep(holeCenter.z-0.3, holeCenter.z, dir.z));
+            return mix(horizon, sky, smoothstep(holeCenter.z, holeCenter.z+0.3, dir.z));
+        } else {
+             float flash = sin(dir.x * 20.0 + time * 5.0) * sin(dir.y * 20.0 - time * 5.0);
+             vec3 col = 0.5 + 0.5 * cos(time + dir.xyx * 10.0 + vec3(0,2,4));
+             return col + flash * 0.5;
+        }
+    }
+    return vec3(-1.0);
+}
+
+vec3 backgroundColor(vec4 p, vec4 v, float time) {
+    vec4 L = p + v;
+    vec3 dir = normalize(L.xyz);
+    if (holeSize > 0.001) {
+        vec3 hole = getHoleColor(dir, time);
+        if (hole.x > -0.5) return hole;
+    }
+
     vec3 base = vec3(0.02, 0.03, 0.055);
     vec3 beams = vec3(0.0);
-    vec3 dir = normalize(rayDir);
+    dir = normalize(v.xyz);
     for (int i = 0; i < SPOT_COUNT; ++i) {
         vec3 origin; vec3 spotlightDir; vec3 color; float coneAngle; vec3 target;
         getSpotInfo(i, time, origin, spotlightDir, color, coneAngle, target);
@@ -298,7 +340,7 @@ vec3 backgroundColor(vec3 rayDir, float time) {
 vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_stage) {
     float t = 0.0;
     hit_stage = false;
-    vec3 bg = backgroundColor(ray_dir_H.xyz, time);
+    vec3 bg = backgroundColor(cam_pos_H, ray_dir_H, time);
     vec3 beamAccum = vec3(0.0);
 
     for (int i = 0; i < 48; ++i) {

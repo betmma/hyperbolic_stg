@@ -302,7 +302,10 @@ levelData.getDefaultBackground=function(level,scene)
         return BackgroundPattern.Honeycomb
     end
     if level==12 then
-        return BackgroundPattern.Stage
+        if scene<=5 then
+            return BackgroundPattern.Stage
+        end
+        return function() return BackgroundPattern.Stage{holeSize=scene-5} end
     end
     return BackgroundPattern.FollowingTesselation
 end

@@ -1,7 +1,13 @@
 local G=...
 return {
     enter=function(self)
-        self:replaceBackgroundPatternIfNot(BackgroundPattern.Stage) -- 12-9 final stage background
+        self.backgroundPattern:remove()
+        -- 12-9 final stage background
+        self.backgroundPattern=BackgroundPattern.Stage{
+            holeSize=4, -- same as 12-9 size (scene count 9 - 5)
+            holeIsHorizon=true,
+        }
+        self.backgroundPattern.autoDark=false
         self.backgroundPattern.camMoveRange={1,1} -- larger movement range
         BGM:play('ending')
     end,
