@@ -5,7 +5,7 @@ return {
     make=function()
         G.levelRemainingFrame=5400
         Shape.removeDistance=1500
-        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=7200}
+        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=6000}
         local player=Player{x=400,y=600,noBorder=true}
         local center={x=400,y=300}
         player.border=PolyLine(Shape.regularPolygonCoordinates(center.x,center.y,110,12))
@@ -22,7 +22,7 @@ return {
             executeFunc=function()
                 -- a.x,a.y=en.x,en.y--
                 local hpp=en.hp/en.maxhp
-                local t=(en.frame)%650
+                local t=(en.frame)%550
                 if t>=50 and t<=100 and t%1==0 then
                     if t==50 then
                         local pqrsIndex=math.random(1,#pqrs)
@@ -72,9 +72,9 @@ return {
                                     sfxplayed=true
                                 end
                                 local sx,sy=en.x+math.eval(0,10),en.y+math.eval(0,10)--,dir=Shape.rThetaPosT(en.x,en.y,r0/2+30,colorIndex)--
-                                local cir=Circle{x=sx,y=sy,direction=finalDir,speed=0,sprite=BulletSprites['blackrice'][color],lifeFrame=800,
+                                local cir=Circle{x=sx,y=sy,direction=finalDir,speed=0,sprite=BulletSprites['blackrice'][color],lifeFrame=500,
                                 -- batch=Asset.bulletHighlightBatch,
-                                radius=(1)}
+                                radius=(1),extraUpdate=Circle.FadeOut}
                                 local distance=Shape.distance(sx,sy,nx,ny)
                                 Event.DelayEvent{
                                     delayFrame=1,

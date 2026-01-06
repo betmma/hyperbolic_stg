@@ -7,7 +7,7 @@ return {
         Shape.removeDistance=1000
         local a,b
         local en
-        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=7200}
+        en=Enemy{x=400,y=300,mainEnemy=true,maxhp=6000}
         -- en:addHPProtection(600,10)
         local player=Player{x=400,y=600,noBorder=true}
         player.moveMode=Player.moveModes.Natural

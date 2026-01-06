@@ -7,6 +7,14 @@ function Circle.restore()
 end
 Circle.restore()
 
+Circle.FadeOut=function(self)
+    local fadeFrame=self.fadeFrame or 30
+    if self.frame+fadeFrame>=self.lifeFrame then
+        self.safe=true
+        self.spriteTransparency=(self.lifeFrame - self.frame)/fadeFrame
+    end
+end
+
 function Circle:new(args)
     Circle.super.new(self, args)
     self.radius = args.radius or 1
