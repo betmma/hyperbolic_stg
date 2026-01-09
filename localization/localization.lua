@@ -2392,6 +2392,20 @@ return {
                 zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
             },
         },
+        Stonemason = {
+            name = {
+                en_us = 'Stonemason',
+                zh_cn = '石匠',
+            },
+            condition = {
+                en_us = 'Clear 3-7 with no more than 3 missed stones',
+                zh_cn = '错失少于（含）3块石头通过3-7',
+            },
+            description = {
+                en_us = 'You must have played that game for long time on Nokia.',
+                zh_cn = '你一定在诺基亚上玩了很长时间的那个游戏吧。',
+            }
+        },
         GapYoukai = {
             name = {
                 en_us = 'Gap Youkai',

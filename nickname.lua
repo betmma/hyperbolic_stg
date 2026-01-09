@@ -258,6 +258,16 @@ Nickname{
     isSecret=true,
 }
 Nickname{
+    name='Stonemason',
+    isSecret=true,
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==137 and player.stoneMissed<=3 then -- 3-7 Eika stack stone spellcard
+            return true
+        end
+    end
+}
+Nickname{
     name='GapYoukai',
     isSecret=true,
     eventName=EventManager.EVENTS.WIN_LEVEL,

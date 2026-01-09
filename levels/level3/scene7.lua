@@ -11,6 +11,7 @@ return {
         local player=Player{x=400,y=600}
         player.moveMode=Player.moveModes.Natural
         player.border:remove()
+        player.stoneMissed=0
         local poses={}
         for i = 1, 12, 1 do
             local nx,ny=Shape.rThetaPos(400,300,100,math.pi/6*(i-.5))
@@ -139,6 +140,8 @@ return {
                             firstStonePos={cir.x,cir.y}
                             return
                         end
+                        -- stone dropped to the ground, spawn punishment danmaku
+                        player.stoneMissed=player.stoneMissed+1
                         local spawner
                         spawner=BulletSpawner{x=cir.x,y=cir.y,period=5,frame=4,lifeFrame=5+math.floor(#fixedStones/2),bulletNumber=10+2*#fixedStones,bulletSpeed=10,bulletLifeFrame=10000,angle='0+999',range=math.pi*2,bulletSprite=BulletSprites.round.purple,bulletSize=1,highlight=true,spawnSFXVolume=1,bulletEvents={
                             function(cir,args,self)
