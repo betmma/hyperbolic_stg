@@ -268,6 +268,16 @@ Nickname{
     end
 }
 Nickname{
+    name='TrianglePower',
+    isSecret=true,
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==111 and player.insideLargeTriangleFrame>=600 then -- 9-8 Keiki triangle creature spellcard
+            return true
+        end
+    end
+}
+Nickname{
     name='GapYoukai',
     isSecret=true,
     eventName=EventManager.EVENTS.WIN_LEVEL,

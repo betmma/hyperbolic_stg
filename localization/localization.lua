@@ -2406,6 +2406,20 @@ return {
                 zh_cn = '你一定在诺基亚上玩了很长时间的那个游戏吧。',
             }
         },
+        TrianglePower = {
+            name = {
+                en_us = 'Triangle Power',
+                zh_cn = '三角力量',
+            },
+            condition = {
+                en_us = 'Clear 9-8 with more than 10 seconds staying inside triangle',
+                zh_cn = '通过9-8且在三角形内停留时间超过10秒',
+            },
+            description = {
+                en_us = 'Funny place to hide, right?',
+                zh_cn = '藏在这里很有趣，对吧？',
+            }
+        },
         GapYoukai = {
             name = {
                 en_us = 'Gap Youkai',

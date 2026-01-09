@@ -10,6 +10,7 @@ return {
         local en
         local flippingTriangle
         local player=Player{x=400,y=600}
+        player.insideLargeTriangleFrame=0
         en=Enemy{x=400,y=300,mainEnemy=true,maxhp=10800,hpSegments={0.8,0.6,0.4,0.2},hpSegmentsFunc=function(self,hpLevel)
             SFX:play('enemyCharge',true)
             Effect.Shockwave{x=self.x,y=self.y,lifeFrame=20,radius=20,growSpeed=1.2,color='yellow',canRemove={bullet=true,invincible=hpLevel~=2}}
@@ -125,6 +126,9 @@ return {
                                 break
                             end
                         end
+                    end
+                    if flipi==nil and aim==player then -- means it's large triangles, and player is inside
+                        player.insideLargeTriangleFrame=player.insideLargeTriangleFrame+period
                     end
                     if flipi or isrotate then
                         if isnumber and flipi==flipiref then
