@@ -16,6 +16,9 @@ local Nickname=Object:extend()
 ---@type table<integer,Nickname>
 Nickname.nicknames={}
 
+---@type table<string,Nickname> map from nickname name to nickname object
+Nickname.nicknameMap={}
+
 Nickname.nicknameCount=0
 
 function Nickname:new(args)
@@ -28,10 +31,10 @@ function Nickname:new(args)
     Nickname.nicknameCount=Nickname.nicknameCount+1
     self.ID=Nickname.nicknameCount
     Nickname.nicknames[Nickname.nicknameCount]=self
+    Nickname.nicknameMap[self.name]=self
     EventManager.listenTo(self.eventName, function(...)
         local ret=self:eventFunc(...)
         if ret and G.save.nicknameUnlock[self.name]~=true then
-            G.save.nicknameUnlock[self.name]=true
             EventManager.post(EventManager.EVENTS.NICKNAME_GET,self.ID)
         end
     end)
@@ -82,6 +85,11 @@ end
 local nicknamePending={}
 local displayFrame=120
 local function nicknameGet(id)
+    local nickname=Nickname.nicknames[id]
+    if nickname==nil then
+        return
+    end
+    G.save.nicknameUnlock[nickname.name]=true
     nicknamePending[id]=G.frame
     -- Event.DelayEvent{ -- not removing??
     --     obj=G,delayFrame=displayFrame,executeFunc=function()
@@ -256,6 +264,24 @@ Nickname{
         return false
     end,
     isSecret=true,
+}
+Nickname{
+    name='TwistedBeginning',
+    isSecret=true,
+    eventName=EventManager.EVENTS.LOSE_LEVEL,
+    eventFunc=function(self,levelData)
+        if levelData.id==11 and G.levelRemainingFrame<=0 then -- 1-1 timeout
+            return true
+        end
+    end
+}
+Nickname{
+    name='DangerousArea',
+    isSecret=true,
+    eventName=EventManager.EVENTS.NICKNAME_DANGEROUS_AREA, -- 2-2 will directly post this
+    eventFunc=function(self)
+        return true
+    end
 }
 Nickname{
     name='Stonemason',

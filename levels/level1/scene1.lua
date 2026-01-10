@@ -44,6 +44,13 @@ return {
                 self:spawnBulletFunc{direction=i<=num/2 and 0 or math.pi,speed=math.abs(speed*(i-num/2)),radius=size,index=i}
             end
         end}
+        Event.DelayEvent{
+            delayFrame=2400,
+            executeFunc=function()
+                b.bulletNumber=60
+                b.bulletSpeed=1.5
+            end
+        }
     end,
     leave=function()
         if not G.save.extraUnlock.lshiftReplayDialogueHintShown and not G.replay then

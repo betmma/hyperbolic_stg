@@ -2392,6 +2392,34 @@ return {
                 zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
             },
         },
+        TwistedBeginning = {
+            name = {
+                en_us = 'Twisted Beginning',
+                zh_cn = '扭曲的开始',
+            },
+            condition = {
+                en_us = 'Timeout 1-1',
+                zh_cn = '在1-1耗尽时间',
+            },
+            description = {
+                en_us = 'The final difficulty was the oldest 1-1. Glad balance adjustments exist.',
+                zh_cn = '最终难度是最早版的1-1。还好有平衡性调整。',
+            },
+        },
+        DangerousArea = {
+            name = {
+                en_us = 'Dangerous Area',
+                zh_cn = '危险地带',
+            },
+            condition = {
+                en_us = 'Lure Nemuno out of the game area in 2-2',
+                zh_cn = '在2-2将坂田合欢引出游戏区域',
+            },
+            description = {
+                en_us = 'The hyperbolic world is really dangerous. Don\'t go too far away!',
+                zh_cn = '双曲世界真的很危险。不要走得太远！',
+            },
+        },
         Stonemason = {
             name = {
                 en_us = 'Stonemason',

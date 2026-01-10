@@ -4,6 +4,7 @@ EventManager.EVENTS={
     PLAYER_GRAZE='playerGraze',
     PLAYER_ACCUMULATE_FLASHBOMB='playerAccumulateFlashbomb',
     NICKNAME_GET='nicknameGet',
+    NICKNAME_DANGEROUS_AREA='nicknameDangerousArea',
     WIN_LEVEL='winLevel',
     LOSE_LEVEL='loseLevel',
     LEAVE_LEVEL='leaveLevel',

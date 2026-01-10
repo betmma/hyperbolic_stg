@@ -314,7 +314,10 @@ G.lose=function(self)
         return -- don't change savedata and other things
     end
     self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
-    -- EventManager.post(EventManager.EVENTS.LOSE_LEVEL,self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene) -- retry wont call this function, so use this to count lose times is not accurate. need to listen to LEAVE_LEVEL event and exclude win=true cases instead.
+    local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+    local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+    local levelID=LevelData[level][scene].ID
+    EventManager.post(EventManager.EVENTS.LOSE_LEVEL,{id=levelID,level=level,scene=scene}) -- retry wont call this function, so use this to count lose times is not accurate. need to listen to LEAVE_LEVEL event and exclude win=true cases instead.
     self:saveData()
 end
 G.enterLevel=function(self,level,scene)

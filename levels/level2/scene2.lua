@@ -4,7 +4,7 @@ return {
     user='nemuno',
     spellName='Blade Sign "Swirling Knife Sharpening"',
     make=function()
-        Shape.removeDistance=1e100
+        Shape.removeDistance=10000
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=6000}
         local player=Player{x=400,y=600}
         local a
@@ -29,7 +29,14 @@ return {
             end
         }}
         a.flag=true
-        Shape.removeDistance=2000
+        Event.LoopEvent{
+            obj=player,period=1,executeFunc=function(self)
+                if en.removed and not G.preWin then -- enemy has moved too far and get removed. unlock secret nickname
+                    EventManager.post(EventManager.EVENTS.NICKNAME_DANGEROUS_AREA)
+                    self:remove()
+                end
+            end
+        }
         Event.LoopEvent{
             obj=en,
             period=1,
@@ -47,7 +54,11 @@ return {
                     nx=math.clamp(nx,200,600)
                     nx=math.clamp(nx,en.x-100,en.x+100)
                     ny=math.clamp(ny,100,500)
-                    ny=math.clamp(ny,en.y-200,en.y+100)
+                    local yNegLimit=200
+                    if en.frame>2400 then
+                        yNegLimit=300
+                    end
+                    ny=math.clamp(ny,en.y-yNegLimit,en.y+100)
                     local co={math.eval(0,3),math.eval(0,3),math.eval(0,3),math.eval(0,3)}
                     a.flag=false
                     a.bulletSpeed=30
