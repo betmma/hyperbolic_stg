@@ -674,10 +674,11 @@ function Player:grazeEffect(amount)
     local prevCount=self.grazeCountForFlashbomb
     local newCount=prevCount+amount
     local req=self.grazeReqForFlashbomb
+    self.grazeCountForFlashbomb=newCount
     if self.accumulativeFlashbomb and math.modClamp(newCount,0,req/2)>=0 and math.modClamp(prevCount,0,req/2)<0 then -- play sound when reaching each flashbomb threshold. It's possible to graze multiple or <1 graze at once, so %req==0 will miss some cases.
         SFX:play('extend',true)
+        EventManager.post(EventManager.EVENTS.PLAYER_ACCUMULATE_FLASHBOMB,self)
     end
-    self.grazeCountForFlashbomb=newCount
 end
 EventManager.listenTo(EventManager.EVENTS.PLAYER_GRAZE,Player.grazeEffect)
 

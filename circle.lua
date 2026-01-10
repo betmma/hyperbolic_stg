@@ -45,6 +45,7 @@ function Circle:new(args)
     self.damage=args.damage or 1
 
     self.grazed=args.grazed or false
+    self.baseGrazeValue=args.baseGrazeValue or 1
 
     self.batch=args.batch or (args.highlight and Asset.bulletHighlightBatch or BulletBatch)
     self.spriteTransparency=args.spriteTransparency or 1
@@ -207,7 +208,11 @@ function Circle:checkHitPlayer()
     end
 end
 function Circle:grazeValue()
-    return (self.lifeFrame<3 or self.frame<3) and 0.05 or 1
+    local baseValue=self.baseGrazeValue or 1
+    if self.lifeFrame<3 or self.frame<3 then
+        return 0.05*baseValue
+    end
+    return 1*baseValue
 end
 
 function Circle:removeEffect()

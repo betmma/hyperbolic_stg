@@ -268,6 +268,16 @@ Nickname{
     end
 }
 Nickname{
+    name='Sunbathe',
+    isSecret=true,
+    eventName=EventManager.EVENTS.PLAYER_ACCUMULATE_FLASHBOMB,
+    eventFunc=function(self,player)
+        if player.grazeCountForFlashbomb>=player.grazeReqForFlashbomb*99 then -- accumulated 99 flashbomb
+            return true
+        end
+    end
+}
+Nickname{
     name='TrianglePower',
     isSecret=true,
     eventName=EventManager.EVENTS.WIN_LEVEL,

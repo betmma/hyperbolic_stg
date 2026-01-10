@@ -1953,7 +1953,7 @@ return {
                 zh_cn = '又一个1UP',
             },
             description = {
-                en_us = 'Increase HP by 1 again. Why this is more expensive?',
+                en_us = 'Increase HP by 1 again. Why is this more expensive?',
                 zh_cn = '再增加1点生命值。为什么这个更贵？',
             },
         },
@@ -2149,12 +2149,12 @@ return {
         },
         instantRetry = {
             name = {
-                en_us = 'Instant Retry',
-                zh_cn = '即时重开',
+                en_us = 'Auto Retry',
+                zh_cn = '自动重开',
             },
             description = {
-                en_us = 'When hurt, instantly retry the scene without pressing any key. For the lazy perfectionists!',
-                zh_cn = '被弹时无需按键立即重开场景。为懒惰的完美主义者准备！',
+                en_us = 'When hurt, automatically retry the scene without pressing any key. For the lazy perfectionists! (You can always press R to retry. This upgrade literally saves that one key press.)',
+                zh_cn = '被弹时无需按键立即重开场景。为懒惰的完美主义者准备！（你总是可以按R键重开。这项升级就是省去那一次按键。）',
             },
         },
         emergencyBomb = {
@@ -2405,6 +2405,20 @@ return {
                 en_us = 'You must have played that game for long time on Nokia.',
                 zh_cn = '你一定在诺基亚上玩了很长时间的那个游戏吧。',
             }
+        },
+        Sunbathe = {
+            name = {
+                en_us = 'Sunbathe',
+                zh_cn = '日光浴',
+            },
+            condition = {
+                en_us = 'Accumulate 99 flashbombs',
+                zh_cn = '持有99个瞬雷',
+            },
+            description = {
+                en_us = 'That master spark is actually some kind of sunlight?\n(Intended to acquire in 8-7. If you got this from other scene, you are really something...)',
+                zh_cn = '那极限火花实际上是某种阳光？\n（设计是在8-7获得。如果你是在其他场景获得的，你真是了不起……）',
+            },
         },
         TrianglePower = {
             name = {

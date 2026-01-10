@@ -2,6 +2,7 @@ local EventManager = {}
 EventManager.EVENTS={
     PLAYER_HIT='playerHit',
     PLAYER_GRAZE='playerGraze',
+    PLAYER_ACCUMULATE_FLASHBOMB='playerAccumulateFlashbomb',
     NICKNAME_GET='nicknameGet',
     WIN_LEVEL='winLevel',
     LOSE_LEVEL='loseLevel',
