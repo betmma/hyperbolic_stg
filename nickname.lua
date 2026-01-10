@@ -268,11 +268,21 @@ Nickname{
     end
 }
 Nickname{
+    name='HonestMansDemise',
+    isSecret=true,
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==48 and player.damageTaken<=1 and player.insideBorderFrame>=600 then -- 6-4 Patchouli solar alloy spellcard
+            return true
+        end
+    end
+}
+Nickname{
     name='Sunbathe',
     isSecret=true,
     eventName=EventManager.EVENTS.PLAYER_ACCUMULATE_FLASHBOMB,
     eventFunc=function(self,player)
-        if player.grazeCountForFlashbomb>=player.grazeReqForFlashbomb*99 then -- accumulated 99 flashbomb
+        if player.grazeCountForFlashbomb>=player.grazeReqForFlashbomb*99 then -- accumulated 99 flashbomb (intended 8-7)
             return true
         end
     end

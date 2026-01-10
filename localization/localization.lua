@@ -2406,6 +2406,20 @@ return {
                 zh_cn = '你一定在诺基亚上玩了很长时间的那个游戏吧。',
             }
         },
+        HonestMansDemise = {
+            name = {
+                en_us = 'Honest Man\'s Demise',
+                zh_cn = '正直者之殒',
+            },
+            condition = {
+                en_us = 'Pass 6-4 inside the inner laser, and no more than 1 damage taken',
+                zh_cn = '在内侧激光内通过6-4，且受到伤害不超过1点',
+            },
+            description = {
+                en_us = 'What ineffective punishment from her...',
+                zh_cn = '她的惩罚也太无效了吧……',
+            },
+        },
         Sunbathe = {
             name = {
                 en_us = 'Sunbathe',

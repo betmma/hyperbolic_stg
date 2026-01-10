@@ -118,6 +118,7 @@ return {
         }}
         f.set=false
         local outerRdecreased=false
+        player.insideBorderFrame=0
         Event.LoopEvent{
             obj=en,
             period=1,
@@ -135,6 +136,29 @@ return {
                 border=PolyLine(poses,false)
                 if border:inside(player.x,player.y) and en.frame%1==0 then
                     Circle{x=en.x,y=en.y,direction=Shape.to(400,300,player.x,player.y)+math.eval(0,0.5),speed=100,sprite=BulletSprites.giant.yellow,invincible=true,lifeFrame=2000}
+                    if en.frame%30==0 then
+                        BulletSpawner{x=en.x,y=en.y,period=3,frame=0,lifeFrame=4,bulletNumber=20,bulletSpeed=200,bulletLifeFrame=50,angle=Shape.to(en.x,en.y,player.x,player.y)+math.pi,range=0,bulletSprite=BulletSprites.giant.green,bulletEvents={
+                            function(cir,args,self)
+                                local indexRatio=(args.index-1)/(self.bulletNumber-1)*2-1
+                                cir.indexRatio=indexRatio
+                                cir.direction=cir.direction+(math.pi-1)*math.sign(indexRatio)*math.abs(indexRatio)^0.5
+                            end
+                        },bulletExtraUpdate={
+                            function(cir)
+                                cir.speed=cir.speed+math.sin(cir.frame/20+math.abs(cir.indexRatio)*math.pi)*5
+                            end
+                        }}
+                    end
+                    player.insideBorderFrame=player.insideBorderFrame+1
+                    if player.insideBorderFrame==600 then -- player is trying to stay inside for long. attempting secret nickname, make it easier
+                        Event.EaseEvent{
+                            obj=en,
+                            aimTable=en,
+                            aimKey='damageResistance',
+                            aimValue=0.5,
+                            easeFrame=100
+                        }
+                    end
                 end
                 local hpp=en.hp/en.maxhp
                 if hpp<0.5 and not f.set then
