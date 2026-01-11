@@ -345,10 +345,11 @@ G.leaveLevel=function(self,win)
     self:_incrementTryCount()
 end
 G.retryLevel=function(self)
-    self:leaveLevel()
     if self.replay then -- if in "replay" replay "replay" (why so strange)
+        self:leaveLevel() -- Don't extract self:leaveLevel outside the if, because it will remove self.replay
         ReplayManager.runReplay(self.UIDEF.LOAD_REPLAY.slot)
     else
+        self:leaveLevel()
         self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
     end
 end
