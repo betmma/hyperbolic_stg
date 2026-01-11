@@ -99,6 +99,16 @@ return {
                 love.graphics.setColor(.8,.8,.8)
             end
             love.graphics.rectangle(bought and "fill" or "line",gap+xbegin+dx*x,gap+ybegin+dx*y,size,size)
+            ::continue::
+        end
+        for name,node in pairs(Upgrades.nodes) do -- icons at top of all lines so need second loop
+            local pos=node.pos
+            local x,y=pos.x,pos.y
+            local upgrade=self.currentUI.upgrades[name]
+            local isNeedSatisfied=Upgrades.needSatisfied(name)
+            if not isNeedSatisfied then
+                goto continue
+            end
             -- icon
             local spritePos=upgrade.spritePos
             love.graphics.draw(Asset.upgradeIconsImage, Asset.upgradeIcons[spritePos.x][spritePos.y], gap+xbegin+dx*x,gap+ybegin+dx*y,0,1,1)
