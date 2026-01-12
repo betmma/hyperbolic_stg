@@ -210,7 +210,7 @@ return {
             end
         }
         local moveSpeedRef=player.moveSpeed
-        Event.LoopEvent{period=1,frame=0,executeFunc=function()
+        G.tintEvent=Event.LoopEvent{obj=en,period=1,frame=0,executeFunc=function()
             player.stickyLayer=(player.stickyLayer or 0)
             local ratio=0.9^player.stickyLayer
             player.moveSpeed=moveSpeedRef*ratio
@@ -233,6 +233,7 @@ return {
         -- }
     end,
     leave=function()
+        G.tintEvent:remove()
         love.graphics.setColor(1,1,1)
     end
 }
