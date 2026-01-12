@@ -68,6 +68,7 @@ return {
                 return ret
             end
             player.keyIsDown=isPressed
+            player.keyIsPressed=isPressed -- c key (flash bomb). keyIsPressed('c') wont be true
         end
         local currentIndex=4
         local maxIndex=4
