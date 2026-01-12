@@ -172,4 +172,7 @@ return {
         end
         delay(5);delay(20);delay(40)
     end,
+    leave=function()
+        Shape.axisY=-100
+    end,
 }
