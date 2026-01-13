@@ -294,6 +294,16 @@ Nickname{
     end
 }
 Nickname{
+    name='BlackRobes',
+    isSecret=true,
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if levelData.id==79 and player.notMovingFrame<=60 then -- 4-2 Mystia Staccato Melody
+            return true
+        end
+    end
+}
+Nickname{
     name='HonestMansDemise',
     isSecret=true,
     eventName=EventManager.EVENTS.WIN_LEVEL,

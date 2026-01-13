@@ -14,6 +14,7 @@ return {
         -- en:addHPProtection(600,10)
         local player=Player{x=400,y=1200000,noBorder=true}
         player.moveMode=Player.moveModes.Natural
+        player.notMovingFrame=0
         local center={x=400,y=600000}
         local poses={}
         local borderVertices=30
@@ -145,6 +146,7 @@ return {
                     playerLightIntensity=playerLightIntensity*0.95
                 else
                     playerLightIntensity=playerLightIntensity*0.95+1*0.05
+                    player.notMovingFrame=player.notMovingFrame+1
                 end
                 b.x,b.y=en.x,en.y
                 c.x,c.y=en.x,en.y

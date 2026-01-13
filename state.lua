@@ -433,6 +433,9 @@ G.draw=function(self)
     shove.endLayer()
 end
 G.drawText=function(self)
+    if DEV_MODE and love.keyboard.isDown('f5') then
+        return
+    end
     self.currentUI.drawText(self)
     NoticeManager:drawText()
 end

@@ -1,3 +1,4 @@
+local NUMBER_PER_ROW=12
 return {
     enter=function(self)
         self.currentUI.chosen=1
@@ -22,15 +23,15 @@ return {
             end
             SFX:play('select')
         elseif isPressed('up') then
-            self.currentUI.chosen=self.currentUI.chosen-10
+            self.currentUI.chosen=self.currentUI.chosen-NUMBER_PER_ROW
             if self.currentUI.chosen<1 then
-                self.currentUI.chosen=nicknameCount-9+(self.currentUI.chosen-nicknameCount-1)%10
+                self.currentUI.chosen=nicknameCount-NUMBER_PER_ROW+1+(self.currentUI.chosen-nicknameCount-1)%NUMBER_PER_ROW
             end
             SFX:play('select')
         elseif isPressed('down') then
-            self.currentUI.chosen=self.currentUI.chosen+10
+            self.currentUI.chosen=self.currentUI.chosen+NUMBER_PER_ROW
             if self.currentUI.chosen>nicknameCount then
-                self.currentUI.chosen=1+(self.currentUI.chosen-1)%10
+                self.currentUI.chosen=1+(self.currentUI.chosen-1)%NUMBER_PER_ROW
             end
             SFX:play('select')
         elseif DEV_MODE and (isPressed('[') or isPressed(']')) then
@@ -63,7 +64,7 @@ return {
         local nicknames=Nickname.nicknames
         local xbegin,ybegin=100,100
         local gridSize=50
-        local numberPerRow=10
+        local numberPerRow=12
         local index=0
         local boxX,boxY=100,480
         local gap=10

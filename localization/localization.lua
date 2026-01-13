@@ -2434,13 +2434,27 @@ return {
                 zh_cn = '你一定在诺基亚上玩了很长时间的那个游戏吧。',
             }
         },
+        BlackRobes = {
+            name = {
+                en_us = 'Black Robes',
+                zh_cn = '黑衣',
+            },
+            condition = {
+                en_us = 'Perfectly clear 4-2 with nonmoving time less than 1 second',
+                zh_cn = '无伤通过4-2且静止时间少于1秒',
+            },
+            description = {
+                en_us = 'It\'s possible to perfect a scene with pure black screen?',
+                zh_cn = '还能纯黑屏无伤通过一个场景？',
+            },
+        },
         HonestMansDemise = {
             name = {
                 en_us = 'Honest Man\'s Demise',
                 zh_cn = '正直者之殒',
             },
             condition = {
-                en_us = 'Pass 6-4 inside the inner laser, and no more than 1 damage taken',
+                en_us = 'Clear 6-4 inside the inner laser, and no more than 1 damage taken',
                 zh_cn = '在内侧激光内通过6-4，且受到伤害不超过1点',
             },
             description = {
