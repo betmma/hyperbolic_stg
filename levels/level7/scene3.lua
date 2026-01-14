@@ -81,14 +81,23 @@ return {
                     obj=b,
                     delayFrame=100,
                     executeFunc=function()
-                        SFX:play("enemyPowerfulShot")
+                        local playerNaturalDirectionAtStart=player.naturalDirection
                         Event.EaseEvent{
                             obj=player,aimTable=player,aimKey='naturalDirection',aimValue=function()
-                                return math.modClamp(Shape.to(player.x,player.y,en.x,en.y)+math.pi/2,player.naturalDirection,math.pi)
+                                return math.modClamp(Shape.to(player.x,player.y,en.x,en.y)+math.pi/2,playerNaturalDirectionAtStart,math.pi)
                             end,easeFrame=100,easeMode='hard',progressFunc=Event.sineIOProgressFunc
                         }
                     end
                 }
+            end
+        }
+        local lastNaturalDirection=player.naturalDirection
+        Event.LoopEvent{
+            obj=player,period=1,executeFunc=function()
+                if math.angleDiff(player.naturalDirection,lastNaturalDirection)>0.1 then
+                    EventManager.post(EventManager.EVENTS.LEVEL_7_3_FAST_TURN)
+                end
+                lastNaturalDirection=player.naturalDirection
             end
         }
     end

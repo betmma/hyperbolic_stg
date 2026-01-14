@@ -255,17 +255,6 @@ Nickname{
     end,
 }
 Nickname{
-    name='ThisIsTouhou',
-    eventName=EventManager.EVENTS.LOSE_LEVEL,
-    eventFunc=function(self)
-        if G.preWin then
-            return true
-        end
-        return false
-    end,
-    isSecret=true,
-}
-Nickname{
     name='TwistedBeginning',
     isSecret=true,
     eventName=EventManager.EVENTS.LOSE_LEVEL,
@@ -327,6 +316,14 @@ Nickname{
     end
 }
 Nickname{
+    name='SpinningTop',
+    isSecret=true,
+    eventName=EventManager.EVENTS.LEVEL_7_3_FAST_TURN,
+    eventFunc=function(self)
+        return true
+    end
+}
+Nickname{
     name='Sunbathe',
     isSecret=true,
     eventName=EventManager.EVENTS.PLAYER_ACCUMULATE_FLASHBOMB,
@@ -372,6 +369,17 @@ Nickname{
     eventName=EventManager.EVENTS.WIN_LEVEL,
     eventFunc=function(self,levelData,player,perfect)
         if levelData.id==109 and G.bombExploded==true then -- 12-8 kotoba fuse web spellcard
+            return true
+        end
+        return false
+    end,
+    isSecret=true,
+}
+Nickname{
+    name='ThisIsTouhou',
+    eventName=EventManager.EVENTS.LOSE_LEVEL,
+    eventFunc=function(self)
+        if G.preWin then
             return true
         end
         return false

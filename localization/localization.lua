@@ -2476,6 +2476,20 @@ return {
                 zh_cn = '她的惩罚也太无效了吧……',
             },
         },
+        SpinningTop = {
+            name = {
+                en_us = 'Spinning Top',
+                zh_cn = '陀螺',
+            },
+            condition = {
+                en_us = 'Spin very fast in 7-3',
+                zh_cn = '在7-3高速旋转',
+            },
+            description = {
+                en_us = 'Not a good idea to play with her ability.',
+                zh_cn = '玩弄她的能力可不是个好主意。',
+            },
+        },
         Sunbathe = {
             name = {
                 en_us = 'Sunbathe',
