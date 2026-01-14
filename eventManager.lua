@@ -9,7 +9,8 @@ EventManager.EVENTS={
     LOSE_LEVEL='loseLevel',
     LEAVE_LEVEL='leaveLevel',
     SHOCKWAVE_REMOVE_BULLET='shockwaveRemoveBullet',
-    SWITCH_STATE='switchState'
+    SWITCH_STATE='switchState',
+    LEVEL_5_2_OUTSIDE_RIVER='level4_2OutsideRiver',
 }
 EventManager.DELETE_LISTENER='deleteListener'
 

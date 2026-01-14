@@ -2448,6 +2448,20 @@ return {
                 zh_cn = '还能纯黑屏无伤通过一个场景？',
             },
         },
+        Frogger = {
+            name = {
+                en_us = 'Frogger',
+                zh_cn = '青蛙过河',
+            },
+            condition = {
+                en_us = 'Cross the river many times in 5-2',
+                zh_cn = '在5-2穿过河多次',
+            },
+            description = {
+                en_us = 'Hmm, no need to challenge yourself like that.',
+                zh_cn = '嗯？不需要这样挑战自己。',
+            },
+        },
         HonestMansDemise = {
             name = {
                 en_us = 'Honest Man\'s Demise',

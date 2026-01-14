@@ -304,6 +304,19 @@ Nickname{
     end
 }
 Nickname{
+    name='Frogger',
+    isSecret=true,
+    eventName=EventManager.EVENTS.LEVEL_5_2_OUTSIDE_RIVER,
+    eventFunc=function(self)
+        local times=G.save.statistics.level5_2_outsideRiver_times or 0
+        times=times+1
+        G.save.statistics.level5_2_outsideRiver_times=times
+        if times>=25 then
+            return true
+        end
+    end
+}
+Nickname{
     name='HonestMansDemise',
     isSecret=true,
     eventName=EventManager.EVENTS.WIN_LEVEL,

@@ -59,6 +59,13 @@ return {
                                 self.x,self.y,self.direction=x,y,direction
                                 self.hpLevel=en:getHPLevel()
                             end
+                            if times==300 then -- check if player is outside. for secret nickname
+                                local xa,ya=Shape.rThetaPos(self.x,self.y,30,self.direction)
+                                local dist=Shape.distanceToLine(player.x,player.y,self.x,self.y,xa,ya)
+                                if dist>30 then
+                                    EventManager.post(EventManager.EVENTS.LEVEL_5_2_OUTSIDE_RIVER)
+                                end
+                            end
                             local r=((times-300)/300)^2*180+4*self.hpLevel
                             for i=1,2 do
                                 local x1,y1=Shape.rThetaPos(self.x,self.y,r,math.pi*(i-0.5)+self.direction)
