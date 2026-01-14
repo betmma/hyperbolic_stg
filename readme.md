@@ -41,8 +41,7 @@ Completed scenes display as green and give 10 XP each.
 Perfectly completed (without being harmed) scenes display as golden and give 12 XP each.
 
 ##### Todo:
-1. Story
-2. Current notice.lua is for modals, and nickname unlock notices (toasts) are arranged by Nickname. Could possibly merge
+1. Art
 
 
 ### Acknowledgements

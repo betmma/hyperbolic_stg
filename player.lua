@@ -627,7 +627,9 @@ function Player:drawText()
     self:displayKeysPressed()
     SetFont(24)
     love.graphics.print(Localize{'ui','playerHP',HP=string.format("%.2f", self.hp)},40,110)
-    love.graphics.print('X='..string.format("%.2f", self.x)..'\nY='..string.format("%.2f", self.y),30,140)
+    if DEV_MODE then 
+        love.graphics.print('X='..string.format("%.2f", self.x)..'\nY='..string.format("%.2f", self.y),30,140)
+    end
     -- love.graphics.print(''..self.naturalDirection,100,120)
     if self.enableFlashbomb then -- draw fill rate for flashbomb
         local color={love.graphics.getColor()}
@@ -647,7 +649,7 @@ function Player:drawText()
         love.graphics.setColor(color[1],color[2],color[3])
     end
     SetFont(12)
-    if G.UseHypRotShader then
+    if DEV_MODE and G.UseHypRotShader then
         love.graphics.print('Using rotation shader',700,580)
     end
     local model=G.viewMode.hyperbolicModel

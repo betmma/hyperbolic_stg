@@ -85,11 +85,13 @@ return {
         GameObject:drawTextAll()
         SetFont(18)
         love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
-        love.graphics.print("Circle: "..#Circle.objects, 10, 50)
-        love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
-        love.graphics.print("Loop Event: "..#Event.LoopEvent.objects, 10, 310)
-        love.graphics.print("Ease Event: "..#Event.EaseEvent.objects, 10, 340)
-        love.graphics.print("Delay Event: "..#Event.DelayEvent.objects, 10, 370)
+        if DEV_MODE then
+            love.graphics.print("Circle: "..#Circle.objects, 10, 50)
+            love.graphics.print("Laser: "..#Laser.LaserUnit.objects, 10, 80)
+            love.graphics.print("Loop Event: "..#Event.LoopEvent.objects, 10, 310)
+            love.graphics.print("Ease Event: "..#Event.EaseEvent.objects, 10, 340)
+            love.graphics.print("Delay Event: "..#Event.DelayEvent.objects, 10, 370)
+        end
         if self.replay then
             local speed=1
             if love.keyboard.isDown('lalt') then
