@@ -14,15 +14,17 @@ return {
                 if cir.args.index==1 then
                     tmpBullets={}
                 end
-                table.insert(tmpBullets,cir)
                 local sx,sy=cir.speed*math.cos(cir.direction),cir.speed*math.sin(cir.direction)
                 sy=sy/2+75
                 cir.speed=(sx^2+sy^2)^0.5
                 cir.direction=math.atan2(sy,sx)
+                local moveFrame=60
+                local endx,endy=Shape.rThetaPos(cir.x,cir.y,cir.speed*moveFrame/60,cir.direction)
+                table.insert(tmpBullets,{x=endx,y=endy}) -- need to know where this bullet will stop, to aim lasers later
                 cir.sprite=cir.args.index%3==0 and BulletSprites.round.blue or BulletSprites.round.purple
                 Event.DelayEvent{
                     obj=cir,
-                    delayFrame=60,
+                    delayFrame=moveFrame,
                     executeFunc=function()
                         local dirRef=cir.args.index%2==0 and Shape.to(cir.x,cir.y,tmpBullets[cir.args.index%a.bulletNumber+1].x,tmpBullets[cir.args.index%a.bulletNumber+1].y) or Shape.to(cir.x,cir.y,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].x,tmpBullets[(cir.args.index-2)%a.bulletNumber+1].y)
                         --(cir.direction+3.14*0.6*(cir.args.index%2==0 and -1 or 1))%(math.pi*2)
