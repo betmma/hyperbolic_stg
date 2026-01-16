@@ -43,6 +43,9 @@ end
 ---@return string name the display name of this nickname (from Localize)
 function Nickname:getName()
     local ret=Localize{'nickname',self.name,'name'}
+    if self.isSecret then
+        ret=ret..Localize{'ui','secretNicknameSuffix'}
+    end
     return ret
 end
 
@@ -131,6 +134,8 @@ function Nickname:drawText()
         love.graphics.setColor(color)
     end
 end
+
+-- row 1: general nicknames
 
 Nickname.BeatTheGame=Nickname{
     name='BeatTheGame',
@@ -254,6 +259,20 @@ Nickname{
         return fastestWin.time<15
     end,
 }
+
+-- 12 nicknames for passing all scenes in each act
+for act=1,12 do
+    ProgressedNickname{
+        name='PassAllScenesInAct'..tostring(act),
+        progressFunc=function()
+            local passed,all,perfect=G:countPassedSceneNum(act)
+            return passed/all
+        end,
+        eventName=EventManager.EVENTS.WIN_LEVEL,
+    }
+end
+
+-- 12 secret nicknames, one for each act, about special conditions in certain levels
 Nickname{
     name='TwistedBeginning',
     isSecret=true,
@@ -375,6 +394,8 @@ Nickname{
     end,
     isSecret=true,
 }
+
+-- general secret nicknames
 Nickname{
     name='ThisIsTouhou',
     eventName=EventManager.EVENTS.LOSE_LEVEL,

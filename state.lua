@@ -266,12 +266,17 @@ G:loadData()
 G.language=G.save.options.language--'zh_cn'--'en_us'--
 
 ---@param self table
+---@param act integer if set, only count scenes in this act
 ---@return integer "number of passed scenes"
 ---@return integer "number of all scenes"
 ---@return integer "number of perfect scenes"
-G.countPassedSceneNum=function(self)
+G.countPassedSceneNum=function(self,act)
     local allSceneCount,passedSceneCount,perfectSceneCount=0,0,0
     for id,value in pairs(LevelData.ID2LevelScene) do
+        local level,scene=value.level,value.scene
+        if act and act~=level then
+            goto continue
+        end
         allSceneCount=allSceneCount+1
         if self.save.levelData[id].passed>0 then
             passedSceneCount=passedSceneCount+1
@@ -279,6 +284,7 @@ G.countPassedSceneNum=function(self)
         if self.save.levelData[id].passed==2 then
             perfectSceneCount=perfectSceneCount+1
         end
+        ::continue::
     end
     return passedSceneCount,allSceneCount, perfectSceneCount
 end

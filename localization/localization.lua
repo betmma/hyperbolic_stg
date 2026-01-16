@@ -1792,7 +1792,11 @@ return {
                 en_us = '2026 Betmma',
                 zh_cn = '2026 Betmma',
             }
-        }
+        },
+        secretNicknameSuffix = {
+            en_us = ' (secret)',
+            zh_cn = '（隐藏）',
+        },
     },
     notice = {
         unlockShop = {
@@ -2210,6 +2214,7 @@ return {
     },
     ---@type table<string, NicknameLocalization>
     nickname = {
+        -- row 1: general nicknames
         BeatTheGame = {
             name = {
                 en_us = 'Hyperbolic Conqueror',
@@ -2378,20 +2383,176 @@ return {
                 zh_cn = '当你拥有所有升级时，早期的符卡实在是太简单了。\n最快无伤通过: {level}-{scene}，{time} 秒',
             },
         },
-        ThisIsTouhou = {
+        -- row 2: 12 nicknames for passing all scenes in each act
+        PassAllScenesInAct1 = {
             name = {
-                en_us = 'This is Touhou',
-                zh_cn = '这就是东方',
+                en_us = 'Something Mattress',
+                zh_cn = '睡土不服',
             },
             condition = {
-                en_us = 'Lose after main enemy has been defeated',
-                zh_cn = '击破撞',
+                en_us = 'Clear all scenes in Act 1',
+                zh_cn = '通过第1幕所有场景',
             },
             description = {
-                en_us = 'The HP design is to reduce such situation...! So unlucky of you.',
-                zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
+                en_us = 'Strange dream... How can Reimu know whether this Doremy is real or created by her mind?',
+                zh_cn = '奇怪的梦……灵梦怎么分辨眼前的哆来咪是真实存在还是她大脑创造出来的呢？',
             },
         },
+        PassAllScenesInAct2 = {
+            name = {
+                en_us = 'Carpe Dream',
+                zh_cn = '山穷睡尽',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 2',
+                zh_cn = '通过第2幕所有场景',
+            },
+            description = {
+                en_us = 'Who knows how do other youkai get to Reimu\'s dream?',
+                zh_cn = '谁知道其他妖怪是怎么进入灵梦的梦境的呢？',
+            },
+        },
+        PassAllScenesInAct3 = {
+            name = {
+                en_us = 'Hit the Road',
+                zh_cn = '光怪路离',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 3',
+                zh_cn = '通过第3幕所有场景',
+            },
+            description = {
+                en_us = 'The twisted patterns on the road look so evil. Can hitting the road exterminate them?',
+                zh_cn = '路上的扭曲图案看起来很邪恶。路也成妖怪了吗？',
+            },
+        },
+        PassAllScenesInAct4 = {
+            name = {
+                en_us = 'Burn Up the Road',
+                zh_cn = '阴阳怪气',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 4',
+                zh_cn = '通过第4幕所有场景',
+            },
+            description = {
+                en_us = 'Maybe try extreme methods on the cursed road.',
+                zh_cn = '灵梦的阴阳玉碰上魑魅的“气”，可称得上是阴阳怪气了。',
+            },
+        },
+        PassAllScenesInAct5 = {
+            name = {
+                en_us = 'Cherry Peak',
+                zh_cn = '河乐不为',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 5',
+                zh_cn = '通过第5幕所有场景',
+            },
+            description = {
+                en_us = 'There is no reason for certain youkai to appear in Youkai Mountain.',
+                zh_cn = '既然河童来帮忙，何乐而不为呢？',
+            },
+        },
+        PassAllScenesInAct6 = {
+            name = {
+                en_us = '\'Ave a Rest',
+                zh_cn = '奇峰对手',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 6',
+                zh_cn = '通过第6幕所有场景',
+            },
+            description = {
+                en_us = 'It\'s getting really tough. Take a break if you need to.',
+                zh_cn = '有些妖怪不该出现在妖怪之山。在奇怪的山峰上遇到的对手，真是令人费解。',
+            },
+        },
+        PassAllScenesInAct7 = {
+            name = {
+                en_us = 'Rest \'Alps',
+                zh_cn = '歇斯地理',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 7',
+                zh_cn = '通过第7幕所有场景',
+            },
+            description = {
+                en_us = 'No more mountain jokes, I promise.',
+                zh_cn = '跟着双曲罗盘走真不容易，都快发疯了。',
+            },
+        },
+        PassAllScenesInAct8 = {
+            name = {
+                en_us = 'The End is Anigh',
+                zh_cn = '误入奇途',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 8',
+                zh_cn = '通过第8幕所有场景',
+            },
+            description = {
+                en_us = 'Protagonists appear. Where is Sanae?',
+                zh_cn = '好奇怪的地方，到处都是漂浮的球。',
+            },
+        },
+        PassAllScenesInAct9 = {
+            name = {
+                en_us = 'An Error Okuued',
+                zh_cn = '四大接空',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 9',
+                zh_cn = '通过第9幕所有场景',
+            },
+            description = {
+                en_us = 'If Okuu only places one nuke, will it grow infinitely and cause an error?',
+                zh_cn = '先是四大主角会面，紧接着出场的是阿空。',
+            },
+        },
+        PassAllScenesInAct10 = {
+            name = {
+                en_us = 'Desolate Space',
+                zh_cn = '格格步入',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 10',
+                zh_cn = '通过第10幕所有场景',
+            },
+            description = {
+                en_us = 'The tessellated space is so desolate.',
+                zh_cn = '无限的空间、整齐的网格。继续前进吧。',
+            },
+        },
+        PassAllScenesInAct11 = {
+            name = {
+                en_us = 'All Roads Lead to Room',
+                zh_cn = '条条大路通罗幕',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 11',
+                zh_cn = '通过第11幕所有场景',
+            },
+            description = {
+                en_us = 'No matter which road you take, you always end up in that stage room.',
+                zh_cn = '无论走哪条路，最终都会到达那个舞台。',
+            },
+        },
+        PassAllScenesInAct12 = {
+            name = {
+                en_us = 'Hyper Bollocks',
+                zh_cn = '善解人意',
+            },
+            condition = {
+                en_us = 'Clear all scenes in Act 12',
+                zh_cn = '通过第12幕所有场景',
+            },
+            description = {
+                en_us = 'The incident is all about the hyper bollocks.',
+                zh_cn = '此次异变的起因，是曲话言波善于分解人表达的意思。',
+            },
+        },
+        -- row 3: 12 secret nicknames, one for each act, about special conditions in certain levels
         TwistedBeginning = {
             name = {
                 en_us = 'Twisted Beginning',
@@ -2559,6 +2720,21 @@ return {
                 en_us = 'Fatal damage or 1 damage, lesser of two evils... What, it can\'t be that the explosion just happened before the spellcard ended, right?',
                 zh_cn = '致命伤害或者1点伤害，两害相权取其轻……什么，不会是爆炸时间刚好在符卡结束前吧？',
             }
+        },
+        -- row 4: general secret nicknames
+        ThisIsTouhou = {
+            name = {
+                en_us = 'This is Touhou',
+                zh_cn = '这就是东方',
+            },
+            condition = {
+                en_us = 'Lose after main enemy has been defeated',
+                zh_cn = '击破撞',
+            },
+            description = {
+                en_us = 'The HP design is to reduce such situation...! So unlucky of you.',
+                zh_cn = 'HP设计就是为了减少这种情况……！真是不幸。',
+            },
         },
         HurrySickness = {
             name = {
