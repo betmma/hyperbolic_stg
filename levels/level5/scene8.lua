@@ -135,6 +135,11 @@ return {
         -- G.backgroundPattern:remove()
         -- G.backgroundPattern=BackgroundPattern.FollowingTesselation()
         local drawRef=G.backgroundPattern.draw
+        if G.backgroundPattern.drawInjected then -- ensure drawRef is the original one, and only inject once on pressing R
+            drawRef=G.backgroundPattern.drawRef
+        else
+            G.backgroundPattern.drawRef=drawRef 
+        end
         local function getDiskRadius()
             return G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel]
         end
@@ -190,6 +195,7 @@ return {
             drawRef(self)
             love.graphics.setBlendMode('alpha')
         end
+        G.backgroundPattern.drawInjected=true
         local vyAccum=0 -- simulate gravity / buoyancy
         local gravity,buoyancy=2,1
         player.moveUpdate=function(self,dt)
