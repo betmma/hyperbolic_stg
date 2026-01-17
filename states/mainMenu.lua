@@ -19,7 +19,12 @@ return {
             self.backgroundPattern:randomize()
         end
         self.backgroundPattern:update(dt)
-        UIHelper.optionsCalc(self,{EXIT=love.event.quit,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
+        UIHelper.optionsCalc(self,{EXIT=function()
+            self.save.statistics.politeExit=true
+            self:saveData()
+            love.event.quit()
+        end
+        ,START=function(self)self:switchState(self.STATES.CHOOSE_LEVELS) end,
         REPLAY=function(self)self:switchState(self.STATES.LOAD_REPLAY)end,
         MUSIC_ROOM=function(self)self:switchState(self.STATES.MUSIC_ROOM)end,
         NICKNAMES=function(self)self:switchState(self.STATES.NICKNAMES)end,

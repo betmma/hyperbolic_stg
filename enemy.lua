@@ -47,7 +47,10 @@ function Enemy:new(args)
     end
     self.bindedEnemy=nil
 
-    self.grazed=true
+end
+
+function Enemy:grazeValue()
+    return 1
 end
 
 function Enemy:update(dt)
@@ -59,6 +62,10 @@ function Enemy:update(dt)
         self.hpBarTransparency=0.85*(self.hpBarTransparency-1)+1
     end
     Circle.checkHitPlayer(self)
+    if self.grazed and not self.grazedChecked then -- secret nickname check
+        self.grazedChecked=true
+        EventManager.post(EventManager.EVENTS.ENEMY_GRAZED)
+    end
     self:checkHitByPlayer(self.bindedEnemy)
     if self.bindedEnemy then
         self.hp=self.bindedEnemy.hp
@@ -266,6 +273,7 @@ function Enemy:checkHitByPlayer(objToReduceHp,damageFactor)
             -- if self.hp<self.maxhp*0.01 and self.mainEnemy and not self.presaved then
             --     self.presaved=true
             -- end
+            EventManager.post(EventManager.EVENTS.PLAYER_BULLET_HIT_ENEMY,circ,self)
         end
     end
 

@@ -25,7 +25,7 @@ function Nickname:new(args)
     Nickname.super.new(self, args)
     self.name=args.name
     self.eventName=args.eventName
-    self.eventFunc=args.eventFunc or function(...)end
+    self.eventFunc=args.eventFunc or function(...)return true end
     self.isSecret=args.isSecret or false
     self.extraLocalizeInputFunc=args.extraLocalizeInputFunc or function()return {} end
     Nickname.nicknameCount=Nickname.nicknameCount+1
@@ -84,6 +84,7 @@ function ProgressedNickname:new(args)
     args.eventFunc=args.eventFunc or function(self)return self:progressFunc()>=1 end
     ProgressedNickname.super.new(self, args)
 end
+Nickname.ProgressedNickname=ProgressedNickname
 
 local nicknamePending={}
 local displayFrame=120
@@ -94,6 +95,7 @@ local function nicknameGet(id)
     end
     G.save.nicknameUnlock[nickname.name]=true
     nicknamePending[id]=G.frame
+    G:saveData()
     -- Event.DelayEvent{ -- not removing??
     --     obj=G,delayFrame=displayFrame,executeFunc=function()
     --         nicknamePending[id]=nil
@@ -440,6 +442,72 @@ Nickname{
     end,
     isSecret=true,
 }
+Nickname{
+    name='PolitePlayer',
+    eventName=EventManager.EVENTS.POLITE_EXIT_LAST_RUN,
+    isSecret=true,
+}
+Nickname{
+    name='EasyLookup',
+    eventName=EventManager.EVENTS.SAVE_REPLAY_ACT_SCENE_MATCHES_SLOT,
+    isSecret=true,
+}
+Nickname{
+    name='Intimacy',
+    eventName=EventManager.EVENTS.ENEMY_GRAZED,
+    isSecret=true,
+    eventFunc=function(self)
+        if not G.replay then
+            return true
+        end
+    end,
+}
+Nickname{
+    name='VisualEffect',
+    eventName=EventManager.EVENTS.FLASHBOMB_REMOVED,
+    isSecret=true,
+    eventFunc=function(self,flashBomb)
+        if flashBomb.removedBulletCount==0 then
+            return true
+        end
+    end,
+}
+Nickname{ -- can be impossible to unlock now if earned hp is more than sum of upgrade costs. will add more upgrades to make it possible, or auto unlock it when getting maximum xp in future
+    name='PreciselyCalculated',
+    eventName=EventManager.EVENTS.XP_USED_UP,
+    isSecret=true,
+}
+Nickname{
+    name='CuriosityKilledTheCat',
+    eventName=EventManager.EVENTS.PLAYER_REMOVED_BY_DISTANCE,
+    isSecret=true,
+    eventFunc=function(self)
+        if not G.replay then
+            return true
+        end
+    end,
+}
+local shootingWithoutHittingFrame=0
+local lastShootingFrame=-1
+EventManager.listenTo(EventManager.EVENTS.PLAYER_SHOOTING, function(player)
+    if lastShootingFrame+1<player.frame then -- has released and pressed again
+        shootingWithoutHittingFrame=0
+    end
+    lastShootingFrame=player.frame
+    shootingWithoutHittingFrame=shootingWithoutHittingFrame+1
+    if shootingWithoutHittingFrame>=1800 then -- shooting for 10 seconds without hitting any enemy
+        shootingWithoutHittingFrame=0
+        EventManager.post(EventManager.EVENTS.PLAYER_SHOOTING_WITHOUT_HITTING_LONG_TIME)
+    end
+end)
+EventManager.listenTo(EventManager.EVENTS.PLAYER_BULLET_HIT_ENEMY, function(bullet,enemy)
+    shootingWithoutHittingFrame=0
+end)
+Nickname{
+    name='SloppyShooter',
+    eventName=EventManager.EVENTS.PLAYER_SHOOTING_WITHOUT_HITTING_LONG_TIME,
+    isSecret=true,
+}
 ProgressedNickname{
     name='PerfectAllScenes',
     progressFunc=function()
@@ -450,5 +518,9 @@ ProgressedNickname{
     isSecret=true,
 }
 
-Nickname.ProgressedNickname=ProgressedNickname
+if G.save.statistics.politeExit then -- can't put this in state.lua because nickname.lua is loaded later
+    G.save.statistics.politeExit=nil
+    EventManager.post(EventManager.EVENTS.POLITE_EXIT_LAST_RUN)
+end
+
 return Nickname

@@ -200,6 +200,14 @@ function Player:update(dt)
 
 end
 
+function Player:remove()
+    if self:distanceRemoveCheck() then
+        -- removed by distance, unlock secret nickname
+        EventManager.post(EventManager.EVENTS.PLAYER_REMOVED_BY_DISTANCE)
+    end
+    Player.super.remove(self)
+end
+
 function Player:calculateShoot()
     -- shooting bullet
     if self.shootMode==Player.shootModes.Normal then
@@ -217,6 +225,9 @@ function Player:calculateShoot()
             self:chargeShoot(self.chargeFrame)
             self.chargeFrame=0
         end
+    end
+    if self.keyIsDown('z') then
+        EventManager.post(EventManager.EVENTS.PLAYER_SHOOTING,self)
     end
 end
 

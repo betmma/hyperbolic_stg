@@ -293,6 +293,12 @@ function Localize(args)
 end
 
 function isVersionSmaller(version1, version2)
+    if not version1 then -- no version means before version is implemented, so always smaller
+        return true
+    end
+    if not version2 then
+        return false
+    end
     -- Split version strings into tables of numbers
     local function split_version(version)
         local result = {}

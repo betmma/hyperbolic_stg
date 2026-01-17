@@ -142,6 +142,7 @@ function FlashBomb:new(args)
     self.color=args.color or 'black'
     self.sprite=BulletSprites.laserDark[self.color]
     self.canRemove=args.canRemove or {bullet=true,invincible=false}
+    self.removedBulletCount=0
     self.points=Shape.regularPolygonCoordinates(self.x,self.y,self.radius,self.sideNum,self.direction,true)
 end
 
@@ -150,6 +151,15 @@ function FlashBomb:update(dt)
     local ratio=self.frame/self.lifeFrame
     self.radius=math.max(self.radiusFunction(ratio),0.1) -- negative radius will cause points order reversed and remove all bullets
     self.points=Shape.regularPolygonCoordinates(self.x,self.y,self.radius,self.sideNum,self.direction,true)
+end
+
+EventManager.listenTo(EventManager.EVENTS.FLASHBOMB_REMOVE_BULLET,function(bullet,flashBomb)
+    flashBomb.removedBulletCount=flashBomb.removedBulletCount+1
+end)
+
+function FlashBomb:remove()
+    FlashBomb.super.remove(self)
+    EventManager.post(EventManager.EVENTS.FLASHBOMB_REMOVED,self)
 end
 
 FlashBomb.insideOne=PolyLine.insideOne

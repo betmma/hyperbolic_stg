@@ -440,10 +440,14 @@ upgrades.calculateRestXP=function()
             xp=xp+12
         end
     end
+    local earnedXP=xp
     for name,upgrade in pairs(Upgrades.data) do
         if G.save.upgrades[name].bought then
             xp=xp-upgrade.cost
         end
+    end
+    if earnedXP>=100 and xp==0 then -- used all xp, unlock secret nickname
+        EventManager.post(EventManager.EVENTS.XP_USED_UP)
     end
     return xp
 end

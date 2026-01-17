@@ -2778,6 +2778,104 @@ return {
                 zh_cn = '还是试试最简单的场景？',
             },
         },
+        PolitePlayer = {
+            name = {
+                en_us = 'Polite Player',
+                zh_cn = '有礼玩家',
+            },
+            condition = {
+                en_us = 'Exit the game through the main menu',
+                zh_cn = '通过主菜单退出游戏',
+            },
+            description = {
+                en_us = 'Not only well-mannered, but also open this game at least twice!',
+                zh_cn = '不仅有礼貌，还至少第二次打开了这个游戏！',
+            },
+        },
+        EasyLookup = {
+            name = {
+                en_us = 'Easy Lookup',
+                zh_cn = '轻松查阅',
+            },
+            condition = {
+                en_us = 'Save a replay at slot number equal to act number concatenated with scene number (e.g. 23 for Act 2 Scene 3)',
+                zh_cn = '在录像槽号等于幕号和场景号连接的数字处保存录像（例如2-3存至槽号23）',
+            },
+            description = {
+                en_us = 'A clever way to organize replays for easy lookup later.',
+                zh_cn = '整理录像的巧妙方式，方便以后查阅。',
+            },
+        },
+        Intimacy = {
+            name = {
+                en_us = 'Intimacy',
+                zh_cn = '贴贴',
+            },
+            condition = {
+                en_us = 'Graze the enemy',
+                zh_cn = '与敌人贴贴',
+            },
+            description = {
+                en_us = 'This counts as graze.',
+                zh_cn = '这算作擦弹。',
+            },
+        },
+        VisualEffect = {
+            name = {
+                en_us = 'Visual Effect',
+                zh_cn = '视觉效果',
+            },
+            condition = {
+                en_us = 'A flashbomb removes no bullets',
+                zh_cn = '瞬雷未清除任何子弹',
+            },
+            description = {
+                en_us = 'That flashbomb was just visual effect, right?',
+                zh_cn = '那个瞬雷只是视觉效果，对吧？',
+            },
+        },
+        PreciselyCalculated = {
+            name = {
+                en_us = 'Precisely Calculated',
+                zh_cn = '精打细算',
+            },
+            condition = {
+                en_us = 'Earned more than (include) 100 XP and use all XP on upgrades, without any leftover',
+                zh_cn = '获得不少于100经验值并全部用于升级，恰无剩余',
+            },
+            description = {
+                en_us = 'It\'s harder if you perfectly clear scenes and get that extra 2 XP.',
+                zh_cn = '如果你无伤通过场景并获得额外的2点经验值，这反而会变难。',
+            },
+        },
+        CuriosityKilledTheCat = {
+            name = {
+                en_us = 'Curiosity Killed The Cat',
+                zh_cn = '好奇害死猫',
+            },
+            condition = {
+                en_us = 'Get erased far away',
+                zh_cn = '在很远的地方被抹除',
+            },
+            description = {
+                en_us = 'Said the space is really dangerous.',
+                zh_cn = '说了双曲空间真的很危险。',
+            },
+        },
+        SloppyShooter = {
+            name = {
+                en_us = 'Sloppy Shooter',
+                zh_cn = '马虎射手',
+            },
+            condition = {
+                en_us = 'Keep shooting for 30 seconds without hitting any enemy',
+                zh_cn = '连续30秒射击未命中任何敌人',
+            },
+            description = {
+                en_us = 'That finger on the Z key must be tired...',
+                zh_cn = '按Z键的手指一定很累……',
+            },
+        },
         PerfectAllScenes = {
             name = {
                 en_us = 'Hyperbolic Indigenous',

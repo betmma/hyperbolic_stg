@@ -92,6 +92,12 @@ replayManager.getReplayData=function(slot,name)
 end
 
 replayManager.saveReplay=function(slot,name)
+    -- secret nickname check
+    local level=G.UIDEF.CHOOSE_LEVELS.chosenLevel
+    local scene=G.UIDEF.CHOOSE_LEVELS.chosenScene
+    if ''..level..scene==''..slot then
+        EventManager.post(EventManager.EVENTS.SAVE_REPLAY_ACT_SCENE_MATCHES_SLOT)
+    end
     local data=replayManager.getReplayData(slot,name)
 	local serialized = lume.serialize(data)
   	love.filesystem.write(savePath(slot), serialized)

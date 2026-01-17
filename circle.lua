@@ -178,6 +178,7 @@ end
 function Circle:checkFlashBombRemove()
     for k,flashBomb in pairs(Effect.FlashBomb.objects) do
         if flashBomb.canRemove.bullet==true and(self.invincible==false or flashBomb.canRemove.invincible==true) and flashBomb:inside(self.x,self.y) then
+            EventManager.post(EventManager.EVENTS.FLASHBOMB_REMOVE_BULLET,self,flashBomb)
             self:remove()
             self:removeEffect()
         end
