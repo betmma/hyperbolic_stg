@@ -147,6 +147,7 @@ local function wrapLevelMake(levelData)
         for _,v in ipairs(upgrades) do
             if G.save.upgrades[v.id] and G.save.upgrades[v.id].bought then
                 v.executeFunc(player)
+                player.hasUpgrade=true
             end
         end
 

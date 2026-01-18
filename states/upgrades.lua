@@ -38,7 +38,7 @@ return {
             if option.upgrade then
                 local upgrade=upgrades[option.upgrade]
                 local bought=self.save.upgrades[option.upgrade].bought
-                if bought then
+                if bought then -- cancel the upgrade
                     self.save.upgrades[option.upgrade].bought=false
                     SFX:play('select')
                     -- need to cancel all upgrades related to this upgrade
@@ -55,10 +55,11 @@ return {
                         end
                     end
                     recursiveCancel(option.upgrade)
-                elseif restXP<upgrade.cost then
+                elseif restXP<upgrade.cost then -- not enough XP
                     SFX:play('cancel',true)
-                else
+                else -- successfully buy the upgrade
                     self.save.upgrades[option.upgrade].bought=true
+                    EventManager.post(EventManager.EVENTS.BUY_UPGRADE,option.upgrade)
                     SFX:play('select')
                 end
             end
@@ -108,6 +109,12 @@ return {
             local isNeedSatisfied=Upgrades.needSatisfied(name)
             if not isNeedSatisfied then
                 goto continue
+            end
+            local bought=self.save.upgrades[name].bought
+            if bought then
+                love.graphics.setColor(1,1,1)
+            else
+                love.graphics.setColor(.8,.8,.8)
             end
             -- icon
             local spritePos=upgrade.spritePos

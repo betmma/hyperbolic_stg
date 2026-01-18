@@ -92,6 +92,7 @@ return {
             love.graphics.print("Ease Event: "..#Event.EaseEvent.objects, 10, 340)
             love.graphics.print("Delay Event: "..#Event.DelayEvent.objects, 10, 370)
         end
+        EventManager.post(EventManager.EVENTS.HOW_MANY_BULLETS,#Circle.objects)
         if self.replay then
             local speed=1
             if love.keyboard.isDown('lalt') then

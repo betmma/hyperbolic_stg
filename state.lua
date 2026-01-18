@@ -330,6 +330,7 @@ G.enterLevel=function(self,level,scene)
     self.currentLevel={level,scene}
     self.lshiftDownWhenEnteringLevel=love.keyboard.isDown('lshift')
     self:switchState(self.STATES.IN_LEVEL)
+    EventManager.post(EventManager.EVENTS.ENTER_LEVEL,{level=level,scene=scene})
 end
 -- It's called when leaving the level, either by winning, losing (these 2 are called from enemy or player object), G.retryLevel (pressing "R" or instant retry upgrade called from player) or exiting from pause menu. return true if in replay (for G.win or lose to skip changing savedata and other things)
 ---@param self table

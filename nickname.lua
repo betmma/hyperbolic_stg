@@ -262,6 +262,53 @@ Nickname{
     end,
 }
 
+-- 12 general nicknames
+
+Nickname{
+    name='ShinyUpgrades',
+    eventName=EventManager.EVENTS.BUY_UPGRADE,
+}
+Nickname{
+    name='Egoist',
+    eventName=EventManager.EVENTS.ENTER_LEVEL,
+    eventFunc=function(self,levelData)
+        if levelData.level>=3 and not G.replay then
+            return true
+        end
+    end,
+}
+Nickname{
+    name='NewPerspective',
+    eventName=EventManager.EVENTS.SWITCH_HYPERBOLIC_MODEL,
+}
+Nickname{
+    name='MusicRoom',
+    eventName=EventManager.EVENTS.SWITCH_STATE,
+    eventFunc=function(self,oldState,newState)
+        if newState==G.STATES.MUSIC_ROOM then
+            return true
+        end
+    end,
+}
+Nickname{
+    name='Challenger',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    eventFunc=function(self,levelData,player,perfect)
+        if not player.hasUpgrade and levelData.level==12 then
+            return true
+        end
+    end,
+}
+Nickname{
+    name='DanmakuFestival',
+    eventName=EventManager.EVENTS.HOW_MANY_BULLETS,
+    eventFunc=function(self,bulletCount)
+        if bulletCount>=2000 and not G.replay then
+            return true
+        end
+    end,
+}
+
 -- 12 nicknames for passing all scenes in each act
 for act=1,12 do
     ProgressedNickname{

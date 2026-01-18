@@ -10,9 +10,12 @@ EventManager.EVENTS={
     WIN_LEVEL='winLevel',
     LOSE_LEVEL='loseLevel',
     LEAVE_LEVEL='leaveLevel',
+    ENTER_LEVEL='enterLevel',
     SHOCKWAVE_REMOVE_BULLET='shockwaveRemoveBullet',
     FLASHBOMB_REMOVE_BULLET='flashbombRemoveBullet',
     SWITCH_STATE='switchState',
+    SWITCH_HYPERBOLIC_MODEL='switchHyperbolicModel',
+    BUY_UPGRADE='buyUpgrade',
     POLITE_EXIT_LAST_RUN='politeExitLastRun',
     SAVE_REPLAY_ACT_SCENE_MATCHES_SLOT='saveReplayActSceneMatchesSlot',
     ENEMY_GRAZED='enemyGrazed',
@@ -22,6 +25,7 @@ EventManager.EVENTS={
     FLASHBOMB_REMOVED='flashbombRemoved',
     LEVEL_5_2_OUTSIDE_RIVER='level5_2OutsideRiver',
     LEVEL_7_3_FAST_TURN='level7_3FastTurn',
+    HOW_MANY_BULLETS='howManyBullets',
 }
 EventManager.DELETE_LISTENER='deleteListener'
 

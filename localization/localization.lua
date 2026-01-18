@@ -2383,7 +2383,92 @@ return {
                 zh_cn = '当你拥有所有升级时，早期的符卡实在是太简单了。\n最快无伤通过: {level}-{scene}，{time} 秒',
             },
         },
-        -- row 2: 12 nicknames for passing all scenes in each act
+        -- row 2: general nicknames
+        ShinyUpgrades = {
+            name = {
+                en_us = 'Shiny Upgrade',
+                zh_cn = '闪亮的升级',
+            },
+            condition = {
+                en_us = 'Buy your first upgrade',
+                zh_cn = '第一次购买升级',
+            },
+            description = {
+                en_us = 'Never weak again!',
+                zh_cn = '再不弱小！',
+            },
+        },
+        Egoist = {
+            name = {
+                en_us = 'Egoist',
+                zh_cn = '自我主义者',
+            },
+            condition = {
+                en_us = 'Enter a scene where Reimu is always at center',
+                zh_cn = '进入一个灵梦始终位于中心的场景',
+            },
+            description = {
+                en_us = 'It\'s strange at first, but you will get used to it.',
+                zh_cn = '一开始会觉得奇怪，但你会习惯的。',
+            },
+        },
+        NewPerspective = {
+            name = {
+                en_us = 'New Perspective',
+                zh_cn = '新视角',
+            },
+            condition = {
+                en_us = 'Switch hyperbolic model',
+                zh_cn = '切换双曲模型',
+            },
+            description = {
+                en_us = 'A new way to look at things.',
+                zh_cn = '一种全新的观察事物的方式。',
+            },
+        },
+        MusicRoom = {
+            name = {
+                en_us = 'Music Room',
+                zh_cn = '音乐室',
+            },
+            condition = {
+                en_us = 'Enter the Music Room',
+                zh_cn = '进入音乐室',
+            },
+            description = {
+                en_us = 'Why doesn\'t music room in this game have a unique name?',
+                zh_cn = '这个游戏的音乐室为什么没有一个独特的名字？',
+            },
+        },
+        Challenger = {
+            name = {
+                en_us = 'Challenger',
+                zh_cn = '挑战者',
+            },
+            condition = {
+                en_us = 'Clear an act 12 scene without upgrades',
+                zh_cn = '在没有升级的情况下通过第12幕的一个场景',
+            },
+            description = {
+                en_us = 'Upgrades are really strong. By the way, there is no other achievement that limits upgrades.',
+                zh_cn = '升级真是很强大。顺带一提，其他成就都不会以限制升级为条件。',
+            },
+        },
+        DanmakuFestival = {
+            name = {
+                en_us = 'Danmaku Festival',
+                zh_cn = '弹幕祭',
+            },
+            condition = {
+                en_us = 'Have more than 2000 bullets on screen',
+                zh_cn = '屏幕上存在超过2000颗子弹',
+            },
+            description = {
+                en_us = '2000 bullets aren\'t that dense if scattered in hyperbolic space.',
+                zh_cn = '如果分散在双曲空间中，2000颗子弹并不算密。',
+            },
+        },
+        -- row 3: 12 nicknames for passing all scenes in each act
         PassAllScenesInAct1 = {
             name = {
                 en_us = 'Something Mattress',
@@ -2552,7 +2637,7 @@ return {
                 zh_cn = '此次异变的起因，是曲话言波善于分解人表达的意思。',
             },
         },
-        -- row 3: 12 secret nicknames, one for each act, about special conditions in certain levels
+        -- row 4: 12 secret nicknames, one for each act, about special conditions in certain levels
         TwistedBeginning = {
             name = {
                 en_us = 'Twisted Beginning',
@@ -2721,7 +2806,7 @@ return {
                 zh_cn = '致命伤害或者1点伤害，两害相权取其轻……什么，不会是爆炸时间刚好在符卡结束前吧？',
             }
         },
-        -- row 4: general secret nicknames
+        -- row 5: general secret nicknames
         ThisIsTouhou = {
             name = {
                 en_us = 'This is Touhou',
