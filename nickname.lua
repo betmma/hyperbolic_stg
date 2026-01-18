@@ -86,6 +86,34 @@ function ProgressedNickname:new(args)
 end
 Nickname.ProgressedNickname=ProgressedNickname
 
+---@class CounterNickname:ProgressedNickname unlock when a certain counter reaches target.
+---@field key string the key in G.save.statistics to count
+---@field target number the target value to reach
+local CounterNickname=ProgressedNickname:extend()
+function CounterNickname:new(args)
+    local key=args.key or error('CounterNickname needs a key field in args')
+    self.key=key
+    local target=args.target or error('CounterNickname needs a target field in args')
+    self.target=target
+    local localizeUseFloor=args.localizeUseFloor or false
+    args.eventFunc=args.eventFunc or function(self)
+        G.save.statistics[key]=(G.save.statistics[key] or 0)+1
+        return G.save.statistics[key]>=target
+    end
+    args.progressFunc=function()
+        local count=G.save.statistics[key] or 0
+        return count/target
+    end
+    args.extraLocalizeInputFunc=function(self)
+        local count=G.save.statistics[key] or 0
+        if localizeUseFloor then
+            count=math.floor(count)
+        end
+        return {count=count,target=target}
+    end
+    CounterNickname.super.new(self, args)
+end
+
 local nicknamePending={}
 local displayFrame=120
 local function nicknameGet(id)
@@ -306,6 +334,66 @@ Nickname{
         if bulletCount>=2000 and not G.replay then
             return true
         end
+    end,
+}
+ProgressedNickname{
+    name='PerfectCollector',
+    eventName=EventManager.EVENTS.WIN_LEVEL,
+    progressFunc=function()
+        local passed,all,perfect=G:countPassedSceneNum()
+        return perfect/10
+    end
+}
+CounterNickname{
+    name='PelletZealot',
+    eventName=EventManager.EVENTS.PLAYER_GRAZE,
+    key='totalGraze',
+    target=10000,
+    localizeUseFloor=true,
+    eventFunc=function(self,player,value)
+        G.save.statistics[self.key]=G.save.statistics[self.key]+value
+        if G.save.statistics[self.key]>=self.target then
+            return true
+        end
+    end,
+}
+CounterNickname{
+    name='OrbsNewUse',
+    eventName=EventManager.EVENTS.YINYANG_ORB_REMOVE_BULLET,
+    key='totalYinYangOrbRemoved',
+    target=1000,
+}
+CounterNickname{
+    name='ToughSurvivor',
+    eventName=EventManager.EVENTS.PLAYER_HIT,
+    key='totalPlayerGetHit',
+    target=1000,
+    eventFunc=function(self,player,damage,isDirect)
+        if isDirect then -- from flashbomb, not hit by bullets
+            return
+        end
+        G.save.statistics[self.key]=G.save.statistics[self.key]+1
+        if G.save.statistics[self.key]>=self.target then
+            return true
+        end
+    end,
+}
+CounterNickname{
+    name='FlashbombFanatic',
+    eventName=EventManager.EVENTS.FLASHBOMB_CREATE,
+    key='totalFlashbombCreated',
+    target=100,
+}
+ProgressedNickname{
+    name='Occultist',
+    eventName=EventManager.EVENTS.SWITCH_STATE,
+    progressFunc=function()
+        for name,nickname in pairs(Nickname.nicknameMap) do
+            if nickname.isSecret and G.save.nicknameUnlock[name]==true then
+                return 1
+            end
+        end
+        return 0
     end,
 }
 

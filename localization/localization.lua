@@ -2249,7 +2249,7 @@ return {
                 zh_cn = '双曲新手',
             },
             condition = {
-                en_us = '1 scene cleared',
+                en_us = 'One scene cleared',
                 zh_cn = '通过1个场景',
             },
             description = {
@@ -2466,6 +2466,90 @@ return {
             description = {
                 en_us = '2000 bullets aren\'t that dense if scattered in hyperbolic space.',
                 zh_cn = '如果分散在双曲空间中，2000颗子弹并不算密。',
+            },
+        },
+        PerfectCollector = {
+            name = {
+                en_us = 'Perfection Collector',
+                zh_cn = '完美过关收集者',
+            },
+            condition = {
+                en_us = 'Ten scenes cleared without taking damage',
+                zh_cn = '无伤通过十个场景',
+            },
+            description = {
+                en_us = 'In case you forget, perfect clear will grant an extra 2 XP, on top of original 10 XP.',
+                zh_cn = '以防忘记，无伤通过会在基础的10点经验值上额外获得2点经验值。',
+            },
+        },
+        PelletZealot = {
+            name = {
+                en_us = 'Pellet Zealot',
+                zh_cn = '白点狂热者',
+            },
+            condition = {
+                en_us = 'Graze 10000 bullets in total',
+                zh_cn = '累计擦弹10000次',
+            },
+            description = {
+                en_us = 'You must love the pellets and SFX so much!\nTotal grazes: {count}',
+                zh_cn = '你一定非常喜欢擦弹冒出的白点和音效！\n累计擦弹: {count}',
+            },
+        },
+        OrbsNewUse = {
+            name = {
+                en_us = 'Orbs\' New Use',
+                zh_cn = '阴阳玉的新用途',
+            },
+            condition = {
+                en_us = 'Absorb 1000 bullets with Yin-Yang Orb',
+                zh_cn = '用阴阳玉吸收1000颗子弹',
+            },
+            description = {
+                en_us = 'Who knows why Yin-Yang Orb becomes a defensive item?\nTotal absorbed bullets: {count}',
+                zh_cn = '谁知道为什么阴阳玉变成了防御道具？\n累计吸收子弹: {count}',
+            },
+        },
+        ToughSurvivor = {
+            name = {
+                en_us = 'Tough Survivor',
+                zh_cn = '坚韧的幸存者',
+            },
+            condition = {
+                en_us = 'Get hit 1000 times',
+                zh_cn = '被弹1000次',
+            },
+            description = {
+                en_us = 'Nothing would bother you anymore!\nTotal hits taken: {count}',
+                zh_cn = '没有什么能再困扰你了！\n累计被弹: {count}',
+            },
+        },
+        FlashbombFanatic = {
+            name = {
+                en_us = 'Flash Bomb Fanatic',
+                zh_cn = '瞬雷入迷者',
+            },
+            condition = {
+                en_us = 'Use flash bomb 100 times',
+                zh_cn = '使用瞬雷100次',
+            },
+            description = {
+                en_us = 'How many Len\'en references can you find?\nTotal flash bombs used: {count}',
+                zh_cn = '你能找到多少个连缘的元素？\n累计使用瞬雷: {count}',
+            },
+        },
+        Occultist = {
+            name = {
+                en_us = 'Occultist',
+                zh_cn = '神秘学者',
+            },
+            condition = {
+                en_us = 'Acquire a secret nickname',
+                zh_cn = '获得一个隐藏称号',
+            },
+            description = {
+                en_us = 'Cursor able to move onto a seemingly empty cell is not a bug!',
+                zh_cn = '光标能够移动到看似空白的格子上并不是bug！',
             },
         },
         -- row 3: 12 nicknames for passing all scenes in each act
@@ -2911,11 +2995,11 @@ return {
                 zh_cn = '视觉效果',
             },
             condition = {
-                en_us = 'A flashbomb removes no bullets',
+                en_us = 'A flash bomb removes no bullets',
                 zh_cn = '瞬雷未清除任何子弹',
             },
             description = {
-                en_us = 'That flashbomb was just visual effect, right?',
+                en_us = 'That flash bomb was just visual effect, right?',
                 zh_cn = '那个瞬雷只是视觉效果，对吧？',
             },
         },

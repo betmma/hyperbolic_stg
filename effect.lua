@@ -144,6 +144,7 @@ function FlashBomb:new(args)
     self.canRemove=args.canRemove or {bullet=true,invincible=false}
     self.removedBulletCount=0
     self.points=Shape.regularPolygonCoordinates(self.x,self.y,self.radius,self.sideNum,self.direction,true)
+    EventManager.post(EventManager.EVENTS.FLASHBOMB_CREATE,self)
 end
 
 function FlashBomb:update(dt)

@@ -180,9 +180,12 @@ SaveManager.defaultSaveData=DefaultRoot{
         lshiftReplayDialogueHintShown=false, -- pass 1-1
         shopUnlocked=false -- pass 2-1
     },
-    nicknameUnlock={}, -- this and below are filled by nickname.lua
+    nicknameUnlock={}, -- this and below are managed by nickname.lua
     statistics={
-        loseCount=0
+        loseCount=0,
+        totalGraze=0,
+        totalYinYangOrbRemoved=0,
+        totalPlayerGetHit=0
     },
 }
 

@@ -153,9 +153,15 @@ local dataList = {
                     vortex.scale=2
                     vortex.direction=theta*5
                     vortex.sprite=Asset.bulletSprites.orb.red
+                    vortex.isYinYangOrb=true
                     player.vortex=vortex
                 end
             }
+            EventManager.listenTo(EventManager.EVENTS.SHOCKWAVE_REMOVE_BULLET, function(bullet,shockwave)
+                if player.vortex==shockwave then
+                    EventManager.post(EventManager.EVENTS.YINYANG_ORB_REMOVE_BULLET,bullet,shockwave)
+                end
+            end,EventManager.EVENTS.LEAVE_LEVEL)
         end,
         spritePos={x=2,y=1}
     },
@@ -285,10 +291,8 @@ local dataList = {
         description='Bullets absorbed by Yin-Yang Orb count as grazes.',
         cost=40,
         executeFunc=function(player)
-            EventManager.listenTo(EventManager.EVENTS.SHOCKWAVE_REMOVE_BULLET, function(bullet,shockwave)
-                if player.vortex==shockwave then
-                    EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player,bullet:grazeValue())
-                end
+            EventManager.listenTo(EventManager.EVENTS.YINYANG_ORB_REMOVE_BULLET, function(bullet,shockwave)
+                EventManager.post(EventManager.EVENTS.PLAYER_GRAZE,player,bullet:grazeValue())
             end,EventManager.EVENTS.LEAVE_LEVEL)
         end,
         spritePos={x=7,y=2}
