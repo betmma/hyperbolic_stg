@@ -51,6 +51,7 @@ return {
         elseif (player and player.keyIsPressed('x') or isPressed('x')) and (player and player.unlockDiskModels==true or G.replay) then -- note that this A and B or C clause is not equal to B if A else C, since B can be false. in replay mode pressing x still works
             G.viewMode.hyperbolicModel=(G.viewMode.hyperbolicModel+1)%G.CONSTANTS.HYPERBOLIC_MODELS_COUNT
             SFX:play('select')
+            EventManager.post(EventManager.EVENTS.SWITCH_HYPERBOLIC_MODEL,G.viewMode.hyperbolicModel)
         end
 
         if not G.UseHypRotShader or not (player and player.unlockDiskModels==true or G.replay) then
