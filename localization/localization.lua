@@ -1,6 +1,11 @@
 ---@alias lang string
-
 ---@alias localizationItem table<lang,string>
+---@class obfuscationItem
+---@field from string the characters to be replaced
+---@field to string|nil the characters to replace with (randomly chosen), defaults to from
+---@field toTable string[]|nil automatically generated (in misc.lua) table of characters in "to" string
+
+---@alias obfuscationList obfuscationItem[]
 
 return {
     levelData = {
@@ -2081,6 +2086,16 @@ return {
                 zh_cn = '两侧背景略微透明。',
             },
         },
+        esoterica = {
+            name = {
+                en_us = 'Esoterica',
+                zh_cn = '秘术',
+            },
+            description = {
+                en_us = 'You can descry secret nicknames you have not obtained.',
+                zh_cn = '你可窥视未获得的隐藏称号。',
+            },
+        },
         diagonalMover = {
             name = {
                 en_us = 'Diagonal Mover',
@@ -3770,4 +3785,117 @@ return {
             }
         }
     },
+    ---@type table<lang, obfuscationList> map a group of characters to another group. * means default mapping
+    obfuscations = { -- for the esoterica upgrade that shows title of secret nicknames. no horror elements in other parts of the game lol
+        en_us = { -- group same width characters together to avoid string width jumping
+            {
+                from='0123456789' -- width=6px
+            },
+            {
+                from='.,:;' -- width=2px
+            },
+            {
+                from='+-=' -- width=6px
+            },
+            {
+                from="!@#$%^&*_'\"<>?/\\|`~" -- width=7px
+            },
+            {
+                from="()[]" -- width=9px
+            },
+            {
+                from="{}" -- width=10px
+            },
+            {
+                from="il",-- width=2px
+            },
+            {
+                from="j",-- width=4px
+            },
+            {
+                from="ABCDEFGHIJKLNOPRSTUVYZ", -- width=6px
+            },
+            {
+                from="abcdefghknopqrstuvyz", -- width=6px
+            },
+            {
+                from="QX",-- width=7px
+            },
+            {
+                from="x",-- width=7px
+            },
+            {
+                from="MW",-- width=8px
+            },
+            {
+                from="mw",-- width=8px
+            },
+        },
+        zh_cn = {
+            {
+                from="0123456789",
+            },
+            {
+                from="Iijl", -- width=331px (range: 321-350)
+            },
+            {
+                from="f", -- width=398px (range: 398-398)
+            },
+            {
+                from="rt", -- width=454px (range: 445-464)
+            },
+            {
+                from="csz", -- width=526px (range: 510-537)
+            },
+            {
+                from="FJLYaegvxy", -- width=602px (range: 586-616)
+            },
+            {
+                from="ESTVZko", -- width=634px (range: 619-643)
+            },
+            {
+                from="ACXbdhnpqu", -- width=658px (range: 654-667)
+            },
+            {
+                from="BKPR", -- width=699px (range: 687-708)
+            },
+            {
+                from="DG", -- width=731px (range: 729-733)
+            },
+            {
+                from="HNOQU", -- width=774px (range: 763-786)
+            },
+            {
+                from="Mw", -- width=887px (range: 877-897)
+            },
+            {
+                from="W", -- width=935px (range: 935-935)
+            },
+            {
+                from="m", -- width=985px (range: 985-985)
+            },
+            {
+                from='.,:;-/\\|'
+            },
+            {
+                from='+='
+            },
+            {
+                from="!@#$%^&*_'\"<>?`~"
+            },
+            {
+                from="()[]"
+            },
+            {
+                from="{}"
+            },
+            {
+                from="！￥……（）——【】；：‘“”，。《》？、"
+            },
+            {
+                from="*",
+                to="疯卑肆魉僭疼灼虚喘叛锌滚咿狼败砷瘙炛疮钼痂无猿辱妖襄灵妨霉雹墓褊噪戮渑壬困恣俘腋耗癫氢喷忝戌截蝙恒愚毋瘫迟斩笼冢坏忌祭踢埠惑蚊粪惯鳝揩骸淬恤螂卒溅梵膏激逝废疹锯庾穴鳅碍靥瘩虬剩兢殃鬼吓氯剌蜘飨禁赘瘘窿领浑寰特荡痢嘲荒烫蜈屎飙痩铕震啸喃冥痫猾绊岂晕沦怍积铄钫痈殑魇来厉谆皿阴尚危锝囚润惺褴炀疫辛恫蛆呛孕慑携钴妓掴肇歪捅哮疥输鸣涩弟悚殳邪隅枷煞酯猝厌抑曜嫔溴滋毒瘿益氰振有蚺僵蔓履娼饥摘狸恶庞兕逐醛频疑膛郁停韭蚣睾斧嘻炉倦删阵身狩妄绽锈缪待腆坷撞虻妊凋焰痿氡蟆毁镉腥宰误凉怖贲灭丐怨群樵逞隶猬桀刑痰通肏滓蛀伪弊痔鸡摒螨叫酚镗糊刃怆侨妒癜哕弱俑冤讳懒噤责泯戾惊畏役霹兽虏猪缔褛拌蚀娇浊蝽啐戏疳殁鼬禽严缝氟魔魅害蠕舍萜厢贱泣癣终纵次瘀夸忖重憎裁疙龊叉滑厥割滞劣蚋钔黔乞膦负氚豕聋惩铒蛊纣勿犯湿狰仇狱吽蜓魑骨鞑屠噬碎菌濒丑隙核垂蹂灾逃铅剥夐病痣掇牲疤患闲棺哄啼驳癌羞犺嘭疾扑蝇痴衅秽螟怵瘤幽疣恕耽贫疡魍蛋甥杀症罄蝈"
+            }
+        }
+    }
 }

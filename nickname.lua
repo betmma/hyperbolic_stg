@@ -40,11 +40,16 @@ function Nickname:new(args)
     end)
 end
 
+local localization=require"localization.localization"
+---@param unlocked boolean whether this nickname is unlocked
 ---@return string name the display name of this nickname (from Localize)
-function Nickname:getName()
+function Nickname:getName(unlocked)
     local ret=Localize{'nickname',self.name,'name'}
     if self.isSecret then
         ret=ret..Localize{'ui','secretNicknameSuffix'}
+        if not unlocked and G.save.upgrades.esoterica.bought==true then
+            return localization.obfuscate(ret,0.3)
+        end
     end
     return ret
 end
@@ -53,12 +58,17 @@ end
 ---@return string text the description text of this nickname (from Localize)
 function Nickname:getText(unlocked)
     local condition=Localize(self:_getConditionLocalizeInput())
+    local ret
     if unlocked then
         local description=Localize(self:_getDescriptionLocalizeInput())
-        return string.format('%s\n%s',condition,description)
+        ret=string.format('%s\n%s',condition,description)
     else
-        return condition
+        ret=condition
     end
+    if self.isSecret and not unlocked and G.save.upgrades.esoterica.bought==true then
+        ret=localization.obfuscate(ret,0.5)
+    end
+    return ret
 end
 
 ---@return table localization input for condition string

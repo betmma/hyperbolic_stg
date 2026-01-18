@@ -23,6 +23,7 @@ return {
                 break
             end
         end
+        local restXP=Upgrades.calculateRestXP()
         if isPressed('x') or isPressed('escape') or isPressed('c')then
             SFX:play('select')
             self:switchState(self.STATES.CHOOSE_LEVELS)
@@ -34,7 +35,6 @@ return {
             end
             self.currentUI.chosen={1,1}
         elseif isPressed('z') then
-            local restXP=Upgrades.calculateRestXP()
             if option.upgrade then
                 local upgrade=upgrades[option.upgrade]
                 local bought=self.save.upgrades[option.upgrade].bought
@@ -63,6 +63,13 @@ return {
                     SFX:play('select')
                 end
             end
+        end
+        -- esoterica randomize cost
+        if not self.save.upgrades.esoterica.bought then
+            local randomLowerBound=100
+            local randomUpperBound=math.max(199,restXP)
+            upgrades.esoterica.cost=math.random(randomLowerBound,randomUpperBound)
+            self.save.upgrades.esoterica.cost=upgrades.esoterica.cost
         end
     end,
     draw=function(self)

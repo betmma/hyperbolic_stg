@@ -351,6 +351,14 @@ local dataList = {
             player.hitInvincibleFrame=player.hitInvincibleFrame+30
         end,
         spritePos={x=1,y=3}
+    },
+    {
+        id='esoterica',
+        description='know secret nickname titles',
+        cost=0, -- G.loadData will load from save. in upgrades menu it will be randomized
+        executeFunc=function(player) -- do nothing in game
+        end,
+        spritePos={x=2,y=3}
     }
 }
 -- when need to apply upgrades in order, use this table
@@ -391,6 +399,7 @@ local nodes = {
     fixedHPDisplay = {connect = {}, pos = {x=2, y=5}, requires = {'amulet'} },
     clairvoyance =   {connect = {}, pos = {x=3, y=5}, requires = {'fixedHPDisplay'} },
     diskModels =     {connect = {}, pos = {x=4, y=5}, requires = {'clairvoyance'} },
+    esoterica =     {connect = {}, pos = {x=8, y=6}, requires = {'clairvoyance','spiritTraining'} },
     diagonalMover =  {connect = {}, pos = {x=2, y=6}, requires = {'fixedHPDisplay'} },
     instantRetry =   {connect = {}, pos = {x=3, y=6}, requires = {'clairvoyance'} },
 }

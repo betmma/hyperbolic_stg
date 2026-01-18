@@ -68,14 +68,17 @@ return {
         local index=0
         local boxX,boxY=100,480
         local gap=10
+        local esotericaBought=self.save.upgrades.esoterica.bought
         for k,v in pairs(nicknames) do -- draw the matrix of nicknames (some unlocked, some locked, some hidden)
             index=index+1
             local x=xbegin+(index-1)%numberPerRow*gridSize
             local y=ybegin+math.floor((index-1)/numberPerRow)*gridSize
             local unlocked=G.save.nicknameUnlock[v.name]
-            if not v.isSecret or unlocked then
+            if not v.isSecret or unlocked or esotericaBought then -- only skip drawing ID if it's secret and not unlocked and no esoterica upgrade
                 if unlocked then
                     love.graphics.setColor(1,1,0.5) -- yellow for unlocked nicknames
+                elseif v.isSecret and esotericaBought then
+                    love.graphics.setColor(0.5*math.random()+0.5,0.5*math.random()+0.5,0.2*math.random()+0.8) -- flashing color for esoterica revealed nicknames
                 else
                     love.graphics.setColor(1,1,1,1) -- white for normal nicknames
                 end
@@ -91,8 +94,8 @@ return {
         local x=xbegin+(chosen-1)%numberPerRow*gridSize
         local y=ybegin+math.floor((chosen-1)/numberPerRow)*gridSize
         love.graphics.rectangle("line",x,y,gridSize,gridSize)
-        if not (chosenNickname.isSecret and not chosenUnlocked) then
-            local name=chosenNickname:getName()
+        if not (chosenNickname.isSecret and not chosenUnlocked and not esotericaBought) then
+            local name=chosenNickname:getName(chosenUnlocked)
             -- draw large box
             love.graphics.rectangle("line",boxX,boxY,600,100)
             -- name above box

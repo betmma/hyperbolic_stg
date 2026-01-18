@@ -259,6 +259,7 @@ G.loadData=function(self)
 	SaveManager:loadData(self)
     SFX:setVolume(self.save.options.master_volume*self.save.options.sfx_volume/10000)
     BGM:setVolume(self.save.options.master_volume*self.save.options.music_volume/10000)
+    Upgrades.data.esoterica.cost=self.save.upgrades.esoterica.cost or 100
     self:saveData()
 end
 G:loadData()

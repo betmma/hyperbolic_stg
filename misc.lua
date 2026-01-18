@@ -249,6 +249,63 @@ function SetFont(size,forcedFont)
 end
 
 local localization=require 'localization.localization'
+local utf8 = require("utf8")
+-- Helper function to explode a string into a table of chars
+local function explode(str)
+    local t = {}
+    for p, c in utf8.codes(str) do table.insert(t, utf8.char(c)) end
+    return t
+end
+
+-- In your obfuscate function, you can then simply do:
+-- local idx = math.random(1, #item.to_table)
+-- return item.to_table[idx]
+
+-- Apply this to your config ONCE at startup:
+for lang, lists in pairs(localization.obfuscations) do
+    for _, item in ipairs(lists) do
+        if item.to then 
+             -- Create a cached table version so we don't have to parse strings every frame
+            item.toTable = explode(item.to) 
+        else
+            item.toTable = explode(item.from)
+        end
+    end
+end
+---@param list obfuscationList
+---@param char string
+---@return string
+local function obfuscate(list,char)
+    for _,item in pairs(list) do
+        local from=item.from
+        local to=item.to or from
+        if from=='*' or from:find(char,1,true) then
+            local idx = math.random(1, #item.toTable)
+            return item.toTable[idx]
+        end
+    end
+    return char
+end
+
+--- obfuscate a string according to the obfuscation list of current language. intensity in [0,1], the higher the more obfuscation.
+---@param str string
+---@param intensity number
+---@return string
+localization.obfuscate=function(str,intensity)
+    local lang=G.language or 'en_us'
+    local obfuscation=localization.obfuscations[lang] or localization.obfuscations['en_us']
+    local result = {} -- Use a table buffer for better performance than string concat
+    -- Iterate over UTF-8 codes, not bytes 
+    for p, c in utf8.codes(str) do
+        local char = utf8.char(c) -- Convert code point back to string
+        if math.random() < intensity then
+            table.insert(result, obfuscate(obfuscation, char))
+        else
+            table.insert(result, char)
+        end
+    end
+    return table.concat(result)
+end
 
 ---@alias localizationArg string|integer
 ---@alias localizationArgs localizationArg[] 
