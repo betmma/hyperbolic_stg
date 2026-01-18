@@ -28,6 +28,7 @@ EventManager.EVENTS={
     LEVEL_5_2_OUTSIDE_RIVER='level5_2OutsideRiver',
     LEVEL_7_3_FAST_TURN='level7_3FastTurn',
     HOW_MANY_BULLETS='howManyBullets',
+    PLAY_AUDIO='playAudio'
 }
 EventManager.DELETE_LISTENER='deleteListener'
 

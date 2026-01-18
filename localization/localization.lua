@@ -1864,6 +1864,16 @@ return {
         }
     },
     musicData = {
+        unknown = {
+            name = {
+                en_us = '???????????????????',
+                zh_cn = '？？？？？？？？？？？？',
+            },
+            description = {
+                en_us = 'You have not met this music yet.',
+                zh_cn = '你还没有遇到这首音乐。',
+            },
+        },
         title = {
             name = {
                 en_us = 'Hyperbolic Domain ~ Exponential Existence',

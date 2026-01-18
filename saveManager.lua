@@ -180,6 +180,8 @@ SaveManager.defaultSaveData=DefaultRoot{
         lshiftReplayDialogueHintShown=false, -- pass 1-1
         shopUnlocked=false -- pass 2-1
     },
+    musicUnlock={
+    },
     nicknameUnlock={}, -- this and below are managed by nickname.lua
     statistics={
         loseCount=0,

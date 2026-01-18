@@ -1,3 +1,11 @@
+local G=...
+EventManager.listenTo(EventManager.EVENTS.PLAY_AUDIO, function(audioSystem, audioName)
+    if audioSystem==BGM then -- unlock corresponding music
+        local musicUnlock=G.save.musicUnlock
+        musicUnlock[audioName]=true
+    end
+end)
+
 return {
     enter=function(self)
         self:replaceBackgroundPatternIfNot(BackgroundPattern.MainMenuTesselation)
@@ -17,18 +25,34 @@ return {
         if isPressed('x') or isPressed('escape')then
             SFX:play('select')
             self:switchState(self.STATES.MAIN_MENU)
+            return
         end
+        local musicUnlock=self.save.musicUnlock
+        local chosen=self.currentUI.chosen
+        local musicName=self.currentUI.options[chosen].value
         if isPressed('z') then
+            if not musicUnlock[musicName] then
+                SFX:play('cancel',true)
+                return
+            end
             SFX:play('select')
-            local chosen=self.currentUI.chosen
-            local musicName=self.currentUI.options[chosen].value
             BGM:play(musicName)
+        end
+        if DEV_MODE then
+            if isPressed('[') then
+                musicUnlock[musicName]=false
+                SFX:play('cancel',true)
+            elseif isPressed(']') then
+                musicUnlock[musicName]=true
+                SFX:play('select',true)
+            end
         end
     end,
     options={},
     draw=function(self)
     end,
     drawText=function(self)
+        local musicUnlock=self.save.musicUnlock
         SetFont(48)
         love.graphics.setColor(1,1,1,1)
         love.graphics.print(Localize{'ui',"MUSIC_ROOM"}, 100, 30)
@@ -62,14 +86,22 @@ return {
             if not value then
                 error("Option "..index.." not found in MUSIC_ROOM options")
             end
-            local name=Localize{'musicData',value.value,'name'}
+            local musicName=value.value
+            if not musicUnlock[musicName] then
+                musicName='unknown'
+            end
+            local name=Localize{'musicData',musicName,'name'}
             local prefix=''..index..'. '
             local indexAppearing=index-beginIndex -- indexAppearing is the index of the option in the current view, starting from 0
             love.graphics.print(prefix..name,optionBaseX+edge,optionBaseY+edge+indexAppearing*optionHeight,0,1,1)
         end
         love.graphics.rectangle("line",optionBaseX,optionBaseY+edge+(chosen-beginIndex)*optionHeight,width,30)
         local option=self.currentUI.options[chosen]
-        local description=Localize{'musicData',option.value,'description'}
+        local musicName=option.value
+        if not musicUnlock[musicName] then
+            musicName='unknown'
+        end
+        local description=Localize{'musicData',musicName,'description'}
 
         local bottomY=400
         love.graphics.setColor(0,0,0,0.3)

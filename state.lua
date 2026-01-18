@@ -21,14 +21,6 @@ local G={
         HYPERBOLIC_MODELS_COUNT=3
     },
 }
-local function loadState(uppercaseName)
-    local camelName=uppercaseName:lower():gsub("_(%w)", string.upper)
-    local stateChunk=love.filesystem.load('states/'..camelName..'.lua')
-    if not stateChunk then
-        error('State '..uppercaseName..' ('..camelName..') not found')
-    end
-    return stateChunk(G)
-end
 G={
     backgroundPattern=BackgroundPattern.MainMenuTesselation(),
     switchState=function(self,state)
@@ -216,12 +208,6 @@ G={
     }
 }
 
-for stateName,state in pairs(G.STATES) do
-    G.UIDEF[state]=loadState(state)
-end
-
-G:switchState(G.STATES.MAIN_MENU)
-
 
 local SaveManager=require"saveManager"
 G.saveData=function(self)
@@ -236,6 +222,7 @@ end
 ---@field defaultName string
 ---@field playTimeTable {playTimeOverall: number, playTimeInLevel: number}
 ---@field extraUnlock {[string]: boolean} -- secret level unlocks, format not decided
+---@field musicUnlock {[string]: boolean}
 ---@field nicknameUnlock {[string]: boolean}
 ---@field statistics {[string]: number}
 ---@type Save
@@ -252,6 +239,7 @@ G.save={
     extraUnlock={
         shopUnlocked=false
     }, -- secret level unlocks, format not decided
+    musicUnlock={},
     nicknameUnlock={},
     statistics={},
 }
@@ -263,6 +251,22 @@ G.loadData=function(self)
     self:saveData()
 end
 G:loadData()
+
+local function loadState(uppercaseName)
+    local camelName=uppercaseName:lower():gsub("_(%w)", string.upper)
+    local stateChunk=love.filesystem.load('states/'..camelName..'.lua')
+    if not stateChunk then
+        error('State '..uppercaseName..' ('..camelName..') not found')
+    end
+    return stateChunk(G)
+end
+
+for stateName,state in pairs(G.STATES) do
+    G.UIDEF[state]=loadState(state)
+end
+
+G:switchState(G.STATES.MAIN_MENU)
+
 
 G.language=G.save.options.language--'zh_cn'--'en_us'--
 

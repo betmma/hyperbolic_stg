@@ -63,6 +63,7 @@ function AudioSystem:play(name,restart,overrideVolume)
     self.data[name]:setVolume(self.currentVolume*self.volumeCoeff*(overrideVolume or self.audioVolumes[name]))
     self.data[name]:play()
     self.currentAudio=name
+    EventManager.post(EventManager.EVENTS.PLAY_AUDIO,self,name)
 end
 --- set master volume of all audios (0-1 range)
 --- @param volume number
