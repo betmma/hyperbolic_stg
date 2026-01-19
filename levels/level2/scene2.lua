@@ -4,7 +4,7 @@ return {
     user='nemuno',
     spellName='Blade Sign "Swirling Knife Sharpening"',
     make=function()
-        Shape.removeDistance=10000
+        Shape.removeDistance=100000
         local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=6000}
         local player=Player{x=400,y=600}
         local a
@@ -54,9 +54,9 @@ return {
                     nx=math.clamp(nx,200,600)
                     nx=math.clamp(nx,en.x-100,en.x+100)
                     ny=math.clamp(ny,100,500)
-                    local yNegLimit=200
+                    local yNegLimit=100
                     if en.frame>2400 then
-                        yNegLimit=300
+                        yNegLimit=200
                     end
                     ny=math.clamp(ny,en.y-yNegLimit,en.y+100)
                     local co={math.eval(0,3),math.eval(0,3),math.eval(0,3),math.eval(0,3)}

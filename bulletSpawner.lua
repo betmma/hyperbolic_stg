@@ -134,6 +134,7 @@ end
 ---@field x number 
 ---@field y number 
 ---@field radius number|nil defaults to 1
+---@field fogTransparency number|nil transparency of fog, defaults to 1
 
 ---@param args fogArgs
 ---@param func function|nil to be called after fog disappears. defaults to Circle
@@ -147,7 +148,7 @@ function BulletSpawner.wrapFogEffect(args, func, wrapping)
     local x=args.x
     local y=args.y
     local radius=args.radius or args.radius or 1
-    local fog=Circle({x=x, y=y, radius=radius, lifeFrame=fogTime, sprite=Asset.bulletSprites.fog[color],safe=true})
+    local fog=Circle({x=x, y=y, radius=radius, lifeFrame=fogTime, sprite=Asset.bulletSprites.fog[color],safe=true,spriteTransparency=args.fogTransparency or 1})
     local easeFunc=func
     if wrapping then
         easeFunc=function()func(args)end

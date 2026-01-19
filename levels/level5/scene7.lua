@@ -93,6 +93,15 @@ return {
             cir.extraUpdate[1]=teleportUpdate
         end
         local function fadeIn(cir)
+            local radiusRef=cir.radius
+            cir.radius=cir.radius*0.4
+            Event.EaseEvent{
+                obj=cir,
+                easeFrame=60,
+                aimTable=cir,
+                aimKey='radius',
+                aimValue=radiusRef
+            }
             Event.EaseEvent{
                 obj=cir,
                 easeFrame=60,
@@ -129,7 +138,28 @@ return {
             obj=en,
             delayFrame=60,
             executeFunc=function()
+                local recentPoses={}
+                Event.LoopEvent{
+                    obj=player,period=1,executeFunc=function()
+                        recentPoses[player.frame%30+1]={x=player.x,y=player.y}
+                    end
+                }
                 SFX:play('enemyPowerfulShot',true,0.5)
+                for delay=1,30,5 do
+                    local redHint=Circle{x=player.x,y=player.y,sprite=BulletSprites.giant.red,lifeFrame=9999,fogTime=0,direction=0,speed=0,radius=2*(30-delay)/30,batch=Asset.bulletHighlightBatch,spriteTransparency=0.1,safe=true,invincible=true}
+                    bulletBase(redHint)
+                    redHint.spriteColor={1,0,0}
+                    redHint.extraUpdate[1]=function(cir)
+                        if cir.frame<30 then
+                            cir.spriteTransparency=cir.spriteTransparency+0.01
+                            cir.radius=cir.radius*0.97
+                        end
+                        if recentPoses[(player.frame+delay)%30+1] then
+                            local rp=recentPoses[(player.frame+delay)%30+1]
+                            cir.x,cir.y=rp.x,rp.y
+                        end
+                    end
+                end
             end
         }
         Event.DelayEvent{
@@ -138,7 +168,7 @@ return {
             executeFunc=function()
                 for i=1,20 do
                     local x,y=Shape.rThetaPos(900,500,i*3+7,math.pi/2)
-                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.blue,lifeFrame=20000,fogTime=60,direction=0,speed=(i<11 and -1 or 1)*5,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,safe=true}
+                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.blue,lifeFrame=20000,fogTime=60,direction=0,speed=(i<11 and -1 or 1)*5,batch=Asset.bulletHighlightBatch,spriteTransparency=0,safe=true}
                     cir.extraUpdate={
                         function(cir)
                             fadeIn(cir)
@@ -160,7 +190,7 @@ return {
             executeFunc=function()
                 for i=1,10 do
                     local x,y=400+(i-5.5)*100,800
-                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.red,lifeFrame=20000,fogTime=60,direction=(i<11 and -math.pi/2 or math.pi/2),speed=36,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,safe=true}
+                    local cir={x=x,y=y,sprite=BulletSprites.blackrice.red,lifeFrame=20000,fogTime=60,direction=(i<11 and -math.pi/2 or math.pi/2),speed=36,batch=Asset.bulletHighlightBatch,spriteTransparency=0,safe=true}
                     cir.extraUpdate={
                         function(cir)
                             fadeIn(cir)
@@ -181,7 +211,7 @@ return {
             period=30,
             frame=-60,
             executeFunc=function()
-                local circle={x=player.x,y=player.y,sprite=BulletSprites.giant.blue,lifeFrame=330,fogTime=30,direction=math.eval(0,999),speed=0,batch=Asset.bulletHighlightBatch,spriteTransparency=0.2,extraUpdate={
+                local circle={x=player.x,y=player.y,sprite=BulletSprites.giant.blue,lifeFrame=330,fogTime=30,direction=math.eval(0,999),speed=0,batch=Asset.bulletHighlightBatch,spriteTransparency=0,fogTransparency=0,extraUpdate={
                     function(cir)
                         fadeIn(cir)
                         Event.DelayEvent{
