@@ -257,10 +257,6 @@ local function explode(str)
     return t
 end
 
--- In your obfuscate function, you can then simply do:
--- local idx = math.random(1, #item.to_table)
--- return item.to_table[idx]
-
 -- Apply this to your config ONCE at startup:
 for lang, lists in pairs(localization.obfuscations) do
     for _, item in ipairs(lists) do
@@ -287,23 +283,106 @@ local function obfuscate(list,char)
     return char
 end
 
---- obfuscate a string according to the obfuscation list of current language. intensity in [0,1], the higher the more obfuscation.
+-- Inertia factor. 
+-- Higher T = slower changes (more stability).
+-- Lower T = faster flickering.
+local T = 60
+---@class ObfuscateCacheChar
+---@field isObfuscated boolean
+---@field char string
+---@class ObfuscateCacheItem
+---@field lastSeenFrame integer
+---@field data ObfuscateCacheChar[]
+---@type table<string, ObfuscateCacheItem>
+local obfuscateCache = {}
+local cleanupCounter = 0
+
+--- obfuscate a string according to the obfuscation list of current language. intensity in [0,1]. markov process to avoid flickering.
 ---@param str string
 ---@param intensity number
 ---@return string
-localization.obfuscate=function(str,intensity)
-    local lang=G.language or 'en_us'
-    local obfuscation=localization.obfuscations[lang] or localization.obfuscations['en_us']
-    local result = {} -- Use a table buffer for better performance than string concat
-    -- Iterate over UTF-8 codes, not bytes 
-    for p, c in utf8.codes(str) do
-        local char = utf8.char(c) -- Convert code point back to string
-        if math.random() < intensity then
-            table.insert(result, obfuscate(obfuscation, char))
-        else
-            table.insert(result, char)
+localization.obfuscate = function(str, intensity)
+    -- Periodic Cleanup (Run once every 500 calls to prevent memory bloat, if there are infinite possible strings like "score: n")
+    cleanupCounter = cleanupCounter + 1
+    if cleanupCounter > 500 then
+        local now = G.frame
+        for k, v in pairs(obfuscateCache) do
+            -- If string hasn't been seen in 10 seconds, delete it
+            if now - v.lastSeenFrame > 600 then
+                obfuscateCache[k] = nil
+            end
         end
+        cleanupCounter = 0
     end
+
+    local lang = G.language or 'en_us'
+    local obfuscation = localization.obfuscations[lang] or localization.obfuscations['en_us']
+    if not obfuscateCache[str] then
+        obfuscateCache[str] = {
+            lastSeenFrame = G.frame,
+            data = {}
+        }
+    end
+    -- Retrieve the cache for this specific string to get previous states
+    local cachedStrItem = obfuscateCache[str]
+    cachedStrItem.lastSeenFrame = G.frame
+    local cachedStrData = cachedStrItem.data
+    local result = {} 
+    local idx = 1 -- Sequential counter for characters
+    for p, c in utf8.codes(str) do
+        local char = utf8.char(c)
+        -- Default state if no history exists (first frame seeing this string)
+        local isObfuscated = false
+        local displayChar = char
+        local prevObfChar = nil
+        -- Check history
+        local hasHistory = false
+        if cachedStrData and cachedStrData[idx] then
+            isObfuscated = cachedStrData[idx].isObfuscated
+            prevObfChar = cachedStrData[idx].char
+            hasHistory = true
+        else
+            -- Initial random roll for fresh strings
+            if math.random() < intensity then
+                isObfuscated = true
+            end
+        end
+        -- Apply Transition Logic
+        if hasHistory then
+            if isObfuscated then
+                -- CASE: Currently Obfuscated
+                -- Formula: 1/(T*(1-intensity)) chance to become normal
+                local probToNormal = 1 / (T * (1 - intensity))
+                if math.random() < probToNormal then
+                    isObfuscated = false -- Become Normal
+                end
+            else
+                -- CASE: Currently Normal
+                -- Formula: 1/(T*intensity) chance to become obfuscated
+                local probToObfuscate = 1 / (T * intensity)
+                if math.random() < probToObfuscate then
+                    isObfuscated = true -- Become Obfuscated
+                end
+            end
+        end
+        -- Generate Output
+        if isObfuscated then
+            -- If we are staying obfuscated and have a previous glitch char, keep it to stop flickering.
+            -- Otherwise, generate a new one.
+            if prevObfChar and hasHistory and cachedStrData[idx].isObfuscated then
+                displayChar = prevObfChar
+            else
+                displayChar = obfuscate(obfuscation, char)
+            end
+        else
+            displayChar = char
+        end
+        -- Store state for next frame
+        cachedStrData[idx] = { isObfuscated = isObfuscated, char = displayChar }
+        table.insert(result, displayChar)
+        idx = idx + 1
+    end
+
     return table.concat(result)
 end
 
