@@ -5,8 +5,8 @@ return {
     make=function()
         G.levelRemainingFrame=3600
         G.levelIsTimeoutSpellcard=true
-        G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.Empty()
+        -- G.backgroundPattern:remove()
+        -- G.backgroundPattern=BackgroundPattern.Empty()
         Shape.removeDistance=100000
         local en,a
         en=Enemy{x=400,y=30000,mainEnemy=true,maxhp=72000000}

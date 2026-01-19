@@ -3,7 +3,7 @@ return {
     enter=function(self,previousState)
         local level,scene=self.currentLevel[1],self.currentLevel[2]
         -- transition animation caused this function to be called frames LATER than G.enterLevel (precisely, TRANSITION_IMAGE calls enter at half point of the transition). so I move G.enterLevel code and call replayManager's tweak code here.
-        if previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
+        if previousState==self.STATES.MAIN_MENU or previousState==self.STATES.CHOOSE_LEVELS or previousState==self.STATES.LOAD_REPLAY then
             self:replaceBackgroundPatternIfIs(BackgroundPattern.MainMenuTesselation,LevelData.getDefaultBackground(level,scene))
             local bgmName=LevelData.getBGMName(level,scene)
             BGM:play(bgmName)

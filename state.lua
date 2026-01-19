@@ -30,9 +30,17 @@ G={
         if self.UIDEF[state].TRANSITION then
             error("Illegal to switch to a transition state directly")
         end
-        EventManager.post(EventManager.EVENTS.SWITCH_STATE,self.STATE,state)
 
         local lastState=self.STATE
+        
+        if lastState==self.STATES.MAIN_MENU and state==self.STATES.CHOOSE_LEVELS and self.save.extraUnlock.firstStart then -- skip choose levels menu if first start
+            self.save.extraUnlock.firstStart = false
+            self.UIDEF.CHOOSE_LEVELS.chosenLevel=1
+            self.UIDEF.CHOOSE_LEVELS.chosenScene=1
+            self:enterLevel(1,1)
+            return
+        end
+        EventManager.post(EventManager.EVENTS.SWITCH_STATE,self.STATE,state)
 
         -- check if there is transition data between current state and the state to switch to
         local transitionData=self.transitionData[lastState]
@@ -115,6 +123,9 @@ G={
             NICKNAMES={
                 slideDirection='up'
             },
+            IN_LEVEL={ -- first time playing, skip choose levels menu and directly enter 1-1
+                transitionState='TRANSITION_IMAGE',
+            }
         },
         OPTIONS={
             MAIN_MENU={

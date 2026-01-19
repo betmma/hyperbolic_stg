@@ -4,8 +4,6 @@ return {
     user='aya',
     spellName='Wind God "Frenzied Wind"', 
     make=function()
-        G.backgroundPattern:remove()
-        G.backgroundPattern=BackgroundPattern.FixedTesselation{toDrawNum=5}
         G.levelRemainingFrame=7200
         Shape.removeDistance=10000000
         local en=Enemy{x=400,y=300,mainEnemy=true,maxhp=10800,hpSegments={0.7,0.4}}
@@ -105,12 +103,6 @@ return {
                                 
                         end
                     }
-                end
-
-                for i=1,5 do
-                    local side=G.backgroundPattern.sidesTable[i]
-                    side[1].x,side[1].y=en.x,en.y
-                    side[2].x,side[2].y=Shape.rThetaPos(en.x,en.y,G.backgroundPattern.sideLength,math.pi/5*2*(i-1))
                 end
             end
         }

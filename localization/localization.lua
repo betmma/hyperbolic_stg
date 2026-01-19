@@ -1733,8 +1733,8 @@ return {
             zh_cn = '已通过场景: {passed}/{all}',
         },
         needSceneToUnlockNextLevel = {
-            en_us = '{need} scenes to unlock next day',
-            zh_cn = '通过{need}个场景\n解锁下一天',
+            en_us = '{need} scenes to unlock next act',
+            zh_cn = '通过{need}个场景\n解锁下一幕',
         },
         playTimeOverall = {
             en_us = 'Playtime Overall:\n{playtime}',

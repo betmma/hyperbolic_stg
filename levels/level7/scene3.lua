@@ -81,6 +81,7 @@ return {
                     obj=b,
                     delayFrame=100,
                     executeFunc=function()
+                        SFX:play('enemyPowerfulShot')
                         local playerNaturalDirectionAtStart=player.naturalDirection
                         Event.EaseEvent{
                             obj=player,aimTable=player,aimKey='naturalDirection',aimValue=function()

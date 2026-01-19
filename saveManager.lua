@@ -177,6 +177,7 @@ SaveManager.defaultSaveData=DefaultRoot{
         playTimeInLevel=0,
     },
     extraUnlock={
+        firstStart=true, -- first time starting the game. enter 1-1 instead of level choose menu
         lshiftReplayDialogueHintShown=false, -- pass 1-1
         shopUnlocked=false -- pass 2-1
     },

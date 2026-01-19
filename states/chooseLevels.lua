@@ -19,6 +19,7 @@ return {
     end,
     chosenLevel=1,
     chosenScene=1,
+    levelID=LevelData[1][1].ID,
     update=function(self,dt)
         self.backgroundPattern:update(dt)
         local level=self.currentUI.chosenLevel
