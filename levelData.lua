@@ -239,6 +239,34 @@ levelData.getLevelStr=function(level)
     return levelData and levelData.levelStr or ''..level
 end
 
+---@param level integer
+---@return integer
+--- get the number of visible scenes of a level. levels may have hidden scenes. level > levelUnlock is considered having 0 scenes.
+levelData.getSceneNum=function(level)
+    if level>G.save.levelUnlock then
+        return 0
+    end
+    local leveldata=levelData[level]
+    if leveldata then
+        return #leveldata
+    end
+    return 0
+end
+
+---@param level integer
+---@param scene integer
+---@return number nextLevel
+---@return number nextScene
+---@return boolean isNextExist
+levelData.getNextLevelScene=function(level,scene)
+    local sceneNum=levelData.getSceneNum(level)
+    if scene<sceneNum then
+        return level,scene+1,true
+    else
+        return level+1,1,levelData.getSceneNum(level+1)>0
+    end
+end
+
 ---@type {id:{level:number,scene:number}}
 local ID2LevelScene={}
 for i,level in ipairs(levelData) do

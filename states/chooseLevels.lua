@@ -102,8 +102,10 @@ return {
         SetFont(30)
         yBase=yBase+50
         local yGap=40
-        for index, value in ipairs(LevelData[level]) do
-            local levelID=LevelData[level][index].ID
+        local sceneNum=LevelData.getSceneNum(level)
+        for index=1,sceneNum do
+            local value=LevelData[level][index]
+            local levelID=value.ID
             love.graphics.setColor(.7,.6,.6)
             if self.save.levelData[levelID].passed==1 then
                 love.graphics.setColor(.7,1,.7)
@@ -167,11 +169,13 @@ return {
 
         -- show number of passed levels needed for next level
         local passedSceneCount,allSceneCount=self:countPassedSceneNum()
-        local needSceneCount=LevelData.needPass[level]
         SetFont(14)
         love.graphics.printf(Localize{'ui','passedScenes',passed=passedSceneCount,all=allSceneCount},710,5,90,'left')
-        love.graphics.printf(Localize{'ui','needSceneToUnlockNextLevel',need=needSceneCount},710,50,90,'left')
-
+        if level<#LevelData then -- doesnt show for last level
+            local needSceneCount=LevelData.needPass[level]
+            love.graphics.printf(Localize{'ui','needSceneToUnlockNextLevel',need=needSceneCount},710,50,90,'left')
+        end
+            
         -- show play time
         local playTimeTable=self.save.playTimeTable
         love.graphics.printf(Localize{'ui','playTimeOverall',playtime=math.formatTime(playTimeTable.playTimeOverall)},710,100,90,'left')

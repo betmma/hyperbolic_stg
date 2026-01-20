@@ -305,12 +305,12 @@ G.countPassedSceneNum=function(self,act)
     return passedSceneCount,allSceneCount, perfectSceneCount
 end
 G.win=function(self)
+    self.won_current_scene=true -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     self:switchState(self.STATES.GAME_END)
     local inReplay=self:leaveLevel(true)
     if inReplay then
         return -- don't change savedata and other things
     end
-    self.won_current_scene=true -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     local winLevel=1
     if Player.objects[1].hurt==false then
         winLevel=2
@@ -330,12 +330,12 @@ G.win=function(self)
     self:saveData()
 end
 G.lose=function(self)
+    self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     self:switchState(self.STATES.GAME_END)
     local inReplay=self:leaveLevel()
     if inReplay then
         return -- don't change savedata and other things
     end
-    self.won_current_scene=false -- it's only used to determine the displayed text in end screen to be "win" or "lose"
     local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
     local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
     local levelID=LevelData[level][scene].ID

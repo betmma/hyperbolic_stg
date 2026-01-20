@@ -2,6 +2,23 @@ local G=...
 return {
     enter=function(self)
         self.currentUI.transparency=0
+        local showNextSceneOption=false
+        if self.won_current_scene then
+            local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+            local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+            local nextLevel,nextScene,valid=LevelData.getNextLevelScene(level,scene)
+            if valid then
+                showNextSceneOption=true
+            end
+        end
+        if showNextSceneOption then
+            self.currentUI.options[4]={text='Next Scene',value='NEXT_SCENE'}
+        else
+            self.currentUI.options[4]=nil
+            if self.currentUI.chosen>3 then
+                self.currentUI.chosen=3
+            end
+        end
     end,
     options={
         {text='Restart',value='RESTART'},
@@ -20,7 +37,16 @@ return {
             end,
             RESTART=function(self)
                 self:enterLevel(self.UIDEF.CHOOSE_LEVELS.chosenLevel,self.UIDEF.CHOOSE_LEVELS.chosenScene)
-            end
+            end,
+            NEXT_SCENE=function(self)
+                local level=self.UIDEF.CHOOSE_LEVELS.chosenLevel
+                local scene=self.UIDEF.CHOOSE_LEVELS.chosenScene
+                local nextLevel,nextScene,valid=LevelData.getNextLevelScene(level,scene)
+                if not valid then
+                    return
+                end
+                self:enterLevel(nextLevel,nextScene)
+            end,
         })
         local transparency=self.currentUI.transparency or 1
         transparency=transparency*0.92+0.08

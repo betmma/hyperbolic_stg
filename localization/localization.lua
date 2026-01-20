@@ -1664,6 +1664,10 @@ return {
             en_us = 'Exit',
             zh_cn = '退出',
         },
+        NEXT_SCENE = {
+            en_us = 'Next Scene',
+            zh_cn = '下一场景',
+        },
         RESTART = {
             en_us = 'Restart',
             zh_cn = '重新开始',
