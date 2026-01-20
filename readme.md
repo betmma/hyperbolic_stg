@@ -1,8 +1,16 @@
 This is an attempt to learn LÖVE and implement shoot 'em up in hyperbolic geometry.
 This game is a touhou fan-game.
-This game is still WIP so there could be bugs.
+This game is almost complete but there could still be bugs.
 
 # How to play
+
+#### Direct Download
+
+Find the "Releases" section in this page, then click latest release. Scroll down and find the zip with suffix matching your OS (macos, win32, or win64). Click a file to download it. Then extract and click Hyperbolic Domain *version*.exe to play
+
+#### Or Run from Source
+
+If you don't trust executable files:
 
 It's a love2d game so you can follow [love2d tutorial](https://love2d.org/wiki/Getting_Started). Or follow steps below
 1. Download [love2d](https://love2d.org/) and install
@@ -10,6 +18,7 @@ It's a love2d game so you can follow [love2d tutorial](https://love2d.org/wiki/G
 3. Drag the `hyperbolic_stg` folder onto `love.exe` (default install path is `C:\Program Files\LOVE`)
 
 #### Control:
+Controllers are not supported now.
 ##### In Game:
 Arrow keys to move.
 Shift to focus (move slower).

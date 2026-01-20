@@ -635,7 +635,7 @@ BackgroundPattern.Fractal=Fractal
 local build_lorentz_mat4=require('import.H3math').build_lorentz_mat4
 -- tessellation on H^2 is calculated similar to main menu tessellation: calculate schwarz triangle vertices and send this fundamental triangle to shader. after flip, flip count and barycenter coordinates are used to calculate color and height.
 -- due to high computation cost, this could only fit ending / credits
-local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/h3Terrain2.glsl')
+local H3TerrainShader=ShaderScan:load_shader('shaders/backgrounds/H3Terrain2.glsl')
 local H3Terrain=Shader:extend()
 function H3Terrain:new()
     H3Terrain.super.new(self)

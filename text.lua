@@ -1,4 +1,4 @@
-local Shape=require"Shape"
+local Shape=require"shape"
 local Text=Shape:extend()
 
 -- Text doesn't apply to hyperbolic geometry xD
