@@ -305,6 +305,20 @@ return {
                     zh_cn = '购买诱导升级会非常有帮助。',
                 }
             },
+            [17] = {
+                spellName = {
+                    en_us = 'Limitation "Dream Barriers"',
+                    zh_cn = '限制「梦之障壁」',
+                },
+                quote = {
+                    en_us = 'The weirdness has reached a new level!',
+                    zh_cn = '怪异现象达到了新的高度！',
+                },
+                hint = {
+                    en_us = 'Only moving with left and right isn\'t the fastest way to get to the other side.',
+                    zh_cn = '仅仅左右移动并不是到达另一侧的最快方式。',
+                }
+            },
             -- level 2
             [14] = {
                 quote = {

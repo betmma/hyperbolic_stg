@@ -70,6 +70,7 @@ return {
         }
         local function packed(x,y,dir)
             local num=0
+            SFX:play('enemyShot',true)
             local cir2={fogTime=30,x=x,y=y,sprite=BulletSprites.crystal.blue,radius=2,speed=60,direction=dir,lifeFrame=300,extraUpdate={
                 function(cir)
                     if cir.frame%30==29 then
