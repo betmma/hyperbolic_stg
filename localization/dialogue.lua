@@ -125,17 +125,16 @@ function DialogueController:draw()
     end)
 end
 
+-- draw the dialogue box, current line and speaker name
 function DialogueController:drawDialogueBox()
     if self.currentLineIndex>#self.data.lines then
         return
     end
     local line=self.data.lines[self.currentLineIndex]
     local speaker=line.speaker
-    local expression=line.expression
     local textKey=line.textKey
     local position=line.position or self.data.defaultSpeakerPosition[speaker] or 'left'
     local text=Localize{'dialogues',self.dialogueKey,textKey}
-    -- image not implemented yet (cuz i don't have art :c)
     local color={love.graphics.getColor()}
     SetFont(24)
     if speaker=='system' then
@@ -150,9 +149,16 @@ function DialogueController:drawDialogueBox()
         local gap=15
         love.graphics.setColor(1,1,1,1)
         love.graphics.printf(text,x+gap,y+gap,width-gap*2,'left')
-        -- speaker name
-        love.graphics.printf(Localize{'levelData','names',speaker},x+gap,y-gap-20,width-gap*2,position)
-        -- image placeholder
+        -- speaker name. it's possible for white part in portrait to cover the name, so draw shadow texts first
+        love.graphics.setColor(0,0,0,0.5)
+        local name=Localize{'levelData','names',speaker}
+        local basex,basey,baseWidth=x+gap,y-gap-20,width-gap*2
+        love.graphics.printf(name,basex-1,basey,baseWidth,position)
+        love.graphics.printf(name,basex+1,basey,baseWidth,position)
+        love.graphics.printf(name,basex,basey-1,baseWidth,position)
+        love.graphics.printf(name,basex,basey+1,baseWidth,position)
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.printf(name,basex,basey,baseWidth,position)
     end
     love.graphics.setColor(color)
 end
