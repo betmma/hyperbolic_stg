@@ -413,10 +413,7 @@ G.update=function(self,dt)
 
 end
 G.hyperbolicRotateShader=ShaderScan:load_shader("shaders/hyperbolicRotateM.glsl")
-local canvas=love.graphics.newCanvas(WINDOW_WIDTH,WINDOW_HEIGHT,{msaa=8})
 G.draw=function(self)
-    -- love.graphics.setCanvas(canvas)
-    -- love.graphics.clear({0,0,0,1})
     shove.beginLayer('main')
     self.currentUI=self.UIDEF[self.STATE]
     if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.NORMAL then
@@ -442,13 +439,11 @@ G.draw=function(self)
         love.graphics.pop()
     end
 
-    -- love.graphics.setCanvas()
     if Player.objects[1] and not Player.objects[1].removed then
         Player.objects[1]:invertShaderEffect()
     else
         Player:invertShaderEffect()
     end
-    -- love.graphics.draw(canvas, 0, 0)
     love.graphics.setShader()
     shove.endLayer()
     shove.beginLayer('text')

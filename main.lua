@@ -1,4 +1,4 @@
-VERSION="0.9.2.2"
+VERSION="0.9.2.3"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 DEV_MODE=true
 if arg[2] == "debug" then
@@ -47,7 +47,7 @@ function love.load()
     BGM:play('title')
 
     shove.setWindowMode(G.save.options.resolution.width,G.save.options.resolution.height, {resizable = true})
-    shove.createLayer("main")
+    shove.createLayer("main",{stencil=true})
     shove.addEffect('main',Player.invertShader)
 end
 function love.keypressed(key, scancode, isrepeat)

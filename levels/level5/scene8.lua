@@ -169,12 +169,12 @@ return {
                 local centerY=(1+r*r)/(2*r)
                 local ratio=WINDOW_HEIGHT/2*getDiskRadius()
                 if dis>0 then
-                    -- love.graphics.stencil(function()
-                    --     love.graphics.circle("fill", centerX,WINDOW_HEIGHT/2,ratio)
-                    -- end, "replace", 1)
-                    -- love.graphics.setStencilTest("equal", 1)
+                    love.graphics.stencil(function()
+                        love.graphics.circle("fill", centerX,WINDOW_HEIGHT/2,ratio)
+                    end, "replace", 1)
+                    love.graphics.setStencilTest("equal", 1)
                     love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2+ratio*centerY,ratio*(centerY-r))
-                    -- love.graphics.setStencilTest()
+                    love.graphics.setStencilTest()
                     -- love.graphics.clear(false, true, 0)
                 else
                     love.graphics.circle('fill',centerX,WINDOW_HEIGHT/2,ratio)
