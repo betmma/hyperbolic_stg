@@ -74,15 +74,19 @@ return {
                 obj=cir,aimKey='speed',aimValue=-60*math.pi*distance/stopTime,easeFrame=stopTime,progressFunc=Event.sineBackProgressFunc
             }
         end
+        local linkCount=0
         local function link(cir1,cir2)
+            linkCount=linkCount+1
+            local spawnLine=linkCount%2==0 -- if hplevel>=2, whether spawn line between center tooth
             local n=#cir1.teeth
+            local mid=math.ceil(n/2)
             for i=1,n do
                 local tooth1=cir1.teeth[i]
                 local tooth2=cir2.teeth[n+1-i]
                 Event.DelayEvent{
                     obj=tooth1,delayFrame=tooth1.laserTime,executeFunc=function ()
                         SFX:play('enemyPowerfulShot',true)
-                        local laserR=3
+                        local laserR=2.8
                         local lasert=30
                         local distance=Shape.distanceObj(tooth1,tooth2)
                         local laserSpeed=0--distance/lasert/2*60
@@ -104,19 +108,19 @@ return {
                                 tooth2:remove()
                             end
                         }
-                        if hplevel>=2 then
-                            local gap=40
-                            local points=Shape.segmentPoints(tooth1.x,tooth1.y,tooth2.x,tooth2.y,gap,20)
+                        if i==mid and (hplevel==2 and spawnLine or hplevel==3) then
+                            local gap=5
+                            local points=Shape.segmentPoints(tooth1.x,tooth1.y,tooth2.x,tooth2.y,gap,30+(spawnLine and 1 or 0)) -- add 1 to slightly change pattern
                             local np=#points
-                            local speed=0
-                            if hplevel==3 then
-                                speed=distance*60/140/2
-                            end
                             local t=a.period-20
                             for ind,p in ipairs(points) do
                                 local toObj=laser1
                                 if ind*2<np then
                                     toObj=laser2
+                                end
+                                local speed=0
+                                if hplevel==3 then
+                                    speed=distance*60/140*math.abs(ind-np/2)/(np/2)
                                 end
                                 local b=Circle{
                                     x=p.x,y=p.y,
