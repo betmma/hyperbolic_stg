@@ -25,7 +25,7 @@ return {
         local level=self.currentUI.chosenLevel
         local scene=self.currentUI.chosenScene
         local levelNum=self.save.levelUnlock
-        local sceneNum=#LevelData[level]
+        local sceneNum=LevelData.getSceneNum(level)
         local levelID=LevelData[level][scene].ID
         self.currentUI.levelID=levelID
         if isPressed('down') then

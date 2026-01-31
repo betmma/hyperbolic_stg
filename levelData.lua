@@ -3,6 +3,7 @@
 -- (further elaboration: the relationship between level-scene and ID is calculated after loading all levels in the definition of levelData below)
 ---@field user string the character of this scene. Is used to look up name in localization file.
 ---@field dialogue string|nil key in localization.dialogues, if exists, dialogue will be shown before the level starts
+---@field unlock fun():boolean | nil function that returns whether this level is unlocked. If not assigned, considered always unlocked.
 ---@field make fun():nil core of level (danmaku)
 ---@field leave fun():nil | nil do things when leaving the level, like recover modified global things, or secret unlocks
 ---@field quote string | nil After implementation of localization, this field is not used in game. It's only for coding reference.
@@ -248,6 +249,12 @@ levelData.getSceneNum=function(level)
     end
     local leveldata=levelData[level]
     if leveldata then
+        for i,scene in ipairs(leveldata) do
+            local unlockFunc=scene.unlock
+            if unlockFunc and not unlockFunc() then
+                return i-1
+            end
+        end
         return #leveldata
     end
     return 0

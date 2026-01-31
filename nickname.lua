@@ -420,6 +420,7 @@ for act=1,12 do
 end
 
 -- 12 secret nicknames, one for each act, about special conditions in certain levels
+Nickname.secretNicknameEachAct={
 Nickname{
     name='TwistedBeginning',
     isSecret=true,
@@ -429,7 +430,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='DangerousArea',
     isSecret=true,
@@ -437,7 +438,7 @@ Nickname{
     eventFunc=function(self)
         return true
     end
-}
+},
 Nickname{
     name='Stonemason',
     isSecret=true,
@@ -447,7 +448,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='BlackRobes',
     isSecret=true,
@@ -457,7 +458,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='Frogger',
     isSecret=true,
@@ -470,7 +471,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='HonestMansDemise',
     isSecret=true,
@@ -480,7 +481,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='SpinningTop',
     isSecret=true,
@@ -488,7 +489,7 @@ Nickname{
     eventFunc=function(self)
         return true
     end
-}
+},
 Nickname{
     name='Sunbathe',
     isSecret=true,
@@ -498,7 +499,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='TrianglePower',
     isSecret=true,
@@ -508,7 +509,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='GapYoukai',
     isSecret=true,
@@ -518,7 +519,7 @@ Nickname{
             return true
         end
     end
-}
+},
 Nickname{
     name='MaginotLine',
     eventName=EventManager.EVENTS.WIN_LEVEL,
@@ -529,7 +530,7 @@ Nickname{
         return false
     end,
     isSecret=true,
-}
+},
 Nickname{
     name='BombSurvivor',
     eventName=EventManager.EVENTS.WIN_LEVEL,
@@ -541,7 +542,10 @@ Nickname{
     end,
     isSecret=true,
 }
-
+}
+Nickname.hasSecretNicknameForAct=function(act)
+    return G.save.nicknameUnlock[Nickname.secretNicknameEachAct[act].name]==true
+end
 -- general secret nicknames
 Nickname{
     name='ThisIsTouhou',
@@ -617,7 +621,7 @@ Nickname{
         end
     end,
 }
-Nickname{ -- can be impossible to unlock now if earned hp is more than sum of upgrade costs. will add more upgrades to make it possible, or auto unlock it when getting maximum xp in future
+Nickname{
     name='PreciselyCalculated',
     eventName=EventManager.EVENTS.XP_USED_UP,
     isSecret=true,

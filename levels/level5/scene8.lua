@@ -2,7 +2,10 @@ return {
     ID=151,
     quote='?',
     user='nitori',
-    spellName='Water Sign "Water Fighting"', 
+    spellName='Water Sign "Water Fighting"',
+    unlock=function()
+        return Nickname.hasSecretNicknameForAct(5)
+    end,
     make=function()
         G.levelRemainingFrame=9000
         Shape.removeDistance=2000000

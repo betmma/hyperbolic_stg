@@ -2,6 +2,9 @@ return {
     ID=17,
     user='doremy',
     spellName='Limitation ""',
+    unlock=function()
+        return Nickname.hasSecretNicknameForAct(1)
+    end,
     make=function()
         G.levelRemainingFrame=5400
         local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=7500}
