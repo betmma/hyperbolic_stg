@@ -4,7 +4,7 @@ return {
     user='doremy',
     spellName='"Eye of Horus"',
     make=function()
-        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=7200}
+        local en=Enemy{x=400,y=100,mainEnemy=true,maxhp=5400}
         local player=Player{x=400,y=600}
         local phi0=math.eval(0,999)
         local a
@@ -58,9 +58,7 @@ return {
                             aimKey='direction',
                             aimValue=laser.args.direction+rotate,
                             easeFrame=60,
-                            progressFunc=function(x)
-                                return -math.sin(math.pi/2*(1-x))+1
-                            end,
+                            progressFunc=Event.sineIOProgressFunc,
                         }
                     end
                 }
