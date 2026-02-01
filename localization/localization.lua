@@ -404,6 +404,20 @@ return {
                     zh_cn = '她的位置很低。向下射击的升级在这里非常有用。',
                 }
             },
+            [28] = {
+                spellName = {
+                    en_us = 'Ice Sign "Supercool"',
+                    zh_cn = '冰符「过冷」',
+                },
+                quote = {
+                    en_us = 'Wow, Cirno can make barriers too?',
+                    zh_cn = '哇，琪露诺也会制造结界吗？',
+                },
+                hint = {
+                    en_us = 'Ice shards from the barrier move in fixed directions.',
+                    zh_cn = '来自结界的碎冰移动方向是固定的。',
+                }
+            },
             -- level 3
             [132] = {
                 spellName = {
