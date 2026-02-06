@@ -47,6 +47,7 @@ return {
                 end
                 self.UIDEF.CHOOSE_LEVELS.chosenLevel=nextLevel
                 self.UIDEF.CHOOSE_LEVELS.chosenScene=nextScene
+                self.UIDEF.CHOOSE_LEVELS.levelID=LevelData[nextLevel][nextScene].ID
                 self:enterLevel(nextLevel,nextScene)
             end,
         })
