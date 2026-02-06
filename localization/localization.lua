@@ -2507,8 +2507,8 @@ return {
                 zh_cn = '在没有升级的情况下通过第12幕的一个场景',
             },
             description = {
-                en_us = 'Upgrades are really strong. By the way, there is no other achievement that limits upgrades.',
-                zh_cn = '升级真是很强大。顺带一提，其他成就都不会以限制升级为条件。',
+                en_us = 'Upgrades are really strong. By the way, there is no other nickname that limits upgrades.',
+                zh_cn = '升级真是很强大。顺带一提，其他称号都不会以限制升级为条件。',
             },
         },
         DanmakuFestival = {
