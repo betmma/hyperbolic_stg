@@ -517,6 +517,20 @@ return {
                     zh_cn = '准确性很重要！惩罚子弹会变得越来越强烈。',
                 }
             },
+            [138] = {
+                spellName = {
+                    en_us = 'Raid Sign "Carpet Bombing"',
+                    zh_cn = '突袭「地毯式轰炸」',
+                },
+                quote = {
+                    en_us = 'Bullets are packed together more tightly and thrown out in a wide range. She probably has excessive ammo.',
+                    zh_cn = '子弹被更紧密地打包并广范围发射。她是不是觉得弹药太多了。',
+                },
+                hint = {
+                    en_us = 'Triangles diverge when moving away. Unexpected gaps could appear at the edge.',
+                    zh_cn = '三角形在移动中会发散。边缘可能会出现意想不到的空隙。',
+                }
+            },
             -- level 4
             [78] = {
                 spellName = {

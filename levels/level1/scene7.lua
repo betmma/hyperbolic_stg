@@ -7,7 +7,7 @@ return {
     end,
     make=function()
         G.levelRemainingFrame=5400
-        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=7500}
+        local en=Enemy{x=400,y=200,mainEnemy=true,maxhp=6000}
         local player=Player{x=400,y=600}
         local times=0
         local fade=function(cir)
