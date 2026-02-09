@@ -78,7 +78,7 @@ function DialogueController:update(dt)
             alpha=0,
         }
     end
-    for s,character in pairs(self.activeCharacters) do
+    for s,character in pairs(self.activeCharacters) do -- fade in/out portraits
         if s==speaker then
             character.alpha=math.min(character.alpha+dt*4,1)
             character.expression=line.expression
@@ -104,7 +104,20 @@ function DialogueController:advanceDialogue()
 end
 
 function DialogueController:draw()
+    local line=self.data.lines[self.currentLineIndex]
+    local speaker=line and line.speaker
+    local charactersOrder={}
     for s,character in pairs(self.activeCharacters) do
+        if character==speaker then -- draw later to ensure on top
+            goto continue
+        end
+        table.insert(charactersOrder,character)
+        ::continue::
+    end
+    if self.activeCharacters[speaker] then
+        table.insert(charactersOrder,self.activeCharacters[speaker])
+    end
+    for _,character in ipairs(charactersOrder) do
         portraitBatch:setColor(1,1,1,character.alpha)
         local speaker,expression=character.speaker,character.expression
         local expressions=portraitQuads[speaker]

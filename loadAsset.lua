@@ -150,13 +150,12 @@ local portraitHeight=512
 Asset.portraitWidth,Asset.portraitHeight=portraitWidth,portraitHeight
 ---@type table<string,table<string,love.Quad>> speaker -> expression -> quad
 Asset.portraitQuads={}
-local speakerExpressionList={
-    reimu={'angry','frustrated','happy','normal','sad','surprised'},
-}
-for speaker,expressionList in pairs(speakerExpressionList) do
+local speakerList={'benben','doremy','kotoba','marisa','nitori','reimu','sakuya','yatsuhashi','youmu'}
+local speakerExpressionList={'angry','frustrated','happy','normal','sad','surprised'}
+for i,speaker in ipairs(speakerList) do
     Asset.portraitQuads[speaker]={}
-    for i,expression in ipairs(expressionList) do
-        Asset.portraitQuads[speaker][expression]=love.graphics.newQuad((i-1)*portraitWidth,0,portraitWidth,portraitHeight,portraitsImage:getDimensions())
+    for j,expression in ipairs(speakerExpressionList) do
+        Asset.portraitQuads[speaker][expression]=love.graphics.newQuad((j-1)*portraitWidth,(i-1)*portraitHeight,portraitWidth,portraitHeight,portraitsImage:getDimensions())
     end
 end
 
