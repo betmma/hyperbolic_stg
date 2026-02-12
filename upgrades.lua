@@ -126,7 +126,7 @@ local dataList = {
     {
         id='familiarShot',
         description='Your shots can hit enemy\'s familiars and do 1/2 damage',
-        cost=40,
+        cost=20,
         executeFunc=function(player)
             player.canHitFamiliar=true
             player.hitFamiliarDamageFactor=0.5
@@ -205,7 +205,7 @@ local dataList = {
             local frontHoming=player:findShootType('front','homing')
             frontHoming.num=frontHoming.num+2
             player.homingMode='portion'
-            player.homingArg=0.07
+            player.homingArg=0.09
         end,
         spritePos={x=6,y=1}
     },
