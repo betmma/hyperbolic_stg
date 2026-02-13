@@ -277,9 +277,12 @@ function Player:limitInBorder()
         return
     end
     local count=0
-    while self.border and count<10 and not self.border:inside(self.x,self.y) do
+    while self.border and count<10 do
         count=count+1
         local line={self.border:inside(self.x,self.y)}
+        if line[1] then -- inside border
+            break
+        end
         local p=Shape.nearestToLine(self.x,self.y,line[2],line[3],line[4],line[5])
         self.x=p[1]--xref+dot*dirx
         self.y=p[2]--yref+dot*diry
