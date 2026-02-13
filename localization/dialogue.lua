@@ -49,7 +49,7 @@ function DialogueController:new(args)
     ---@field speaker string
     ---@field expression expression
     ---@field position position
-    ---@field alpha number
+    ---@field brightness number -- 0-1, automatically update to highlight speaking character
     
     ---@type table<string,activeCharacter>
     self.activeCharacters={} -- list of characters that have appeared in this dialogue. once appeared, their portrait will stay on screen (changing transparency based on who is speaking)
@@ -75,15 +75,15 @@ function DialogueController:update(dt)
             speaker=speaker,
             expression=line.expression,
             position=line.position or self.data.defaultSpeakerPosition[speaker] or 'left',
-            alpha=0,
+            brightness=0,
         }
     end
     for s,character in pairs(self.activeCharacters) do -- fade in/out portraits
         if s==speaker then
-            character.alpha=math.min(character.alpha+dt*4,1)
+            character.brightness=math.min(character.brightness+dt*4,1)
             character.expression=line.expression
         else
-            character.alpha=math.max(character.alpha-dt*4,0.3)
+            character.brightness=math.max(character.brightness-dt*4,0.3)
         end
     end
 end
@@ -118,7 +118,7 @@ function DialogueController:draw()
         table.insert(charactersOrder,self.activeCharacters[speaker])
     end
     for _,character in ipairs(charactersOrder) do
-        portraitBatch:setColor(1,1,1,character.alpha)
+        portraitBatch:setColor(character.brightness,character.brightness,character.brightness,1)
         local speaker,expression=character.speaker,character.expression
         local expressions=portraitQuads[speaker]
         if not expressions then
