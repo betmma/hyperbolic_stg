@@ -11,6 +11,12 @@ function LaserUnit:new(args)
     self.interpolateLimit=args.interpolateLimit
     self.meshVerticesInitSize=100
 end
+
+function LaserUnit:connect(nextUnit)
+    self.next=nextUnit
+    nextUnit.previous=self
+end
+
 local function sigmoid(x)
     return 1/(1+2.718^-x)
 end
@@ -98,16 +104,7 @@ function LaserUnit:extractCoordinates()
             local xc1,yc1,xc2,yc2=0.5*(x1+x3),0.5*(y1+y3),0.5*(x2+x4),0.5*(y2+y4)
             local dis=Shape.distance(xc1,yc1,xc2,yc2)
             local splitLength=10
-            local segMax=self.interpolateLimit or 10 -- at most self.interpolateLimit or 10 points
-            -- if G.viewMode.mode==G.CONSTANTS.VIEW_MODES.FOLLOW then
-            --     local viewer=G.viewMode.object
-            --     local toViewerDistance=Shape.distance(xc1,yc1,viewer.x,viewer.y)
-            --     local toViewerDistance2=Shape.distance(xc2,yc2,viewer.x,viewer.y)
-            --     local minDistance=math.min(toViewerDistance,toViewerDistance2)
-            --     if minDistance>splitLength*segMax then
-            --         splitLength=splitLength*segMax -- reduce not important points cuz it's away from player
-            --     end
-            -- end
+            local segMax=self.interpolateLimit or 30 -- at most self.interpolateLimit or 30 points
             if dis>splitLength then
                 local the=Shape.to(xc1,yc1,xc2,yc2)
                 local r1=Shape.distance(x1,y1,xc1,yc1)
