@@ -30,7 +30,7 @@ return {
         a.spawnEvent.mode=Event.modes.oneFrameMultiple
         local x1,y1=Shape.rThetaPos(400,300,120,-0.75)
         local x2,y2=Shape.rThetaPos(400,300,120,-0.75+math.pi)
-        b=BulletSpawner{x=400,y=300,period=4,frame=0,lifeFrame=10000,bulletNumber=6,spawnCircleRadius='30+10',spawnCircleAngle='0+999',bulletSpeed=30,bulletLifeFrame=300,fogEffect=true,fogTime=10,angle=1,range=math.pi*2,bulletSprite=BulletSprites.bigRound.black,highlight=true,bulletEvents={
+        b=BulletSpawner{x=400,y=300,period=5,frame=0,lifeFrame=10000,bulletNumber=6,spawnCircleRadius='30+10',spawnCircleAngle='0+999',bulletSpeed=30,bulletLifeFrame=300,fogEffect=true,fogTime=10,angle=1,range=math.pi*2,bulletSprite=BulletSprites.bigRound.black,highlight=true,bulletEvents={
             function(cir,args,self)
                 local offset=math.eval(0,0.3)
                 if args.index%2==1 then
@@ -53,7 +53,7 @@ return {
                 }
                 a.bulletSprite=BulletSprites.rain.blue
                 a.bulletSpeed={50,30}
-                b.spawnEvent.period=30
+                b.spawnEvent.period=40
                 b.bulletSprite=BulletSprites.bigRound.gray
             end
         }
@@ -70,7 +70,7 @@ return {
                 }
                 a.bulletSprite=BulletSprites.rain.cyan
                 a.bulletSpeed={50,20}
-                b.spawnEvent.period=4
+                b.spawnEvent.period=5
                 b.bulletSprite=BulletSprites.bigRound.black
             end
         }

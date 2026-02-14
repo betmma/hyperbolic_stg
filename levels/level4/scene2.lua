@@ -143,7 +143,7 @@ return {
                 end
                 if player.x~=playerx or player.y~=playery then
                     playerx,playery=player.x,player.y
-                    playerLightIntensity=playerLightIntensity*0.95
+                    playerLightIntensity=playerLightIntensity*0.97
                 else
                     playerLightIntensity=playerLightIntensity*0.95+1*0.05
                     player.notMovingFrame=player.notMovingFrame+1

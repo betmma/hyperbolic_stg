@@ -20,7 +20,7 @@ return {
             if cir.frame%5==0 then
                 local f=cir.frame%10==0
                 local timeM=(cir.times or 0)%2
-                local c=Circle{x=cir.x,y=cir.y,lifeFrame=500,direction=cir.direction,sprite=BulletSprites.crystal[timeM==1 and 'green' or 'teal'],speed=0}
+                local c=Circle{x=cir.x,y=cir.y,lifeFrame=500,direction=cir.direction,sprite=BulletSprites.crystal[timeM==1 and 'green' or 'teal'],speed=0,extraUpdate=Circle.FadeOut}
                 if f then
                     c.direction=c.direction+math.eval(0,0.05)
                     Event.EaseEvent{
