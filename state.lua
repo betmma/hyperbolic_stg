@@ -202,7 +202,7 @@ G={
     UseHypRotShader=true,
     ---@type boolean
     -- to replay dialogue when entering level (spaghetti???)
-    lshiftDownWhenEnteringLevel=false,
+    replayDialogue=false,
 
     DISK_RADIUS_BASE={
         [G.CONSTANTS.HYPERBOLIC_MODELS.P_DISK]=1, -- Poincare disk
@@ -344,7 +344,7 @@ G.lose=function(self)
 end
 G.enterLevel=function(self,level,scene)
     self.currentLevel={level,scene}
-    self.lshiftDownWhenEnteringLevel=love.keyboard.isDown('lshift')
+    self.replayDialogue=love.keyboard.isDown('lshift') and self.STATE==self.STATES.CHOOSE_LEVELS -- hold lshift to replay dialogue when entering level
     self:switchState(self.STATES.IN_LEVEL)
     EventManager.post(EventManager.EVENTS.ENTER_LEVEL,{level=level,scene=scene})
 end

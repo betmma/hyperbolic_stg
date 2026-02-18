@@ -159,7 +159,7 @@ local function wrapLevelMake(levelData)
         end
     end
     levelData.make=function()
-        if levelData.dialogue and not G.replay and (G.save.levelData[levelData.ID].tryCount==0 or G.lshiftDownWhenEnteringLevel) then -- first time playing this level or holding lshift to watch dialogue again
+        if levelData.dialogue and not G.replay and (G.save.levelData[levelData.ID].tryCount==0 or G.replayDialogue) then -- first time playing this level or holding lshift to watch dialogue again
             local dialogueController=DialogueController{key=levelData.dialogue}
             dialogueController.afterFunc=makeLevelWrapped
         else
