@@ -858,6 +858,20 @@ return {
                     zh_cn = '无伤通过：找到方法对齐两个漩涡的子弹方向，再让她的子弹垂直于漩涡的方向。',
                 }
             },
+            [168] = {
+                spellName = {
+                    en_us = 'Snapshot "Omnidirectional Exposure"',
+                    zh_cn = '速写「全方向曝光」',
+                },
+                quote = {
+                    en_us = 'Hundreds of photos are taken in seconds, but how is she going to Photoshop all those non-Euclidean photos?',
+                    zh_cn = '几秒内就拍了数以百计的照片，但她要如何PS处理这些非欧几里得照片呢？',
+                },
+                hint = {
+                    en_us = 'Memorize the attack patterns and the safe spots.',
+                    zh_cn = '记住攻击模式和安全位置。',
+                }
+            },
             -- level 7
             [61] = {
                 quote = {

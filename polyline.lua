@@ -27,6 +27,13 @@ function PolyLine:new(points,draw)
     self.spriteTransparency=1
 end
 
+function PolyLine:replacePoints(points)
+    for key, value in pairs(points) do
+        self.points[key].x=value[1]
+        self.points[key].y=value[2]
+    end
+end
+
 -- assume that points are given by increasing polar angle (so each point should be right to previous line)
 function PolyLine:inside(xc,yc)
     local itenum=#self.points
@@ -106,12 +113,12 @@ function PolyLine:getMeshPoses()
         local direction=Shape.to(x1,y1,x2,y2)
         local maxDist=5
         local maxMiddlePoints=40
-        local middlePoints=math.min(math.floor(distance/maxDist),maxMiddlePoints)
+        local middlePoints=math.min(math.ceil(distance/maxDist),maxMiddlePoints)
         local middleDistance=distance/middlePoints
         for j=0,middlePoints do
             local distanceToMiddle=j*middleDistance
             local mx,my,mdir=Shape.rThetaPosT(x1,y1,distanceToMiddle,direction)
-            -- calculate edge position (approximately)
+            -- calculate edge position (approximately. note below is using math.rThetaPos not Shape.rThetaPos)
             local mwidth=width*my/Shape.curvature
             local mx1,my1=math.rThetaPos(mx,my,mwidth,mdir+math.pi/2)
             local mx2,my2=math.rThetaPos(mx,my,mwidth,mdir-math.pi/2)
@@ -126,9 +133,13 @@ function PolyLine:drawMesh(poses)
     poses=poses or self:getMeshPoses()
     local vertices={}
     local x,y,w,h=love.graphics.getQuadXYWHOnImage(self.sprite.quad,Asset.bulletImage)
+    local r,g,b=1,1,1
+    if self.color then
+        r,g,b=self.color[1],self.color[2],self.color[3]
+    end
     for i=1,#poses,2 do
-        table.insert(vertices,{poses[i][1],poses[i][2], x, y, 1, 1, 1, self.spriteTransparency or 1})
-        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, 1, 1, 1, self.spriteTransparency or 1})
+        table.insert(vertices,{poses[i][1],poses[i][2], x, y, r, g, b, self.spriteTransparency or 1})
+        table.insert(vertices,{poses[i+1][1],poses[i+1][2], x+w, y+h, r, g, b, self.spriteTransparency or 1})
     end
     if #vertices<4 then return end
     local mesh=love.graphics.newMesh(vertices,'strip')
