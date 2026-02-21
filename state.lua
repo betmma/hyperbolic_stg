@@ -81,6 +81,7 @@ G={
             self.backgroundPattern=patternClass()
         end
     end,
+    -- currently nowhere uses this. uhh i cant name a situation where I want to replace background pattern only if it is a specific pattern
     replaceBackgroundPatternIfIs=function(self,patternClass,patternClass2)
         if getmetatable(self.backgroundPattern)==patternClass then
             self.backgroundPattern:remove()
