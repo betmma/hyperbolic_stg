@@ -2,6 +2,9 @@ return {
     ID=168,
     user='aya',
     spellName='', 
+    unlock=function()
+        return Nickname.hasSecretNicknameForAct(6)
+    end,
     make=function()
         G.levelRemainingFrame=5400
         Shape.removeDistance=2000

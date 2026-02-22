@@ -2,6 +2,9 @@ return {
     ID=123,
     user='nina',
     spellName='Truth "Simulation Hypothesis"',
+    unlock=function()
+        return Nickname.hasSecretNicknameForAct(10)
+    end,
     make=function()
         G.levelRemainingFrame=4200
         -- G.backgroundPattern:remove()
