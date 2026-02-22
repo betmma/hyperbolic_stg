@@ -71,7 +71,12 @@ end
 ---@param eventName string
 function EventManager.post(eventName, ...)
     if EventManager.listeners[eventName] then
-        for _, func in ipairs(EventManager.listeners[eventName]) do
+        -- make a copy to avoid issues if listeners are modified during iteration
+        local listenersCopy = {}
+        for i, func in ipairs(EventManager.listeners[eventName]) do
+            table.insert(listenersCopy, func)
+        end
+        for _, func in ipairs(listenersCopy) do
             local ret=func(...)
             if ret == EventManager.DELETE_LISTENER then
                 EventManager.removeListener(eventName, func)

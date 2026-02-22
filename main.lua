@@ -1,4 +1,4 @@
-VERSION="0.9.5.1"
+VERSION="0.9.5.2"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 DEV_MODE=true
 if arg[2] == "debug" then
