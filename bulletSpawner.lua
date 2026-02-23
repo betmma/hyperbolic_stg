@@ -176,7 +176,7 @@ function BulletSpawner:drawSprite()
     if self.spriteColor then
         r,g,b=self.spriteColor[1],self.spriteColor[2],self.spriteColor[3]
     end
-    local batch=self.bulletBatch or Asset.bulletBatch
+    local batch=Asset.bulletBatch
     batch:setColor(r or 1,g or 1,b or 1,(self.spriteTransparency or 0.5)*color[4])
     batch:add(self.sprite.quad,x,y,self.time,scale,scale,data.centerX,data.centerY)
 end

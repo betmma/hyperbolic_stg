@@ -217,6 +217,10 @@ return {
             kotoba = {
                 en_us = 'Kotoba Kyokuwa',
                 zh_cn = '曲话言波',
+            },
+            ['reisen&seija'] = {
+                en_us = 'Reisen & Seija',
+                zh_cn = '铃仙&正邪',
             }
         },
         spellcards = {
@@ -984,6 +988,20 @@ return {
                 hint = {
                     en_us = "In the last phase, I must move away from the shooter quickly.",
                     zh_cn = '在最后阶段，我必须迅速远离发射器。',
+                }
+            },
+            [179] = {
+                spellName = {
+                    en_us = '"Binocular Rivalry"',
+                    zh_cn = '「双眼拮抗」',
+                },
+                quote = {
+                    en_us = 'One eye for each color? I\'m feeling dizzy quickly.',
+                    zh_cn = '每只眼睛对应一种颜色？我很快就感觉头晕了。',
+                },
+                hint = {
+                    en_us = 'When two colors of bullets overlap, they become transparent and safe. Go through two colors at the same time.',
+                    zh_cn = '两种颜色的子弹重叠时，它们变得透明且安全。同时穿过两种颜色。',
                 }
             },
             -- level 8
