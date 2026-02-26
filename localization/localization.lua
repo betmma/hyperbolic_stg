@@ -1371,6 +1371,20 @@ return {
                     zh_cn = '有一个所有季节的安全点。找到它，待在那里。',
                 }
             },
+            [123] = {
+                spellName = {
+                    en_us = 'Truth "Simulation Theory"',
+                    zh_cn = '真实「模拟理论」',
+                },
+                quote = {
+                    en_us = 'I see many myselves, each controlling another! Though, doesn\'t the headache of controlling them prove multiple simulations can\'t possibly exist?',
+                    zh_cn = '我看到了许多自己，每个都在控制另一个！不过，控制它们的艰难岂不是证明了多重模拟难以存在吗？',
+                },
+                hint = {
+                    en_us = 'Only use left and right key for simplicity.',
+                    zh_cn = '为了简化操作，只使用左右键。',
+                }
+            },
             -- level 11
             [27] = {
                 spellName = {
@@ -1665,8 +1679,8 @@ return {
                     zh_cn = '「杀意的徒花」',
                 },
                 hint = {
-                    en_us = 'Note that these spellcard owners only have 1 spellcard. One of the reason why they are in Extra Stage.',
-                    zh_cn = '注意这些符卡的拥有者只有1张符卡。这是她们出现在Extra关卡的原因之一。',
+                    en_us = 'In later phases, catch the moment when scales overlap and leave the gap.',
+                    zh_cn = '在后期阶段，抓住鳞弹重叠并留下空隙的时机。',
                 }
             },
             [122] = {
@@ -1681,20 +1695,6 @@ return {
                 hint = {
                     en_us = 'Behind the rocket is safe from its explosion.',
                     zh_cn = '火箭后方不会受到火箭爆炸的影响。',
-                }
-            },
-            [123] = {
-                spellName = {
-                    en_us = 'Truth "Simulation Theory"',
-                    zh_cn = '真实「模拟理论」',
-                },
-                quote = {
-                    en_us = 'I see many myselves, each controlling another! Though, doesn\'t the headache of controlling them prove multiple simulations can\'t possibly exist?',
-                    zh_cn = '我看到了许多自己，每个都在控制另一个！不过，控制它们的艰难岂不是证明了多重模拟难以存在吗？',
-                },
-                hint = {
-                    en_us = 'Only use left and right key for simplicity.',
-                    zh_cn = '为了简化操作，只使用左右键。',
                 }
             },
             [103] = {
