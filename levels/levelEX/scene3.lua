@@ -1,7 +1,7 @@
 return {
     ID=47,
     quote='?',
-    user='alice',
+    user='junko',
     spellName='Magic Sign "Explosive Marionette"',
     make=function()
         G.levelRemainingFrame=5400
@@ -47,7 +47,7 @@ return {
                                     executeFunc=function()
                                         cir:remove()
                                         local angle=m0~=0 and '0+999' or Shape.to(cir.x,cir.y,player.x,player.y)+math.pi/10*3+math.eval(0,0.1)--
-                                        BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=10,bulletSpeed=index%4>=2 and 16 or 12,bulletLifeFrame=1800,angle=angle,bulletSprite=BulletSprites.scale.yellow,highlight=true,bulletEvents={
+                                        BulletSpawner{x=cir.x,y=cir.y,period=1,frame=0,lifeFrame=2,bulletNumber=10,bulletSpeed=index%4>=2 and 16 or 12,bulletLifeFrame=1800,angle=angle,bulletSprite=BulletSprites.flame.yellow,bulletSize=0.6,highlight=true,bulletEvents={
                                             function(cir,args,self)
                                                 cir:changeSpriteColor()
                                                 if m0==0 then

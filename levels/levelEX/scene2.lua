@@ -1,7 +1,7 @@
 return {
     ID=43,
     quote='Hyperbolic geometry distorts her rings a lot.',
-    user='suwako',
+    user='byakuren',
     spellName='Divine Tool "Moriya\'s Elastic Ring"',
     make=function()
         G.levelRemainingFrame=5400

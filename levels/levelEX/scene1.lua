@@ -1,7 +1,7 @@
 return {
     ID=31,
     quote='Such surreal scene of a broader hyperbolic area...',
-    user='remilia',
+    user='flandre',
     spellName='Scarlet Sign "Vampirish Plaza"',
     make=function()
         G.levelRemainingFrame=5400

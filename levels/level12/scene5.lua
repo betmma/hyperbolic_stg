@@ -9,7 +9,7 @@ return {
         local a,b
         local en,en2
         local hplevel=1
-        en=Enemy{x=center.x,y=center.y,mainEnemy=true,maxhp=14400,hpSegments={0.75,0.5,0.25},hpSegmentsFunc=function(self,hpLevel)
+        en=Enemy{x=center.x,y=center.y,mainEnemy=true,maxhp=14400,hpSegments={0.75,0.5,0.25},sprite=Asset.boss.yatsuhashi,hpSegmentsFunc=function(self,hpLevel)
             Enemy.hpSegmentsFuncShockwave(self,hpLevel)
             en:addHPProtection(600,10)
             hplevel=hplevel+1
@@ -21,7 +21,7 @@ return {
         end}
         -- en.showHexagram=false
         en:addHPProtection(600,10)
-        en2=Enemy{x=center.x,y=center.y*0.5,maxhp=14400,hpSegments={0.75,0.5,0.25},hpSegmentsFunc=function(self,hpLevel)
+        en2=Enemy{x=center.x,y=center.y*0.5,maxhp=14400,hpSegments={0.75,0.5,0.25},sprite=Asset.boss.benben,hpSegmentsFunc=function(self,hpLevel)
             Enemy.hpSegmentsFuncShockwave(self,hpLevel)
         end}
         en2:bind(en)

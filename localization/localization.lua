@@ -1629,12 +1629,12 @@ return {
             },
             [43] = {
                 quote = {
-                    en_us = 'Hyperbolic geometry distorts her rings a lot. She has to change the material.',
-                    zh_cn = '双曲几何让她的环大大变形。她不得不换材料了。',
+                    en_us = 'Hyperbolic geometry distorts these rings a lot. Need special material to make them.',
+                    zh_cn = '双曲几何让环大大变形。需要特殊材料来制造它们。',
                 },
                 spellName = {
-                    en_us = 'Divine Tool "Moriya\'s Elastic Ring"',
-                    zh_cn = '神具「洩矢的弹性环」',
+                    en_us = 'Magic "Elastic Magic Ring"',
+                    zh_cn = '魔法「弹性魔环」',
                 },
                 hint = {
                     en_us = 'Probably not hard. This is another early made spellcard though.',
@@ -1647,8 +1647,8 @@ return {
                     zh_cn = '这么多子弹在爆炸！她是想炸掉整个区域吗？',
                 },
                 spellName = {
-                    en_us = 'Magic Sign "Explosive Marionette"',
-                    zh_cn = '魔符「爆裂玩偶」',
+                    en_us = '"Mutating Divine Spirit World"',
+                    zh_cn = '「变异的神灵界」',
                 },
                 hint = {
                     en_us = 'This spellcard has most bullets in the game, I suppose.',

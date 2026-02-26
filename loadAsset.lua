@@ -134,7 +134,7 @@ local bossWidth,bossHeight=80,80
 ---@type {width:number,height:number,[string]:{key:string,width:number,height:number,normal:love.Quad[]}}
 Asset.boss={}
 Asset.boss.width,Asset.boss.height=bossWidth,bossHeight
-local bossImagePoses={{name='placeholder',num=4},{name='asama',num=2},{name='toyohime',num=4},{name='ariya',num=4},{name='nina',num=2,x0=2,y0=1}}
+local bossImagePoses={{name='placeholder',num=4},{name='asama',num=2},{name='toyohime',num=4},{name='ariya',num=4},{name='chimi',num=4},{name='urumi',num=2},{name='yuugi',num=2},{name='nareko',num=2},{name='ubame',num=2},{name='aya',num=2},{name='minamitsu',num=2},{name='seija',num=2},{name='clownpiece',num=2},{name='keiki',num=2},{name='yukari',num=2},{name='youmu',num=2},{name='marisa',num=2},{name='yatsuhashi',num=2},{name='kotoba',num=4},{name='byakuren',num=2},{name='doremy',num=4},{name='mike',num=2},{name='takane',num=2},{name='nina',num=2,x0=2,y0=1},{name='mystia',num=2,x0=2,y0=5},{name='nitori',num=2,x0=2,y0=6},{name='seiran',num=2,x0=2,y0=7},{name='eika',num=2,x0=2,y0=8},{name='patchouli',num=2,x0=2,y0=9},{name='reisen',num=2,x0=2,y0=10},{name='shou',num=2,x0=2,y0=11},{name='utsuho',num=2,x0=2,y0=12},{name='okina',num=2,x0=2,y0=13},{name='flandre',num=2,x0=2,y0=14},{name='sakuya',num=2,x0=2,y0=15},{name='renko',num=2,x0=2,y0=16},{name='benben',num=2,x0=2,y0=17},{name='junko',num=2,x0=2,y0=19},{name='nemuno',num=2,x0=2,y0=21},{name='cirno',num=2,x0=2,y0=22}}
 for i,info in pairs(bossImagePoses) do
     Asset.boss[info.name]={key='boss',width=bossWidth,height=bossHeight,normal={}}
     for j=1,info.num do
