@@ -1258,6 +1258,20 @@ return {
                     zh_cn = '在第二阶段，我必须穿过狭小的缝隙。',
                 }
             },
+            [190] = {
+                spellName = {
+                    en_us = 'Star Birthing "Agarized Accretion"',
+                    zh_cn = '星诞「琼脂化吸积」',
+                },
+                quote = {
+                    en_us = 'Why keep me at the center of the newborn star? It\'s so hot there!',
+                    zh_cn = '为什么把我放在新星的中心？那里太热了！',
+                },
+                hint = {
+                    en_us = 'It\'s very easy to misjudge star\'s size. You can compare the size when two stars overlap. Also, try to grow quickly and eat all nearby stars.',
+                    zh_cn = '很容易误判其他星星的大小。你可以在两颗星重叠时比较它们的大小。另外，试着快速成长以吃掉附近的所有星星。',
+                }
+            },
             -- level 10
             [113] = {
                 spellName = {
