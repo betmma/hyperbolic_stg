@@ -1117,6 +1117,20 @@ return {
                     zh_cn = '每四波，我必须抓住链条换边的时机才能离开牢笼。',
                 }
             },
+            [189] = {
+                spellName = {
+                    en_us = 'Magic Sign "Sigil Automaton"',
+                    zh_cn = '魔符「符文自动机」',
+                },
+                quote = {
+                    en_us = 'Automatically drawn sigils? That\'s not magic at all!',
+                    zh_cn = '自动绘制的符文？这根本不算是魔法！',
+                },
+                hint = {
+                    en_us = 'Moving in specific routes can make the patterns easier to dodge.',
+                    zh_cn = '沿特定路线移动可以让弹幕更容易躲避。',
+                }
+            },
             -- level 9
             [51] = {
                 quote = {
