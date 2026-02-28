@@ -666,9 +666,12 @@ function Player:drawText()
     if DEV_MODE and G.UseHypRotShader then
         love.graphics.print('Using rotation shader',700,580)
     end
-    local model=G.viewMode.hyperbolicModel
-    local text={[0]='Half Plane',[1]='Poincare Disk',[2]='Klein Disk'}
-    love.graphics.print('Model: '..(text[model] or ''),700,560)
+    if self.unlockDiskModels then
+        local model=G.viewMode.hyperbolicModel
+        local texts={[0]='HalfPlane',[1]='PoincareDisk',[2]='KleinDisk'}
+        local text=texts[model]
+        love.graphics.print(Localize{'ui','hyperbolicModels','model'}..Localize{'ui','hyperbolicModels',text},700,560)
+    end
 end
 
 -- spawn a white dot to show the graze effect. Actually this random speed and direction particle has broken old replays sooooo many times each time I tweak bullet size or graze range :(

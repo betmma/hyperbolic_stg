@@ -1886,6 +1886,24 @@ return {
             en_us = 'Digits entered: {digits}',
             zh_cn = '已输入数字: {digits}',
         },
+        hyperbolicModels = {
+            model = {
+                en_us = 'Model: ',
+                zh_cn = '模型: ',
+            },
+            HalfPlane = {
+                en_us = 'Half-Plane',
+                zh_cn = '半平面',
+            },
+            PoincareDisk = {
+                en_us = 'Poincaré Disk',
+                zh_cn = '庞加莱圆盘',
+            },
+            KleinDisk = {
+                en_us = 'Klein Disk',
+                zh_cn = '克莱因圆盘',
+            },
+        },
         ending = {
             congratulations = {
                 en_us = 'Congratulations!!',
