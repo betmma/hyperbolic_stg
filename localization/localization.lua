@@ -1527,6 +1527,20 @@ return {
                     zh_cn = '我需要逆着波的传播方向移动。感觉真奇怪！',
                 }
             },
+            [124] = {
+                spellName = {
+                    en_us = 'Taboo "Devil\'s Nutcracker"',
+                    zh_cn = '禁忌「恶魔的胡桃夹子」',
+                },
+                quote = {
+                    en_us = 'Fearsome machine that can crush anything. But she seems to enjoy being crushed by it?',
+                    zh_cn = '可怕的机器，能粉碎一切。但她似乎很享受被它撞击的感觉？',
+                },
+                hint = {
+                    en_us = 'Pay attention to the orbs that stop moving and turn red.',
+                    zh_cn = '注意那些停止移动并变红的球。',
+                }
+            },
             -- level 12 (final bosses spellcards)
             [101] = {
                 spellName = {

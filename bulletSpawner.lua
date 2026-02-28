@@ -19,6 +19,7 @@ function BulletSpawner:new(args)
     self.sprite=BulletSprites.lotus[args.bulletSprite and Asset.spectrum1MapSpectrum2[args.bulletSprite.data.color] or 'gray']
     self.period=args.period or 60
     self.frame=args.frame or 0
+    self.times=args.times or nil -- if not nil, means spawn [times] times
     self.realFrame=0
     self.bulletNumber=args.bulletNumber and math._extractABfromstr(args.bulletNumber) or 10
     self.angle=args.angle and (args.angle=='player' and args.angle or math._extractABfromstr(args.angle)) or 0
@@ -98,7 +99,7 @@ function BulletSpawner:new(args)
         end
     end
     ---@type LoopEvent
-    self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,frame=self.frame,executeFunc=function(event,dt)
+    self.spawnEvent=Event.LoopEvent{obj=self,period=self.period,frame=self.frame,times=self.times,executeFunc=function(event,dt)
         self:spawnBatchFunc()
     end}
 end
