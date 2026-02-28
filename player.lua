@@ -617,13 +617,14 @@ end
 
 -- this function draws which keys are pressed. The keys are arranged as:
 --[[
-            U
-Shift Z X L D R 
+                U
+Shift Z X C   L D R 
 ]]
 function Player:displayKeysPressed()
     local x0,y0=15,500
     local gridSize=15
-    local keysPoses={up={5,0},down={5,1},left={4,1},right={6,1},lshift={0,1},z={1,1},x={2,1}}
+    local keysPoses={up={6,0},down={6,1},left={5,1},right={7,1},lshift={0,1},z={1,1},x={2,1},c={3,1}}
+    local keysText={up={text='↑',offset={0,0}},down={text='↓',offset={0,0}},left={text='←',offset={0,1}},right={text='→',offset={0,1}},lshift={text='⇧',offset={-0.5,0}},z={text='Z',offset={1,0}},x={text='X',offset={1,0}},c={text='C',offset={1,0}}}
     local color={love.graphics.getColor()}
     for key, value in pairs(keysPoses) do
         local x,y=x0+value[1]*gridSize,y0+value[2]*gridSize
@@ -633,6 +634,8 @@ function Player:displayKeysPressed()
         end
         love.graphics.setColor(0,0,0)
         love.graphics.rectangle("line",x,y,gridSize,gridSize)
+        SetFont(10,Fonts.zh_cn)
+        love.graphics.print(keysText[key].text,x+3+keysText[key].offset[1],y+2+keysText[key].offset[2])
     end
     love.graphics.setColor(color[1],color[2],color[3])
 end
