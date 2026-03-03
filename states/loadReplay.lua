@@ -63,11 +63,13 @@ return {
 
         local chosen,page=self.currentUI.chosen,self.currentUI.page
         SetFont(17,Fonts.en_us)
+        local charWidth=10
+        local xBase=(800-ReplayManager.OVERALL_WIDTH*charWidth)/2 -- center the text block
         for i=page*25+1-25,page*25 do
             local replayDesc=ReplayManager.getDescriptionString(i)
-            ReplayManager.monospacePrint(replayDesc,10,145,50+(i-1)%25*20)
+            ReplayManager.monospacePrint(replayDesc,charWidth,xBase+5,50+(i-1)%25*20)
         end
-        love.graphics.rectangle("line",140,30+self.currentUI.chosen*20,520,20)
+        love.graphics.rectangle("line",xBase,30+self.currentUI.chosen*20,ReplayManager.OVERALL_WIDTH*charWidth,20)
 
         -- digits entered
         local baseX,baseY=650,580

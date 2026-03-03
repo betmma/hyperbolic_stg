@@ -63,8 +63,10 @@ return {
         love.graphics.setColor(color[1],color[2],color[3])
 
         SetFont(16,Fonts.en_us)
+        local charWidth=10
+        local xBase=(800-ReplayManager.OVERALL_WIDTH*charWidth)/2 -- center the text block
         local replayDesc=ReplayManager.getDescriptionString(self.currentUI.slot,ReplayManager.getReplayData(self.currentUI.slot,self.currentUI.name))
-        ReplayManager.monospacePrint(replayDesc,10,145,50)
+        ReplayManager.monospacePrint(replayDesc,charWidth,xBase+5,50)
 
         SetFont(24,Fonts.en_us)
         for row, value in pairs(self.currentUI.keyboard) do

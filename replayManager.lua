@@ -17,7 +17,11 @@ local player    = require "player"
 local replayManager={}
 replayManager.REPLAY_NUM_PER_PAGE=25
 replayManager.PAGES=8
+replayManager.SLOT_WIDTH=6
 replayManager.MAX_NAME_LENGTH=20
+replayManager.DATE_WIDTH=19
+replayManager.LEVEL_SCENE_WIDTH=6
+replayManager.OVERALL_WIDTH=replayManager.SLOT_WIDTH+1+replayManager.MAX_NAME_LENGTH+1+replayManager.DATE_WIDTH+1+replayManager.LEVEL_SCENE_WIDTH -- +1 are spaces between sections. sum=54
 local dir='replay'
 love.filesystem.createDirectory(dir)
 local function savePath(slot)
@@ -239,12 +243,12 @@ end
 
 -- 2 uses, 1 is in save replay menu where player is entering their name, the other is in load replay menu. note that [replay] param is used for first situation, where data isn't saved in replayManager.replays yet, so needs to be passed in.
 replayManager.getDescriptionString=function(slot,replay)
-    local slotWidth = 6  -- "No.012" (includes "No." prefix)
-    local nameWidth = 20 -- Reserve space for the name
-    local dateWidth = 19 -- "2023-10-11 18:30:20" (fixed format)
-    local levelSceneWidth = 6 -- e.g., "10-20"
+    local slotWidth = replayManager.SLOT_WIDTH  -- "No.012" (includes "No." prefix)
+    local nameWidth = replayManager.MAX_NAME_LENGTH -- Reserve space for the name
+    local dateWidth = replayManager.DATE_WIDTH -- "2023-10-11 18:30:20" (fixed format)
+    local levelSceneWidth = replayManager.LEVEL_SCENE_WIDTH -- e.g., "10-20"
 
-    local overallWidth=slotWidth+nameWidth+dateWidth+levelSceneWidth -- =51
+    local overallWidth=replayManager.OVERALL_WIDTH
     if not replay then
         replay=replayManager.replays[slot]
     end
@@ -261,7 +265,7 @@ replayManager.getDescriptionString=function(slot,replay)
     local dateStr = replay.time
 
     -- Combine into a fixed-length string
-    local description = string.format("%-" .. slotWidth .. "s %-20s %s %-" .. levelSceneWidth .. "s",
+    local description = string.format("%-" .. slotWidth .. "s %-" .. nameWidth .. "s %s %-" .. levelSceneWidth .. "s",
         slotStr, nameStr, dateStr, levelSceneStr)
 
     return description
