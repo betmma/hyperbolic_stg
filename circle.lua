@@ -15,6 +15,28 @@ Circle.FadeOut=function(self)
     end
 end
 
+Circle.FadeIn=function(self)
+    local fadeFrame=self.fadeFrame or 30
+    if self.frame<=fadeFrame then
+        self.safe=true
+        self.spriteTransparency=self.frame/fadeFrame
+    elseif self.frame==fadeFrame+1 then
+        self.safe=false
+    end
+end
+
+-- bullet size grows from 0 to [self.targetSize] in [self.zoomFrame] frames.
+Circle.ZoomIn=function(self)
+    local zoomFrame=self.zoomFrame or 30
+    local targetSize=self.targetSize or self.radius
+    if not self.targetSize then
+        self.targetSize=self.radius
+    end
+    if self.frame<=zoomFrame then
+        self.radius=targetSize*self.frame/zoomFrame
+    end
+end
+
 function Circle:new(args)
     Circle.super.new(self, args)
     self.radius = args.radius or 1

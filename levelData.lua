@@ -227,7 +227,7 @@ local levelData={
     loadLevels(9,{'1','2','3','4','5','6','7','8','9','10'}),
     loadLevels(10,{'1','2','3','4','5','6','7','8','9','10'}),
     loadLevels(11,{'1','2','3','4','5','6','7','8','9'}),
-    loadLevels(12,{'1','2','3','4','5','6','7','8','9'}),
+    loadLevels(12,{'1','2','3','4','5','6','7','8','9','10'}),
     loadLevels('EX',{'1','2','3','4','5','7'}),
 }
 
@@ -340,6 +340,9 @@ levelData.getDefaultBackground=function(level,scene)
     if level==12 then
         if scene<=5 then
             return BackgroundPattern.Stage
+        end
+        if scene==10 then
+            return function() return BackgroundPattern.Stage{holeSize=4,holeIsHorizon=true} end
         end
         return function() return BackgroundPattern.Stage{holeSize=scene-5} end
     end

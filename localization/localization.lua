@@ -1668,6 +1668,20 @@ return {
                     zh_cn = '最终的符卡并不难！',
                 }
             },
+            [99] = {
+                spellName = {
+                    en_us = 'Headhunting "Bloody Collection"',
+                    zh_cn = '猎头「血腥收集」',
+                },
+                quote = {
+                    en_us = 'After the incident, we sometimes have playful danmaku battles here. Hyperbolic geometry is really fun.',
+                    zh_cn = '事件结束后，我们有时会在这打场有趣的弹幕战。双曲几何真的很有趣。',
+                },
+                hint = {
+                    en_us = 'Blood bullets are aimed, and collected heads will shoot when grazing.',
+                    zh_cn = '血弹是自机狙，收集的头会在擦弹时射出。',
+                }
+            },
             -- ex spellcards
             [31] = {
                 quote = {
