@@ -27,7 +27,8 @@ return {
             obj=en,period=60,executeFunc=function(self)
             end
         }
-        -- attack 1: human bullets around player, after some time enemy shoots arrows with warning line that kill humans (release red bullets), and spawn small rounds (heads) that explode later. player needs to get out in time. attack 2: similar but human bullets form straight lines, player needs to get to the other side
+        -- attack 1: human bullets around player, after some time enemy shoots arrows with warning line (uhh not implemented) that kill humans (release red bullets), and spawn small rounds (heads). player needs to get out in time. attack 2: similar but human bullets form straight lines, player needs to get to the other side.
+        -- heads will be collected by enemy and orbit around it, and shoot towards player after grazing to threaten player. possible strategy: keep enemy and human bullets perpendicular to player, so that human bullets' aiming explosions form a safe stripe area that is perpendicular to released heads. use up enemy's heads before new round of human bullets starts, to make it safer to escape. 
 
         local shootingHeads=false
         local headStates={PENDING=1,CIRCLING=2,RELEASED=3}

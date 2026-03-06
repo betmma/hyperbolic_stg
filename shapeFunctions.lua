@@ -733,9 +733,11 @@ end
 --- return screen position of x,y after hyperbolicRotateShader transforming (rotating by -G.viewMode.object.naturalDirection, moving G.viewMode.object to {WINDOW_WIDTH/2+G.viewMode.viewOffset.x, WINDOW_HEIGHT/2+G.viewMode.viewOffset.y}, then transform to different hyperbolic models)
 ---@param x coordinate
 ---@param y coordinate
+---@param forceModel any|nil "if provided, use this hyperbolic model instead of G.viewMode.hyperbolicModel."
 ---@return coordinate "x of screen position"
 ---@return coordinate "y of screen position"
-function Shape.screenPosition(x,y)
+function Shape.screenPosition(x,y,forceModel)
+    local model=forceModel or G.viewMode.hyperbolicModel
     local object=G.viewMode.object
     if not object or G.viewMode.mode~=G.CONSTANTS.VIEW_MODES.FOLLOW then
         return x,y
@@ -749,7 +751,7 @@ function Shape.screenPosition(x,y)
     local zoom=(ay-axisY)/(yo-axisY)
     local dx=ax-xo*zoom
     local x2,y2=x1*zoom+dx,(y1-axisY)*zoom+axisY
-    if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.UHP then
+    if model==G.CONSTANTS.HYPERBOLIC_MODELS.UHP then
         return x2,y2
     end
     -- convert to Poincare disk model
@@ -762,7 +764,7 @@ function Shape.screenPosition(x,y)
     local wx,wy=(numex*denox+numey*denoy)/denosq, (numey*denox-numex*denoy)/denosq
     wx,wy=-wy,wx
     local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[G.viewMode.hyperbolicModel] or 1)
-    if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK then
+    if model==G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK then
         local ww=wx*wx+wy*wy
         ww=2/(1+ww)
         wx,wy=wx*ww,wy*ww
@@ -773,14 +775,15 @@ end
 --- inverse of Shape.screenPosition. Given screen position x,y, return the hyperbolic position before hyperbolicRotateShader transforming.
 ---@param x coordinate
 ---@param y coordinate
+---@param forceModel any|nil "if provided, use this hyperbolic model instead of G.viewMode.hyperbolicModel."
 ---@return coordinate "x of coordinate system position"
 ---@return coordinate "y of coordinate system position"
-function Shape.inverseScreenPosition(x,y)
+function Shape.inverseScreenPosition(x,y,forceModel)
+    local hyperbolicModel=forceModel or G.viewMode.hyperbolicModel
     local object=G.viewMode.object
     if not object or G.viewMode.mode~=G.CONSTANTS.VIEW_MODES.FOLLOW then
         return x,y
     end
-    local hyperbolicModel=G.viewMode.hyperbolicModel
     if hyperbolicModel~=G.CONSTANTS.HYPERBOLIC_MODELS.UHP then -- convert from disk models to UHP
         local r=math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/2*(G.DISK_RADIUS_BASE[hyperbolicModel] or 1)
         local wx,wy=(x-WINDOW_WIDTH/2)/r,(y-WINDOW_HEIGHT/2)/r

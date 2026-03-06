@@ -1487,8 +1487,8 @@ return {
             },
             [65] = {
                 quote = {
-                    en_us = 'A real physicist here. What a clever trick to capture my shots.',
-                    zh_cn = '货真价实的物理学家。捕捉我的子弹，真是个聪明的把戏。',
+                    en_us = 'A physicist? What a clever trick to capture my shots. I don\'t seem to know her...',
+                    zh_cn = '物理学家？捕捉我的子弹，真是个聪明的把戏。我好像不认识她呢。',
                 },
                 spellName = {
                     en_us = 'Capture "Fabry-Pérot Cavity"',
@@ -1539,6 +1539,20 @@ return {
                 hint = {
                     en_us = 'Pay attention to the orbs that stop moving and turn red.',
                     zh_cn = '注意那些停止移动并变红的球。',
+                }
+            },
+            [125] = {
+                spellName = {
+                    en_us = 'High-Energy "Rotational Collimator"',
+                    zh_cn = '高能「旋转准直仪」',
+                },
+                quote = {
+                    en_us = 'Very advanced machine. The rotating shells look like... parts in a watch?',
+                    zh_cn = '非常先进的机器。旋转的壳体看起来像……钟表里的零件？',
+                },
+                hint = {
+                    en_us = 'About the second phase, try this sequence: move towards the center, then move outwards, then move clockwise.',
+                    zh_cn = '关于第二阶段，尝试这个序列：向中心移动，然后向外移动，再顺时针移动。',
                 }
             },
             -- level 12 (final bosses spellcards)

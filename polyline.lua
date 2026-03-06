@@ -1,5 +1,6 @@
 --! file: circle.lua
 local Shape = require "shape"
+---@class Point:Shape
 local Point = Shape:extend()
 
 function Point:new(x, y,draw)
@@ -15,7 +16,17 @@ function Point:draw()
 end
 
 -- Warning: points must form a convex polygon
+---@class PolyLine:GameObject
+---@field points Point[]
+---@field color number[]|nil
+---@field width number|nil
+---@field sprite Sprite
+---@field spriteTransparency number
+---@field doDraw boolean
+---@field faceColorRatio number|nil
+---@field drawFace boolean|nil
 local PolyLine=GameObject:extend()
+PolyLine.Point=Point
 PolyLine.useMesh=true -- use mesh to draw polyline
 function PolyLine:new(points,draw)
     self.doDraw=draw==nil and true or draw
@@ -28,9 +39,19 @@ function PolyLine:new(points,draw)
 end
 
 function PolyLine:replacePoints(points)
+    local lenOriginal=#self.points
+    local lenNew=#points
     for key, value in pairs(points) do
-        self.points[key].x=value[1]
-        self.points[key].y=value[2]
+        if self.points[key]==nil then
+            self.points[key]=Point(value[1],value[2],self.doDraw)
+        else
+            self.points[key].x=value[1]
+            self.points[key].y=value[2]
+        end
+    end
+    for i=lenNew+1,lenOriginal do
+        self.points[i]:remove()
+        self.points[i]=nil
     end
 end
 
@@ -75,7 +96,11 @@ function PolyLine:draw()
         return
     end
     if self.useMesh==true then
-        self:drawMesh()
+        local poses=self:getMeshPoses()
+        self:drawMesh(poses)
+        if self.drawFace then
+            self:drawFaceMesh(poses)
+        end
     else
         self:drawRaw()
     end
@@ -143,6 +168,43 @@ function PolyLine:drawMesh(poses)
     end
     if #vertices<4 then return end
     local mesh=love.graphics.newMesh(vertices,'strip')
+    mesh:setTexture(Asset.bulletImage)
+    Asset.laserMeshes:add(mesh)
+end
+
+-- fill whole area. first get outer points from original mesh (even index), then add center point to form a fan mesh. note that there could be visual artifacts in UHP model when area is large, due to possible concave shape. this function is rarely used, as boundary normally doesnt need to be filled. currently only used in 11-10 to draw laser area.
+function PolyLine:drawFaceMesh(poses,center)
+    poses=poses or self:getMeshPoses()
+    -- first find a point inside the area, assuming average of all points is inside. a more reliable way is transform to klein disk then calculate average.
+    local centerX,centerY=0,0
+    if center then
+        centerX,centerY=center.x,center.y
+    else
+        for key, value in pairs(self.points) do
+            local x,y=value.x,value.y
+            x,y=Shape.screenPosition(x,y,G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK)
+            centerX=centerX+x
+            centerY=centerY+y
+        end
+        centerX=centerX/#self.points
+        centerY=centerY/#self.points
+        centerX,centerY=Shape.inverseScreenPosition(centerX,centerY,G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK)
+    end
+    local r,g,b=1,1,1
+    if self.color then
+        r,g,b=self.color[1],self.color[2],self.color[3]
+    end
+    if self.faceColorRatio then
+        r,g,b=r*self.faceColorRatio,g*self.faceColorRatio,b*self.faceColorRatio
+    end
+    local x,y,w,h=love.graphics.getQuadXYWHOnImage(self.sprite.quad,Asset.bulletImage)
+    local areaVertices={{centerX,centerY,x+w/2,y+h,r,g,b,1}}
+    for i=2,#poses,2 do
+        local parity=i%4==2 and 1 or 0
+        table.insert(areaVertices,{poses[i][1],poses[i][2],x+w*parity,y,r,g,b,1})
+    end
+    table.insert(areaVertices,{poses[2][1],poses[2][2],x+w,y,r,g,b,1})
+    local mesh=love.graphics.newMesh(areaVertices,'fan')
     mesh:setTexture(Asset.bulletImage)
     Asset.laserMeshes:add(mesh)
 end

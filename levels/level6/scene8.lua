@@ -41,7 +41,7 @@ return {
                 table.insert(vertices,{x=cir.x,y=cir.y})
             end
             PolyLine.drawMesh(cam,PolyLine.getMeshPoses{points=vertices})
-            -- fill whole area. first get outer points from original mesh (odd index), then add center point to form a fan mesh
+            -- fill whole area. first get outer points from original mesh (even index), then add center point to form a fan mesh
             local areaColorRatio=0.05
             if cam.frame>=cam.shotFrame then
                 areaColorRatio=math.clamp(1-(cam.frame-cam.shotFrame)/fadeFrame,0,1)

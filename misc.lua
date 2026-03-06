@@ -113,6 +113,12 @@ function math.angleDiff(angle1, angle2)
     return math.abs(diff)
 end
 
+-- return the signed angle difference between angle1 and angle2, in [-pi,pi]
+function math.angleDiffSigned(angle1, angle2)
+    local diff = (angle1 - angle2 + math.pi) % (2 * math.pi) - math.pi
+    return diff
+end
+
 ---@param a number|string|table
 ---@param b? number
 ---@return number

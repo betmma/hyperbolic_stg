@@ -72,7 +72,7 @@ end
 --     end
 -- end
 
----@class Shape:Object
+---@class Shape:GameObject
 ---@field x number
 ---@field y number
 ---@field speed number
