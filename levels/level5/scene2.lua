@@ -45,6 +45,7 @@ return {
                     en.x,en.y=x,y
                 end
                 if t==60 then
+                    SFX:play('enemyShot')
                     local directionRef=direction
                     local x,y=Shape.rThetaPos(400,300,math.eval(30,20),math.eval(0,999))
                     while math.abs(math.modClamp(direction-directionRef,0,math.pi/2))<math.pi/4 do

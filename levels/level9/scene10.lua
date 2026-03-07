@@ -2,6 +2,9 @@ return {
     ID=190,
     user='utsuho',
     spellName='Star Birthing "Agarized Accretion"',
+    unlock=function()
+        return Nickname.hasPassAllScenesNicknameForAct(9)
+    end,
     make=function()
         G.levelRemainingFrame=9000
         Shape.removeDistance=1e100
