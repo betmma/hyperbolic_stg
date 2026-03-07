@@ -38,12 +38,12 @@ return {
             G.UIDEF.CHOOSE_LEVELS.transparency=0
         elseif isPressed('right') then
             self.currentUI.chosenLevel=self.currentUI.chosenLevel%levelNum+1
-            self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#LevelData[self.currentUI.chosenLevel])
+            self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,LevelData.getSceneNum(self.currentUI.chosenLevel))
             SFX:play('select')
             G.UIDEF.CHOOSE_LEVELS.transparency=0
         elseif isPressed('left') then
             self.currentUI.chosenLevel=(self.currentUI.chosenLevel-2)%levelNum+1
-            self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,#LevelData[self.currentUI.chosenLevel])
+            self.currentUI.chosenScene=math.min(self.currentUI.chosenScene,LevelData.getSceneNum(self.currentUI.chosenLevel))
             SFX:play('select')
             G.UIDEF.CHOOSE_LEVELS.transparency=0
         elseif isPressed('z') then
