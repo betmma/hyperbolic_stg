@@ -6,6 +6,12 @@ Paths stretch out infinitely, logic of distance shattered, people get lost and t
 
 Deep within this mathematical maze, a spotlight clicks on. It appears that this spatial anomaly is not just a disaster, but a stage set for a grand performance...
 
+![Screenshot 1](repoResources/screenshot1.png)
+
+![Screenshot 2](repoResources/screenshot2.png)
+
+![Screenshot 3](repoResources/screenshot3.png)
+
 ### How to play
 
 #### Run the Game
