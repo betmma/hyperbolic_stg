@@ -3,7 +3,7 @@ return {
     user='reisen&seija',
     spellName='"Binocular Rivalry"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(7)
+        return Nickname.hasPassAllScenesNicknameForAct(7)
     end,
     make=function()
         G.levelRemainingFrame=7200

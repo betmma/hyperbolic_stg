@@ -408,19 +408,23 @@ ProgressedNickname{
 }
 
 -- 12 nicknames for passing all scenes in each act
+Nickname.passAllScenesNicknameEachAct={}
 for act=1,12 do
-    ProgressedNickname{
+    Nickname.passAllScenesNicknameEachAct[act]=ProgressedNickname{
         name='PassAllScenesInAct'..tostring(act),
         progressFunc=function()
-            local passed,all,perfect=G:countPassedSceneNum(act)
+            local passed,all,perfect=G:countPassedSceneNum(act,true)
             return passed/all
         end,
         eventName=EventManager.EVENTS.WIN_LEVEL,
     }
 end
+Nickname.hasPassAllScenesNicknameForAct=function(act)
+    return G.save.nicknameUnlock[Nickname.passAllScenesNicknameEachAct[act].name]==true
+end
 
 -- 12 secret nicknames, one for each act, about special conditions in certain levels
-Nickname.secretNicknameEachAct={
+Nickname.secretNicknameEachAct={ -- this table is not used. secret scenes used to unlock on getting corresponding secret nicknames in their acts.
 Nickname{
     name='TwistedBeginning',
     isSecret=true,
@@ -543,9 +547,6 @@ Nickname{
     isSecret=true,
 }
 }
-Nickname.hasSecretNicknameForAct=function(act)
-    return G.save.nicknameUnlock[Nickname.secretNicknameEachAct[act].name]==true
-end
 -- general secret nicknames
 Nickname{
     name='ThisIsTouhou',

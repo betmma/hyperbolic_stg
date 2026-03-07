@@ -3,7 +3,7 @@ return {
     user='kotoba',
     spellName='Headhunting "Bloody Collection"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(12)
+        return Nickname.hasPassAllScenesNicknameForAct(12)
     end,
     make=function()
         G.levelRemainingFrame=10800

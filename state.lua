@@ -284,15 +284,23 @@ G.language=G.save.options.language--'zh_cn'--'en_us'--
 
 ---@param self table
 ---@param act integer if set, only count scenes in this act
+---@param excludeHidden boolean if set, exclude hidden scenes (locked secret scenes) in counting
 ---@return integer "number of passed scenes"
 ---@return integer "number of all scenes"
 ---@return integer "number of perfect scenes"
-G.countPassedSceneNum=function(self,act)
+G.countPassedSceneNum=function(self,act,excludeHidden)
     local allSceneCount,passedSceneCount,perfectSceneCount=0,0,0
     for id,value in pairs(LevelData.ID2LevelScene) do
         local level,scene=value.level,value.scene
         if act and act~=level then
             goto continue
+        end
+        if excludeHidden then
+            local sceneData=LevelData[level][scene]
+            local unlockFunc=sceneData.unlock
+            if unlockFunc and not unlockFunc() then
+                goto continue
+            end
         end
         allSceneCount=allSceneCount+1
         if self.save.levelData[id].passed>0 then

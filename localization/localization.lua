@@ -13,7 +13,7 @@ return {
             en_us = 'What will happen here?',
             zh_cn = '这里会发生什么呢？',
         },
-        names = {
+        names = { -- some names here do not appear in the game, due to some spellcards are reassigned owners during development.
             __default__ = {
                 en_us = 'Unknown',
                 zh_cn = '未知',
@@ -2909,7 +2909,7 @@ return {
             },
             description = {
                 en_us = 'The incident is all about the hyper bollocks.',
-                zh_cn = '此次异变的起因，是曲话言波善于分解人表达的意思。',
+                zh_cn = '此次异变的起因，是曲话言波善于曲解人表达的意思。',
             },
         },
         -- row 4: 12 secret nicknames, one for each act, about special conditions in certain levels

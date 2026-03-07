@@ -3,7 +3,7 @@ return {
     user='aya',
     spellName='', 
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(6)
+        return Nickname.hasPassAllScenesNicknameForAct(6)
     end,
     make=function()
         G.levelRemainingFrame=5400

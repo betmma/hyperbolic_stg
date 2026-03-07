@@ -3,7 +3,7 @@ return {
     user='cirno',
     spellName='',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(2)
+        return Nickname.hasPassAllScenesNicknameForAct(2)
     end,
     make=function()
         G.levelRemainingFrame=5400

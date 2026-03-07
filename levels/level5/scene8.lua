@@ -4,7 +4,7 @@ return {
     user='nitori',
     spellName='Water Sign "Water Fighting"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(5)
+        return Nickname.hasPassAllScenesNicknameForAct(5)
     end,
     make=function()
         G.levelRemainingFrame=9000

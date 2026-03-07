@@ -3,7 +3,7 @@ return {
     user='renko',
     spellName='High-Energy "Rotational Collimator"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(11)
+        return Nickname.hasPassAllScenesNicknameForAct(11)
     end,
     make=function()
         G.levelRemainingFrame=7200

@@ -3,7 +3,7 @@ return {
     user='seiran',
     spellName='Raid Sign "Carpet Bombing"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(3)
+        return Nickname.hasPassAllScenesNicknameForAct(3)
     end,
     make=function()
         G.levelRemainingFrame=7200

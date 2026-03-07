@@ -3,7 +3,7 @@ return {
     user='marisa',
     spellName='Magic Sign "Sigil Automaton"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(8)
+        return Nickname.hasPassAllScenesNicknameForAct(8)
     end,
     make=function()
         G.levelRemainingFrame=7200

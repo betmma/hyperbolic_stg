@@ -3,7 +3,7 @@ return {
     user='doremy',
     spellName='Limitation ""',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(1)
+        return Nickname.hasPassAllScenesNicknameForAct(1)
     end,
     make=function()
         G.levelRemainingFrame=5400

@@ -3,7 +3,7 @@ return {
     user='chimi',
     spellName='Mountain Spirit Sign "Qi of a Drainage Divide"',
     unlock=function()
-        return Nickname.hasSecretNicknameForAct(4)
+        return Nickname.hasPassAllScenesNicknameForAct(4)
     end,
     make=function()
         G.levelRemainingFrame=7200
