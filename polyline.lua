@@ -99,7 +99,11 @@ function PolyLine:draw()
         local poses=self:getMeshPoses()
         self:drawMesh(poses)
         if self.drawFace then
-            self:drawFaceMesh(poses)
+            if G.viewMode.hyperbolicModel==G.CONSTANTS.HYPERBOLIC_MODELS.UHP then
+                self:drawFaceMeshUHP()
+            else
+                self:drawFaceMesh(poses)
+            end
         end
     else
         self:drawRaw()
@@ -125,15 +129,16 @@ function PolyLine.drawOne(p1,p2)
     Shape.drawSegment(x1,y1,x2,y2)
 end
 
-function PolyLine:getMeshPoses()
+function PolyLine:getMeshPoses(points)
+    points=points or self.points
     local width=self.width or 1
     local poses={}
-    local itenum=#self.points
+    local itenum=#points
     if itenum==2 then
         itenum=1
     end
     for i=1,itenum do
-        local x1,y1,x2,y2=self.points[i].x,self.points[i].y,self.points[i%#self.points+1].x,self.points[i%#self.points+1].y
+        local x1,y1,x2,y2=points[i].x,points[i].y,points[i%#points+1].x,points[i%#points+1].y
         local distance=Shape.distance(x1,y1,x2,y2)
         local direction=Shape.to(x1,y1,x2,y2)
         local maxDist=5
@@ -172,23 +177,31 @@ function PolyLine:drawMesh(poses)
     Asset.laserMeshes:add(mesh)
 end
 
+-- find the center of points in klein disk. not actually the center, but a point inside the polygon.
+function PolyLine:centerOfPoints(points)
+    points=points or self.points
+    local centerX,centerY=0,0
+    for key, value in pairs(points) do
+        local x,y=value.x,value.y
+        x,y=Shape.screenPosition(x,y,G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK)
+        centerX=centerX+x
+        centerY=centerY+y
+    end
+    centerX=centerX/#points
+    centerY=centerY/#points
+    centerX,centerY=Shape.inverseScreenPosition(centerX,centerY,G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK)
+    return centerX,centerY
+end
+
 -- fill whole area. first get outer points from original mesh (even index), then add center point to form a fan mesh. note that there could be visual artifacts in UHP model when area is large, due to possible concave shape. this function is rarely used, as boundary normally doesnt need to be filled. currently only used in 11-10 to draw laser area.
 function PolyLine:drawFaceMesh(poses,center)
     poses=poses or self:getMeshPoses()
-    -- first find a point inside the area, assuming average of all points is inside. a more reliable way is transform to klein disk then calculate average.
+    -- first find a point inside the area to form a fan mesh
     local centerX,centerY=0,0
     if center then
         centerX,centerY=center.x,center.y
     else
-        for key, value in pairs(self.points) do
-            local x,y=value.x,value.y
-            x,y=Shape.screenPosition(x,y,G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK)
-            centerX=centerX+x
-            centerY=centerY+y
-        end
-        centerX=centerX/#self.points
-        centerY=centerY/#self.points
-        centerX,centerY=Shape.inverseScreenPosition(centerX,centerY,G.CONSTANTS.HYPERBOLIC_MODELS.K_DISK)
+        centerX,centerY=self:centerOfPoints()
     end
     local r,g,b=1,1,1
     if self.color then
@@ -207,6 +220,35 @@ function PolyLine:drawFaceMesh(poses,center)
     local mesh=love.graphics.newMesh(areaVertices,'fan')
     mesh:setTexture(Asset.bulletImage)
     Asset.laserMeshes:add(mesh)
+end
+
+-- polygon in UHP is very likely to be concave due to small and curly angle. the solution is to find and cut small angles, then draw them separately. this function is expensive.
+function PolyLine:drawFaceMeshUHP()
+    local points=self.points
+    local cutTriangles={}
+    local remainingPoints={}
+    local cutRatio=0.4
+    for key, value in pairs(points) do
+        local x2,y2=value.x,value.y
+        local x3,y3=points[key%#points+1].x,points[key%#points+1].y
+        local x1,y1=points[(key-2)%#points+1].x,points[(key-2)%#points+1].y
+        local angle=Shape.to(x2,y2,x1,y1)-Shape.to(x2,y2,x3,y3)
+        if angle<math.pi/4 then
+            -- cut at cutRatio of side length
+            local cutX12,cutY12=Shape.rThetaPos(x2,y2,Shape.distance(x1,y1,x2,y2)*cutRatio,Shape.to(x2,y2,x1,y1))
+            local cutX23,cutY23=Shape.rThetaPos(x2,y2,Shape.distance(x3,y3,x2,y2)*cutRatio,Shape.to(x2,y2,x3,y3))
+            cutTriangles[#cutTriangles+1]={{x=x2,y=y2},{x=cutX12,y=cutY12},{x=cutX23,y=cutY23}}
+            remainingPoints[#remainingPoints+1]={x=cutX12,y=cutY12}
+            remainingPoints[#remainingPoints+1]={x=cutX23,y=cutY23}
+        else
+            remainingPoints[#remainingPoints+1]={x=x2,y=y2}
+        end
+    end
+    for key, value in pairs(cutTriangles) do
+        local centerX,centerY=self:centerOfPoints(value)
+        self:drawFaceMesh(self:getMeshPoses(value),{x=centerX,y=centerY})
+    end
+    self:drawFaceMesh(self:getMeshPoses(remainingPoints))
 end
 
 function PolyLine:remove()
