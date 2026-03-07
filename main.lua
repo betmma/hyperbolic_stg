@@ -1,6 +1,6 @@
-VERSION="0.9.10.5"
+VERSION="1.0.0"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
-DEV_MODE=true
+-- DEV_MODE=true
 if arg[2] == "debug" then
     require("lldebugger").start()
 end

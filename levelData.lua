@@ -233,7 +233,7 @@ local levelData={
 
 ---@param level integer
 ---@return string 
---- get the level string of a level, like EX is stored as level 11 but displayed as "EX"
+--- get the level string of a level, like EX is stored as level 13 but displayed as "EX"
 levelData.getLevelStr=function(level)
     ---@type {levelStr:string}
     local levelData=levelData[level]

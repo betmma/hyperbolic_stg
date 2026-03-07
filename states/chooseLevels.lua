@@ -62,7 +62,7 @@ return {
             SFX:play('select')
             self.save.levelData[levelID].passed=math.min(self.save.levelData[levelID].passed+1,2)
         end
-        local digits={['1']=1,['2']=2,['3']=3,['4']=4,['5']=5,['6']=6,['7']=7,['8']=8,['9']=9,['0']=10,['-']=11,['=']=12}
+        local digits={['1']=1,['2']=2,['3']=3,['4']=4,['5']=5,['6']=6,['7']=7,['8']=8,['9']=9,['0']=10,['-']=11,['=']=12,['backspace']=13}
         for key,value in pairs(digits) do
             if isPressed(key)then
                 SFX:play('select')

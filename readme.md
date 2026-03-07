@@ -1,14 +1,20 @@
-This is an attempt to learn LÖVE and implement shoot 'em up in hyperbolic geometry.
 This game is a touhou fan-game.
-This game is almost complete but there could still be bugs.
 
-# How to play
+Reimu Hakurei is summoned to the Dream World in her sleep. Doremy Sweet appears and reveals that Gensokyo is facing a grave danger. The very space of Gensokyo has become distorted and chaotic, affecting even the Dream World.
 
-#### Direct Download
+Paths stretch out infinitely, logic of distance shattered, people get lost and trapped in an underground labyrinth. The kappa engineer Nitori Kawashiro identifies this phenomenon as "Hyperbolic Geometry"...
+
+Deep within this mathematical maze, a spotlight clicks on. It appears that this spatial anomaly is not just a disaster, but a stage set for a grand performance...
+
+### How to play
+
+#### Run the Game
+
+##### Direct Download
 
 Find the "Releases" section in this page, then click latest release. Scroll down and find the zip with suffix matching your OS (macos, win32, or win64). Click a file to download it. Then extract and click Hyperbolic Domain *version*.exe to play
 
-#### Or Run from Source
+##### Or Run from Source
 
 If you don't trust executable files:
 
@@ -30,8 +36,8 @@ Arrow keys to move between options.
 Z to choose an option.
 Escape/X to go back.
 ###### In Choose Level Menu:
-1-9 (above qwerty) to choose that level. '0' chooses 10, '-' chooses 11, '=' chooses 12.
-numpad 1-9 to choose that scene in current level.
+1-9 (above qwerty) to choose that level. '0' chooses 10, '-' chooses 11, '=' chooses 12, Backspace chooses EX.
+numpad 1-9 and 0 to choose that scene in current level. '0' chooses 10.
 ###### In Load Replay Menu:
 Enter three digits (you can use both set of number keys) to choose that replay number.
 ##### In Replay:
@@ -48,9 +54,6 @@ V to switch using shader or testRotate to calculate sprites' hyperbolic rotation
 Player gains 1 second of invincible time when hit by bullet.
 Completed scenes display as green and give 10 XP each.
 Perfectly completed (without being harmed) scenes display as golden and give 12 XP each.
-
-##### Todo:
-1. Additional scenes
 
 
 ### Acknowledgements
