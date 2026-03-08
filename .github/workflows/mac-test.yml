@@ -3,10 +3,8 @@ name: macOS Crash Test
 # Run this test every time you push code to the main branch
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch: # Allows you to run it manually from the Actions tab
+  workflow_dispatch: # Allows you to run it manually from the Actions tab 
 
 jobs:
   test-mac:
