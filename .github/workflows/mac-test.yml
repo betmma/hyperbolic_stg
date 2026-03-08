@@ -1,28 +1,64 @@
-name: macOS Crash Test
+name: macOS Packaged App Test
 
-# Run this test every time you push code to the main branch
 on:
   push:
   pull_request:
-  workflow_dispatch: # Allows you to run it manually from the Actions tab 
+  workflow_dispatch: 
 
 jobs:
   test-mac:
-    runs-on: macos-latest
+    runs-on: [macos-26, macos-26-intel]
 
     steps:
-      - name: Checkout Game Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install LÖVE
-        # We use Homebrew to install the command-line version of LÖVE
-        run: brew install love
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      - name: Package Game into .love Archive
-        # This step is crucial. We zip the game to replicate how players run it.
-        # This catches archive-specific file system bugs.
-        run: zip -9 -r game.love . -x "*.git*" ".github/*"
+      - name: Install makelove
+        run: python -m pip install --upgrade pip makelove
 
-      - name: Run Game in Test Mode
-        # Execute the archive with our custom flag
-        run: love game.love --test
+      - name: Build macOS package
+        run: makelove macos
+
+      - name: Show build outputs
+        run: |
+          echo "PWD=$(pwd)"
+          ls -la
+          echo "---- files named app/zip/dmg/love ----"
+          find . \( -name "*.app" -o -name "*.zip" -o -name "*.dmg" -o -name "*.love" \) | sort
+
+      - name: Unpack macOS artifact if needed
+        run: |
+          ZIP_FILE=$(find . -name "*.zip" | head -n 1)
+          if [ -n "$ZIP_FILE" ]; then
+            echo "Unzipping: $ZIP_FILE"
+            rm -rf extracted_app
+            mkdir -p extracted_app
+            unzip -q "$ZIP_FILE" -d extracted_app
+          fi
+
+      - name: Locate packaged app
+        run: |
+          APP=$(find . -type d -name "*.app" | head -n 1)
+          if [ -z "$APP" ]; then
+            echo "No .app found after build/unzip"
+            exit 1
+          fi
+          echo "APP=$APP" >> "$GITHUB_ENV"
+          echo "Found app: $APP"
+
+      - name: Inspect executable architecture
+        run: |
+          BIN=$(find "$APP/Contents/MacOS" -type f | head -n 1)
+          echo "BIN=$BIN"
+          file "$BIN" || true
+          lipo -archs "$BIN" || true
+
+      - name: Run packaged app in shader smoke mode
+        run: |
+          BIN=$(find "$APP/Contents/MacOS" -type f | head -n 1)
+          "$BIN" --test
