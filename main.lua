@@ -1,4 +1,18 @@
 VERSION="1.0.0"
+local isTestMode = false
+for _, v in ipairs(arg) do
+    if v == "--test" then
+        isTestMode = true
+    end
+end
+if isTestMode then
+    function love.errorhandler(msg)
+        print("\n=== MAC CRASH DETECTED ===")
+        print(tostring(msg))
+        print(debug.traceback("", 2))
+        os.exit(1) -- Exit code 1 fails the workflow
+    end
+end
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 -- DEV_MODE=true
 if arg[2] == "debug" then
@@ -67,7 +81,16 @@ local controlFPSmode=0
 local sleepTime=1/60
 local frameTime=1/60
 AccumulatedTime=0
+local testTimer = 0
 function love.update(dt)
+    if isTestMode then
+        testTimer = testTimer + dt
+        if testTimer >= 3 then
+            print("\n=== TEST PASSED ===")
+            print("Game survived for 3 seconds on macOS without crashing.")
+            os.exit(0) -- Exit code 0 passes the workflow
+        end
+    end
     if profi then
         profiActivate=isPressed('f3')
         if profiActivate then

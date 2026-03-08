@@ -1,0 +1,30 @@
+name: macOS Crash Test
+
+# Run this test every time you push code to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
+
+jobs:
+  test-mac:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Game Code
+        uses: actions/checkout@v4
+
+      - name: Install LÖVE
+        # We use Homebrew to install the command-line version of LÖVE
+        run: brew install love
+
+      - name: Package Game into .love Archive
+        # This step is crucial. We zip the game to replicate how players run it.
+        # This catches archive-specific file system bugs.
+        run: zip -9 -r game.love . -x "*.git*" ".github/*"
+
+      - name: Run Game in Test Mode
+        # Execute the archive with our custom flag
+        run: love game.love --test
