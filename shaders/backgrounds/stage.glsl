@@ -1,7 +1,7 @@
 #include "shaders/H2math.glsl"
 #include "shaders/H3math.glsl"
 
-uniform float time = 0.0;
+uniform float time;
 uniform mat4 cam_mat4;
 uniform vec2 V0;
 uniform vec2 V1;
@@ -10,7 +10,7 @@ uniform vec2 V2;
 uniform float holeSize;
 uniform bool holeIsHorizon;
 
-const float STAGE_HEIGHT = 0;
+const float STAGE_HEIGHT = 0.0;
 const float STAGE_RADIUS = 1.60;
 const float STAGE_THICKNESS = 0.18;
 const float STAGE_EDGE_WIDTH = 0.25;
@@ -25,10 +25,6 @@ const float STEP_SCALE = 0.82;
 const float MAX_HYP_DIST = 6.5;
 const float HIT_EPS = 0.0025;
 
-UHPGeodesic G01 = make_geodesic_segment(V0, V1);
-UHPGeodesic G12 = make_geodesic_segment(V1, V2);
-UHPGeodesic G20 = make_geodesic_segment(V2, V0);
-
 struct flipData {
     vec2 p_in_fundamental;
     int flipCount;
@@ -40,6 +36,9 @@ float asinh1(float x) { return log(x + sqrt(x * x + 1.0)); }
 vec4 lift_to_H(vec3 xyz) { return vec4(xyz, sqrt(1.0 + dot(xyz, xyz))); }
 
 flipData flip(vec2 pos_xy_embedding) {
+    UHPGeodesic G01 = make_geodesic_segment(V0, V1);
+    UHPGeodesic G12 = make_geodesic_segment(V1, V2);
+    UHPGeodesic G20 = make_geodesic_segment(V2, V0);
     vec2 p_in_fundamental = hyperboloid_to_uhp(pos_xy_embedding);
     int flipCount = 0;
     for (int i = 0; i < MAX_REFLECTIONS; ++i) {
@@ -190,7 +189,7 @@ vec3 tessellationColor(vec2 pos_xy_embedding, float time) {
         return vec3(0.35, 0.05, 0.35);
     }
     vec3 bary = get_hyperbolic_barycentric_coords(fd.p_in_fundamental, V0, V1, V2);
-    float parity = float(mod(fd.flipCount,2));
+    float parity = mod(float(fd.flipCount),2.0);
     vec3 paletteA = vec3(0.45, 0.26, 0.72);
     vec3 paletteB = vec3(0.17, 0.32, 0.68);
     vec3 base = mix(paletteA, paletteB, parity);
@@ -216,13 +215,13 @@ vec3 computeEdgeLights(vec3 local, float time) {
     float angle = atan(local.y, local.x);
     float lights = 0.0;
     for (int i = 0; i < EDGE_LIGHT_COUNT; ++i) {
-        float wobble = 0.7 + 0.3 * sin(time * 0.25 + i);
+        float wobble = 0.7 + 0.3 * sin(time * 0.25 + float(i));
         float target = 6.283185307179586 * (float(i) / float(EDGE_LIGHT_COUNT)) + time * 0.35;
         float diff = angularDifference(angle, target);
         float width = 0.1 + 0.04 * sin(time * 0.7 + float(i) * 1.37);
         lights += exp(-pow(diff / width, 2.0)) * wobble;
     }
-    lights *= 0.45 * edgeMask * exp(smin_poly(local.z+0.05,0,0.1)*10.0);
+    lights *= 0.45 * edgeMask * exp(smin_poly(local.z+0.05,0.0,0.1)*10.0);
     vec3 hue = vec3(1.25, 1.05, 0.75);
     return hue * lights;
 }

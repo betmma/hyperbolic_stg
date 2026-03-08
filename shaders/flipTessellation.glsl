@@ -12,7 +12,7 @@ uniform vec2 tex_uv_V1;
 uniform vec2 tex_uv_V2;
 
 // --- Constants ---
-const int MAX_REFLECTIONS = 40; 
+#define MAX_REFLECTIONS 40
 
 // --- Main Shader Function (Love2D pixel shader) ---
 // `Texel(texture, uv)` is Love2D's equivalent of `texture2D(texture, uv)`

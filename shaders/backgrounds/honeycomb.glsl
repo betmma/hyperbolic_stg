@@ -2,14 +2,13 @@
 #include "shaders/H3math.glsl"
 #include "shaders/honeycombMath.glsl"
 
-uniform bool inverse=false; // when false, a ball of CELL_SHELL_DIST radius is cut out from solid honeycomb; when true, only the ball is solid
-uniform float time=0.0;
+uniform bool inverse; // when false, a ball of CELL_SHELL_DIST radius is cut out from solid honeycomb; when true, only the ball is solid
+uniform float time;
 
 uniform mat4 cam_mat4; // combined rotation and boost matrix
 
-uniform float SHELL_RATIO = 0.5; // 0.38 for small gap at edge
-uniform int reflect_count = 0; // times of camera reflection. flip coords in shade to keep continuity
-float CELL_SHELL_DIST = SHELL_RATIO * CELL_INRADIUS + (1-SHELL_RATIO) * CELL_CIRCUMRADIUS;
+uniform float SHELL_RATIO; // 0.38 for small gap at edge
+uniform int reflect_count; // times of camera reflection. flip coords in shade to keep continuity
 const float MAX_HYP_DIST = 9.5;
 const float STEP_MIN = 0.02;
 const float STEP_MAX = 0.9;
@@ -19,6 +18,7 @@ const float STEP_FACTOR = 0.99;
 vec3 honeycomb_shade(vec4 pos, vec4 dir, float travel, float time);
 
 vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) {
+    float CELL_SHELL_DIST = SHELL_RATIO * CELL_INRADIUS + (1.0-SHELL_RATIO) * CELL_CIRCUMRADIUS;
     hit_terrain = false;
     vec4 pos = cam_pos_H;
     vec4 dir = normalize_spacelike(project_to_tangent(pos, ray_dir_H));
@@ -34,7 +34,7 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
 
         float nearest = 1e9;
         for (int i = 0; i < FACE_COUNT; ++i) {
-            nearest = min(nearest, plane_signed(pos, FACE_NORMALS[i]));
+            nearest = min(nearest, plane_signed(pos, getFaceNormal(i)));
         }
         nearest = max(nearest, 0.0);
         float nearestDist = asinh1(nearest);
@@ -44,15 +44,15 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
 
 
         float remaining = dt;
-        for (int guard = 0; guard < 1 && remaining > 0.0005; ++guard) {
+        for (int guard = 0; guard < 1; ++guard) {
             vec4 trialPos;
             vec4 trialDir;
             geodesic_step(pos, dir, remaining, trialPos, trialDir);
             int hitFace = -1;
             float hitT = remaining;
             for (int i = 0; i < FACE_COUNT; ++i) {
-                float s0 = plane_signed(pos, FACE_NORMALS[i]);
-                float s1 = plane_signed(trialPos, FACE_NORMALS[i]);
+                float s0 = plane_signed(pos, getFaceNormal(i));
+                float s1 = plane_signed(trialPos, getFaceNormal(i));
                 if (s1 < 0.0) {
                     float low = 0.0;
                     float high = remaining;
@@ -61,7 +61,7 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
                         vec4 midPos;
                         vec4 midDir;
                         geodesic_step(pos, dir, mid, midPos, midDir);
-                        float smid = plane_signed(midPos, FACE_NORMALS[i]);
+                        float smid = plane_signed(midPos, getFaceNormal(i));
                         if (smid > 0.0) {
                             low = mid;
                         } else {
@@ -78,8 +78,8 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
                 vec4 hitPos;
                 vec4 hitDir;
                 geodesic_step(pos, dir, hitT, hitPos, hitDir);
-                pos = reflect_plane(hitPos, FACE_NORMALS[hitFace]);
-                dir = reflect_plane(hitDir, FACE_NORMALS[hitFace]);
+                pos = reflect_plane(hitPos, getFaceNormal(hitFace));
+                dir = reflect_plane(hitDir, getFaceNormal(hitFace));
                 renormalize_state(pos, dir);
                 remaining -= hitT;
             } else {
@@ -87,6 +87,9 @@ vec3 rayMarch(vec4 cam_pos_H, vec4 ray_dir_H, float time, out bool hit_terrain) 
                 dir = trialDir;
                 renormalize_state(pos, dir);
                 remaining = 0.0;
+            }
+            if(remaining <= 0.0005){
+                break;
             }
         }
         travel += dt;
@@ -125,7 +128,7 @@ vec3 envLights(vec3 r, float time){
     vec3 col = vec3(0.0); 
     for(int i=0;i<6;i++){
         float ph = time*0.65 + float(i)*2.13;
-        vec3 L = normalize(vec3(cos(ph+5.1*i), sin(ph*1.3+1.7*i), cos(ph*0.7-2.3*i)));
+        vec3 L = normalize(vec3(cos(ph+5.1*float(i)), sin(ph*1.3+1.7*float(i)), cos(ph*0.7-2.3*float(i))));
         float tight = pow(max(dot(r, L), 0.0), 18.0); // sharp specular lobe
         vec3 hue = hsv2rgb(vec3(fract(0.2*float(i) + time*0.11), 0.85, 1.0));
         col += hue * tight * 6.0;
@@ -165,7 +168,7 @@ void geoFacet(vec3 N, float meridians, float parallels, float grout,
     vec2 cell = vec2(u*meridians, v*parallels);
     vec2 frac = fract(cell);
     vec2 distToEdge = min(frac, 1.0 - frac);
-    vec2 aa = 0.5 * fwidth(cell);                       // derivative-based AA
+    vec2 aa = 0.5 / vec2(meridians, parallels); // replaced fwidth
     float edgeU = 1.0 - smoothstep(grout - aa.x, grout + aa.x, distToEdge.x);
     float edgeV = 1.0 - smoothstep(grout - aa.y, grout + aa.y, distToEdge.y);
     edgeMask = max(edgeU, edgeV);                       // 1 at edges, 0 in tile interior
@@ -174,7 +177,8 @@ void geoFacet(vec3 N, float meridians, float parallels, float grout,
 // -------------------- Disco-ball shading replacement ----------------------
 
 vec3 honeycomb_shade(vec4 pos, vec4 dir, float travel, float time) {
-    if (mod(reflect_count, 2) == 1){ 
+    float CELL_SHELL_DIST = SHELL_RATIO * CELL_INRADIUS + (1.0-SHELL_RATIO) * CELL_CIRCUMRADIUS;
+    if (mod(float(reflect_count), 2.0) == 1.0){ 
         pos.xy = -pos.xy;
         dir.xy = -dir.xy;
     }
@@ -217,7 +221,7 @@ vec3 honeycomb_shade(vec4 pos, vec4 dir, float travel, float time) {
     vec3 mirrorCol = env * (1.2*(0.08 + 0.92*F));
 
     // Base tile visibility + subtle hue wobble so it never dies in darkness
-    vec3 tileBase = vec3(0.10)*0.5*(1+Lsigned);
+    vec3 tileBase = vec3(0.10)*0.5*(1.0+Lsigned);
     float hueShift = 0.08*sin(time*0.7) + 0.04*sin(3.0*time + tileUV.x*2.0);
     vec3 wobble = hsv2rgb(vec3(hueShift, 0.12, 1.0));
 

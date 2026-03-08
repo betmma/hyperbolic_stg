@@ -1,27 +1,23 @@
 #include "shaders/H2math.glsl"
 #include "shaders/H3math.glsl"
 
-uniform bool flat_=false; // if true, terrainFunc returns 0 and drastically increases performance
+uniform bool flat_; // if true, terrainFunc returns 0 and drastically increases performance
 uniform vec2 V0; 
 uniform vec2 V1;
 uniform vec2 V2;
-uniform float time=0.0;
+uniform float time;
 
-uniform vec3 cam_rotation_axis1 = vec3(1.0, 0.0, 0.0); // Default: X-axis for pitch
-uniform float cam_pitch = 0.0;              // Default: No pitch
-uniform vec3 cam_rotation_axis2 = vec3(0.0, 1.0, 0.0); // Default: Y-axis for yaw
-uniform float cam_yaw = 0.0;              // Default: No yaw
-uniform vec3 cam_rotation_axis3 = vec3(0.0, 0.0, 1.0); // Optional: Z-axis for roll
-uniform float cam_roll = 0.0;              // Optional: No roll
-
-uniform vec3 cam_translation = vec3(0.0, 0.0, 1.0); // Default: Boost along Z-axis
+#define cam_rotation_axis1 vec3(1.0, 0.0, 0.0) // Default: X-axis for pitch
+#define cam_rotation_axis2 vec3(0.0, 1.0, 0.0) // Default: Y-axis for yaw
+#define cam_rotation_axis3 vec3(0.0, 0.0, 1.0) // Optional: Z-axis for roll
+uniform float cam_pitch;              // Default: No pitch
+uniform float cam_yaw;              // Default: No yaw
+uniform float cam_roll;              // Optional: No roll
+uniform vec3 cam_translation; // Default: Boost along Z-axis
 
 // --- Added: road width and travel speed ---
-uniform float path_half_width = 0.5;      // Half-width of straight path along x=0
+const float path_half_width = 0.5;      // Half-width of straight path along x=0
 
-UHPGeodesic G01 = make_geodesic_segment(V0, V1);
-UHPGeodesic G12 = make_geodesic_segment(V1, V2);
-UHPGeodesic G20 = make_geodesic_segment(V2, V0);
 const int MAX_REFLECTIONS = 10; 
 
 
@@ -35,6 +31,9 @@ struct flipData {
     int flipCount;
 };
 flipData flip(vec2 pos_xy_embedding) {
+    UHPGeodesic G01 = make_geodesic_segment(V0, V1);
+    UHPGeodesic G12 = make_geodesic_segment(V1, V2);
+    UHPGeodesic G20 = make_geodesic_segment(V2, V0);
     vec2 p_in_fundamental= hyperboloid_to_uhp(pos_xy_embedding);
     int flipCount=0;
     for (int i = 0; i < MAX_REFLECTIONS; ++i) {
@@ -73,7 +72,7 @@ flipData flip(vec2 pos_xy_embedding) {
 }
 
 vec4 colorFunc(vec2 pos_xy_embedding, float time) {
-    float onRoadRatio = (abs(pos_xy_embedding.x) - path_half_width)*-10;
+    float onRoadRatio = (abs(pos_xy_embedding.x) - path_half_width)*-10.0;
     onRoadRatio = exp(onRoadRatio)/(1.0+exp(onRoadRatio))*0.9;
     
     // return vec4(0.2, 0.2, 0.8, 1.0); // dont calculate tessellation color for performance
@@ -89,11 +88,11 @@ vec4 colorFunc(vec2 pos_xy_embedding, float time) {
     if (mod(bary_coords.x+sin(time)*0.1,0.2)<0.10) { 
         toMod+=1;
     }
-    if (mod(toMod,2)==1) { 
+    if (mod(float(toMod),2.0)==1.0) { 
         ret=vec4(0.8, 0.2, 0.2, 1.0);
     }
     // if(onRoad){
-        ret=ret*(onRoadRatio)+vec4(0.3,0.3,0.0,1.0)*(1-onRoadRatio); // pattern is more visible on road
+        ret=ret*(onRoadRatio)+vec4(0.3,0.3,0.0,1.0)*(1.0-onRoadRatio); // pattern is more visible on road
     // }else{
     //     float ex=exp(-pos_xy_embedding.y-1);
     //     float ratio=ex/(1.0+ex);

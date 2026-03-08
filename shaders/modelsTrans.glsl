@@ -1,10 +1,9 @@
-
 #define HYPERBOLIC_MODEL_UHP 0
 #define HYPERBOLIC_MODEL_P_DISK 1
 #define HYPERBOLIC_MODEL_K_DISK 2
 
 #ifndef HYPERBOLIC_EPS
-#define HYPERBOLIC_EPS 1e-5f // A small epsilon for float comparisons
+#define HYPERBOLIC_EPS 0.00001 // A small epsilon for float comparisons
 #endif
 // Helper function for complex number multiplication: (a.x + i*a.y) * (b.x + i*b.y)
 vec2 complex_mul(vec2 a, vec2 b) {
@@ -107,7 +106,7 @@ vec2 Convert2OtherModel(vec2 pos, float axisY, float rFactor, int hyperbolic_mod
     }
     vec2 screen_size = love_ScreenSize.xy; 
     vec2 z_prime = vec2(pos.x, pos.y - axisY);
-    vec2 z0_prime = vec2(screen_size.x/2, screen_size.y/2 - axisY);
+    vec2 z0_prime = vec2(screen_size.x/2.0, screen_size.y/2.0 - axisY);
 
     vec2 z0_prime_conj = vec2(z0_prime.x, -z0_prime.y);
     vec2 numerator = z_prime - z0_prime;
@@ -119,11 +118,11 @@ vec2 Convert2OtherModel(vec2 pos, float axisY, float rFactor, int hyperbolic_mod
     w=vec2(-w.y,w.x); // i dunno why a 90 degrees rotation is needed
     if(hyperbolic_model==HYPERBOLIC_MODEL_K_DISK){
         float ww = dot(w, w);
-        ww = (2)/(1.0 + ww); // Klein model projection
+        ww = (2.0)/(1.0 + ww); // Klein model projection
         w = w * ww;
     }
     float r= 0.5 * min(screen_size.x, screen_size.y) * rFactor;
-    vec2 screen_pos = vec2(screen_size.x / 2 + w.x * r, screen_size.y/2 + w.y * r);
+    vec2 screen_pos = vec2(screen_size.x / 2.0 + w.x * r, screen_size.y/2.0 + w.y * r);
     return screen_pos;
 }
 
@@ -135,7 +134,7 @@ vec2 ConvertFromOtherModel(vec2 pos, float axisY, float rFactor, int hyperbolic_
     }
     vec2 screen_size = love_ScreenSize.xy; 
     float r= 0.5 * min(screen_size.x, screen_size.y) * rFactor;
-    vec2 w = vec2((pos.x - screen_size.x / 2) / r, (pos.y - screen_size.y / 2) / r);
+    vec2 w = vec2((pos.x - screen_size.x / 2.0) / r, (pos.y - screen_size.y / 2.0) / r);
 
     float ww = dot(w, w);
     if(ww>1.0) {
@@ -147,7 +146,7 @@ vec2 ConvertFromOtherModel(vec2 pos, float axisY, float rFactor, int hyperbolic_
     }
     w=vec2(w.y,-w.x); // i dunno why a 90 degrees rotation is needed
     
-    vec2 z0_prime = vec2(screen_size.x / 2, screen_size.y / 2 - axisY);
+    vec2 z0_prime = vec2(screen_size.x / 2.0, screen_size.y / 2.0 - axisY);
     vec2 z0_prime_conj = vec2(z0_prime.x, -z0_prime.y);
 
     // Calculate the numerator: z0_prime - w * z0_prime_conj

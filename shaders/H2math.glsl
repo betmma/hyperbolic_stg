@@ -173,11 +173,6 @@ vec3 get_hyperbolic_barycentric_coords(vec2 P, vec2 V0, vec2 V1, vec2 V2) {
     float area_PV0V2 = get_hyperbolic_triangle_area(P, V0, V2); // Sub-triangle opposite V1
     float area_PV0V1 = get_hyperbolic_triangle_area(P, V0, V1); // Sub-triangle opposite V2
 
-    // Calculate the total area of the fundamental triangle V0V1V2.
-    // OPTIMIZATION: This area is constant for all pixels if V0,V1,V2 are uniforms.
-    // It can be pre-calculated (e.g., on CPU or once in a vertex shader)
-    // and passed as a uniform: `uniform float inv_total_hyperbolic_area_V0V1V2;`
-    // Then: w0 = area_PV1V2 * inv_total_hyperbolic_area_V0V1V2; etc.
     float total_area_V0V1V2 = get_hyperbolic_triangle_area(V0, V1, V2);
 
     // If the fundamental triangle is degenerate (e.g., collinear vertices, very small area),

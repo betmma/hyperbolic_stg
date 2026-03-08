@@ -1,19 +1,32 @@
-const int FACE_COUNT = 12;
-const vec4 FACE_NORMALS[FACE_COUNT] = vec4[](
-    vec4(0.0, -1.144122805635, -0.707106781187, 0.899453719974),
-    vec4(-0.707106781187, 0.0, -1.144122805635, 0.899453719974),
-    vec4(-1.144122805635, -0.707106781187, 0.0, 0.899453719974),
-    vec4(0.0, -1.144122805635, 0.707106781187, 0.899453719974),
-    vec4(-0.707106781187, 0.0, 1.144122805635, 0.899453719974),
-    vec4(-1.144122805635, 0.707106781187, 0.0, 0.899453719974),
-    vec4(0.0, 1.144122805635, -0.707106781187, 0.899453719974),
-    vec4(0.0, 1.144122805635, 0.707106781187, 0.899453719974),
-    vec4(0.707106781187, 0.0, -1.144122805635, 0.899453719974),
-    vec4(1.144122805635, -0.707106781187, 0.0, 0.899453719974),
-    vec4(0.707106781187, 0.0, 1.144122805635, 0.899453719974),
-    vec4(1.144122805635, 0.707106781187, 0.0, 0.899453719974)
-);
-const int OPPOSITE_FACE[FACE_COUNT] = int[](7, 10, 11, 6, 8, 9, 3, 0, 4, 5, 1, 2);
+#define FACE_COUNT 12
+vec4 getFaceNormal(int index) {
+    if (index == 0) return vec4(0.0, -1.144122805635, -0.707106781187, 0.899453719974);
+    if (index == 1) return vec4(-0.707106781187, 0.0, -1.144122805635, 0.899453719974);
+    if (index == 2) return vec4(-1.144122805635, -0.707106781187, 0.0, 0.899453719974);
+    if (index == 3) return vec4(0.0, -1.144122805635, 0.707106781187, 0.899453719974);
+    if (index == 4) return vec4(-0.707106781187, 0.0, 1.144122805635, 0.899453719974);
+    if (index == 5) return vec4(-1.144122805635, 0.707106781187, 0.0, 0.899453719974);
+    if (index == 6) return vec4(0.0, 1.144122805635, -0.707106781187, 0.899453719974);
+    if (index == 7) return vec4(0.0, 1.144122805635, 0.707106781187, 0.899453719974);
+    if (index == 8) return vec4(0.707106781187, 0.0, -1.144122805635, 0.899453719974);
+    if (index == 9) return vec4(1.144122805635, -0.707106781187, 0.0, 0.899453719974);
+    if (index == 10) return vec4(0.707106781187, 0.0, 1.144122805635, 0.899453719974);
+    return vec4(1.144122805635, 0.707106781187, 0.0, 0.899453719974);
+}
+int getOppositeFace(int index) {
+    if (index == 0) return 7;
+    if (index == 1) return 10;
+    if (index == 2) return 11;
+    if (index == 3) return 6;
+    if (index == 4) return 8;
+    if (index == 5) return 9;
+    if (index == 6) return 3;
+    if (index == 7) return 0;
+    if (index == 8) return 4;
+    if (index == 9) return 5;
+    if (index == 10) return 1;
+    return 2;
+}
 const float CELL_INRADIUS = 0.808460833756;
 const float CELL_CIRCUMRADIUS = 1.226456871000;
 
@@ -60,9 +73,9 @@ void wrap_inside_cell(inout vec4 pos, inout vec4 dir) {
     for (int iteration = 0; iteration < 4; ++iteration) {
         bool adjusted = false;
         for (int i = 0; i < FACE_COUNT; ++i) {
-            if (plane_signed(pos, FACE_NORMALS[i]) <= 0.0) {
-                pos = reflect_plane(pos, FACE_NORMALS[i]);
-                dir = reflect_plane(dir, FACE_NORMALS[i]);
+            if (plane_signed(pos, getFaceNormal(i)) <= 0.0) {
+                pos = reflect_plane(pos, getFaceNormal(i));
+                dir = reflect_plane(dir, getFaceNormal(i));
                 adjusted = true;
             }
         }

@@ -1,7 +1,7 @@
 #include "shaders/H2math.glsl"
 #include "shaders/H3math.glsl"
 
-uniform float time = 0.0;
+uniform float time;
 uniform mat4 cam_mat4;
 
 const float MOVE_SPEED = 0.1;

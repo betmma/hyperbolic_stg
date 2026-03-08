@@ -2,8 +2,8 @@
 #include "shaders/H3math.glsl"
 
 // ---------- Controls ----------
-uniform float time = 0.0;
-uniform bool flat_=false; // kept from H3Terrain2.glsl to reuse its send function in lua
+uniform float time;
+uniform bool flat_; // kept from H3Terrain2.glsl to reuse its send function in lua
 
 // Fundamental triangle for the H^2 tessellation
 uniform vec2 V0;
@@ -11,43 +11,39 @@ uniform vec2 V1;
 uniform vec2 V2;
 
 // Camera orientation (same semantics as your existing shader)
-uniform vec3  cam_rotation_axis1 = vec3(1.0, 0.0, 0.0);
-uniform float cam_pitch          = 0.0;
-uniform vec3  cam_rotation_axis2 = vec3(0.0, 1.0, 0.0);
-uniform float cam_yaw            = 0.0;
-uniform vec3  cam_rotation_axis3 = vec3(0.0, 0.0, 1.0);
-uniform float cam_roll           = 0.0;
-uniform vec3  cam_translation    = vec3(0.0, 0.0, 1.0);
+#define cam_rotation_axis1 vec3(1.0, 0.0, 0.0) // Default: X-axis for pitch
+#define cam_rotation_axis2 vec3(0.0, 1.0, 0.0) // Default: Y-axis for yaw
+#define cam_rotation_axis3 vec3(0.0, 0.0, 1.0) // Optional: Z-axis for roll
+uniform float cam_pitch;              // Default: No pitch
+uniform float cam_yaw;              // Default: No yaw
+uniform float cam_roll;              // Optional: No roll
+uniform vec3 cam_translation; // Default: Boost along Z-axis
 
 // Three dream layers defined by boosts along -Z (rapidity values)
-uniform vec3 plane_eta = vec3(-0.1, -0.4, -0.9); // larger => visually “deeper” below camera
+const vec3 plane_eta = vec3(-0.1, -0.4, -0.9); // larger => visually “deeper” below camera
 
 // Line look
-uniform float line_width   = 0.1;    // thickness of tessellation lines in barycentric units
-uniform float line_glow    = 2.5;    // edge glow exponent
-uniform float line_wobble  = 0.005;  // subtle temporal wobble in the lines
+const float line_width   = 0.1;    // thickness of tessellation lines in barycentric units
+const float line_glow    = 2.5;    // edge glow exponent
+const float line_wobble  = 0.005;  // subtle temporal wobble in the lines
 
 // Mist & starfield
-uniform vec3  mist_color      = vec3(0.15, 0.08, 0.35);
+const vec3  mist_color      = vec3(0.15, 0.08, 0.35);
 // Strength of additive mist
-uniform float mist_strength   = 0.65;
+const float mist_strength   = 0.65;
 // Pixel scale for noise domain
-uniform float mist_scale_px   = 30.0;
+const float mist_scale_px   = 30.0;
 // Flow speed of the Brownian field
-uniform float mist_speed      = 0.3;
+const float mist_speed      = 0.3;
 // How strongly mist prefers the bottom of screen (0=no bias, 1=strong)
-uniform float mist_bottom_bias = 0.85;
-uniform float star_density     = 0.06; // probability per screen cell
-uniform float star_brightness  = 0.8;
+const float mist_bottom_bias = 0.85;
+const float star_density     = 0.06; // probability per screen cell
+const float star_brightness  = 0.8;
 // screen-space star controls (2D)
-uniform float star_cell_px     = 8.0;   // approximate pixel cell size for star placement
-uniform float star_core_px     = 0.4;    // core radius in pixels
-uniform float star_halo_px     = 1.5;    // halo radius in pixels
+const float star_cell_px     = 8.0;   // approximate pixel cell size for star placement
+const float star_core_px     = 0.4;    // core radius in pixels
+const float star_halo_px     = 1.5;    // halo radius in pixels
 
-// ---------- Geodesics for reflections ----------
-UHPGeodesic G01 = make_geodesic_segment(V0, V1);
-UHPGeodesic G12 = make_geodesic_segment(V1, V2);
-UHPGeodesic G20 = make_geodesic_segment(V2, V0);
 const int MAX_REFLECTIONS = 6;
 
 // ---------- Small helpers ----------
@@ -92,6 +88,10 @@ float hash21(vec2 p) {
 struct flipData { vec2 p_in_fundamental; int flipCount; };
 
 flipData flip(vec2 pos_xy_embedding) {
+    // ---------- Geodesics for reflections ----------
+    UHPGeodesic G01 = make_geodesic_segment(V0, V1);
+    UHPGeodesic G12 = make_geodesic_segment(V1, V2);
+    UHPGeodesic G20 = make_geodesic_segment(V2, V0);
     vec2 p = hyperboloid_to_uhp(pos_xy_embedding);
     int flipCount = 0;
     for (int i = 0; i < MAX_REFLECTIONS; ++i) {
@@ -202,10 +202,10 @@ vec3 stars_screen2D(vec2 fragPx) {
     float d    = length(fpix);
 
     // Temporal twinkle
-    float tw = 0.3 + 0.3*sin(time*0.5*(1+0.5*sin(h*99)) + h*8.0 + 99);
+    float tw = 0.3 + 0.3*sin(time*0.5*(1.0+0.5*sin(h*99.0)) + h*8.0 + 99.0);
 
     // Smooth core and softer halo
-    float aa    = fwidth(d) + 1e-4;
+    float aa    = 1e-4;
     float core  = smoothstep(star_core_px + aa, star_core_px - aa, d);
     float halo  = smoothstep(star_halo_px + aa, star_halo_px - aa, d) * 0.35;
 

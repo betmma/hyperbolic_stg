@@ -10,7 +10,14 @@
 ---@field version string game version of the run.
 
 local lume=require"import.lume"
-local bit=require"bit"
+local bit
+-- If 'jit' exists, we are on Desktop using LuaJIT. 
+if type(jit) == 'table' then
+    bit = require("bit")
+else
+-- Otherwise, we are on the Web using standard Lua.
+    bit = require("import.bit")
+end
 local levelData = require "levelData"
 local player    = require "player"
 
