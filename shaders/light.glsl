@@ -30,8 +30,8 @@ uniform float r_factor; // Radius factor for disk models
 
 const float constantAttenuation = 1.0;
 const float linearAttenuation = 5.0;
-const float curvature = 100;
-const float axisY = -100;
+const float curvature = 100.0;
+const float axisY = -100.0;
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
     vec4 originalColor = Texel(texture, texture_coords);
@@ -45,7 +45,8 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     pos=hyperbolically_rotate_point_mobius(pos, player_pos, -rotation_angle, axisY);
     vec2 pixelWorldPos = pos;
 
-    for (int i = 0; i < numLights; ++i) {
+    for (int i = 0; i < 16; ++i) {
+        if(i >= numLights) break; // Only process the actual number of lights. webgl compatibility requires a fixed loop count.
         // Calculate distance from pixel to the current light
         float dist = shapeDistanceVec(pixelWorldPos, lightPositions[i], curvature, axisY);
 

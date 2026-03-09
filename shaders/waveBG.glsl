@@ -47,15 +47,15 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     sum = sum / (amplitude1 + amplitude2) * 0.5 + 0.5; // Normalize to [0, 1]
     float c = sum;
     if (c < thershold) c = c * 0.8; // Create a boundary effect
-    float brightness = 1 / dist1 / dist1 + 1 / dist2 / dist2;
-    if (brightness > 1) brightness = 1;
-    float r = c * colorMix.x + brightness * (1 - colorMix.x);
-    float g = c * colorMix.y + brightness * (1 - colorMix.y);
-    float b = c * colorMix.z + brightness * (1 - colorMix.z);
-    if (time < 3){
-        r = r * (time/3);
-        g = g * (time/3);
-        b = b * (time/3);
+    float brightness = 1.0 / dist1 / dist1 + 1.0 / dist2 / dist2;
+    if (brightness > 1.0) brightness = 1.0;
+    float r = c * colorMix.x + brightness * (1.0 - colorMix.x);
+    float g = c * colorMix.y + brightness * (1.0 - colorMix.y);
+    float b = c * colorMix.z + brightness * (1.0 - colorMix.z);
+    if (time < 3.0){
+        r = r * (time/3.0);
+        g = g * (time/3.0);
+        b = b * (time/3.0);
     }
     return vec4(r,g,b, 1.0);
 }
