@@ -20,7 +20,7 @@ return {
         a=BulletSpawner{x=400,y=300,period=600,frame=540,lifeFrame=10000,bulletNumber=200,bulletSpeed=30,bulletLifeFrame=10000,angle=math.eval(0,999),range=math.pi*2,bulletSprite=BulletSprites.dot.gray,bulletEvents={
             function(cir,args,self)
                 cir.direction=cir.direction+math.eval(0,999)
-                cir.speed=math.log(math.eval(56,54),110)*40
+                cir.speed=math.log(math.eval(56,54))*40/math.log(110)
                 cir.extraUpdate[1]=function(cir)
                     cir.speed=cir.speed*0.99
                     if cir.frame>120 and cir.speed<20 and moveRange>0 and Shape.distance(cir.x,cir.y,en.x,en.y)<moveRange then

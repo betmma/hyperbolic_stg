@@ -46,7 +46,7 @@ function Shape:update(dt)
 end
 
 function Shape:distanceRemoveCheck()
-    return self.x<-self.removeDistance+150 or self.x>self.removeDistance+WINDOW_WIDTH-150 or math.abs(self.y-Shape.axisY)<50/math.log(self.removeDistance,10) or self.y<-self.removeDistance or self.y>self.removeDistance+WINDOW_HEIGHT
+    return self.x<-self.removeDistance+150 or self.x>self.removeDistance+WINDOW_WIDTH-150 or math.abs(self.y-Shape.axisY)<50*math.log(10)/math.log(self.removeDistance) or self.y<-self.removeDistance or self.y>self.removeDistance+WINDOW_HEIGHT
 end
 
 function Shape:updateMove(dt)
