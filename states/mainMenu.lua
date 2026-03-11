@@ -58,6 +58,12 @@ return {
         -- love.graphics.print("FPS: "..love.timer.getFPS(), 10, 20)
         SetFont(24)
         love.graphics.print(VERSION, WINDOW_WIDTH-80, WINDOW_HEIGHT-30)
+        if IS_WEB then
+            local disclaimer=Localize{'ui','DISCLAIMER'}
+            SetFont(16)
+            love.graphics.rectangle("line",10,240,260,120)
+            love.graphics.printf(disclaimer, 20, 250, 240, 'center')
+        end
         love.graphics.setColor(color[1],color[2],color[3],color[4] or 1)
     end
 }

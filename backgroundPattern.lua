@@ -682,7 +682,6 @@ function H3Terrain:new()
         shader:send("cam_yaw", self.cam_yaw or 0)
         local roll=self.cam_roll or 0
         shader:send("cam_roll", roll)
-        shader:send("flat_", true)
     end
 end
 H3Terrain.update=function(self,dt)

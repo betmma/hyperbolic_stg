@@ -1,5 +1,6 @@
-VERSION="1.0.0.4"
+VERSION="1.0.0.5"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
+IS_WEB=type(jit)~="table"
 -- DEV_MODE=true
 if arg[2] == "debug" then
     require("lldebugger").start()

@@ -1784,6 +1784,10 @@ return {
         },
     },
     ui = {
+        DISCLAIMER = {
+            en_us = 'Due to limitations of web browser, web version performs worse than downloaded versions. Some spellcards could be very laggy in the web version. Play the downloaded version for the best experience.',
+            zh_cn = '由于网页浏览器的限制，网页版的性能不如下载版。某些符卡在网页版可能会非常卡顿。请下载游戏以获得最佳体验。',
+        },
         START = {
             en_us = 'Start',
             zh_cn = '开始游戏',

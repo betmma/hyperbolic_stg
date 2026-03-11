@@ -1,7 +1,6 @@
 #include "shaders/H2math.glsl"
 #include "shaders/H3math.glsl"
 
-uniform bool flat_; // if true, terrainFunc returns 0 and drastically increases performance
 uniform vec2 V0; 
 uniform vec2 V1;
 uniform vec2 V2;
@@ -100,27 +99,6 @@ vec4 colorFunc(vec2 pos_xy_embedding, float time) {
     // }
     return ret;
 }
-
-// returns embedding z. not perfectly hyperbolic, so value should be close to 0 and small 
-float terrainFunc(vec2 pos_xy_embedding, float time) {
-    if (flat_) {
-        return 0.0; // If flat_, return 0 for performance
-    }
-    // Flatten a straight path along x=0
-    if (abs(pos_xy_embedding.x) < path_half_width) {
-        return -0.02; // Slightly below zero to make the road visible
-    }
-    vec2 shifted_pos = shift_pos(pos_xy_embedding, time);
-    flipData fd = flip(shifted_pos);
-    if (fd.flipCount < 0) { 
-        return 0.0; // Indicate non-convergence
-    }
-    vec2 p_in_fundamental = fd.p_in_fundamental;
-    vec3 bary_coords = get_hyperbolic_barycentric_coords(p_in_fundamental, V0, V1, V2);
-    float bx= bary_coords.x;
-    return (bx*bx*bx) * 0.6; 
-}
-
 // --- Hyperbolic helpers and tree SDFs ---
 float mdot4(vec4 a, vec4 b) { return -dot(a.xyz, b.xyz) + a.w*b.w; }
 float acosh1(float x) { return log(x + sqrt(max(0.0, x*x - 1.0))); }
@@ -154,7 +132,7 @@ float treeSDF_H(vec4 p_H, float time, out float nearestRadiusH) {
     nearestRadiusH = 0.0;
 
     // Axis origin anchored near the path center (x=0). Use terrain at (0,0) for base height.
-    float baseZ = terrainFunc(vec2(0.0, 0.0), time);
+    float baseZ = 0.0;
     vec4 p_axis0 = lift_to_H(vec3(0.0, 0.0, baseZ));
     vec4 v_axis  = spacelike_from_axis(p_axis0, vec3(0.0, 1.0, 0.0)); // +Y direction on the axis
 
@@ -215,16 +193,7 @@ vec3 treeNormal_H(vec4 p_H, float time) {
 }
 
 vec3 getTerrainNormal(vec4 p_H, float time, float epsilon_normal) {
-    // Central differences for terrainFunc derivatives w.r.t. p_H.xy
-    // Note: terrainFunc is defined based on embedding x,y coordinates
-    float terrain_dx = (terrainFunc(p_H.xy + vec2(epsilon_normal, 0.0), time) - terrainFunc(p_H.xy - vec2(epsilon_normal, 0.0), time)) / (2.0 * epsilon_normal);
-    float terrain_dy = (terrainFunc(p_H.xy + vec2(0.0, epsilon_normal), time) - terrainFunc(p_H.xy - vec2(0.0, epsilon_normal), time)) / (2.0 * epsilon_normal);
-
-    // The terrain surface is implicitly p_H.z - terrainFunc(p_H.xy, time) = 0.
-    // The gradient vector (-d(terrainFunc)/dx, -d(terrainFunc)/dy, 1) is normal to this surface.
-    // This vector points "outwards" from the terrain, towards positive SDF values.
-    vec3 normal_emb = normalize(vec3(-terrain_dx, -terrain_dy, 1.0));
-    return normal_emb;
+    return vec3(0.0, 0.0, 1.0); // forced to be flat for web build to compile. look for old commits to see original code with actual normal calculation
 }
 
 // Scene Distance Estimator (SDF-like function)
@@ -232,7 +201,7 @@ vec3 getTerrainNormal(vec4 p_H, float time, float epsilon_normal) {
 // Returns an approximate signed distance (along embedding z-axis) to the terrain surface.
 // Positive if p_H.z is "above" the terrain, negative if "below".
 float sceneSDF(vec4 p_H, float time) {
-    float terrain_z_at_p_xy = terrainFunc(p_H.xy, time);
+    float terrain_z_at_p_xy = 0.0;
     return p_H.z - terrain_z_at_p_xy; 
 }
 
