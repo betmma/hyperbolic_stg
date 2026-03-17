@@ -41,13 +41,13 @@ return {
                 end
             end
         end
-        local triangleBase=function(cir,size)
+        local triangleBase=function(cir,size,life)
             -- spawn bullets in triangle shape. cir is the center of the triangle. 
             for row=1,size,1 do
                 for index=1,row,1 do
                     local isEdge=index==1 or index==row or row==size
                     local color=isEdge and 'blue' or 'cyan'
-                    local bullet=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bullet[color],speed=0,lifeFrame=500,extraUpdate=subBulletUpdate}
+                    local bullet=Circle{x=cir.x,y=cir.y,sprite=BulletSprites.bullet[color],speed=0,lifeFrame=life,extraUpdate=subBulletUpdate}
                     bullet.row=row-size*2/3 -- this deduction makes cir the center of the triangle instead of the top.
                     bullet.index=index-row/2-0.5
                     bullet.parent=cir
@@ -61,7 +61,7 @@ return {
                 cir.invincible=true
                 cir.spriteTransparency=0
                 cir.index=args.index
-                triangleBase(cir,20)
+                triangleBase(cir,20,540-cir.index*14)
                 Shape.moveToInTime(cir,{x=args.aimx,y=args.aimy},60)
             end
         },bulletExtraUpdate=function(cir)
