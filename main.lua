@@ -1,4 +1,4 @@
-VERSION="1.0.0.6"
+VERSION="1.0.1"
 WINDOW_WIDTH,WINDOW_HEIGHT=love.graphics.getDimensions()
 IS_WEB=type(jit)~="table"
 -- DEV_MODE=true

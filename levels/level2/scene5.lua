@@ -30,6 +30,7 @@ return {
             end
             },
         spawnBatchFunc= function(self)
+            SFX:play('enemyShot',true,self.spawnSFXVolume)
             local num=math.eval(self.bulletNumber)
             local range=math.eval(self.range)
             local angle=math.eval(-1.57,2)

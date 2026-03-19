@@ -79,5 +79,5 @@ Doremy's portrait and Act 1 to Act 2's boss sprites are drawn by my friend **Shi
 
 Music in Act 1 and Act 2 (*The Dream of a Mathematician*) is made by **Shinanij**. Other music is made by myself.
 
-SFX are from th6 and [Old-school Shonen SFX](https://heltonyan.itch.io/retroanimesfx).
+SFX are from [Touhou-SFX](https://git.touhou.dev/brogrammist/Touhou-SFX/) (not official assets), [CK GAME FACTORY](https://web.archive.org/web/20060117143932/http://ckgamefactory.hp.infoseek.co.jp/sounds.html) and [Old-school Shonen SFX](https://heltonyan.itch.io/retroanimesfx).
 Sticky SFX is by [freesound_community](https://pixabay.com/users/freesound_community-46691455/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=43763) from [Pixabay](https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=43763)
